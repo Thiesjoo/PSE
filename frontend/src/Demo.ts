@@ -1,140 +1,130 @@
-import * as THREE from 'three';
-import Stats from 'three/examples/jsm/libs/stats.module';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import * as THREE from "three";
+import Stats from "three/examples/jsm/libs/stats.module";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+import Albedo from "./assets/Albedo.jpg";
+
+export const loadTexture = async (url: string): Promise<THREE.Texture> => {
+    let textureLoader = new THREE.TextureLoader();
+    return new Promise((resolve) => {
+        textureLoader.load(url, (texture) => {
+            resolve(texture);
+        });
+    });
+};
 
 export default class Demo {
-	private renderer!: THREE.WebGLRenderer;
-	private scene!: THREE.Scene;
-	private camera!: THREE.PerspectiveCamera;
+    private renderer!: THREE.WebGLRenderer;
+    private scene!: THREE.Scene;
+    private camera!: THREE.PerspectiveCamera;
 
-	private lightAmbient!: THREE.AmbientLight;
-	private lightPoint!: THREE.PointLight;
+    private dirLight!: THREE.DirectionalLight;
 
-	private controls!: OrbitControls;
-	private stats!: any;
+    private controls!: OrbitControls;
+    private stats!: any;
 
-	private cube!: THREE.Mesh;
-	private plane!: THREE.Mesh;
+    private group!: THREE.Group;
+    private earth!: THREE.Mesh;
 
-	constructor() {
-		this.initScene();
-		this.initStats();
-		this.initListeners();
-	}
+    constructor() {
+        this.initScene();
+        this.initStats();
+        this.initListeners();
+    }
 
-	initStats() {
-		this.stats = new (Stats as any)();
-		document.body.appendChild(this.stats.dom);
-	}
+    initStats() {
+        this.stats = new (Stats as any)();
+        document.body.appendChild(this.stats.dom);
+    }
 
-	initScene() {
-		this.scene = new THREE.Scene();
+    async initScene() {
+        this.scene = new THREE.Scene();
 
-		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-		this.camera.position.z = 5;
+        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera.position.z = 30;
 
-		this.renderer = new THREE.WebGLRenderer();
-		this.renderer.shadowMap.enabled = true;
-		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		this.renderer.setPixelRatio(window.devicePixelRatio);
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer = new THREE.WebGLRenderer();
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-		document.body.appendChild(this.renderer.domElement);
+        document.body.appendChild(this.renderer.domElement);
 
-		this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-		this.lightAmbient = new THREE.AmbientLight(0x404040);
-		this.scene.add(this.lightAmbient);
+        this.dirLight = new THREE.DirectionalLight(0xffffff, 1.8);
+        this.dirLight.position.set(-50, 0, 30);
+        this.scene.add(this.dirLight);
 
-		// Add a point light to add shadows
-		// https://github.com/mrdoob/three.js/pull/14087#issuecomment-431003830
-		const shadowIntensity = 0.25;
+        this.group = new THREE.Group();
+        // earth's axial tilt is 23.5 degrees
+        this.group.rotation.z = (23.5 / 360) * 2 * Math.PI;
 
-		this.lightPoint = new THREE.PointLight(0xffffff);
-		this.lightPoint.position.set(-0.5, 0.5, 4);
-		this.lightPoint.castShadow = true;
-		this.lightPoint.intensity = shadowIntensity;
-		this.scene.add(this.lightPoint);
+        const albedoMap = await loadTexture(Albedo);
+        albedoMap.colorSpace = THREE.SRGBColorSpace;
 
-		const lightPoint2 = this.lightPoint.clone();
-		lightPoint2.intensity = 1 - shadowIntensity;
-		lightPoint2.castShadow = false;
-		this.scene.add(lightPoint2);
+        let earthGeo = new THREE.SphereGeometry(10, 64, 64);
+        let earthMat = new THREE.MeshStandardMaterial({
+            map: albedoMap,
+        });
+        this.earth = new THREE.Mesh(earthGeo, earthMat);
+        this.group.add(this.earth);
 
-		const mapSize = 1024; // Default 512
-		const cameraNear = 0.5; // Default 0.5
-		const cameraFar = 500; // Default 500
-		this.lightPoint.shadow.mapSize.width = mapSize;
-		this.lightPoint.shadow.mapSize.height = mapSize;
-		this.lightPoint.shadow.camera.near = cameraNear;
-		this.lightPoint.shadow.camera.far = cameraFar;
+        // set initial rotational position of earth to get a good initial angle
+        this.earth.rotateY(-0.3);
 
-		// Add a cube
-		const geometryBox = new THREE.BoxGeometry();
-		const materialBox = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-		this.cube = new THREE.Mesh(geometryBox, materialBox);
-		this.cube.castShadow = true;
-		this.scene.add(this.cube);
+        this.scene.add(this.group);
 
-		// Add a plane
-		const geometryPlane = new THREE.PlaneGeometry(6, 6, 1, 1);
-		const materialPlane = new THREE.MeshPhongMaterial({ color: 0x666666 });
+        // Init animation
+        this.animate();
+    }
 
-		this.plane = new THREE.Mesh(geometryPlane, materialPlane);
-		this.plane.position.z = -2;
-		this.plane.receiveShadow = true;
-		this.scene.add(this.plane);
+    initListeners() {
+        window.addEventListener("resize", this.onWindowResize.bind(this), false);
 
-		// Init animation
-		this.animate();
-	}
+        window.addEventListener("keydown", (event) => {
+            const { key } = event;
 
-	initListeners() {
-		window.addEventListener('resize', this.onWindowResize.bind(this), false);
+            switch (key) {
+                case "e":
+                    const win = window.open("", "Canvas Image");
 
-		window.addEventListener('keydown', (event) => {
-			const { key } = event;
+                    const { domElement } = this.renderer;
 
-			switch (key) {
-				case 'e':
-					const win = window.open('', 'Canvas Image');
+                    // Makse sure scene is rendered.
+                    this.renderer.render(this.scene, this.camera);
 
-					const { domElement } = this.renderer;
+                    const src = domElement.toDataURL();
 
-					// Makse sure scene is rendered.
-					this.renderer.render(this.scene, this.camera);
+                    if (!win) return;
 
-					const src = domElement.toDataURL();
+                    win.document.write(`<img src='${src}' width='${domElement.width}' height='${domElement.height}'>`);
+                    break;
 
-					if (!win) return;
+                default:
+                    break;
+            }
+        });
+    }
 
-					win.document.write(`<img src='${src}' width='${domElement.width}' height='${domElement.height}'>`);
-					break;
+    onWindowResize() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
 
-				default:
-					break;
-			}
-		});
-	}
+    animate() {
+        requestAnimationFrame(() => {
+            this.animate();
+        });
 
-	onWindowResize() {
-		this.camera.aspect = window.innerWidth / window.innerHeight;
-		this.camera.updateProjectionMatrix();
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
-	}
+        this.earth.rotateY(0.001);
 
-	animate() {
-		requestAnimationFrame(() => {
-			this.animate();
-		});
+        if (this.stats) this.stats.update();
 
-		this.cube.rotation.x += 0.01;
-		this.cube.rotation.y += 0.01;
+        if (this.controls) this.controls.update();
 
-		if (this.stats) this.stats.update();
-
-		if (this.controls) this.controls.update();
-
-		this.renderer.render(this.scene, this.camera);
-	}
+        this.renderer.render(this.scene, this.camera);
+    }
 }
