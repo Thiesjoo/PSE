@@ -123,7 +123,11 @@ export default class Demo {
               emissiveColor *= 1.0 - smoothstep(-0.1, 0.1, dot(normal, directionalLights[0].direction));
               
               totalEmissiveRadiance *= emissiveColor.rgb;
-    
+
+              float intensity = 1.4 - dot( normal, vec3( 0.0, 0.0, 1.0 ) );
+              vec3 atmosphere = vec3( 0.3, 0.6, 1.0 ) * pow(intensity, 5.0);
+             
+              diffuseColor.rgb += atmosphere;
             #endif
           `
             );
@@ -185,7 +189,6 @@ export default class Demo {
         this.earth.rotateY(0.005);
 
         if (this.stats) this.stats.update();
-
         if (this.controls) this.controls.update();
 
         this.renderer.render(this.scene, this.camera);
