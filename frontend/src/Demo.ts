@@ -3,6 +3,10 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import Albedo from "./assets/Albedo.jpg";
+import Bump from "./assets/Bump.jpg";
+import Ocean from "./assets/Ocean.png";
+import NightLights from "./assets/night_lights_modified.png";
+import Gaia from "./assets/Gaia.png";
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     let textureLoader = new THREE.TextureLoader();
@@ -59,22 +63,81 @@ export default class Demo {
 
         this.group = new THREE.Group();
         // earth's axial tilt is 23.5 degrees
-        this.group.rotation.z = (23.5 / 360) * 2 * Math.PI;
+        this.group.rotation.z = 23.5 / 360 * 2 * Math.PI;
 
         const albedoMap = await loadTexture(Albedo);
         albedoMap.colorSpace = THREE.SRGBColorSpace;
 
+        const bumpMap = await loadTexture(Bump);
+        const oceanMap = await loadTexture(Ocean);
+        const lightsMap = await loadTexture(NightLights);
+
         let earthGeo = new THREE.SphereGeometry(10, 64, 64);
         let earthMat = new THREE.MeshStandardMaterial({
             map: albedoMap,
+            bumpMap: bumpMap,
+            bumpScale: 0.03,
+            roughnessMap: oceanMap,
+            metalness: 0.1,
+            metalnessMap: oceanMap,
+            emissiveMap: lightsMap,
+            emissive: new THREE.Color(0xffff88),
         });
         this.earth = new THREE.Mesh(earthGeo, earthMat);
         this.group.add(this.earth);
 
+        earthMat.onBeforeCompile = function (shader) {
+            shader.fragmentShader = shader.fragmentShader.replace(
+                "#include <roughnessmap_fragment>",
+                `
+              float roughnessFactor = roughness;
+      
+              #ifdef USE_ROUGHNESSMAP
+      
+                vec4 texelRoughness = texture2D( roughnessMap, vRoughnessMapUv );
+                // reversing the black and white values because we provide the ocean map
+                texelRoughness = vec4(1.0) - texelRoughness;
+      
+                // reads channel G, compatible with a combined OcclusionRoughnessMetallic (RGB) texture
+                roughnessFactor *= clamp(texelRoughness.g, 0.5, 1.0);
+      
+              #endif
+            `
+            );
+
+            shader.fragmentShader = shader.fragmentShader.replace(
+                "#include <emissivemap_fragment>",
+                `
+            #ifdef USE_EMISSIVEMAP
+    
+              vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );
+    
+              // Methodology of showing night lights only:
+              // going through the shader calculations in the meshphysical shader chunks (mostly on the vertex side),
+              // we can confirm that geometryNormal is the normalized normal in view space,
+              // for the night side of the earth, the dot product between geometryNormal and the directional light would be negative
+              // since the direction vector actually points from target to position of the DirectionalLight,
+              // for lit side of the earth, the reverse happens thus emissiveColor would be multiplied with 0.
+              // The smoothstep is to smoothen the change between night and day
+              
+              emissiveColor *= 1.0 - smoothstep(-0.1, 0.1, dot(normal, directionalLights[0].direction));
+              
+              totalEmissiveRadiance *= emissiveColor.rgb;
+    
+            #endif
+          `
+            );
+
+            earthMat.userData.shader = shader;
+        };
+
         // set initial rotational position of earth to get a good initial angle
         this.earth.rotateY(-0.3);
-
         this.scene.add(this.group);
+
+        const envMap = await loadTexture(Gaia)
+        envMap.mapping = THREE.EquirectangularReflectionMapping
+        this.scene.background = envMap
 
         // Init animation
         this.animate();
@@ -119,7 +182,7 @@ export default class Demo {
             this.animate();
         });
 
-        this.earth.rotateY(0.001);
+        this.earth.rotateY(0.005);
 
         if (this.stats) this.stats.update();
 
