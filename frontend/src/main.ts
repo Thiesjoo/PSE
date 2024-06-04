@@ -1,8 +1,7 @@
 import './style.scss';
 
-import Demo from './Demo';
-// import Demo from './Shader';
+import EarthWithSatellites from './Earth';
 
 window.addEventListener('DOMContentLoaded', () => {
-	new Demo();
+	new EarthWithSatellites();
 });

@@ -3,12 +3,11 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import ThreeGlobe from "three-globe";
 
+import * as utils from "./common/utils";
 import * as satellite from "satellite.js";
 import Gaia from "./assets/Gaia.png";
+import { EARTH_RADIUS_KM, SAT_SIZE, TIME_STEP } from "./common/constants";
 
-const EARTH_RADIUS_KM = 6371; // km
-const SAT_SIZE = 80; // km
-const TIME_STEP = 3000; // ms
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     let textureLoader = new THREE.TextureLoader();
@@ -19,7 +18,7 @@ export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     });
 };
 
-export default class Demo {
+export default class EarthWithSatellites {
     private renderer!: THREE.WebGLRenderer;
     private scene!: THREE.Scene;
     private camera!: THREE.PerspectiveCamera;
@@ -30,8 +29,7 @@ export default class Demo {
     private globe!: ThreeGlobe;
     private currentTime: Date = new Date();
 
-    private rawData = "";
-    private currentData: any[] = [];
+    private currentData: utils.SatInformation[] = [];
 
     constructor() {
         this.initScene();
@@ -44,77 +42,65 @@ export default class Demo {
         document.body.appendChild(this.stats.dom);
     }
 
-    initialParseSatData() {
-        const tleData = this.rawData
-            .replace(/\r/g, "")
-            .split(/\n(?=[^12])/)
-            .map((tle) => tle.split("\n"));
-        const satData = tleData.map(([name, ...tle]) => ({
-            //@ts-ignore
-            satrec: satellite.twoline2satrec(...tle),
-            name: name.trim().replace(/^0 /, ""),
-        })) as { satrec: any; name: string; lat: number; lng: number; alt: number }[];
-        this.currentData = satData;
+    initialParseSatData(data: string) {
+        this.currentData = utils.parseTLEListToSat(data);
     }
 
-    satData(time: Date) {
+    propagateAllSatData(time: Date) {
         const gmst = satellite.gstime(time);
-        this.currentData.forEach((d) => {
-            const eci = satellite.propagate(d.satrec, time);
-            if (eci.position) {
-                //@ts-ignore
-                const gdPos = satellite.eciToGeodetic(eci.position, gmst);
-                d.lat = satellite.degreesLat(gdPos.latitude);
-                d.lng = satellite.degreesLong(gdPos.longitude);
-                d.alt = gdPos.height / EARTH_RADIUS_KM;
-            }
-        });
-
-        this.globe.objectsData(this.currentData);
+        const currentPositions = this.currentData.map((d) => utils.propagate1Sat(d, time, gmst));
+        this.globe.objectsData(currentPositions);
     }
 
     async initScene() {
-        this.rawData =await  fetch("https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle").then((res) => res.text());
-        this.initialParseSatData();
+        // Fetch satellite data from NORAD
+        const rawData = await fetch("https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle").then((res) =>
+            res.text()
+        );
+        this.initialParseSatData(rawData);
 
         this.scene = new THREE.Scene();
 
+        // Camera
         const camera = new THREE.PerspectiveCamera();
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         camera.position.z = 400;
-
         this.camera = camera;
 
+        // Renderer
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-
         document.body.appendChild(this.renderer.domElement);
 
+        // Controls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
+        // Add lights
         this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
         this.scene.add(new THREE.AmbientLight(0xcccccc, Math.PI));
 
-        const globe = new ThreeGlobe()
+        // Add the Earth
+        this.globe = new ThreeGlobe()
             .globeImageUrl("//unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
             .objectLat("lat")
             .objectLng("lng")
             .objectAltitude("alt")
             .objectFacesSurface(false);
 
-        const satGeometry = new THREE.OctahedronGeometry((SAT_SIZE * globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2, 0);
+        const satGeometry = new THREE.OctahedronGeometry((SAT_SIZE * this.globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2, 0);
         const satMaterial = new THREE.MeshLambertMaterial({ color: "palegreen", transparent: true, opacity: 0.7 });
-        globe.objectThreeObject(() => new THREE.Mesh(satGeometry, satMaterial));
-        this.globe = globe;
+        this.globe.objectThreeObject(() => new THREE.Mesh(satGeometry, satMaterial));
+        this.scene.add(this.globe);
 
+
+        // Add background
         const envMap = await loadTexture(Gaia);
         envMap.mapping = THREE.EquirectangularReflectionMapping;
         this.scene.background = envMap;
 
         // Add satellite
-        this.satData(this.currentTime);
-        this.scene.add(globe);
+        this.propagateAllSatData(this.currentTime);
 
         // Init animation
         this.animate();
@@ -156,15 +142,15 @@ export default class Demo {
 
     animate() {
         requestAnimationFrame(() => {
+            // Cap at 10 fps
             this.animate();
         });
 
         this.currentTime = new Date(+this.currentTime + TIME_STEP);
-        this.satData(this.currentTime);
+        this.propagateAllSatData(this.currentTime);
 
         if (this.stats) this.stats.update();
         if (this.controls) this.controls.update();
-
         this.renderer.render(this.scene, this.camera);
     }
 }
