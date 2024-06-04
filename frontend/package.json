@@ -17,6 +17,7 @@
     "@types/dat.gui": "^0.7.13",
     "@types/three": "^0.165.0",
     "dat.gui": "^0.7.9",
+    "satellite.js": "^5.0.0",
     "three": "^0.165.0"
   }
 }
