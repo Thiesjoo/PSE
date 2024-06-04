@@ -7,8 +7,8 @@ import * as satellite from "satellite.js";
 import Gaia from "./assets/Gaia.png";
 
 const EARTH_RADIUS_KM = 6371; // km
-const SAT_SIZE = 160; // km
-const TIME_STEP = 1000; // ms
+const SAT_SIZE = 80; // km
+const TIME_STEP = 3000; // ms
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     let textureLoader = new THREE.TextureLoader();
@@ -30,6 +30,9 @@ export default class Demo {
     private globe!: ThreeGlobe;
     private currentTime: Date = new Date();
 
+    private rawData = "";
+    private currentData: any[] = [];
+
     constructor() {
         this.initScene();
         this.initStats();
@@ -41,11 +44,8 @@ export default class Demo {
         document.body.appendChild(this.stats.dom);
     }
 
-    satData(time: Date) {
-        const rawData =
-            "ISS (ZARYA)\n1 25544U 98067A   21168.51666667  .00000867  00000-0  22813-4 0  9991\n2 25544  51.6443  86.0000 0002766  93.0000  27.0000 15.48900079279768";
-
-        const tleData = rawData
+    initialParseSatData() {
+        const tleData = this.rawData
             .replace(/\r/g, "")
             .split(/\n(?=[^12])/)
             .map((tle) => tle.split("\n"));
@@ -54,9 +54,12 @@ export default class Demo {
             satrec: satellite.twoline2satrec(...tle),
             name: name.trim().replace(/^0 /, ""),
         })) as { satrec: any; name: string; lat: number; lng: number; alt: number }[];
+        this.currentData = satData;
+    }
 
+    satData(time: Date) {
         const gmst = satellite.gstime(time);
-        satData.forEach((d) => {
+        this.currentData.forEach((d) => {
             const eci = satellite.propagate(d.satrec, time);
             if (eci.position) {
                 //@ts-ignore
@@ -67,12 +70,13 @@ export default class Demo {
             }
         });
 
-        console.log(satData);
-
-        this.globe.objectsData(satData);
+        this.globe.objectsData(this.currentData);
     }
 
     async initScene() {
+        this.rawData =await  fetch("https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle").then((res) => res.text());
+        this.initialParseSatData();
+
         this.scene = new THREE.Scene();
 
         const camera = new THREE.PerspectiveCamera();
