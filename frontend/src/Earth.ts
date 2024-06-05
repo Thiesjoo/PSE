@@ -39,6 +39,7 @@ export default class EarthWithSatellites {
 
     initStats() {
         this.stats = new (Stats as any)();
+        console.log(this.stats.dom);
         document.body.appendChild(this.stats.dom);
     }
 
