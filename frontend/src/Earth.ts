@@ -1,4 +1,5 @@
 import * as THREE from "three";
+//@ts-ignore
 import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import ThreeGlobe from "three-globe";
