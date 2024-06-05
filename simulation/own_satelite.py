@@ -12,27 +12,27 @@ class Satelite:
     def __init__(self, nam):
 
         # Title line
-        self._name = None
+        self._name = "New Satellite"
 
         # Line 1
         self.satellite_number = "11111"  # 5 digits
         self.classification = 'U'  # U for unclassified
-        self.designation = self.set_designation()
-        self.epoch = self.epoch_update()
-        self._first_derivative = None  # Not sure what it represents
-        self._second_derivative = None
-        self._bstar = None
-        self._ephemeris_type = None
-        self._element_number = None
+        self.set_designation()
+        self.epoch_update()
+        self._first_derivative = "-.00000000"  # 10 symbols
+        self._second_derivative = "00000000"  # 8 digits
+        self._bstar = "00000-0"  # 7 digits + 1 symbol
+        self._ephemeris_type = "0"  # 1 digit
+        self._element_number = "1111"  # 4 digits
 
         # Line 2
-        self._inclination = 0
-        self._right_ascension = 0
-        self._eccentricity = 0  # TODO: Further development: variable e
-        self._perigee = 0  # TODO: Understand the variable
-        self._mean_anomaly = 0  # TODO: Understand the variable
+        self._inclination = "000.0000"
+        self._right_ascension = "000.0000"
+        self._eccentricity = "0000000"  # TODO: Further development: variable e
+        self._perigee = "000.0000"  # TODO: Understand the variable
+        self._mean_anomaly = "000.0000"  # TODO: Understand the variable
         self._mean_motion = None
-        self._revolution_number = 0  # revolutions since epoch
+        self._revolution_number = "00000"  # revolutions since epoch
 
         self._semi_major_axis = constants.GEO_SEMI_MAJOR_AXIS
 
@@ -54,7 +54,14 @@ class Satelite:
     def inclination(self, value):
         if value < 0 or value > 180:
             raise ValueError("Inclination must be between 0 and 180")
-        self._inclination = value
+
+        # Ensure 3 digits + 4 decimals
+        inclination_str = "{:.4f}".format(value)
+        if value < 10:
+            inclination_str = "00" + inclination_str
+        elif value < 100:
+            inclination_str = "0" + inclination_str
+        self._inclination = inclination_str
 
     @property
     def right_ascension(self):
@@ -64,8 +71,16 @@ class Satelite:
     def right_ascension(self, value):
         if value < 0 or value > 360:
             raise ValueError("Right ascension must be between 0 and 360")
-        raad_str = "{:.6f}".format(value)
-        self._right_ascension = raad_str
+
+        # Ensure 3 digits + 4 decimals
+        r_ascension_str = "{:.4f}".format(value)
+        if value < 10:
+            r_ascension_str = "00" + r_ascension_str
+        elif value < 100:
+            r_ascension_str = "0" + r_ascension_str
+        self._inclination = r_ascension_str
+
+        self._right_ascension = r_ascension_str
 
     @property
     def eccentricity(self):
@@ -75,7 +90,7 @@ class Satelite:
     def eccentricity(self, value):
         if value < 0 or value > 1:
             raise ValueError("Eccentricity must be between 0 and 1")
-        e_str = "{:.6f}".format(value)
+        e_str = str(int(10 ** 7 * value))
         self._eccentricity = e_str
 
     @property
@@ -114,27 +129,33 @@ class Satelite:
         epoch = year + str(days+day_fraction)[:12]
         self.epoch = epoch
 
-    def calculate_revolution_per_day(self, a):  # a is semi major axis
-        mean_motion = math.sqrt(constants.GRAVITATIONAL_PARAM / a ** 3)
-        self._mean_motion = mean_motion
+    def calculate_revolution_per_day(self, a):  # a is semi major axis [m]
+        mean_motion = math.sqrt(constants.GRAVITATIONAL_PARAM/(a ** 3))  # rad/s
+        revolutions_per_day = mean_motion * 86400 / (2 * math.pi)
+        self._mean_motion = "{:.8f}".format(revolutions_per_day)
 
-    def calculate_orbital_period(self):
-        return 1 / self._mean_motion
+    def calculate_orbital_period(self, a):  # a is semi major axis [m]
+        return 86400 / self._mean_motion
 
     def calculate_orbital_velocity(self):
         return math.sqrt(constants.GRAVITATIONAL_PARAM / self._semi_major_axis)
 
     def produce_TLE(self):
+        checksum = "1"
         title_line = f"{self.name}"
-        line1 = f"1 {self.satellite_number}{self.classification} {self.designation} {self.epoch} {self._first_derivative} {self._second_derivative} {self._bstar} {self._ephemeris_type} {self._element_number}"
-        line2 = f"2 {self.satellite_number} {self._inclination} {self._right_ascension} {self._eccentricity} {self._perigee} {self._mean_anomaly} {self._mean_motion} {self._revolution_number}"
-        return line1, line2
+        line1 = f"1 {self.satellite_number}{self.classification} {self.designation} {self.epoch} {self._first_derivative} {self._second_derivative} {self._bstar} {self._ephemeris_type} {self._element_number} {checksum}"
+        line2 = f"2 {self.satellite_number} {self._inclination} {self._right_ascension} {self._eccentricity} {self._perigee} {self._mean_anomaly} {self._mean_motion}{self._revolution_number}{checksum}"
+        return title_line, line1, line2
 
 satelite = Satelite('ISS')
-print('Hello')
 satelite.inclination = 51.6
+satelite.right_ascension = 45
 satelite.eccentricity = 0.1
-print(satelite.produce_TLE())
+satelite.semi_major_axis = 8000 * 1000
+
+for line in satelite.produce_TLE():
+    print(line)
+
 
 def main():
     satelite = Satelite('ISS')
