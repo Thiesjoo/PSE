@@ -1,5 +1,5 @@
 {
-  "name": "vite-project",
+  "name": "earth-visualizer",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,14 +11,12 @@
   "devDependencies": {
     "sass": "^1.77.4",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0"
+    "vite": "^5.2.0",
+    "@types/three": "^0.165.0"
   },
   "dependencies": {
-    "@types/dat.gui": "^0.7.13",
-    "@types/three": "^0.165.0",
-    "dat.gui": "^0.7.9",
-    "satellite.js": "^5.0.0",
-    "three": "^0.165.0",
+      "satellite.js": "^5.0.0",
+      "three": "^0.165.0",
     "three-globe": "^2.31.0"
   }
 }

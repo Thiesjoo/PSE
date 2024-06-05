@@ -6,6 +6,7 @@ import ThreeGlobe from "three-globe";
 import * as utils from "./common/utils";
 import * as satellite from "satellite.js";
 import Gaia from "./assets/Gaia.png";
+import Earth from "./assets/earth.jpg";
 import { EARTH_RADIUS_KM, SAT_SIZE, TIME_STEP } from "./common/constants";
 
 
@@ -82,7 +83,7 @@ export default class EarthWithSatellites {
 
         // Add the Earth
         this.globe = new ThreeGlobe()
-            .globeImageUrl("//unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
+            .globeImageUrl(Earth)
             .objectLat("lat")
             .objectLng("lng")
             .objectAltitude("alt")
@@ -142,7 +143,6 @@ export default class EarthWithSatellites {
 
     animate() {
         requestAnimationFrame(() => {
-            // Cap at 10 fps
             this.animate();
         });
 
