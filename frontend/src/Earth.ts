@@ -6,7 +6,7 @@ import ThreeGlobe from "three-globe";
 import * as utils from "./common/utils";
 import * as satellite from "satellite.js";
 import Gaia from "./assets/Gaia.png";
-import Earth from "./assets/earth.jpg";
+import Earth from "./assets/earth-blue-marble.jpg";
 import { EARTH_RADIUS_KM, SAT_SIZE, TIME_STEP } from "./common/constants";
 
 
