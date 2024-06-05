@@ -2,16 +2,18 @@ from django.db import models
 
 # Create your models here.
 
-from django.db import models
-
-
-class TLE(models.Model):
-    line1 = models.CharField(max_length=200)
-    line2 = models.CharField(max_length=200)
-
 class Satellite(models.Model):
-    question = models.ForeignKey(TLE, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200) # <-- dit is de 'title line (optional)'
+    name = models.CharField(max_length=24) # <-- dit is de 'title line (optional)'
+    line1 = models.CharField(max_length=69)
+    line2 = models.CharField(max_length=69)
+    satellite_catalog_number = models.IntegerField()
+    classification = models.CharField(max_length=1)
+    launch_year = models.IntegerField(max_length=4)
+    epoch_year = models.IntegerField(max_length=4)
+    epoch = models.FloatField()
+    revolutions = models.IntegerField()
+    revolutions_per_day = models.FloatField()
+
 
 # class Question(models.Model):
 #     question_text = models.CharField(max_length=200)
