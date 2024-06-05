@@ -9,14 +9,14 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/three": "^0.165.0",
     "sass": "^1.77.4",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "@types/three": "^0.165.0"
+    "vite": "^5.2.0"
   },
   "dependencies": {
-      "satellite.js": "^5.0.0",
-      "three": "^0.165.0",
+    "satellite.js": "^5.0.0",
+    "three": "^0.165.0",
     "three-globe": "^2.31.0"
   }
 }

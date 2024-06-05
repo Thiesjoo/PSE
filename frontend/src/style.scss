@@ -1,10 +1,47 @@
 body {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-align: center;
-	color: #2c3e50;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #ffffff;
 
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
+
+    .pop-up {
+        width: 320px;
+        height: 500px;
+        padding: 10px;
+        border: 8px solid gray;
+        margin: 100px;
+        margin-top: 250px;
+
+        border-radius: 10pt;
+
+        position: absolute;
+
+        background-color: #05050a;
+
+        .SatelliteName {
+            font-family: Tomorrow;
+            font-weight: 400;
+        }
+
+        .SatelliteId {
+            font-family: "ComputerSaysNo";
+            // Make it bigger
+            font-size: 2em;
+        }
+
+        .img {
+            border-radius: 10%;
+        }
+    }
+}
+
+@font-face {
+    font-family: "ComputerSaysNo";
+    src: url("./computer-says-no.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
 }
