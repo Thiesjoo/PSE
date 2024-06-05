@@ -158,6 +158,8 @@ export default class EarthWithSatellites {
             false
         );
 
+        window.addEventListener("click", this.onClick.bind(this), false);
+
         window.addEventListener("keydown", (event) => {
             const { key } = event;
 
@@ -194,6 +196,38 @@ export default class EarthWithSatellites {
     onPointerMove(event: PointerEvent) {
         this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    onClick(event: MouseEvent) {
+        // calculate objects intersecting the picking ray
+        const intersects = this.raycaster.intersectObjects(this.scene.children);
+
+        if (
+            intersects.length > 0 &&
+            "satellite" in intersects[0].object.userData
+        ) {
+            console.log(intersects[0].object.userData);
+
+            // make html with class popup
+            const satData = this.currentData.find(
+                (d) =>
+                    d.satrec.satnum === intersects[0].object.userData.satellite
+            );
+
+            console.log("Foudn sat:", satData);
+
+            if (!satData) return;
+
+            const popup = document.getElementById("pop-up");
+            if (!popup) return;
+
+            popup.style.display = "block";
+        } else {
+            const popup = document.getElementById("pop-up");
+            if (!popup) return;
+
+            popup.style.display = "none";
+        }
     }
 
     animate() {
