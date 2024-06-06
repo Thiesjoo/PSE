@@ -1,7 +1,6 @@
 from django.db import models
 
-# Create your models here.
-
+# Create your models here.    
 
 class Satellite(models.Model):
     name = models.CharField(max_length=24) # <-- dit is de 'title line (optional)'
@@ -15,11 +14,73 @@ class Satellite(models.Model):
     revolutions = models.IntegerField()
     revolutions_per_day = models.FloatField()
 
+    class CategoryChoices(models.TextChoices):
+        NONE = "None"
+        SPECIAL_INTEREST = "Special interest Satellites"
+        WEATHER_AND_EARTH = "Weather & Earth Resources Satellites"
+        COMMUNICATIONS = "Communications Satellites"
+        NAVIGATION = "Navigation Satellites"
+        SCIENTIFIC = "Scientific Satellites"
+
+        """
+        Dingen waar je extra op wilt kunnen filteren:
+        -Starlink
+        -Search And Rescue
+        -Disaster monitoring
+        -Active
+        -Space stations
+        -De categorieen van navigatie-satellieten (e.g. GPS, GLONASS, etc)
+        """
+
+    class AffiliationChoices(models.TextChoices):
+        NONE = "None"
+
+        # Special interest types:
+        LAST_30_DAYS = "Last 30 Days' Launches"
+        SPACE_STATIONS = "Space Stations"
+        ACTIVE = "Active Satellites"
+        ANALYST_SATELLITES = "Analyst Satellites"
+
+        # Weather and earth types:
+        WEATHER = "Weather"
+        NOAA = "NOAA"
+        #GOES = "GOES"
+        EARTH_RESOURCES = "Earth Resources"
+        SEARCH_AND_RESCUE = "Search & Rescue (SARSAT)"
+        DISASTER_MONITORING = "Disaster Monitoring"
+        ARGOS = "ARGOS Data Collection System"
+        PLANET = "Planet"
+        SPIRE = "Spire"
+
+        # Communications types:
+        ACTIVE_GEOSYNCHRONOUS = "Active Geosynchronous"
+        STARLINK = "Starlink"
+        IRIDIUM = "Iridium"
+        INTELSAT = "Intelsat"
+        SWARM = "Swarm"
+        AMATEUR_RADIO = "Amateur Radio"
+
+        # Navigation types:
+        GNSS = "GNSS"
+        GPS = "GPS Operational"
+        GLONASS = "Glonass Operational"
+        GALILEO = "Galileo"
+        BEIDOU = "Beidou"
+
+        #Scientific types:
+        SPACE_AND_EARTH = "Space and Earth Science"
+        GEODETICS = "Geodetics"
+        ENGINEERING = "Engineering"
+        EDUCATION = "Education"
+
+    category = models.CharField(max_length=45, choices=CategoryChoices.choices, default=CategoryChoices.NONE)
+    affiliation = models.CharField(max_length=45, choices=AffiliationChoices.choices, default=AffiliationChoices.NONE)
+
     def __str__(self) -> str:
         return self.name   # <-- currently hardcoded to displaying just the name, change later
     
-    def isStarlinkSatellite(self) -> bool:
-        "STARLINK" in self.name
+    # def isStarlinkSatellite(self) -> bool:
+    #     "STARLINK" in self.name
 
 
 # class Question(models.Model):
