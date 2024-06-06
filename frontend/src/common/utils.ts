@@ -16,6 +16,14 @@ export interface SatInformation {
     satrec: SatRec;
 }
 
+export interface SatPosition {
+    lat: number;
+    lng: number;
+    alt: number;
+    realAlt: number;
+    id: string;
+}
+
 /**
  * Parse TLE data to satellite information object
  * @param tleString
@@ -32,7 +40,7 @@ export function parseTLEListToSat(tleString: string): SatInformation[] {
     }));
 }
 
-export function propagate1Sat(sat: SatInformation, time: Date, gmst: GMSTime) {
+export function propagate1Sat(sat: SatInformation, time: Date, gmst: GMSTime): Record<string, never> | SatPosition {
     const eci = propagate(sat.satrec, time);
     if (eci.position) {
         const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmst);
@@ -41,6 +49,7 @@ export function propagate1Sat(sat: SatInformation, time: Date, gmst: GMSTime) {
             lat: degreesLat(gdPos.latitude),
             lng: degreesLong(gdPos.longitude),
             alt: (gdPos.height / EARTH_RADIUS_KM) * 3,
+            realAlt: gdPos.height,
             id: sat.satrec.satnum,
         };
     } else {

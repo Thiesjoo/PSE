@@ -8,7 +8,7 @@ import * as utils from "./common/utils";
 import * as satellite from "satellite.js";
 import Gaia from "./assets/Gaia.png";
 import Earth from "./assets/earth-blue-marble.jpg";
-import { EARTH_RADIUS_KM, SAT_SIZE, TIME_STEP, SAT_COLOR, SAT_COLOR_HOVER } from "./common/constants";
+import { EARTH_RADIUS_KM, SAT_SIZE, TIME_STEP, SAT_COLOR, SAT_COLOR_HOVER, SAT_COLOR_SELECTED } from "./common/constants";
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     let textureLoader = new THREE.TextureLoader();
@@ -29,14 +29,15 @@ export default class EarthWithSatellites {
 
     private globe!: ThreeGlobe;
     private currentTime: Date = new Date();
-    private SatellitePositions: any[] = [];
+    private SatellitePositions: (utils.SatPosition | Record<string, never>)[] = [];
 
     private currentData: utils.SatInformation[] = [];
 
     private raycaster = new THREE.Raycaster();
     private pointer = new THREE.Vector2();
 
-    private text = document.getElementById("info");
+    private currentlyHovering: string | null = null;
+    private currentlySelected: string | null = null;
 
     constructor() {
         this.initScene();
@@ -65,21 +66,21 @@ export default class EarthWithSatellites {
         const rawData = await fetch("https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle").then(
             (res) => res.text()
         );
-        //         const rawData = `STARLINK-1007
-        // 1 44713U 19074A   24156.82459657  .00000816  00000+0  73650-4 0  9993
-        // 2 44713  53.0529 192.5476 0001172  90.8030 269.3093 15.06396363251855
-        // STARLINK-1008
-        // 1 44714U 19074B   24157.13517451  .00006350  00000+0  44491-3 0  9995
-        // 2 44714  53.0519 191.1521 0001241  97.6985 262.4145 15.06393120252077
-        // STARLINK-1009
-        // 1 44715U 19074C   24156.79237041 -.00000485  00000+0 -13676-4 0  9998
-        // 2 44715  53.0545 192.6942 0001336  86.7518 273.3623 15.06397043251840
-        // STARLINK-1010
-        // 1 44716U 19074D   24156.81079537  .00000435  00000+0  48119-4 0  9999
-        // 2 44716  53.0530 192.6103 0001258  88.5207 271.5926 15.06398836251838
-        // STARLINK-1011
-        // 1 44717U 19074E   24157.14069345  .00002181  00000+0  16523-3 0  9996
-        // 2 44717  53.0519 211.1316 0001388  83.4011 276.7135 15.06408079251795`;
+//                 const rawData = `STARLINK-1007
+// 1 44713U 19074A   24156.82459657  .00000816  00000+0  73650-4 0  9993
+// 2 44713  53.0529 192.5476 0001172  90.8030 269.3093 15.06396363251855
+// STARLINK-1008
+// 1 44714U 19074B   24157.13517451  .00006350  00000+0  44491-3 0  9995
+// 2 44714  53.0519 191.1521 0001241  97.6985 262.4145 15.06393120252077
+// STARLINK-1009
+// 1 44715U 19074C   24156.79237041 -.00000485  00000+0 -13676-4 0  9998
+// 2 44715  53.0545 192.6942 0001336  86.7518 273.3623 15.06397043251840
+// STARLINK-1010
+// 1 44716U 19074D   24156.81079537  .00000435  00000+0  48119-4 0  9999
+// 2 44716  53.0530 192.6103 0001258  88.5207 271.5926 15.06398836251838
+// STARLINK-1011
+// 1 44717U 19074E   24157.14069345  .00002181  00000+0  16523-3 0  9996
+// 2 44717  53.0519 211.1316 0001388  83.4011 276.7135 15.06408079251795`;
         this.initialParseSatData(rawData);
 
         this.scene = new THREE.Scene();
@@ -112,20 +113,31 @@ export default class EarthWithSatellites {
             .objectFacesSurface(false)
             .atmosphereAltitude(0);
         this.globe.objectThreeObject((d) => {
-            const satGeometry = new THREE.OctahedronGeometry(
-                (SAT_SIZE * this.globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2,
-                0
-            );
-            const satMaterial = new THREE.MeshLambertMaterial({
-                color: SAT_COLOR,
-                transparent: true,
-                opacity: 0.7,
-            });
+            if ("id" in  d) {
+                const satGeometry = new THREE.OctahedronGeometry(
+                    (SAT_SIZE * this.globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2,
+                    0
+                );
 
-            const sat = new THREE.Mesh(satGeometry, satMaterial);
-            // @ts-ignore
-            sat.userData = { satellite: d["id"] };
-            return sat;
+                let color = SAT_COLOR;
+                if (this.currentlySelected === d["id"]) {
+                    color = SAT_COLOR_SELECTED;
+                } else if (this.currentlyHovering === d["id"]) {
+                    color = SAT_COLOR_HOVER;
+                }
+
+                const satMaterial = new THREE.MeshLambertMaterial({
+                    color: color,
+                    transparent: true,
+                    opacity: 0.7,
+                });
+    
+                const sat = new THREE.Mesh(satGeometry, satMaterial);
+                sat.userData = { satellite: d["id"] };
+                return sat;
+            } else {
+                return new THREE.Mesh();
+            }
         });
         this.scene.add(this.globe);
 
@@ -189,24 +201,29 @@ export default class EarthWithSatellites {
         return new Date(date.setDate(day)); // add the number of days
     }
 
-    onClick() {
+    onClick(event: Event) {
+        //@ts-ignore // This is to prevent the popup from closing when clicking on the popup itself
+        if (event.target && (event.target.id === "pop-up" || event.target.parentNode.id === "pop-up")) return;
+
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
         if (intersects.length > 0 && "satellite" in intersects[0].object.userData) {
             const satData = this.currentData.find((d) => d.satrec.satnum === intersects[0].object.userData.satellite);
-
             if (!satData) return;
 
             const popup = document.getElementById("pop-up");
             if (!popup) return;
 
+            this.currentlySelected = satData.satrec.satnum;
+
             const SatelliteName = document.getElementById("SatelliteName");
+            const SatteliteCountry = document.getElementById("SatelliteCountry");
             const SatelliteID = document.getElementById("SatelliteId");
             const SatelliteEpoch = document.getElementById("SatelliteEpoch");
             const SatelliteLat = document.getElementById("SatelliteLatitude");
             const SatelliteLong = document.getElementById("SatelliteLongitude");
             const SatelliteAlt = document.getElementById("SatelliteAltitude");
-            if (!SatelliteName || !SatelliteID || !SatelliteEpoch || !SatelliteLat || !SatelliteLong || !SatelliteAlt)
+            if (!SatelliteName || !SatelliteID || !SatelliteEpoch || !SatelliteLat || !SatelliteLong || !SatelliteAlt || !SatteliteCountry)
                 return;
 
             popup.style.display = "block";
@@ -228,19 +245,20 @@ export default class EarthWithSatellites {
                 ":" +
                 Math.floor(minute);
 
-            const satPos = this.SatellitePositions.find((d) => d.id === satData.satrec.satnum)
+            const satPos = this.SatellitePositions.find((d) => d.id === satData.satrec.satnum);
 
             // TODO: Laat lat/lng/altitude niet zien als dit niet werkt
             if (!satPos) return;
-
-            SatelliteAlt.innerHTML = satPos.alt;
-            SatelliteLat.innerHTML = satPos.lat;
-            SatelliteLong.innerHTML = satPos.lng;
+            SatelliteAlt.innerHTML = satPos.realAlt.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " km";
+            SatelliteLat.innerHTML = satPos.lat.toLocaleString("en-US", { maximumFractionDigits: 4 }) + "°";
+            SatelliteLong.innerHTML = satPos.lng.toLocaleString("en-US", { maximumFractionDigits: 4 }) + "°";
+            SatteliteCountry.innerHTML = "Unknown";
         } else {
             const popup = document.getElementById("pop-up");
             if (!popup) return;
 
             popup.style.display = "none";
+            this.currentlySelected = null;
         }
     }
 
@@ -260,13 +278,14 @@ export default class EarthWithSatellites {
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
-        if (intersects.length > 0 && "satellite" in intersects[0].object.userData) {
+        if (
+            intersects.length > 0 &&
+            "satellite" in intersects[0].object.userData
+        ) {
             const ourSatellite = intersects[0].object;
-            if (!(ourSatellite instanceof THREE.Mesh)) return;
-
-            ourSatellite.material.color.set(SAT_COLOR_HOVER);
+            this.currentlyHovering = ourSatellite.userData.satellite;
         } else {
-            this.text!.innerText = "";
+            this.currentlyHovering = null;
         }
     }
 }
