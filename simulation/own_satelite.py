@@ -5,9 +5,6 @@ import constants
 
 class Satelite:
 
-    line1 = "1 11111U 21111A 21111.11111111 00000-0 00000-0 0 1111"
-    line1_size = [1, 5, 1, ]
-
     # TLE parameters
     def __init__(self, nam):
 
@@ -147,16 +144,16 @@ class Satelite:
         line2 = f"2 {self.satellite_number} {self._inclination} {self._right_ascension} {self._eccentricity} {self._perigee} {self._mean_anomaly} {self._mean_motion}{self._revolution_number}{checksum}"
         return title_line, line1, line2
 
-satelite = Satelite('ISS')
-satelite.inclination = 51.6
-satelite.right_ascension = 45
-satelite.eccentricity = 0.1
-satelite.semi_major_axis = 8000 * 1000
-
-for line in satelite.produce_TLE():
-    print(line)
-
 
 def main():
     satelite = Satelite('ISS')
-    print(satelite.designation)
+    satelite.inclination = 51.6
+    satelite.right_ascension = 45
+    satelite.eccentricity = 0.1
+    satelite.semi_major_axis = 8000 * 1000
+    for line in satelite.produce_TLE():
+        print(line)
+
+
+if __name__ == "__main__":
+    main()
