@@ -6,13 +6,18 @@ class Satellite(models.Model):
     name = models.CharField(max_length=24) # <-- dit is de 'title line (optional)'
     line1 = models.CharField(max_length=69)
     line2 = models.CharField(max_length=69)
-    satellite_catalog_number = models.IntegerField()
-    classification = models.CharField(max_length=1)
+    satellite_catalog_number = models.IntegerField(primary_key=True)
     launch_year = models.IntegerField() #max_length=4
     epoch_year = models.IntegerField() #max_length=4
     epoch = models.FloatField()
     revolutions = models.IntegerField()
     revolutions_per_day = models.FloatField()
+
+    class ClassificationChoices(models.TextChoices):
+        # U: unclassified, C: classified, S: secret
+        UNCLASSIFIED = "U"
+        CLASSIFIED = "C"
+        SECRET = "S"
 
     class CategoryChoices(models.TextChoices):
         NONE = "None"
@@ -75,6 +80,7 @@ class Satellite(models.Model):
 
     category = models.CharField(max_length=45, choices=CategoryChoices.choices, default=CategoryChoices.NONE)
     affiliation = models.CharField(max_length=45, choices=AffiliationChoices.choices, default=AffiliationChoices.NONE)
+    classification = models.CharField(max_length=1, choices=ClassificationChoices.choices, default=ClassificationChoices.UNCLASSIFIED)
 
     def __str__(self) -> str:
         return self.name   # <-- currently hardcoded to displaying just the name, change later
