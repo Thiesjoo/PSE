@@ -203,6 +203,11 @@ STARLINK-1011
         this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
 
+    dateFromDay(year: number, day: number) {
+        var date = new Date(year, 0); // initialize a date in `year-01-01`
+        return new Date(date.setDate(day)); // add the number of days
+    }
+
     onClick(event: MouseEvent) {
         // calculate objects intersecting the picking ray
         const intersects = this.raycaster.intersectObjects(this.scene.children);
@@ -226,38 +231,39 @@ STARLINK-1011
 
             const SatelliteName = document.getElementById("SatelliteName");
             const SatelliteID = document.getElementById("SatelliteId");
-            if (!SatelliteName || !SatelliteID) return;
+            const SatelliteEpoch = document.getElementById("SatelliteEpoch");
+            if (!SatelliteName || !SatelliteID || !SatelliteEpoch) return;
 
             popup.style.display = "block";
 
             SatelliteName.innerHTML = satData.name;
             SatelliteID.innerHTML = satData.satrec.satnum;
+
+            const day = Math.floor(satData.satrec.epochdays);
+            const year = "20" + satData.satrec.epochyr;
+
+            // Split the day into a whole number and a fraction
+            const hour =
+                24 *
+                parseFloat(
+                    "0." + satData.satrec.epochdays.toString().split(".")[1]
+                );
+
+            const minute = 60 * (hour - Math.floor(hour));
+
+            // Dit werkt nog niet voor tientallen, de 0 valt weg
+            SatelliteEpoch.innerHTML =
+                this.dateFromDay(parseInt(year), parseInt(day)).toDateString() +
+                " " +
+                Math.floor(hour) +
+                ":" +
+                Math.floor(minute);
         } else {
             const popup = document.getElementById("pop-up");
             if (!popup) return;
 
             popup.style.display = "none";
         }
-    }
-
-    onHoverIn(event: MouseEvent) {
-        // Change color of satellite on hover
-        // this.scene.satMaterial.color = SAT_COLOR_HOVER;
-
-        const intersects = this.raycaster.intersectObjects(this.scene.children);
-
-        if (
-            intersects.length > 0 &&
-            "satellite" in intersects[0].object.userData
-        ) {
-            this.text!.innerText = "Hovering";
-        } else {
-            this.text!.innerText = "Kapot";
-        }
-    }
-
-    onHoverOut(event: MouseEvent) {
-        this.text!.innerText = "";
     }
 
     animate() {
