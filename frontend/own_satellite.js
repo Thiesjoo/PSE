@@ -18,7 +18,8 @@ class Satellite {
         this._mean_anomaly = "000.0000";
         this._mean_motion = null;
         this._revolution_number = "00000";
-        this._semi_major_axis = 42164 * 1000; // example value in meters
+        this._semi_major_axis = 500 * 1000 + 6371 * 1000;
+        this.calculateRevolutionPerDay(this._semi_major_axis);
     }
 
     set name(value) {
@@ -48,10 +49,13 @@ class Satellite {
     }
 
     set semi_major_axis(value) {
+        console.log(value)
         if (value < 0) throw new Error("Semi major axis must be positive");
         if (value < 160000) throw new Error("Semi major axis is too low for LEO");
-        this.calculateRevolutionPerDay(value);
+        if (value < 2000000) throw new Error("Semi major axis is too low for LEO");
         this.epochUpdate();
+        // Revolutions per day change with semi-major axis
+        this.calculateRevolutionPerDay(value);
         this._semi_major_axis = value;
     }
 
