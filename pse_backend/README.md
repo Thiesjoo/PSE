@@ -1,3 +1,11 @@
+
+To make the backend work, don't forget to create a .env file and write the following in it:
+```.env
+SECRET_KEY=<your secret key>
+```
+
+Also, make sure to install the dependencies in requirements.txt
+
 Run server en maak admin account.
 
 ```
