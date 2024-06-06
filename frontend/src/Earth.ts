@@ -8,13 +8,7 @@ import * as utils from "./common/utils";
 import * as satellite from "satellite.js";
 import Gaia from "./assets/Gaia.png";
 import Earth from "./assets/earth-blue-marble.jpg";
-import {
-    EARTH_RADIUS_KM,
-    SAT_SIZE,
-    TIME_STEP,
-    SAT_COLOR,
-    SAT_COLOR_HOVER,
-} from "./common/constants";
+import { EARTH_RADIUS_KM, SAT_SIZE, TIME_STEP, SAT_COLOR, SAT_COLOR_HOVER } from "./common/constants";
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     let textureLoader = new THREE.TextureLoader();
@@ -61,18 +55,16 @@ export default class EarthWithSatellites {
 
     propagateAllSatData(time: Date) {
         const gmst = satellite.gstime(time);
-        const currentPositions = this.currentData.map((d) =>
-            utils.propagate1Sat(d, time, gmst)
-        );
+        const currentPositions = this.currentData.map((d) => utils.propagate1Sat(d, time, gmst));
         this.globe.objectsData(currentPositions);
         this.SatellitePositions = currentPositions;
     }
 
     async initScene() {
         // Fetch satellite data from NORAD
-        const rawData = await fetch(
-            "https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle"
-        ).then((res) => res.text());
+        const rawData = await fetch("https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle").then(
+            (res) => res.text()
+        );
         //         const rawData = `STARLINK-1007
         // 1 44713U 19074A   24156.82459657  .00000816  00000+0  73650-4 0  9993
         // 2 44713  53.0529 192.5476 0001172  90.8030 269.3093 15.06396363251855
@@ -105,10 +97,7 @@ export default class EarthWithSatellites {
         document.body.appendChild(this.renderer.domElement);
 
         // Controls
-        this.controls = new OrbitControls(
-            this.camera,
-            this.renderer.domElement
-        );
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         // Add lights
         this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
@@ -153,17 +142,9 @@ export default class EarthWithSatellites {
     }
 
     initListeners() {
-        window.addEventListener(
-            "pointermove",
-            this.onPointerMove.bind(this),
-            false
-        );
+        window.addEventListener("pointermove", this.onPointerMove.bind(this), false);
 
-        window.addEventListener(
-            "resize",
-            this.onWindowResize.bind(this),
-            false
-        );
+        window.addEventListener("resize", this.onWindowResize.bind(this), false);
 
         window.addEventListener("click", this.onClick.bind(this), false);
 
@@ -183,9 +164,7 @@ export default class EarthWithSatellites {
 
                     if (!win) return;
 
-                    win.document.write(
-                        `<img src='${src}' width='${domElement.width}' height='${domElement.height}'>`
-                    );
+                    win.document.write(`<img src='${src}' width='${domElement.width}' height='${domElement.height}'>`);
                     break;
 
                 default:
@@ -210,21 +189,11 @@ export default class EarthWithSatellites {
         return new Date(date.setDate(day)); // add the number of days
     }
 
-    onClick(event: MouseEvent) {
-        // calculate objects intersecting the picking ray
+    onClick() {
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
-        if (
-            intersects.length > 0 &&
-            "satellite" in intersects[0].object.userData
-        ) {
-            console.log(intersects[0].object.userData);
-
-            // make html with class popup
-            const satData = this.currentData.find(
-                (d) =>
-                    d.satrec.satnum === intersects[0].object.userData.satellite
-            );
+        if (intersects.length > 0 && "satellite" in intersects[0].object.userData) {
+            const satData = this.currentData.find((d) => d.satrec.satnum === intersects[0].object.userData.satellite);
 
             if (!satData) return;
 
@@ -237,14 +206,7 @@ export default class EarthWithSatellites {
             const SatelliteLat = document.getElementById("SatelliteLatitude");
             const SatelliteLong = document.getElementById("SatelliteLongitude");
             const SatelliteAlt = document.getElementById("SatelliteAltitude");
-            if (
-                !SatelliteName ||
-                !SatelliteID ||
-                !SatelliteEpoch ||
-                !SatelliteLat ||
-                !SatelliteLong ||
-                !SatelliteAlt
-            )
+            if (!SatelliteName || !SatelliteID || !SatelliteEpoch || !SatelliteLat || !SatelliteLong || !SatelliteAlt)
                 return;
 
             popup.style.display = "block";
@@ -254,34 +216,26 @@ export default class EarthWithSatellites {
 
             const day = Math.floor(satData.satrec.epochdays);
             const year = "20" + satData.satrec.epochyr;
-
-            const hour =
-                24 *
-                parseFloat(
-                    "0." + satData.satrec.epochdays.toString().split(".")[1]
-                );
-
+            const hour = 24 * parseFloat("0." + satData.satrec.epochdays.toString().split(".")[1]);
             const minute = 60 * (hour - Math.floor(hour));
 
             // Dit werkt nog niet voor tientallen, de 0 valt weg
+            // Ook nemen we aan dat alle satellieten in 2000 of daarna worden gelanceerd.
             SatelliteEpoch.innerHTML =
-                this.dateFromDay(parseInt(year), parseInt(day)).toDateString() +
+                this.dateFromDay(parseInt(year), day).toDateString() +
                 " " +
                 Math.floor(hour) +
                 ":" +
                 Math.floor(minute);
 
-            SatelliteAlt.innerHTML = this.SatellitePositions.find(
-                (d) => d.id === satData.satrec.satnum
-            )?.alt;
+            const satPos = this.SatellitePositions.find((d) => d.id === satData.satrec.satnum)
 
-            SatelliteLat.innerHTML = this.SatellitePositions.find(
-                (d) => d.id === satData.satrec.satnum
-            )?.lat;
+            // TODO: Laat lat/lng/altitude niet zien als dit niet werkt
+            if (!satPos) return;
 
-            SatelliteLong.innerHTML = this.SatellitePositions.find(
-                (d) => d.id === satData.satrec.satnum
-            )?.lng;
+            SatelliteAlt.innerHTML = satPos.alt;
+            SatelliteLat.innerHTML = satPos.lat;
+            SatelliteLong.innerHTML = satPos.lng;
         } else {
             const popup = document.getElementById("pop-up");
             if (!popup) return;
@@ -306,15 +260,11 @@ export default class EarthWithSatellites {
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
-        if (
-            intersects.length > 0 &&
-            "satellite" in intersects[0].object.userData
-        ) {
-            // this.text!.innerText = `Satellite: ${intersects[0].object.userData.satellite}`;
+        if (intersects.length > 0 && "satellite" in intersects[0].object.userData) {
+            const ourSatellite = intersects[0].object;
+            if (!(ourSatellite instanceof THREE.Mesh)) return;
 
-            // Change color of satellite on hover
-            // @ts-ignore
-            intersects[0].object.material.color.set(SAT_COLOR_HOVER);
+            ourSatellite.material.color.set(SAT_COLOR_HOVER);
         } else {
             this.text!.innerText = "";
         }
