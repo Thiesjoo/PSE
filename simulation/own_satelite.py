@@ -6,7 +6,7 @@ import constants
 class Satelite:
 
     # TLE parameters
-    def __init__(self, nam):
+    def __init__(self):
 
         # Title line
         self._name = "New Satellite"
@@ -31,6 +31,7 @@ class Satelite:
         self._mean_motion = None
         self._revolution_number = "00000"  # revolutions since epoch
 
+        # It calculates and sets mean as well, these parameters are linked
         self._semi_major_axis = constants.GEO_SEMI_MAJOR_AXIS
 
     @property
