@@ -35,6 +35,7 @@ export default class EarthWithSatellites {
 
     private globe!: ThreeGlobe;
     private currentTime: Date = new Date();
+    private SatellitePositions: any[] = [];
 
     private currentData: utils.SatInformation[] = [];
 
@@ -64,6 +65,7 @@ export default class EarthWithSatellites {
             utils.propagate1Sat(d, time, gmst)
         );
         this.globe.objectsData(currentPositions);
+        this.SatellitePositions = currentPositions;
     }
 
     async initScene() {
@@ -242,7 +244,6 @@ STARLINK-1011
             const day = Math.floor(satData.satrec.epochdays);
             const year = "20" + satData.satrec.epochyr;
 
-            // Split the day into a whole number and a fraction
             const hour =
                 24 *
                 parseFloat(
