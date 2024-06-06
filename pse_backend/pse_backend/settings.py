@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
+]
+
+CRONJOBS = [
+    ('0 * * * *', 'satellite_app.cron.satellite_data_pull')
 ]
 
 MIDDLEWARE = [

@@ -12,3 +12,12 @@ Als je de models aanpast:
 python3 manage.py makemigrations
 python3 manage.py migrate
 ```
+
+Django-crontab commands:
+
+Om de alle crons te updaten, te zien, of te removen:
+```
+python3 manage.py crontab add
+python3 manage.py crontab show
+python3 manage.py crontab remove
+```
