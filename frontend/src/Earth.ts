@@ -165,9 +165,6 @@ STARLINK-1011
 
         window.addEventListener("click", this.onClick.bind(this), false);
 
-        window.addEventListener("mouseover", this.onHoverIn.bind(this), false);
-        window.addEventListener("mouseout", this.onHoverOut.bind(this), false);
-
         window.addEventListener("keydown", (event) => {
             const { key } = event;
 
@@ -277,15 +274,19 @@ STARLINK-1011
 
         // Update the picking ray with the camera and pointer position
         this.raycaster.setFromCamera(this.pointer, this.camera);
-        // const intersects = this.raycaster.intersectObjects(this.scene.children);
+        const intersects = this.raycaster.intersectObjects(this.scene.children);
 
-        // if (
-        //     intersects.length > 0 &&
-        //     "satellite" in intersects[0].object.userData
-        // ) {
-        //     this.text!.innerText = `Satellite: ${intersects[0].object.userData.satellite}`;
-        // } else {
-        //     this.text!.innerText = "";
-        // }
+        if (
+            intersects.length > 0 &&
+            "satellite" in intersects[0].object.userData
+        ) {
+            // this.text!.innerText = `Satellite: ${intersects[0].object.userData.satellite}`;
+
+            // Change color of satellite on hover
+            // @ts-ignore
+            intersects[0].object.material.color.set(SAT_COLOR_HOVER);
+        } else {
+            this.text!.innerText = "";
+        }
     }
 }
