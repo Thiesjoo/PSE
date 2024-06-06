@@ -13,12 +13,15 @@ body {
 	position: absolute;
 	top: 220px;
 	right: 50px;
-	background-color: rgba(34, 145, 47, 0.362);
+	background-color: rgba(6, 25, 8, 0.362);
 	color: white;
 	padding-left: 50px;
 	padding-right: 50px;
 	padding-top: 10px;
 	padding-bottom: 30px;
+	border: 2px solid rgb(255, 255, 255);
+  	border-radius: 12px;
+  	padding: 50px;
   }
 
 .slidecontainer {
@@ -42,6 +45,6 @@ body {
 .slider::-moz-range-thumb {
 	width: 10px;
 	height: 20px;
-	background:  #2bd305  ;
+	background:  #fefefe  ;
 	cursor: pointer;
   }
