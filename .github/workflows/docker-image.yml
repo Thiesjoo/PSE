@@ -1,4 +1,4 @@
-name: Docker Image for frontend
+name: Build and deploy the frontend
 
 on:
   push:
@@ -7,15 +7,11 @@ on:
     branches: [ "main" ]
 
 env:
-  # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}-frontend
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     permissions:
@@ -59,28 +55,24 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
   deploy:
-    # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs: build
     runs-on: ubuntu-latest
     permissions:
       packages: read
+
     steps:
-    - name: install cloudflared
-      run: |
-        curl -L https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-archive-keyring.gpg >/dev/null
-        echo "deb [signed-by=/usr/share/keyrings/cloudflare-archive-keyring.gpg] https://pkg.cloudflare.com/cloudflared $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflared.list
-        sudo apt update
-        sudo apt-get install cloudflared
-
-    - name: Configure SSH key
-      run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/id_rsa
-        chmod 600 ~/id_rsa
-
-    - name: SSH into VPS using Cloudflared Tunnel
-      env:
-        TUNNEL_SERVICE_TOKEN_ID: ${{ secrets.CLOUDFLARE_SERVICE_TOKEN_ID }}
-        TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CLOUDFLARE_SERVICE_TOKEN_SECRET }}
-      run: |
-        ssh -i ~/id_rsa -o ProxyCommand="cloudflared access ssh --hostname ${{ secrets.VPS_HOST }}" ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "echo 'Connected via Cloudflared Tunnel' && cd /opt/docker/ && docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && docker compose pull && docker compose up -d"
+    - name: SSH into VPS
+      uses: appleboy/ssh-action@71d43ea0f75a1f73c9b0e4608c059783968ad29c
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        port: ${{ secrets.VPS_PORT }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          echo 'Connected via SSH'
+          cd /opt/docker/
+          docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+          docker compose pull
+          docker compose up -d
 
