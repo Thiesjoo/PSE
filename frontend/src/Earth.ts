@@ -8,7 +8,13 @@ import * as utils from "./common/utils";
 import * as satellite from "satellite.js";
 import Gaia from "./assets/Gaia.png";
 import Earth from "./assets/earth-blue-marble.jpg";
-import { EARTH_RADIUS_KM, SAT_SIZE, TIME_STEP } from "./common/constants";
+import {
+    EARTH_RADIUS_KM,
+    SAT_SIZE,
+    TIME_STEP,
+    SAT_COLOR,
+    SAT_COLOR_HOVER,
+} from "./common/constants";
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     let textureLoader = new THREE.TextureLoader();
@@ -121,7 +127,7 @@ export default class EarthWithSatellites {
                 0
             );
             const satMaterial = new THREE.MeshLambertMaterial({
-                color: "palegreen",
+                color: SAT_COLOR,
                 transparent: true,
                 opacity: 0.7,
             });
@@ -159,6 +165,9 @@ export default class EarthWithSatellites {
         );
 
         window.addEventListener("click", this.onClick.bind(this), false);
+
+        window.addEventListener("mouseover", this.onHoverIn.bind(this), false);
+        window.addEventListener("mouseout", this.onHoverOut.bind(this), false);
 
         window.addEventListener("keydown", (event) => {
             const { key } = event;
@@ -214,20 +223,45 @@ export default class EarthWithSatellites {
                     d.satrec.satnum === intersects[0].object.userData.satellite
             );
 
-            console.log("Foudn sat:", satData);
-
             if (!satData) return;
 
             const popup = document.getElementById("pop-up");
             if (!popup) return;
 
+            const SatelliteName = document.getElementById("SatelliteName");
+            const SatelliteID = document.getElementById("SatelliteId");
+            if (!SatelliteName || !SatelliteID) return;
+
             popup.style.display = "block";
+
+            SatelliteName.innerHTML = satData.name;
+            SatelliteID.innerHTML = satData.satrec.satnum;
         } else {
             const popup = document.getElementById("pop-up");
             if (!popup) return;
 
             popup.style.display = "none";
         }
+    }
+
+    onHoverIn(event: MouseEvent) {
+        // Change color of satellite on hover
+        // this.scene.satMaterial.color = SAT_COLOR_HOVER;
+
+        const intersects = this.raycaster.intersectObjects(this.scene.children);
+
+        if (
+            intersects.length > 0 &&
+            "satellite" in intersects[0].object.userData
+        ) {
+            this.text!.innerText = "Hovering";
+        } else {
+            this.text!.innerText = "Kapot";
+        }
+    }
+
+    onHoverOut(event: MouseEvent) {
+        this.text!.innerText = "";
     }
 
     animate() {
@@ -242,9 +276,9 @@ export default class EarthWithSatellites {
 
         this.renderer.render(this.scene, this.camera);
 
-        // // update the picking ray with the camera and pointer position
+        // Update the picking ray with the camera and pointer position
         this.raycaster.setFromCamera(this.pointer, this.camera);
-        const intersects = this.raycaster.intersectObjects(this.scene.children);
+        // const intersects = this.raycaster.intersectObjects(this.scene.children);
 
         if (
             intersects.length > 0 &&
