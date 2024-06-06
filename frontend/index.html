@@ -1,64 +1,40 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Satellites around the earth</title>
-  </head>
-  <body>
+</head>
+<body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
 
     <div class="container">
-      <div class="text-block">
-        <!-- sliders -->
-        <h4>Height</h4>
-        <div class="slidecontainer">
-        <input type="range" min="160" max="2000" value="500" class="slider" id="height">
-        <p>Value: <span id="height_val"></span></p>
+        <div class="text-block">
+            <!-- sliders -->
+            <h4>Sliders</h4>
+            <p>Height</p>
+            <div class="slidecontainer">
+                <input type="range" min="160" max="2000" value="500" class="slider" id="height">
+                <p>Value: <span id="height_val"></span></p>
+            </div>
+            <p>Inclination</p>
+            <div class="slidecontainer">
+                <input type="range" min="0" max="90" value="50" class="slider" id="inclination">
+                <p>Value: <span id="incl_val"></span></p>
+            </div>
+            <p>RAAN</p>
+            <div class="slidecontainer">
+                <input type="range" min="0" max="360" value="50" class="slider" id="raan">
+                <p>Value: <span id="raan_val"></span></p>
+            </div>
         </div>
-
-        <h4>Inclination</h4>
-        <div class="slidecontainer">
-        <input type="range" min="0" max="90" value="50" class="slider" id="inclination">
-        <p>Value: <span id="incl_val"></span></p>
-        </div>
-        <h4> RAAN</h4>
-        <div class="slidecontainer">
-        <input type="range" min="0" max="360" value="50" class="slider" id="raan">
-        <p>Value: <span id="raan_val"></span></p>
-        </div>
-      </div>
     </div>
 
-    <script>
-      // Value output for sliders
-        var heightSlider = document.getElementById("height");
-        var heightOutput = document.getElementById("height_val");
-        heightOutput.innerHTML = heightSlider.value;
+    <h2>TLE Output</h2>
+    <pre id="tleOutput"></pre>
 
-        heightSlider.oninput = function() {
-          heightOutput.innerHTML = this.value;
-        }
-
-        var inclinationSlider = document.getElementById("inclination");
-        var inclinationOutput = document.getElementById("incl_val");
-        inclinationOutput.innerHTML = inclinationSlider.value;
-
-        inclinationSlider.oninput = function() {
-          inclinationOutput.innerHTML = this.value;
-        }
-
-        var raanSlider = document.getElementById("raan");
-        var raanOutput = document.getElementById("raan_val");
-        raanOutput.innerHTML = raanSlider.value;
-
-        raanSlider.oninput = function() {
-          raanOutput.innerHTML = this.value;
-        }
-
-      </script>
-
-  </body>
+    <script src="own_satellite.js"></script>
+</body>
 </html>
