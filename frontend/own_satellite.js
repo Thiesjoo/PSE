@@ -29,18 +29,21 @@ class Satellite {
     set inclination(value) {
         if (value < 0 || value > 180) throw new Error("Inclination must be between 0 and 180");
         let inclination_str = value.toFixed(4).padStart(8, '0');
+        this.epochUpdate();
         this._inclination = inclination_str;
     }
 
     set right_ascension(value) {
         if (value < 0 || value > 360) throw new Error("Right ascension must be between 0 and 360");
         let r_ascension_str = value.toFixed(4).padStart(8, '0');
+        this.epochUpdate();
         this._right_ascension = r_ascension_str;
     }
 
     set eccentricity(value) {
         if (value < 0 || value > 1) throw new Error("Eccentricity must be between 0 and 1");
         let e_str = Math.round(value * 10000000).toString().padStart(7, '0');
+        this.epochUpdate();
         this._eccentricity = e_str;
     }
 
@@ -48,6 +51,7 @@ class Satellite {
         if (value < 0) throw new Error("Semi major axis must be positive");
         if (value < 160000) throw new Error("Semi major axis is too low for LEO");
         this.calculateRevolutionPerDay(value);
+        this.epochUpdate();
         this._semi_major_axis = value;
     }
 
@@ -81,7 +85,8 @@ class Satellite {
         let title_line = this._name;
         let line1 = `1 ${this.satellite_number}${this.classification} ${this.designation} ${this.epoch} ${this._first_derivative} ${this._second_derivative} ${this._bstar} ${this._ephemeris_type} ${this._element_number} ${checksum}`;
         let line2 = `2 ${this.satellite_number} ${this._inclination} ${this._right_ascension} ${this._eccentricity} ${this._perigee} ${this._mean_anomaly} ${this._mean_motion}${this._revolution_number}${checksum}`;
-        return [title_line, line1, line2];
+        let tle = `${title_line}\n${line1}\n${line2}`;
+        return tle;
     }
 }
 
@@ -133,6 +138,21 @@ raanOutput.innerHTML = raanSlider.value;
 
 raanSlider.oninput = function() {
     updateRAAN(this.value);
+}
+
+function generateTLE() {
+    let tle = satellite.produceTLE();
+    console.log(tle); // Print TLE to console
+    let tleOutput = document.getElementById('tleOutput');
+    tleOutput.textContent = tle;
+
+    // Dispatch custom event with TLE data
+    const event = new CustomEvent('tleUpdate', { detail: tle });
+    window.dispatchEvent(event);
+}
+
+export function getTLE() {
+    return satellite.produceTLE();
 }
 
 // Initial TLE generation

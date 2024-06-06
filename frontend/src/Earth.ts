@@ -7,7 +7,7 @@ import * as utils from "./common/utils";
 import * as satellite from "satellite.js";
 import Gaia from "./assets/Gaia.png";
 import { EARTH_RADIUS_KM, SAT_SIZE, TIME_STEP } from "./common/constants";
-
+import * as ownSatellite from '../own_satellite.js';
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     let textureLoader = new THREE.TextureLoader();
@@ -35,6 +35,7 @@ export default class EarthWithSatellites {
         this.initScene();
         this.initStats();
         this.initListeners();
+        this.initTLEListener();
     }
 
     initStats() {
@@ -54,10 +55,8 @@ export default class EarthWithSatellites {
     }
 
     async initScene() {
-        // Fetch satellite data from NORAD
-        const rawData = await fetch("https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle").then((res) =>
-            res.text()
-        );
+        const rawData = await ownSatellite.getTLE();
+        console.log(rawData);
         this.initialParseSatData(rawData);
 
         this.scene = new THREE.Scene();
@@ -94,7 +93,6 @@ export default class EarthWithSatellites {
         this.globe.objectThreeObject(() => new THREE.Mesh(satGeometry, satMaterial));
         this.scene.add(this.globe);
 
-
         // Add background
         const envMap = await loadTexture(Gaia);
         envMap.mapping = THREE.EquirectangularReflectionMapping;
@@ -119,7 +117,7 @@ export default class EarthWithSatellites {
 
                     const { domElement } = this.renderer;
 
-                    // Makse sure scene is rendered.
+                    // Make sure scene is rendered.
                     this.renderer.render(this.scene, this.camera);
 
                     const src = domElement.toDataURL();
@@ -139,6 +137,14 @@ export default class EarthWithSatellites {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    initTLEListener() {
+        window.addEventListener('tleUpdate' as keyof WindowEventMap, (event: Event) => {
+            const newTLE = (event as CustomEvent).detail;
+            this.initialParseSatData(newTLE);
+            this.propagateAllSatData(this.currentTime);
+        });
     }
 
     animate() {

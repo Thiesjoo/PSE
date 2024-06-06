@@ -147,7 +147,7 @@ class Satelite:
 
 
 def main():
-    satelite = Satelite('ISS')
+    satelite = Satelite()
     satelite.inclination = 51.6
     satelite.right_ascension = 45
     satelite.eccentricity = 0.1
