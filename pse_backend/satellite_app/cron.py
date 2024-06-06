@@ -8,16 +8,14 @@ def satellite_data_pull():
 
     Satellite.objects.all().delete()
 
-    res = requests.get('https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=tle')
-
-    # Later: move deze code naar een cronjob omgeving die het bijv. 1 keer per dag uitvoerd
-
-    # TODO: Remove this hardcoded data and replace it with calling it from the 
-    # API (i.e. 'res'). This is temporarily hardcoded to prevent spamming their API.
-    data_lines =  res.text.splitlines()         # All data from Celestrak, line by line
+    #NOTE: Use this when testing to avoid spamming the API:
     # data_lines = ['ISS (ZARYA)',
     #                '1 25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927',
     #                '2 25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537']
+
+    res = requests.get('https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=tle')
+    data_lines =  res.text.splitlines()         # All data from Celestrak, line by line
+
     tles = []
     current_name = ''
     current_line1 = ''
