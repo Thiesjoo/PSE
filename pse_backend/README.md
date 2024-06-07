@@ -7,6 +7,11 @@ DEBUG=<'true' or 'false' depending on whether it's in a production or developmen
 
 Also, make sure to install the dependencies in requirements.txt
 
+Lastly, make sure to read the following command **once** to populate your database for satellite-categories:
+```
+python3 manage.py setup_minor_cats
+```
+
 To install/run the server, and to create an admin account:
 
 ```

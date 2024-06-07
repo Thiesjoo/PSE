@@ -1,11 +1,12 @@
 from tletools import TLE
 
-from satellite_app.models import Satellite
+from satellite_app.models import Satellite, MinorCategory
 
 import requests
 
+
 # For ease of use
-SATAFF = Satellite.AffiliationChoices
+SATAFF = MinorCategory.MinorCategoryChoices
 
 def determine_request_source(affiliation):
     API_URL = 'https://celestrak.org/NORAD/elements/gp.php?'
@@ -78,10 +79,8 @@ def determine_request_source(affiliation):
             request_source = API_URL + 'GROUP=education&FORMAT=tle'
     return request_source
 
-def pull_satellites(category, affiliation):
+def pull_satellites(affiliation, minor_category_row):
     
-    Satellite.objects.filter(affiliation=affiliation).delete()
-
     #NOTE: Use this when testing to avoid spamming the API:
     # data_lines = ['ISS (ZARYA)',
     #                '1 25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927',
@@ -127,52 +126,122 @@ def pull_satellites(category, affiliation):
         launch_year = str(tle.int_desig)[:2]
         launch_year = int(('20' if int(launch_year) <= 24  else '19') + launch_year)
 
-        # Creates a new satellite and saves it
-        sat = Satellite(name=tle.name, line1=tleData[1], line2=tleData[2], satellite_catalog_number=tle.norad,
-                         classification=tle.classification, launch_year=launch_year, epoch_year=tle.epoch_year, 
-                         epoch=tle.epoch_day, revolutions=tle.rev_num, revolutions_per_day=tle.n,
-                           category=category, affiliation=affiliation)
-        sat.save()
+        try:
+            sat = Satellite.objects.get(satellite_catalog_number=tle.norad)
+            sat.name = tle.name
+            sat.line1=tleData[1]
+            sat.line2=tleData[2]
+            sat.satellite_catalog_number=tle.norad
+            sat.classification=tle.classification
+            sat.launch_year=launch_year
+            sat.epoch_year=tle.epoch_year
+            sat.epoch=tle.epoch_day
+            sat.revolutions=tle.rev_num
+            sat.revolutions_per_day=tle.n
 
+            sat.minor_categories.add(minor_category_row)
+            sat.save()
+            # Voeg een row toe aan de tussentabel
+        except Satellite.DoesNotExist:
+            # Creates a new satellite and saves it
+            sat = Satellite(name=tle.name, line1=tleData[1], line2=tleData[2], satellite_catalog_number=tle.norad,
+                         classification=tle.classification, launch_year=launch_year, epoch_year=tle.epoch_year, 
+                         epoch=tle.epoch_day, revolutions=tle.rev_num, revolutions_per_day=tle.n)
+            
+            sat.minor_categories.add(minor_category_row)
+            sat.save()
+
+
+    # NIEUWE CODE:
+    # 1. Check of de satellite bestaat. Bestaat hij niet? Voeg dan een nieuwe satellite toe met de juiste affiliation/minorcategory in de tussentabel gedefinieerd
+    # 2. Bestaat hij wel? Dan moet je in de tussentabel een row toevoegen tussen die satellite en die minor category
 
 def pull_special_interest_satellites():
-    cat = Satellite.CategoryChoices.SPECIAL_INTEREST
-    pull_satellites(cat, SATAFF.LAST_30_DAYS)
-    pull_satellites(cat, SATAFF.SPACE_STATIONS)
-    pull_satellites(cat, SATAFF.ACTIVE)
-    pull_satellites(cat, SATAFF.ANALYST_SATELLITES)
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.LAST_30_DAYS)
+    pull_satellites(SATAFF.LAST_30_DAYS, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.SPACE_STATIONS)
+    pull_satellites(SATAFF.SPACE_STATIONS, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.ACTIVE)
+    pull_satellites(SATAFF.ACTIVE, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.ANALYST_SATELLITES)
+    pull_satellites(SATAFF.ANALYST_SATELLITES, mincat)
+
 
 def pull_weather_and_earth_satellites():
-    cat = Satellite.CategoryChoices.WEATHER_AND_EARTH
-    pull_satellites(cat, SATAFF.WEATHER)
-    pull_satellites(cat, SATAFF.NOAA)
-    pull_satellites(cat, SATAFF.EARTH_RESOURCES)
-    pull_satellites(cat, SATAFF.SEARCH_AND_RESCUE)
-    pull_satellites(cat, SATAFF.DISASTER_MONITORING)
-    pull_satellites(cat, SATAFF.ARGOS)
-    pull_satellites(cat, SATAFF.PLANET)
-    pull_satellites(cat, SATAFF.SPIRE)
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.WEATHER)
+    pull_satellites(SATAFF.WEATHER, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.NOAA)
+    pull_satellites(SATAFF.NOAA, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.EARTH_RESOURCES)
+    pull_satellites(SATAFF.EARTH_RESOURCES, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.SEARCH_AND_RESCUE)
+    pull_satellites(SATAFF.SEARCH_AND_RESCUE, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.DISASTER_MONITORING)
+    pull_satellites(SATAFF.DISASTER_MONITORING, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.ARGOS)
+    pull_satellites(SATAFF.ARGOS, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.PLANET)
+    pull_satellites(SATAFF.PLANET, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.SPIRE)
+    pull_satellites(SATAFF.SPIRE, mincat)
+
 
 def pull_communications_satellites():
-    cat = Satellite.CategoryChoices.COMMUNICATIONS
-    pull_satellites(cat, SATAFF.ACTIVE_GEOSYNCHRONOUS)
-    pull_satellites(cat, SATAFF.STARLINK)
-    pull_satellites(cat, SATAFF.IRIDIUM)
-    pull_satellites(cat, SATAFF.INTELSAT)
-    pull_satellites(cat, SATAFF.SWARM)
-    pull_satellites(cat, SATAFF.AMATEUR_RADIO)
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.ACTIVE_GEOSYNCHRONOUS)
+    pull_satellites(SATAFF.ACTIVE_GEOSYNCHRONOUS, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.STARLINK)
+    pull_satellites(SATAFF.STARLINK, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.IRIDIUM)
+    pull_satellites(SATAFF.IRIDIUM, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.INTELSAT)
+    pull_satellites(SATAFF.INTELSAT, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.SWARM)
+    pull_satellites(SATAFF.SWARM, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.AMATEUR_RADIO)
+    pull_satellites(SATAFF.AMATEUR_RADIO, mincat)
+
 
 def pull_navigation_satellites():
-    cat = Satellite.CategoryChoices.NAVIGATION
-    pull_satellites(cat, SATAFF.GNSS)
-    pull_satellites(cat, SATAFF.GPS)
-    pull_satellites(cat, SATAFF.GLONASS)
-    pull_satellites(cat, SATAFF.GALILEO)
-    pull_satellites(cat, SATAFF.BEIDOU)
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.GNSS)
+    pull_satellites(SATAFF.GNSS, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.GPS)
+    pull_satellites(SATAFF.GPS, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.GLONASS)
+    pull_satellites(SATAFF.GLONASS, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.GALILEO)
+    pull_satellites(SATAFF.GALILEO, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.BEIDOU)
+    pull_satellites(SATAFF.BEIDOU, mincat)
+
 
 def pull_scientific_satellites():
-    cat = Satellite.CategoryChoices.SCIENTIFIC
-    pull_satellites(cat, SATAFF.SPACE_AND_EARTH)
-    pull_satellites(cat, SATAFF.GEODETICS)
-    pull_satellites(cat, SATAFF.ENGINEERING)
-    pull_satellites(cat, SATAFF.EDUCATION)
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.SPACE_AND_EARTH)
+    pull_satellites(SATAFF.SPACE_AND_EARTH, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.GEODETICS)
+    pull_satellites(SATAFF.GEODETICS, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.ENGINEERING)
+    pull_satellites(SATAFF.ENGINEERING, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATAFF.EDUCATION)
+    pull_satellites(SATAFF.EDUCATION, mincat)

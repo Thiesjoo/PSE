@@ -9,7 +9,6 @@ from satellite_app.models import Satellite
 
 def index(request: HttpRequest):
     all_satellites = Satellite.objects.all()
-
     return HttpResponse(all_satellites, content_type="text/plain")
 
 def pull(request: HttpRequest):

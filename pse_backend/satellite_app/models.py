@@ -1,43 +1,19 @@
 from django.db import models
 
-# Create your models here.    
+# Create your models here.
 
-class Satellite(models.Model):
-    name = models.CharField(max_length=24) # <-- dit is de 'title line (optional)'
-    line1 = models.CharField(max_length=69)
-    line2 = models.CharField(max_length=69)
-    satellite_catalog_number = models.IntegerField()
-    launch_year = models.IntegerField() #max_length=4
-    epoch_year = models.IntegerField() #max_length=4
-    epoch = models.FloatField()
-    revolutions = models.IntegerField()
-    revolutions_per_day = models.FloatField()
+# class MajorCategory(models.Model):
+#     class MajorCategoryChoices(models.TextChoices):
+#         NONE = "None"
+#         SPECIAL_INTEREST = "Special interest Satellites"
+#         WEATHER_AND_EARTH = "Weather & Earth Resources Satellites"
+#         COMMUNICATIONS = "Communications Satellites"
+#         NAVIGATION = "Navigation Satellites"
+#         SCIENTIFIC = "Scientific Satellites"
+#     major_category = models.CharField(max_length=45, choices=MajorCategoryChoices.choices, default=MajorCategoryChoices.NONE)
 
-    class ClassificationChoices(models.TextChoices):
-        # U: unclassified, C: classified, S: secret
-        UNCLASSIFIED = "U"
-        CLASSIFIED = "C"
-        SECRET = "S"
-
-    class CategoryChoices(models.TextChoices):
-        NONE = "None"
-        SPECIAL_INTEREST = "Special interest Satellites"
-        WEATHER_AND_EARTH = "Weather & Earth Resources Satellites"
-        COMMUNICATIONS = "Communications Satellites"
-        NAVIGATION = "Navigation Satellites"
-        SCIENTIFIC = "Scientific Satellites"
-
-        """
-        Dingen waar je extra op wilt kunnen filteren:
-        -Starlink
-        -Search And Rescue
-        -Disaster monitoring
-        -Active
-        -Space stations
-        -De categorieen van navigatie-satellieten (e.g. GPS, GLONASS, etc)
-        """
-
-    class AffiliationChoices(models.TextChoices):
+class MinorCategory(models.Model):
+    class MinorCategoryChoices(models.TextChoices):
         NONE = "None"
 
         # Special interest types:
@@ -78,8 +54,28 @@ class Satellite(models.Model):
         ENGINEERING = "Engineering"
         EDUCATION = "Education"
 
-    category = models.CharField(max_length=45, choices=CategoryChoices.choices, default=CategoryChoices.NONE, db_index=True)
-    affiliation = models.CharField(max_length=45, choices=AffiliationChoices.choices, default=AffiliationChoices.NONE, db_index=True)
+    minor_category = models.CharField(max_length=45, choices=MinorCategoryChoices.choices, default=MinorCategoryChoices.NONE)
+
+class Satellite(models.Model):
+    name = models.CharField(max_length=24) # <-- dit is de 'title line (optional)'
+    line1 = models.CharField(max_length=69)
+    line2 = models.CharField(max_length=69)
+    satellite_catalog_number = models.IntegerField(primary_key=True)
+    launch_year = models.IntegerField() #max_length=4
+    epoch_year = models.IntegerField() #max_length=4
+    epoch = models.FloatField()
+    revolutions = models.IntegerField()
+    revolutions_per_day = models.FloatField()
+
+    # major_categories = models.ManyToManyField(MajorCategory, related_name='satellites')
+    minor_categories = models.ManyToManyField(MinorCategory, related_name='satellites')
+
+    class ClassificationChoices(models.TextChoices):
+        # U: unclassified, C: classified, S: secret
+        UNCLASSIFIED = "U"
+        CLASSIFIED = "C"
+        SECRET = "S"
+    
     classification = models.CharField(max_length=1, choices=ClassificationChoices.choices, default=ClassificationChoices.UNCLASSIFIED)
 
     def __str__(self) -> str:
