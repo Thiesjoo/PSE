@@ -15,6 +15,7 @@ import {
     SAT_COLOR,
     SAT_COLOR_HOVER,
     SAT_COLOR_SELECTED,
+    SAT_SIZE_CLICK,
 } from "./common/constants";
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
@@ -36,7 +37,8 @@ export default class EarthWithSatellites {
 
     private globe!: ThreeGlobe;
     private currentTime: Date = new Date();
-    private SatellitePositions: (utils.SatPosition | Record<string, never>)[] = [];
+    private SatellitePositions: (utils.SatPosition | Record<string, never>)[] =
+        [];
 
     private currentData: utils.SatInformation[] = [];
 
@@ -69,7 +71,9 @@ export default class EarthWithSatellites {
 
     propagateAllSatData(time: Date) {
         const gmst = satellite.gstime(time);
-        const currentPositions = this.currentData.map((d) => utils.propagate1Sat(d, time, gmst));
+        const currentPositions = this.currentData.map((d) =>
+            utils.propagate1Sat(d, time, gmst)
+        );
         this.globe.objectsData(currentPositions);
         this.SatellitePositions = currentPositions;
     }
@@ -81,7 +85,10 @@ export default class EarthWithSatellites {
         });
         this.lineGeometry = new THREE.BufferGeometry();
         const positions = new Float32Array(10000 * 3);
-        this.lineGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        this.lineGeometry.setAttribute(
+            "position",
+            new THREE.BufferAttribute(positions, 3)
+        );
         this.lineGeometry.setDrawRange(0, 10000);
         this.line = new THREE.Line(this.lineGeometry, lineMaterial);
         this.scene.add(this.line);
@@ -120,9 +127,9 @@ export default class EarthWithSatellites {
 
     async initScene() {
         // Fetch satellite data from NORAD
-        const rawData = await fetch("https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle").then(
-            (res) => res.text()
-        );
+        const rawData = await fetch(
+            "https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle"
+        ).then((res) => res.text());
         //                 const rawData = `STARLINK-1007
         // 1 44713U 19074A   24156.82459657  .00000816  00000+0  73650-4 0  9993
         // 2 44713  53.0529 192.5476 0001172  90.8030 269.3093 15.06396363251855
@@ -155,7 +162,10 @@ export default class EarthWithSatellites {
         document.body.appendChild(this.renderer.domElement);
 
         // Controls
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls = new OrbitControls(
+            this.camera,
+            this.renderer.domElement
+        );
 
         // Add lights
         this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
@@ -172,8 +182,17 @@ export default class EarthWithSatellites {
         this.globe.objectThreeObject((d) => {
             if ("id" in d) {
                 const satGeometry = new THREE.OctahedronGeometry(
-                    (SAT_SIZE * this.globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2,
+                    (SAT_SIZE * this.globe.getGlobeRadius()) /
+                        EARTH_RADIUS_KM /
+                        2,
                     0
+                );
+
+                const satClickArea = new THREE.OctahedronGeometry(
+                    (SAT_SIZE_CLICK * this.globe.getGlobeRadius()) /
+                        EARTH_RADIUS_KM /
+                        2,
+                    5
                 );
 
                 let color = SAT_COLOR;
@@ -189,9 +208,22 @@ export default class EarthWithSatellites {
                     opacity: 0.7,
                 });
 
+                const satMaterialClick = new THREE.MeshLambertMaterial({
+                    transparent: true,
+                    opacity: 0,
+                });
+
                 const sat = new THREE.Mesh(satGeometry, satMaterial);
+                const clickSat = new THREE.Mesh(satClickArea, satMaterialClick);
+
+                const group = new THREE.Group();
+                group.add(sat);
+                group.add(clickSat);
+
+                group.userData = { satellite: d["id"] };
                 sat.userData = { satellite: d["id"] };
-                return sat;
+                clickSat.userData = { satellite: d["id"] };
+                return group;
             } else {
                 return new THREE.Mesh();
             }
@@ -211,9 +243,17 @@ export default class EarthWithSatellites {
     }
 
     initListeners() {
-        window.addEventListener("pointermove", this.onPointerMove.bind(this), false);
+        window.addEventListener(
+            "pointermove",
+            this.onPointerMove.bind(this),
+            false
+        );
 
-        window.addEventListener("resize", this.onWindowResize.bind(this), false);
+        window.addEventListener(
+            "resize",
+            this.onWindowResize.bind(this),
+            false
+        );
 
         window.addEventListener("click", this.onClick.bind(this), false);
 
@@ -233,7 +273,9 @@ export default class EarthWithSatellites {
 
                     if (!win) return;
 
-                    win.document.write(`<img src='${src}' width='${domElement.width}' height='${domElement.height}'>`);
+                    win.document.write(
+                        `<img src='${src}' width='${domElement.width}' height='${domElement.height}'>`
+                    );
                     break;
 
                 default:
@@ -259,13 +301,25 @@ export default class EarthWithSatellites {
     }
 
     onClick(event: Event) {
-        //@ts-ignore // This is to prevent the popup from closing when clicking on the popup itself
-        if (event.target && (event.target.id === "pop-up" || event.target.parentNode.id === "pop-up")) return;
+        if (
+            event.target &&
+            //@ts-ignore // This is to prevent the popup from closing when clicking on the popup itself
+            (event.target.id === "pop-up" ||
+                //@ts-ignore
+                event.target.parentNode.id === "pop-up")
+        )
+            return;
 
         const intersects = this.raycaster.intersectObjects(this.scene.children);
-
-        if (intersects.length > 0 && "satellite" in intersects[0].object.userData) {
-            const satData = this.currentData.find((d) => d.satrec.satnum === intersects[0].object.userData.satellite);
+        console.log(intersects);
+        if (
+            intersects.length > 0 &&
+            "satellite" in intersects[0].object.userData
+        ) {
+            const satData = this.currentData.find(
+                (d) =>
+                    d.satrec.satnum === intersects[0].object.userData.satellite
+            );
             if (!satData) return;
 
             const popup = document.getElementById("pop-up");
@@ -274,7 +328,8 @@ export default class EarthWithSatellites {
             this.currentlySelected = satData.satrec.satnum;
 
             const SatelliteName = document.getElementById("SatelliteName");
-            const SatteliteCountry = document.getElementById("SatelliteCountry");
+            const SatteliteCountry =
+                document.getElementById("SatelliteCountry");
             const SatelliteID = document.getElementById("SatelliteId");
             const SatelliteEpoch = document.getElementById("SatelliteEpoch");
             const SatelliteLat = document.getElementById("SatelliteLatitude");
@@ -298,7 +353,11 @@ export default class EarthWithSatellites {
 
             const day = Math.floor(satData.satrec.epochdays);
             const year = "20" + satData.satrec.epochyr;
-            const hour = 24 * parseFloat("0." + satData.satrec.epochdays.toString().split(".")[1]);
+            const hour =
+                24 *
+                parseFloat(
+                    "0." + satData.satrec.epochdays.toString().split(".")[1]
+                );
             const minute = 60 * (hour - Math.floor(hour));
 
             // Dit werkt nog niet voor tientallen, de 0 valt weg
@@ -310,13 +369,24 @@ export default class EarthWithSatellites {
                 ":" +
                 Math.floor(minute);
 
-            const satPos = this.SatellitePositions.find((d) => d.id === satData.satrec.satnum);
+            const satPos = this.SatellitePositions.find(
+                (d) => d.id === satData.satrec.satnum
+            );
 
             // TODO: Laat lat/lng/altitude niet zien als dit niet werkt
             if (!satPos) return;
-            SatelliteAlt.innerHTML = satPos.realAlt.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " km";
-            SatelliteLat.innerHTML = satPos.lat.toLocaleString("en-US", { maximumFractionDigits: 4 }) + "°";
-            SatelliteLong.innerHTML = satPos.lng.toLocaleString("en-US", { maximumFractionDigits: 4 }) + "°";
+            SatelliteAlt.innerHTML =
+                satPos.realAlt.toLocaleString("en-US", {
+                    maximumFractionDigits: 2,
+                }) + " km";
+            SatelliteLat.innerHTML =
+                satPos.lat.toLocaleString("en-US", {
+                    maximumFractionDigits: 4,
+                }) + "°";
+            SatelliteLong.innerHTML =
+                satPos.lng.toLocaleString("en-US", {
+                    maximumFractionDigits: 4,
+                }) + "°";
             SatteliteCountry.innerHTML = "Unknown";
         } else {
             const popup = document.getElementById("pop-up");
@@ -343,7 +413,10 @@ export default class EarthWithSatellites {
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
-        if (intersects.length > 0 && "satellite" in intersects[0].object.userData) {
+        if (
+            intersects.length > 0 &&
+            "satellite" in intersects[0].object.userData
+        ) {
             const ourSatellite = intersects[0].object;
             this.currentlyHovering = ourSatellite.userData.satellite;
         } else {
@@ -359,7 +432,9 @@ export default class EarthWithSatellites {
                     this.scene.add(this.line);
                 }
 
-                const current = this.currentData.findIndex((d) => d.satrec.satnum === this.currentlySelected);
+                const current = this.currentData.findIndex(
+                    (d) => d.satrec.satnum === this.currentlySelected
+                );
 
                 const lineCoords = this.globe.getCoords(
                     this.SatellitePositions[current].lat,
