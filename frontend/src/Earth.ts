@@ -8,7 +8,15 @@ import * as utils from "./common/utils";
 import * as satellite from "satellite.js";
 import Gaia from "./assets/Gaia.png";
 import Earth from "./assets/earth-blue-marble.jpg";
-import { EARTH_RADIUS_KM, SAT_SIZE, TIME_STEP, SAT_COLOR, SAT_COLOR_HOVER, SAT_COLOR_SELECTED } from "./common/constants";
+import {
+    EARTH_RADIUS_KM,
+    SAT_SIZE,
+    TIME_STEP,
+    SAT_COLOR,
+    SAT_COLOR_HOVER,
+    SAT_COLOR_SELECTED,
+    SAT_SIZE_CLICK,
+} from "./common/constants";
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     let textureLoader = new THREE.TextureLoader();
@@ -29,7 +37,8 @@ export default class EarthWithSatellites {
 
     private globe!: ThreeGlobe;
     private currentTime: Date = new Date();
-    private SatellitePositions: (utils.SatPosition | Record<string, never>)[] = [];
+    private SatellitePositions: (utils.SatPosition | Record<string, never>)[] =
+        [];
 
     private currentData: utils.SatInformation[] = [];
 
@@ -56,31 +65,33 @@ export default class EarthWithSatellites {
 
     propagateAllSatData(time: Date) {
         const gmst = satellite.gstime(time);
-        const currentPositions = this.currentData.map((d) => utils.propagate1Sat(d, time, gmst));
+        const currentPositions = this.currentData.map((d) =>
+            utils.propagate1Sat(d, time, gmst)
+        );
         this.globe.objectsData(currentPositions);
         this.SatellitePositions = currentPositions;
     }
 
     async initScene() {
         // Fetch satellite data from NORAD
-        const rawData = await fetch("https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle").then(
-            (res) => res.text()
-        );
-//                 const rawData = `STARLINK-1007
-// 1 44713U 19074A   24156.82459657  .00000816  00000+0  73650-4 0  9993
-// 2 44713  53.0529 192.5476 0001172  90.8030 269.3093 15.06396363251855
-// STARLINK-1008
-// 1 44714U 19074B   24157.13517451  .00006350  00000+0  44491-3 0  9995
-// 2 44714  53.0519 191.1521 0001241  97.6985 262.4145 15.06393120252077
-// STARLINK-1009
-// 1 44715U 19074C   24156.79237041 -.00000485  00000+0 -13676-4 0  9998
-// 2 44715  53.0545 192.6942 0001336  86.7518 273.3623 15.06397043251840
-// STARLINK-1010
-// 1 44716U 19074D   24156.81079537  .00000435  00000+0  48119-4 0  9999
-// 2 44716  53.0530 192.6103 0001258  88.5207 271.5926 15.06398836251838
-// STARLINK-1011
-// 1 44717U 19074E   24157.14069345  .00002181  00000+0  16523-3 0  9996
-// 2 44717  53.0519 211.1316 0001388  83.4011 276.7135 15.06408079251795`;
+        // const rawData = await fetch(
+        //     "https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle"
+        // ).then((res) => res.text());
+        const rawData = `STARLINK-1007
+1 44713U 19074A   24156.82459657  .00000816  00000+0  73650-4 0  9993
+2 44713  53.0529 192.5476 0001172  90.8030 269.3093 15.06396363251855
+STARLINK-1008
+1 44714U 19074B   24157.13517451  .00006350  00000+0  44491-3 0  9995
+2 44714  53.0519 191.1521 0001241  97.6985 262.4145 15.06393120252077
+STARLINK-1009
+1 44715U 19074C   24156.79237041 -.00000485  00000+0 -13676-4 0  9998
+2 44715  53.0545 192.6942 0001336  86.7518 273.3623 15.06397043251840
+STARLINK-1010
+1 44716U 19074D   24156.81079537  .00000435  00000+0  48119-4 0  9999
+2 44716  53.0530 192.6103 0001258  88.5207 271.5926 15.06398836251838
+STARLINK-1011
+1 44717U 19074E   24157.14069345  .00002181  00000+0  16523-3 0  9996
+2 44717  53.0519 211.1316 0001388  83.4011 276.7135 15.06408079251795`;
         this.initialParseSatData(rawData);
 
         this.scene = new THREE.Scene();
@@ -98,7 +109,10 @@ export default class EarthWithSatellites {
         document.body.appendChild(this.renderer.domElement);
 
         // Controls
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls = new OrbitControls(
+            this.camera,
+            this.renderer.domElement
+        );
 
         // Add lights
         this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
@@ -113,10 +127,19 @@ export default class EarthWithSatellites {
             .objectFacesSurface(false)
             .atmosphereAltitude(0);
         this.globe.objectThreeObject((d) => {
-            if ("id" in  d) {
+            if ("id" in d) {
                 const satGeometry = new THREE.OctahedronGeometry(
-                    (SAT_SIZE * this.globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2,
+                    (SAT_SIZE * this.globe.getGlobeRadius()) /
+                        EARTH_RADIUS_KM /
+                        2,
                     0
+                );
+
+                const satClickArea = new THREE.OctahedronGeometry(
+                    (SAT_SIZE_CLICK * this.globe.getGlobeRadius()) /
+                        EARTH_RADIUS_KM /
+                        2,
+                    5
                 );
 
                 let color = SAT_COLOR;
@@ -131,10 +154,23 @@ export default class EarthWithSatellites {
                     transparent: true,
                     opacity: 0.7,
                 });
-    
+
+                const satMaterialClick = new THREE.MeshLambertMaterial({
+                    transparent: true,
+                    opacity: 0,
+                });
+
                 const sat = new THREE.Mesh(satGeometry, satMaterial);
+                const clickSat = new THREE.Mesh(satClickArea, satMaterialClick);
+
+                const group = new THREE.Group();
+                group.add(sat);
+                group.add(clickSat);
+
+                group.userData = { satellite: d["id"] };
                 sat.userData = { satellite: d["id"] };
-                return sat;
+                clickSat.userData = { satellite: d["id"] };
+                return group;
             } else {
                 return new THREE.Mesh();
             }
@@ -154,9 +190,17 @@ export default class EarthWithSatellites {
     }
 
     initListeners() {
-        window.addEventListener("pointermove", this.onPointerMove.bind(this), false);
+        window.addEventListener(
+            "pointermove",
+            this.onPointerMove.bind(this),
+            false
+        );
 
-        window.addEventListener("resize", this.onWindowResize.bind(this), false);
+        window.addEventListener(
+            "resize",
+            this.onWindowResize.bind(this),
+            false
+        );
 
         window.addEventListener("click", this.onClick.bind(this), false);
 
@@ -176,7 +220,9 @@ export default class EarthWithSatellites {
 
                     if (!win) return;
 
-                    win.document.write(`<img src='${src}' width='${domElement.width}' height='${domElement.height}'>`);
+                    win.document.write(
+                        `<img src='${src}' width='${domElement.width}' height='${domElement.height}'>`
+                    );
                     break;
 
                 default:
@@ -203,12 +249,23 @@ export default class EarthWithSatellites {
 
     onClick(event: Event) {
         //@ts-ignore // This is to prevent the popup from closing when clicking on the popup itself
-        if (event.target && (event.target.id === "pop-up" || event.target.parentNode.id === "pop-up")) return;
+        if (
+            event.target &&
+            (event.target.id === "pop-up" ||
+                event.target.parentNode.id === "pop-up")
+        )
+            return;
 
         const intersects = this.raycaster.intersectObjects(this.scene.children);
-
-        if (intersects.length > 0 && "satellite" in intersects[0].object.userData) {
-            const satData = this.currentData.find((d) => d.satrec.satnum === intersects[0].object.userData.satellite);
+        console.log(intersects);
+        if (
+            intersects.length > 0 &&
+            "satellite" in intersects[0].object.userData
+        ) {
+            const satData = this.currentData.find(
+                (d) =>
+                    d.satrec.satnum === intersects[0].object.userData.satellite
+            );
             if (!satData) return;
 
             const popup = document.getElementById("pop-up");
@@ -217,13 +274,22 @@ export default class EarthWithSatellites {
             this.currentlySelected = satData.satrec.satnum;
 
             const SatelliteName = document.getElementById("SatelliteName");
-            const SatteliteCountry = document.getElementById("SatelliteCountry");
+            const SatteliteCountry =
+                document.getElementById("SatelliteCountry");
             const SatelliteID = document.getElementById("SatelliteId");
             const SatelliteEpoch = document.getElementById("SatelliteEpoch");
             const SatelliteLat = document.getElementById("SatelliteLatitude");
             const SatelliteLong = document.getElementById("SatelliteLongitude");
             const SatelliteAlt = document.getElementById("SatelliteAltitude");
-            if (!SatelliteName || !SatelliteID || !SatelliteEpoch || !SatelliteLat || !SatelliteLong || !SatelliteAlt || !SatteliteCountry)
+            if (
+                !SatelliteName ||
+                !SatelliteID ||
+                !SatelliteEpoch ||
+                !SatelliteLat ||
+                !SatelliteLong ||
+                !SatelliteAlt ||
+                !SatteliteCountry
+            )
                 return;
 
             popup.style.display = "block";
@@ -233,7 +299,11 @@ export default class EarthWithSatellites {
 
             const day = Math.floor(satData.satrec.epochdays);
             const year = "20" + satData.satrec.epochyr;
-            const hour = 24 * parseFloat("0." + satData.satrec.epochdays.toString().split(".")[1]);
+            const hour =
+                24 *
+                parseFloat(
+                    "0." + satData.satrec.epochdays.toString().split(".")[1]
+                );
             const minute = 60 * (hour - Math.floor(hour));
 
             // Dit werkt nog niet voor tientallen, de 0 valt weg
@@ -245,13 +315,24 @@ export default class EarthWithSatellites {
                 ":" +
                 Math.floor(minute);
 
-            const satPos = this.SatellitePositions.find((d) => d.id === satData.satrec.satnum);
+            const satPos = this.SatellitePositions.find(
+                (d) => d.id === satData.satrec.satnum
+            );
 
             // TODO: Laat lat/lng/altitude niet zien als dit niet werkt
             if (!satPos) return;
-            SatelliteAlt.innerHTML = satPos.realAlt.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " km";
-            SatelliteLat.innerHTML = satPos.lat.toLocaleString("en-US", { maximumFractionDigits: 4 }) + "°";
-            SatelliteLong.innerHTML = satPos.lng.toLocaleString("en-US", { maximumFractionDigits: 4 }) + "°";
+            SatelliteAlt.innerHTML =
+                satPos.realAlt.toLocaleString("en-US", {
+                    maximumFractionDigits: 2,
+                }) + " km";
+            SatelliteLat.innerHTML =
+                satPos.lat.toLocaleString("en-US", {
+                    maximumFractionDigits: 4,
+                }) + "°";
+            SatelliteLong.innerHTML =
+                satPos.lng.toLocaleString("en-US", {
+                    maximumFractionDigits: 4,
+                }) + "°";
             SatteliteCountry.innerHTML = "Unknown";
         } else {
             const popup = document.getElementById("pop-up");
