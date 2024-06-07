@@ -57,6 +57,7 @@ export default class EarthWithSatellites {
             this.initStats();
             this.initListeners();
             this.initLine();
+            this.initTLEListener();
         });
     }
 
@@ -66,7 +67,7 @@ export default class EarthWithSatellites {
     }
 
     initialParseSatData(data: string) {
-        this.currentData = utils.parseTLEListToSat(data).slice(0, 100);
+        this.currentData = utils.parseTLEListToSat(data);
     }
 
     propagateAllSatData(time: Date) {
@@ -395,6 +396,15 @@ export default class EarthWithSatellites {
             popup.style.display = "none";
             this.currentlySelected = null;
         }
+    }
+
+    
+    initTLEListener() {
+        window.addEventListener('tleUpdate' as keyof WindowEventMap, (event: Event) => {
+            const newTLE = (event as CustomEvent).detail;
+            this.initialParseSatData(newTLE);
+            this.propagateAllSatData(this.currentTime);
+        });
     }
 
     animate() {
