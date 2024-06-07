@@ -4,7 +4,14 @@ from django.shortcuts import render
 
 from django.http import HttpResponse, HttpRequest
 
+from satellite_app.cron import pull_special_interest_satellites
+from satellite_app.models import Satellite
+
 def index(request: HttpRequest):
-    print(request.GET)
-    
-    return HttpResponse("Some placeholder text.", content_type="text/plain")
+    all_satellites = Satellite.objects.all()
+
+    return HttpResponse(all_satellites, content_type="text/plain")
+
+def pull(request: HttpRequest):
+    pull_special_interest_satellites()
+    return HttpResponse("Pulled special interest satellites")

@@ -83,4 +83,4 @@ class Satellite(models.Model):
     classification = models.CharField(max_length=1, choices=ClassificationChoices.choices, default=ClassificationChoices.UNCLASSIFIED)
 
     def __str__(self) -> str:
-        return self.name   # <-- currently hardcoded to displaying just the name, change later
+        return self.name + '\n' + self.line1 + '\n' + self.line2 + '\n' 
