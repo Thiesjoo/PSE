@@ -1,13 +1,13 @@
-import * as THREE from "three";
+import * as THREE from 'three';
 //@ts-ignore
-import Stats from "three/examples/jsm/libs/stats.module";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import ThreeGlobe from "three-globe";
+import Stats from 'three/examples/jsm/libs/stats.module';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import ThreeGlobe from 'three-globe';
 
-import * as utils from "./common/utils";
-import * as satellite from "satellite.js";
-import Gaia from "./assets/Gaia.png";
-import Earth from "./assets/earth-blue-marble.jpg";
+import * as utils from './common/utils';
+import * as satellite from 'satellite.js';
+import Gaia from './assets/Gaia.png';
+import Earth from './assets/earth-blue-marble.jpg';
 import {
     EARTH_RADIUS_KM,
     SAT_SIZE,
@@ -16,12 +16,12 @@ import {
     SAT_COLOR_HOVER,
     SAT_COLOR_SELECTED,
     SAT_SIZE_CLICK,
-} from "./common/constants";
+} from './common/constants';
 
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
-    let textureLoader = new THREE.TextureLoader();
-    return new Promise((resolve) => {
-        textureLoader.load(url, (texture) => {
+    const textureLoader = new THREE.TextureLoader();
+    return new Promise(resolve => {
+        textureLoader.load(url, texture => {
             resolve(texture);
         });
     });
@@ -37,8 +37,7 @@ export default class EarthWithSatellites {
 
     private globe!: ThreeGlobe;
     private currentTime: Date = new Date();
-    private SatellitePositions: (utils.SatPosition | Record<string, never>)[] =
-        [];
+    private SatellitePositions: (utils.SatPosition | Record<string, never>)[] = [];
 
     private currentData: utils.SatInformation[] = [];
 
@@ -72,9 +71,7 @@ export default class EarthWithSatellites {
 
     propagateAllSatData(time: Date) {
         const gmst = satellite.gstime(time);
-        const currentPositions = this.currentData.map((d) =>
-            utils.propagate1Sat(d, time, gmst)
-        );
+        const currentPositions = this.currentData.map(d => utils.propagate1Sat(d, time, gmst));
         this.globe.objectsData(currentPositions);
         this.SatellitePositions = currentPositions;
     }
@@ -82,14 +79,11 @@ export default class EarthWithSatellites {
     //Creates a line that follows a satellite.
     initLine() {
         const lineMaterial = new THREE.LineBasicMaterial({
-            color: "white",
+            color: 'white',
         });
         this.lineGeometry = new THREE.BufferGeometry();
         const positions = new Float32Array(10000 * 3);
-        this.lineGeometry.setAttribute(
-            "position",
-            new THREE.BufferAttribute(positions, 3)
-        );
+        this.lineGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         this.lineGeometry.setDrawRange(0, 10000);
         this.line = new THREE.Line(this.lineGeometry, lineMaterial);
         this.scene.add(this.line);
@@ -131,7 +125,7 @@ export default class EarthWithSatellites {
         // const rawData = await fetch(
         //     "https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle"
         // ).then((res) => res.text());
-                const rawData = `STARLINK-1007
+        const rawData = `STARLINK-1007
 1 44713U 19074A   24156.82459657  .00000816  00000+0  73650-4 0  9993
 2 44713  53.0529 192.5476 0001172  90.8030 269.3093 15.06396363251855
 STARLINK-1008
@@ -163,10 +157,7 @@ STARLINK-1011
         document.body.appendChild(this.renderer.domElement);
 
         // Controls
-        this.controls = new OrbitControls(
-            this.camera,
-            this.renderer.domElement
-        );
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         // Add lights
         this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
@@ -175,36 +166,32 @@ STARLINK-1011
         // Add the Earth
         this.globe = new ThreeGlobe()
             .globeImageUrl(Earth)
-            .objectLat("lat")
-            .objectLng("lng")
-            .objectAltitude("alt")
+            .objectLat('lat')
+            .objectLng('lng')
+            .objectAltitude('alt')
             .objectFacesSurface(false)
             .atmosphereAltitude(0);
-        this.globe.objectThreeObject((d) => {
-            if ("id" in d) {
+        this.globe.objectThreeObject(d => {
+            if ('id' in d) {
                 const satGeometry = new THREE.OctahedronGeometry(
-                    (SAT_SIZE * this.globe.getGlobeRadius()) /
-                        EARTH_RADIUS_KM /
-                        2,
+                    (SAT_SIZE * this.globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2,
                     0
                 );
 
                 const satClickArea = new THREE.OctahedronGeometry(
-                    (SAT_SIZE_CLICK * this.globe.getGlobeRadius()) /
-                        EARTH_RADIUS_KM /
-                        2,
+                    (SAT_SIZE_CLICK * this.globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2,
                     5
                 );
 
                 let color = SAT_COLOR;
-                if (this.currentlySelected === d["id"]) {
+                if (this.currentlySelected === d['id']) {
                     color = SAT_COLOR_SELECTED;
-                } else if (this.currentlyHovering === d["id"]) {
+                } else if (this.currentlyHovering === d['id']) {
                     color = SAT_COLOR_HOVER;
                 }
 
                 const satMaterial = new THREE.MeshLambertMaterial({
-                    color: color,
+                    color,
                     transparent: true,
                     opacity: 0.7,
                 });
@@ -221,9 +208,9 @@ STARLINK-1011
                 group.add(sat);
                 group.add(clickSat);
 
-                group.userData = { satellite: d["id"] };
-                sat.userData = { satellite: d["id"] };
-                clickSat.userData = { satellite: d["id"] };
+                group.userData = { satellite: d['id'] };
+                sat.userData = { satellite: d['id'] };
+                clickSat.userData = { satellite: d['id'] };
                 return group;
             } else {
                 return new THREE.Mesh();
@@ -244,26 +231,18 @@ STARLINK-1011
     }
 
     initListeners() {
-        window.addEventListener(
-            "pointermove",
-            this.onPointerMove.bind(this),
-            false
-        );
+        window.addEventListener('pointermove', this.onPointerMove.bind(this), false);
 
-        window.addEventListener(
-            "resize",
-            this.onWindowResize.bind(this),
-            false
-        );
+        window.addEventListener('resize', this.onWindowResize.bind(this), false);
 
-        window.addEventListener("click", this.onClick.bind(this), false);
+        window.addEventListener('click', this.onClick.bind(this), false);
 
-        window.addEventListener("keydown", (event) => {
+        window.addEventListener('keydown', event => {
             const { key } = event;
 
             switch (key) {
-                case "e":
-                    const win = window.open("", "Canvas Image");
+                case 'e':
+                    const win = window.open('', 'Canvas Image');
 
                     const { domElement } = this.renderer;
 
@@ -305,37 +284,32 @@ STARLINK-1011
         if (
             event.target &&
             //@ts-ignore // This is to prevent the popup from closing when clicking on the popup itself
-            (event.target.id === "pop-up" ||
+            (event.target.id === 'pop-up' ||
                 //@ts-ignore
-                event.target.parentNode.id === "pop-up")
+                event.target.parentNode.id === 'pop-up')
         )
             return;
 
         const intersects = this.raycaster.intersectObjects(this.scene.children);
         console.log(intersects);
-        if (
-            intersects.length > 0 &&
-            "satellite" in intersects[0].object.userData
-        ) {
+        if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
             const satData = this.currentData.find(
-                (d) =>
-                    d.satrec.satnum === intersects[0].object.userData.satellite
+                d => d.satrec.satnum === intersects[0].object.userData.satellite
             );
             if (!satData) return;
 
-            const popup = document.getElementById("pop-up");
+            const popup = document.getElementById('pop-up');
             if (!popup) return;
 
             this.currentlySelected = satData.satrec.satnum;
 
-            const SatelliteName = document.getElementById("SatelliteName");
-            const SatteliteCountry =
-                document.getElementById("SatelliteCountry");
-            const SatelliteID = document.getElementById("SatelliteId");
-            const SatelliteEpoch = document.getElementById("SatelliteEpoch");
-            const SatelliteLat = document.getElementById("SatelliteLatitude");
-            const SatelliteLong = document.getElementById("SatelliteLongitude");
-            const SatelliteAlt = document.getElementById("SatelliteAltitude");
+            const SatelliteName = document.getElementById('SatelliteName');
+            const SatteliteCountry = document.getElementById('SatelliteCountry');
+            const SatelliteID = document.getElementById('SatelliteId');
+            const SatelliteEpoch = document.getElementById('SatelliteEpoch');
+            const SatelliteLat = document.getElementById('SatelliteLatitude');
+            const SatelliteLong = document.getElementById('SatelliteLongitude');
+            const SatelliteAlt = document.getElementById('SatelliteAltitude');
             if (
                 !SatelliteName ||
                 !SatelliteID ||
@@ -347,58 +321,51 @@ STARLINK-1011
             )
                 return;
 
-            popup.style.display = "block";
+            popup.style.display = 'block';
 
             SatelliteName.innerHTML = satData.name;
             SatelliteID.innerHTML = satData.satrec.satnum;
 
             const day = Math.floor(satData.satrec.epochdays);
-            const year = "20" + satData.satrec.epochyr;
-            const hour =
-                24 *
-                parseFloat(
-                    "0." + satData.satrec.epochdays.toString().split(".")[1]
-                );
+            const year = '20' + satData.satrec.epochyr;
+            const hour = 24 * parseFloat('0.' + satData.satrec.epochdays.toString().split('.')[1]);
             const minute = 60 * (hour - Math.floor(hour));
 
             // Dit werkt nog niet voor tientallen, de 0 valt weg
             // Ook nemen we aan dat alle satellieten in 2000 of daarna worden gelanceerd.
             SatelliteEpoch.innerHTML =
                 this.dateFromDay(parseInt(year), day).toDateString() +
-                " " +
+                ' ' +
                 Math.floor(hour) +
-                ":" +
+                ':' +
                 Math.floor(minute);
 
-            const satPos = this.SatellitePositions.find(
-                (d) => d.id === satData.satrec.satnum
-            );
+            const satPos = this.SatellitePositions.find(d => d.id === satData.satrec.satnum);
 
             // TODO: Laat lat/lng/altitude niet zien als dit niet werkt
             if (!satPos) return;
             SatelliteAlt.innerHTML =
-                satPos.realAlt.toLocaleString("en-US", {
+                satPos.realAlt.toLocaleString('en-US', {
                     maximumFractionDigits: 2,
-                }) + " km";
+                }) + ' km';
             SatelliteLat.innerHTML =
-                satPos.lat.toLocaleString("en-US", {
+                satPos.lat.toLocaleString('en-US', {
                     maximumFractionDigits: 4,
-                }) + "°";
+                }) + '°';
             SatelliteLong.innerHTML =
-                satPos.lng.toLocaleString("en-US", {
+                satPos.lng.toLocaleString('en-US', {
                     maximumFractionDigits: 4,
-                }) + "°";
-            SatteliteCountry.innerHTML = "Unknown";
+                }) + '°';
+            SatteliteCountry.innerHTML = 'Unknown';
         } else {
-            const popup = document.getElementById("pop-up");
+            const popup = document.getElementById('pop-up');
             if (!popup) return;
 
-            popup.style.display = "none";
+            popup.style.display = 'none';
             this.currentlySelected = null;
         }
     }
 
-    
     initTLEListener() {
         window.addEventListener('tleUpdate' as keyof WindowEventMap, (event: Event) => {
             const newTLE = (event as CustomEvent).detail;
@@ -423,10 +390,7 @@ STARLINK-1011
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
-        if (
-            intersects.length > 0 &&
-            "satellite" in intersects[0].object.userData
-        ) {
+        if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
             const ourSatellite = intersects[0].object;
             this.currentlyHovering = ourSatellite.userData.satellite;
         } else {
@@ -443,7 +407,7 @@ STARLINK-1011
                 }
 
                 const current = this.currentData.findIndex(
-                    (d) => d.satrec.satnum === this.currentlySelected
+                    d => d.satrec.satnum === this.currentlySelected
                 );
 
                 const lineCoords = this.globe.getCoords(

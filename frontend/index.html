@@ -1,66 +1,116 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <!-- TODO: Favicon  -->
-    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Satellites around the earth</title>
+    <head>
+        <meta charset="UTF-8" />
+        <!-- TODO: Favicon  -->
+        <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+        <title>Satellites around the earth</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tomorrow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="app"></div>
+        <link
+            rel="preconnect"
+            href="https://fonts.googleapis.com"
+        />
+        <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossorigin
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Tomorrow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="app"></div>
 
-    <div class="pop-up" style="display: none" id="pop-up">
-      <h1 id="SatelliteName">ISS (ZARYA)</h1>
-      <img src="usflag.svg" width="100"  alt="US flag">
-      <p id="SatelliteCountry">Insert country</p>
-      <p>
-        <span>NORAD Catalog Number:</span>
-        <span id="SatelliteId">25544</span>
-      </p>
-      <p>Longitude:
-        <span id="SatelliteLongitude">0</span>
-      </p>
-      <p>Latitude:
-        <span id="SatelliteLatitude">0</span>
-      </p>
-      <p>Altitude:
-        <span id="SatelliteAltitude">0</span>
-      </p>
-      <p>Last epoch:</p>
-      <p id="SatelliteEpoch">2021-10-10 12:00:00</p>
-    </div>
+        <div
+            class="pop-up"
+            style="display: none"
+            id="pop-up"
+        >
+            <h1 id="SatelliteName">ISS (ZARYA)</h1>
+            <img
+                src="usflag.svg"
+                width="100"
+                alt="US flag"
+            />
+            <p id="SatelliteCountry">Insert country</p>
+            <p>
+                <span>NORAD Catalog Number:</span>
+                <span id="SatelliteId">25544</span>
+            </p>
+            <p>
+                Longitude:
+                <span id="SatelliteLongitude">0</span>
+            </p>
+            <p>
+                Latitude:
+                <span id="SatelliteLatitude">0</span>
+            </p>
+            <p>
+                Altitude:
+                <span id="SatelliteAltitude">0</span>
+            </p>
+            <p>Last epoch:</p>
+            <p id="SatelliteEpoch">2021-10-10 12:00:00</p>
+        </div>
 
-
-    <div class="container">
-        <div class="text-block">
-            <!-- sliders -->
-            <h4>Sliders</h4>
-            <p>Height</p>
-            <div class="slidecontainer">
-                <input type="range" min="160" max="2000" value="500" class="slider" id="height">
-                <p>Value: <span id="height_val"></span></p>
-            </div>
-            <p>Inclination</p>
-            <div class="slidecontainer">
-                <input type="range" min="0" max="90" value="50" class="slider" id="inclination">
-                <p>Value: <span id="incl_val"></span></p>
-            </div>
-            <p>RAAN</p>
-            <div class="slidecontainer">
-                <input type="range" min="0" max="360" value="50" class="slider" id="raan">
-                <p>Value: <span id="raan_val"></span></p>
+        <div class="container">
+            <div class="text-block">
+                <!-- sliders -->
+                <h4>Sliders</h4>
+                <p>Height</p>
+                <div class="slidecontainer">
+                    <input
+                        type="range"
+                        min="160"
+                        max="2000"
+                        value="500"
+                        class="slider"
+                        id="height"
+                    />
+                    <p>Value: <span id="height_val"></span></p>
+                </div>
+                <p>Inclination</p>
+                <div class="slidecontainer">
+                    <input
+                        type="range"
+                        min="0"
+                        max="90"
+                        value="50"
+                        class="slider"
+                        id="inclination"
+                    />
+                    <p>Value: <span id="incl_val"></span></p>
+                </div>
+                <p>RAAN</p>
+                <div class="slidecontainer">
+                    <input
+                        type="range"
+                        min="0"
+                        max="360"
+                        value="50"
+                        class="slider"
+                        id="raan"
+                    />
+                    <p>Value: <span id="raan_val"></span></p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- <h2>TLE Output</h2> -->
-    <pre id="tleOutput"></pre>
-    <script type="module" src="/src/own_satellite.js"></script>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+        <!-- <h2>TLE Output</h2> -->
+        <pre id="tleOutput"></pre>
+        <script
+            type="module"
+            src="/src/own_satellite.js"
+        ></script>
+        <script
+            type="module"
+            src="/src/main.ts"
+        ></script>
+    </body>
 </html>
