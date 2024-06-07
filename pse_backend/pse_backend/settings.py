@@ -54,7 +54,7 @@ CRONJOBS = [
     ('0 2 * * *', 'satellite_app.cron.pull_weather_and_earth_satellites'),
     ('0 4 * * *', 'satellite_app.cron.pull_communications_satellites'),
     ('0 6 * * *', 'satellite_app.cron.pull_navigation_satellites'),
-    ('0 8 * * *', 'satellite_app.cron.pull_scientific_satellites'),
+    ('0 8 * * *', 'satellite_app.cron.pull_scientific_satellites'),   
 
     # UNUSUAL cron schedule for testing! Delete later:
     # ('45 15 * * *', 'satellite_app.cron.pull_special_interest_satellites'),
