@@ -85,7 +85,10 @@ export default class EarthWithSatellites {
         });
         this.lineGeometry = new THREE.BufferGeometry();
         const positions = new Float32Array(10000 * 3);
-        this.lineGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        this.lineGeometry.setAttribute(
+            "position",
+            new THREE.BufferAttribute(positions, 3)
+        );
         this.lineGeometry.setDrawRange(0, 10000);
         this.line = new THREE.Line(this.lineGeometry, lineMaterial);
         this.scene.add(this.line);
@@ -124,9 +127,9 @@ export default class EarthWithSatellites {
 
     async initScene() {
         // Fetch satellite data from NORAD
-        const rawData = await fetch("https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle").then(
-            (res) => res.text()
-        );
+        const rawData = await fetch(
+            "https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle"
+        ).then((res) => res.text());
         //                 const rawData = `STARLINK-1007
         // 1 44713U 19074A   24156.82459657  .00000816  00000+0  73650-4 0  9993
         // 2 44713  53.0529 192.5476 0001172  90.8030 269.3093 15.06396363251855
@@ -298,10 +301,11 @@ export default class EarthWithSatellites {
     }
 
     onClick(event: Event) {
-        //@ts-ignore // This is to prevent the popup from closing when clicking on the popup itself
         if (
             event.target &&
+            //@ts-ignore // This is to prevent the popup from closing when clicking on the popup itself
             (event.target.id === "pop-up" ||
+                //@ts-ignore
                 event.target.parentNode.id === "pop-up")
         )
             return;
@@ -409,7 +413,10 @@ export default class EarthWithSatellites {
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
 
-        if (intersects.length > 0 && "satellite" in intersects[0].object.userData) {
+        if (
+            intersects.length > 0 &&
+            "satellite" in intersects[0].object.userData
+        ) {
             const ourSatellite = intersects[0].object;
             this.currentlyHovering = ourSatellite.userData.satellite;
         } else {
@@ -425,7 +432,9 @@ export default class EarthWithSatellites {
                     this.scene.add(this.line);
                 }
 
-                const current = this.currentData.findIndex((d) => d.satrec.satnum === this.currentlySelected);
+                const current = this.currentData.findIndex(
+                    (d) => d.satrec.satnum === this.currentlySelected
+                );
 
                 const lineCoords = this.globe.getCoords(
                     this.SatellitePositions[current].lat,
