@@ -39,6 +39,9 @@ module.exports = {
         },
       ],
       'prettier/prettier': 'warn',
+      "@typescript-eslint/no-explicit-any": "warn",
+      "no-case-declarations": "warn",
+      "@typescript-eslint/ban-ts-comment": "warn"
     },
     settings: {
     },

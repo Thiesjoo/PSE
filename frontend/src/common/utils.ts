@@ -8,9 +8,9 @@ import {
     GMSTime,
     Kilometer,
     EciVec3,
-} from "satellite.js";
-import { EARTH_RADIUS_KM } from "./constants";
-import { TypedArray } from "three";
+} from 'satellite.js';
+import { EARTH_RADIUS_KM } from './constants';
+import { TypedArray } from 'three';
 
 export interface SatInformation {
     name: string;
@@ -32,16 +32,20 @@ export interface SatPosition {
  */
 export function parseTLEListToSat(tleString: string): SatInformation[] {
     const tleData = tleString
-        .replace(/\r/g, "")
+        .replace(/\r/g, '')
         .split(/\n(?=[^12])/)
-        .map((tle) => tle.split("\n"));
+        .map(tle => tle.split('\n'));
     return tleData.map(([name, tleLine1, tleLine2]) => ({
         satrec: twoline2satrec(tleLine1, tleLine2),
-        name: name.trim().replace(/^0 /, ""),
+        name: name.trim().replace(/^0 /, ''),
     }));
 }
 
-export function propagate1Sat(sat: SatInformation, time: Date, gmst: GMSTime): Record<string, never> | SatPosition {
+export function propagate1Sat(
+    sat: SatInformation,
+    time: Date,
+    gmst: GMSTime
+): Record<string, never> | SatPosition {
     const eci = propagate(sat.satrec, time);
     if (eci.position) {
         const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmst);
@@ -59,9 +63,8 @@ export function propagate1Sat(sat: SatInformation, time: Date, gmst: GMSTime): R
     }
 }
 
-
 export const shiftLeft = (collection: TypedArray, steps = 1) => {
-    collection.set(collection.subarray(steps))
-    collection.fill(0, -steps)
-    return collection
-  }
+    collection.set(collection.subarray(steps));
+    collection.fill(0, -steps);
+    return collection;
+};
