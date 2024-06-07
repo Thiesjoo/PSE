@@ -78,23 +78,9 @@ class Satellite(models.Model):
         ENGINEERING = "Engineering"
         EDUCATION = "Education"
 
-    category = models.CharField(max_length=45, choices=CategoryChoices.choices, default=CategoryChoices.NONE)
-    affiliation = models.CharField(max_length=45, choices=AffiliationChoices.choices, default=AffiliationChoices.NONE)
+    category = models.CharField(max_length=45, choices=CategoryChoices.choices, default=CategoryChoices.NONE, db_index=True)
+    affiliation = models.CharField(max_length=45, choices=AffiliationChoices.choices, default=AffiliationChoices.NONE, db_index=True)
     classification = models.CharField(max_length=1, choices=ClassificationChoices.choices, default=ClassificationChoices.UNCLASSIFIED)
 
     def __str__(self) -> str:
         return self.name   # <-- currently hardcoded to displaying just the name, change later
-    
-    # def isStarlinkSatellite(self) -> bool:
-    #     "STARLINK" in self.name
-
-
-# class Question(models.Model):
-#     question_text = models.CharField(max_length=200)
-#     pub_date = models.DateTimeField("date published")
-
-
-# class Choice(models.Model):
-#     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-#     choice_text = models.CharField(max_length=200)
-#     votes = models.IntegerField(default=0)
