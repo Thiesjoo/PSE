@@ -1,22 +1,41 @@
 {
-  "name": "earth-visualizer",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "@types/three": "^0.165.0",
-    "sass": "^1.77.4",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0"
-  },
-  "dependencies": {
-    "satellite.js": "^5.0.0",
-    "three": "^0.165.0",
-    "three-globe": "^2.31.0"
-  }
+    "name": "earth-visualizer",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "prepare": "cd .. && husky frontend/.husky",
+        "lint": "prettier --write *; eslint --fix; eslint"
+    },
+    "devDependencies": {
+        "@types/three": "^0.165.0",
+        "husky": "^9.0.11",
+        "lint-staged": "^15.2.5",
+        "prettier": "^3.3.1",
+        "sass": "^1.77.4",
+        "typescript": "^5.2.2",
+        "vite": "^5.2.0",
+        "@typescript-eslint/eslint-plugin": "^7.12.0",
+        "@typescript-eslint/parser": "^7.12.0",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.1.3"
+    },
+    "dependencies": {
+        "satellite.js": "^5.0.0",
+        "three": "^0.165.0",
+        "three-globe": "^2.31.0"
+    },
+    "lint-staged": {
+        "{**/*,*}.{ts,vue,html,css}": [
+            "prettier --write"
+        ],
+        "{**/*,*}.{ts,vue}": [
+            "eslint --fix",
+            "eslint"
+        ]
+    }
 }
