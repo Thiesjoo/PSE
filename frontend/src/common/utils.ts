@@ -10,6 +10,7 @@ import {
     EciVec3,
 } from "satellite.js";
 import { EARTH_RADIUS_KM } from "./constants";
+import { TypedArray } from "three";
 
 export interface SatInformation {
     name: string;
@@ -57,3 +58,10 @@ export function propagate1Sat(sat: SatInformation, time: Date, gmst: GMSTime): R
         return {};
     }
 }
+
+
+export const shiftLeft = (collection: TypedArray, steps = 1) => {
+    collection.set(collection.subarray(steps))
+    collection.fill(0, -steps)
+    return collection
+  }
