@@ -146,9 +146,9 @@ raanSlider.oninput = function() {
 
 function generateTLE() {
     let tle = satellite.produceTLE();
-    console.log(tle); // Print TLE to console
+    // console.log(tle); // Print TLE to console
     let tleOutput = document.getElementById('tleOutput');
-    tleOutput.textContent = tle;
+    // tleOutput.textContent = tle;
 
     // Dispatch custom event with TLE data
     const event = new CustomEvent('tleUpdate', { detail: tle });
