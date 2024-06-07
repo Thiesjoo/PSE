@@ -6,7 +6,7 @@ class Satellite(models.Model):
     name = models.CharField(max_length=24) # <-- dit is de 'title line (optional)'
     line1 = models.CharField(max_length=69)
     line2 = models.CharField(max_length=69)
-    satellite_catalog_number = models.IntegerField(primary_key=True)
+    satellite_catalog_number = models.IntegerField()
     launch_year = models.IntegerField() #max_length=4
     epoch_year = models.IntegerField() #max_length=4
     epoch = models.FloatField()
