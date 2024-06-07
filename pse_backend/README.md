@@ -1,4 +1,6 @@
+# Quick documentation
 
+## Basic setup
 To make the backend work, don't forget to create a .env file and write the following in it:
 ```.env
 SECRET_KEY=<your secret key>
@@ -7,11 +9,12 @@ DEBUG=<'true' or 'false' depending on whether it's in a production or developmen
 
 Also, make sure to install the dependencies in requirements.txt
 
-Lastly, make sure to read the following command **once** to populate your database for satellite-categories:
+Lastly, make sure to run the following command **once** to populate your database with satellite-categories:
 ```
 python3 manage.py setup_minor_cats
 ```
 
+## Developing the backend
 To install/run the server, and to create an admin account:
 
 ```

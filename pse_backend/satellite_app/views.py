@@ -12,5 +12,6 @@ def index(request: HttpRequest):
     return HttpResponse(all_satellites, content_type="text/plain")
 
 def pull(request: HttpRequest):
+    print("PULLING SPECIAL INTEREST SATELLITES VIA ENDPOINT")
     pull_special_interest_satellites()
     return HttpResponse("Pulled special interest satellites")

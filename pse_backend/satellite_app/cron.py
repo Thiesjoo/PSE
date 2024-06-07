@@ -123,8 +123,13 @@ def pull_satellites(affiliation, minor_category_row):
 
         # TODO: Change this hardcoded behaviour in the future. The way it decides 
         # whether it's 21th century or 20th century is pretty bad.
-        launch_year = str(tle.int_desig)[:2]
-        launch_year = int(('20' if int(launch_year) <= 24  else '19') + launch_year)
+
+        launch_year_last_two_digits = str(tle.int_desig)[:2]
+        if launch_year_last_two_digits != '':
+            launch_year = int(str(tle.int_desig)[:2])
+            launch_year = int(('20' if int(launch_year) <= 24  else '19') + str(launch_year))
+        else:
+            launch_year = -1
 
         try:
             sat = Satellite.objects.get(satellite_catalog_number=tle.norad)
@@ -147,10 +152,9 @@ def pull_satellites(affiliation, minor_category_row):
             sat = Satellite(name=tle.name, line1=tleData[1], line2=tleData[2], satellite_catalog_number=tle.norad,
                          classification=tle.classification, launch_year=launch_year, epoch_year=tle.epoch_year, 
                          epoch=tle.epoch_day, revolutions=tle.rev_num, revolutions_per_day=tle.n)
-            
+            sat.save()
             sat.minor_categories.add(minor_category_row)
             sat.save()
-
 
     # NIEUWE CODE:
     # 1. Check of de satellite bestaat. Bestaat hij niet? Voeg dan een nieuwe satellite toe met de juiste affiliation/minorcategory in de tussentabel gedefinieerd

@@ -6,6 +6,8 @@ SATAFF = MinorCategory.MinorCategoryChoices
 
 from django.core.management.base import BaseCommand
 
+#TODO: Make belows' uglyass code shorter
+
 class Command(BaseCommand):
     help = 'Run custom script'
 
