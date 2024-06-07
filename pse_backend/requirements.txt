@@ -1,0 +1,4 @@
+django
+django-crontab
+tletools
+python-dotenv
