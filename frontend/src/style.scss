@@ -8,6 +8,10 @@ body {
     margin: 0;
     padding: 0;
 
+    width: 100vh;
+    height: 100vh;
+    overflow: hidden;
+
     .pop-up {
         width: 320px;
         height: 500px;
@@ -29,7 +33,6 @@ body {
 
         p {
             font-family: "ComputerSaysNo";
-            // Make it bigger
             font-size: 2em;
         }
 
@@ -41,7 +44,7 @@ body {
 
 @font-face {
     font-family: "ComputerSaysNo";
-    src: url("./computer-says-no.otf") format("opentype");
+    src: url("computer-says-no.otf") format("opentype");
     font-weight: normal;
     font-style: normal;
 }
