@@ -4,6 +4,11 @@ from satellite_app.models import Satellite, MinorCategory
 
 import requests
 
+#TODO: (DONE) Add a filter endpoint for the frontend
+#TODO: Add logging for the cronjobs
+#TODO: Clean up the code, refactor the repeatable stuff
+#TODO: write clear documentation (comments & the readme)
+#TODO: add a 'limit' parameter to the filter endpoint
 
 # For ease of use
 SATAFF = MinorCategory.MinorCategoryChoices
@@ -155,10 +160,6 @@ def pull_satellites(affiliation, minor_category_row):
             sat.save()
             sat.minor_categories.add(minor_category_row)
             sat.save()
-
-    # NIEUWE CODE:
-    # 1. Check of de satellite bestaat. Bestaat hij niet? Voeg dan een nieuwe satellite toe met de juiste affiliation/minorcategory in de tussentabel gedefinieerd
-    # 2. Bestaat hij wel? Dan moet je in de tussentabel een row toevoegen tussen die satellite en die minor category
 
 def pull_special_interest_satellites():
     mincat = MinorCategory.objects.get(minor_category=SATAFF.LAST_30_DAYS)
