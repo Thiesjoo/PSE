@@ -9,6 +9,8 @@ import requests
 #TODO: Clean up the code, refactor the repeatable stuff
 #TODO: write clear documentation (comments & the readme)
 #TODO: add a 'limit' parameter to the filter endpoint
+#TODO: Maak nieuw pull-request
+#TODO: 'setup sample data' command toevoegen
 
 # For ease of use
 SATAFF = MinorCategory.MinorCategoryChoices

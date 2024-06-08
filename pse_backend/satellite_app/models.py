@@ -1,17 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
-# class MajorCategory(models.Model):
-#     class MajorCategoryChoices(models.TextChoices):
-#         NONE = "None"
-#         SPECIAL_INTEREST = "Special interest Satellites"
-#         WEATHER_AND_EARTH = "Weather & Earth Resources Satellites"
-#         COMMUNICATIONS = "Communications Satellites"
-#         NAVIGATION = "Navigation Satellites"
-#         SCIENTIFIC = "Scientific Satellites"
-#     major_category = models.CharField(max_length=45, choices=MajorCategoryChoices.choices, default=MajorCategoryChoices.NONE)
-
 class MinorCategory(models.Model):
     class MinorCategoryChoices(models.TextChoices):
         NONE = "None"
@@ -67,7 +55,6 @@ class Satellite(models.Model):
     revolutions = models.IntegerField()
     revolutions_per_day = models.FloatField()
 
-    # major_categories = models.ManyToManyField(MajorCategory, related_name='satellites')
     minor_categories = models.ManyToManyField(MinorCategory, related_name='satellites')
 
     class ClassificationChoices(models.TextChoices):

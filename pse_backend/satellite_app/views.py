@@ -37,11 +37,11 @@ def index(request: HttpRequest):
     # Retrieve the MinorCategory objects corresponding to the enum values
     categories = MinorCategory.objects.filter(minor_category__in=query_params)
     
-    # Retrieve the satellites associated with any of these categories
-    sats = Satellite.objects.filter(minor_categories__in=categories)#[:100]
-
-    for sat in sats:
-        print(sat.name)
+    # By default, all satellites will be retrieved.
+    if len(categories) == 0:
+        sats = Satellite.objects.all()
+    else:
+        sats = Satellite.objects.filter(minor_categories__in=categories)#[:100]
 
     return JsonResponse({'satellites': serializedSatellites(sats)})
 
