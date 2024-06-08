@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -13,6 +15,8 @@ from satellite_app.models import Satellite, MinorCategory
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+views_logger = logging.getLogger('views')
 
 """
 Transforms the list of satellites into json format
@@ -32,7 +36,11 @@ def serializedSatellites(satellites):
 
 @api_view(['GET'])
 def index(request: HttpRequest):
+
     query_params = request.GET.keys()
+    views_logger.info("Endpoint 'index' was called " 
+                      + "with query parameters: " +
+                        str(list(query_params)))
 
     # Retrieve the MinorCategory objects corresponding to the enum values
     categories = MinorCategory.objects.filter(minor_category__in=query_params)
@@ -42,10 +50,12 @@ def index(request: HttpRequest):
         sats = Satellite.objects.all()
     else:
         sats = Satellite.objects.filter(minor_categories__in=categories)#[:100]
+        
 
     return JsonResponse({'satellites': serializedSatellites(sats)})
 
 def pull(request: HttpRequest):
-    print("PULLING SPECIAL INTEREST SATELLITES VIA ENDPOINT")
+    views_logger.info("Endpoint 'pull' was called; now forcefully"
+                       + " pulling data from the external API")
     pull_special_interest_satellites()
     return HttpResponse("Pulled special interest satellites")

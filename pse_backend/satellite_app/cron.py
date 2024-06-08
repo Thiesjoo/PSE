@@ -1,8 +1,7 @@
 from tletools import TLE
-
 from satellite_app.models import Satellite, MinorCategory
-
 import requests
+import logging
 
 #TODO: (DONE) Add a filter endpoint for the frontend
 #TODO: Add logging for the cronjobs
@@ -11,6 +10,9 @@ import requests
 #TODO: add a 'limit' parameter to the filter endpoint
 #TODO: Maak nieuw pull-request
 #TODO: 'setup sample data' command toevoegen
+#TODO: Add testing stuff (e.g. pytest)
+
+cron_logger = logging.getLogger('cron')
 
 # For ease of use
 SATAFF = MinorCategory.MinorCategoryChoices
@@ -87,6 +89,8 @@ def determine_request_source(affiliation):
     return request_source
 
 def pull_satellites(affiliation, minor_category_row):
+
+    cron_logger.info("Pulling sattelites of category '" + affiliation + "'")
     
     #NOTE: Use this when testing to avoid spamming the API:
     # data_lines = ['ISS (ZARYA)',
@@ -96,6 +100,11 @@ def pull_satellites(affiliation, minor_category_row):
     request_source = determine_request_source(affiliation)
 
     res = requests.get(request_source)
+
+    if res.status_code != 200:
+        cron_logger.warning('Did not get an OK message from external API.'
+                           + ' Status code: ' + res.status_code + '\n')
+
     data_lines =  res.text.splitlines()         # All data from Celestrak, line by line
 
     tles = []
@@ -137,33 +146,40 @@ def pull_satellites(affiliation, minor_category_row):
             launch_year = int(('20' if int(launch_year) <= 24  else '19') + str(launch_year))
         else:
             launch_year = -1
-
+        
         try:
-            sat = Satellite.objects.get(satellite_catalog_number=tle.norad)
-            sat.name = tle.name
-            sat.line1=tleData[1]
-            sat.line2=tleData[2]
-            sat.satellite_catalog_number=tle.norad
-            sat.classification=tle.classification
-            sat.launch_year=launch_year
-            sat.epoch_year=tle.epoch_year
-            sat.epoch=tle.epoch_day
-            sat.revolutions=tle.rev_num
-            sat.revolutions_per_day=tle.n
+            try:
+                sat = Satellite.objects.get(satellite_catalog_number=tle.norad)
+                sat.name = tle.name
+                sat.line1=tleData[1]
+                sat.line2=tleData[2]
+                sat.satellite_catalog_number=tle.norad
+                sat.classification=tle.classification
+                sat.launch_year=launch_year
+                sat.epoch_year=tle.epoch_year
+                sat.epoch=tle.epoch_day
+                sat.revolutions=tle.rev_num
+                sat.revolutions_per_day=tle.n
 
-            sat.minor_categories.add(minor_category_row)
-            sat.save()
-            # Voeg een row toe aan de tussentabel
-        except Satellite.DoesNotExist:
-            # Creates a new satellite and saves it
-            sat = Satellite(name=tle.name, line1=tleData[1], line2=tleData[2], satellite_catalog_number=tle.norad,
+                sat.minor_categories.add(minor_category_row)
+                sat.save()
+                # Voeg een row toe aan de tussentabel
+            except Satellite.DoesNotExist:
+                # Creates a new satellite and saves it
+                sat = Satellite(name=tle.name, line1=tleData[1], line2=tleData[2], satellite_catalog_number=tle.norad,
                          classification=tle.classification, launch_year=launch_year, epoch_year=tle.epoch_year, 
                          epoch=tle.epoch_day, revolutions=tle.rev_num, revolutions_per_day=tle.n)
-            sat.save()
-            sat.minor_categories.add(minor_category_row)
-            sat.save()
+                sat.save()
+                sat.minor_categories.add(minor_category_row)
+                sat.save()
+        except Exception as e:
+            cron_logger.error("Could not create or update satellite after"
+                               + " fetching data. Full exception: " + str(e))
 
 def pull_special_interest_satellites():
+    cron_logger.info("Pulling 'Special Interest' satellites"
+                      + " from the external API.")
+
     mincat = MinorCategory.objects.get(minor_category=SATAFF.LAST_30_DAYS)
     pull_satellites(SATAFF.LAST_30_DAYS, mincat)
 
@@ -176,8 +192,13 @@ def pull_special_interest_satellites():
     mincat = MinorCategory.objects.get(minor_category=SATAFF.ANALYST_SATELLITES)
     pull_satellites(SATAFF.ANALYST_SATELLITES, mincat)
 
+    cron_logger.info("Succesfully pulled 'Special Interest' satellites.'")
+
 
 def pull_weather_and_earth_satellites():
+    cron_logger.info("Pulling 'Weather and Earth' satellites"
+                      + " from the external API.")
+        
     mincat = MinorCategory.objects.get(minor_category=SATAFF.WEATHER)
     pull_satellites(SATAFF.WEATHER, mincat)
 
@@ -202,8 +223,13 @@ def pull_weather_and_earth_satellites():
     mincat = MinorCategory.objects.get(minor_category=SATAFF.SPIRE)
     pull_satellites(SATAFF.SPIRE, mincat)
 
+    cron_logger.info("Succesfully pulled 'Weather and Earth' satellites.'")
+
 
 def pull_communications_satellites():
+    cron_logger.info("Pulling 'Communications' satellites"
+                      + " from the external API.")
+    
     mincat = MinorCategory.objects.get(minor_category=SATAFF.ACTIVE_GEOSYNCHRONOUS)
     pull_satellites(SATAFF.ACTIVE_GEOSYNCHRONOUS, mincat)
 
@@ -222,8 +248,13 @@ def pull_communications_satellites():
     mincat = MinorCategory.objects.get(minor_category=SATAFF.AMATEUR_RADIO)
     pull_satellites(SATAFF.AMATEUR_RADIO, mincat)
 
+    cron_logger.info("Succesfully pulled 'Communications' satellites.'")
+
 
 def pull_navigation_satellites():
+    cron_logger.info("Pulling 'Navigation' satellites"
+                      + " from the external API.")
+    
     mincat = MinorCategory.objects.get(minor_category=SATAFF.GNSS)
     pull_satellites(SATAFF.GNSS, mincat)
 
@@ -239,8 +270,13 @@ def pull_navigation_satellites():
     mincat = MinorCategory.objects.get(minor_category=SATAFF.BEIDOU)
     pull_satellites(SATAFF.BEIDOU, mincat)
 
+    cron_logger.info("Succesfully pulled 'Navigation' satellites.'")
+
 
 def pull_scientific_satellites():
+    cron_logger.info("Pulling 'Scientific' satellites"
+                      + " from the external API.")
+    
     mincat = MinorCategory.objects.get(minor_category=SATAFF.SPACE_AND_EARTH)
     pull_satellites(SATAFF.SPACE_AND_EARTH, mincat)
 
@@ -252,3 +288,5 @@ def pull_scientific_satellites():
 
     mincat = MinorCategory.objects.get(minor_category=SATAFF.EDUCATION)
     pull_satellites(SATAFF.EDUCATION, mincat)
+
+    cron_logger.info("Succesfully pulled 'Scientific' satellites.'")
