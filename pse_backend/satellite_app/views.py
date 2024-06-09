@@ -53,8 +53,8 @@ def index(request: HttpRequest):
     filter_elements = [element.strip() for element in filter.split(',')]
 
     # Logging
-    views_logger.info("Endpoint 'index' was called with filter elements '"
-                       + str(filter_elements) + "' and a limit of '"
+    views_logger.info("Endpoint 'index' was called with filter elements "
+                       + str(filter_elements) + " and a limit of '"
                          + str(limit) + "'.")
 
     # Retrieve the category objects corresponding to the enum values

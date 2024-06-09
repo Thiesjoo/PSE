@@ -3,8 +3,6 @@ Leuk projectje bouwen!
 
 Link naar [google drive map](https://drive.google.com/drive/folders/1FpHyVIV6NC2sPYABwjx2wBPIRNmxGxJo?usp=drive_link).
 
-
-
 ## Installation instructions frontend
 
 Clone this repository and run the following commands in the terminal:
@@ -16,7 +14,7 @@ npm run dev
 ```
 
 ## Backend manual
-Fetching satellite data directly from external API's can be slow and cumbersome due to the many separate endpoints. Furthermore, API keys (if any) cannot be present in the front-end due to security risks. This project aims to solve these issues through the use of a backend application made using the Django framework. Using this backend, users can make high-speed API calls to fetch satellites with filter criteria and a limit on the amount of satellites to fetch.
+Fetching satellite data directly from external API's can be slow and cumbersome due to the many separate endpoints. Furthermore, API keys (if any) cannot be present in the front-end due to security risks. This project aims to prevent these issues through the use of a backend application made using the Django framework. Using this backend, users can rely on a single endpoint to make high-speed API calls to fetch satellites with filter criteria and a limit on the amount of satellites to fetch.
 
 A Satellite object fetched from the database consists of the following data:
 | Attribute          | Description        |
@@ -100,7 +98,53 @@ To filter on specific satellite categories, use the `filter` parameter and list 
 
 * Note that you can only filter on *minor* categories (e.g. you can't filter on 'Communications').
 
+### Development & setup guide
 
-### Developer guide
+To setup the backend, make sure to follow all the steps below:
 
-To setup the stuff...
+First, create a .env file in the root folder. In there, paste the following contents:
+```.env
+SECRET_KEY=<your secret key>
+DEBUG=<'true' or 'false' depending on whether it's in a production or development environment>
+```
+Then, install the dependencies listed in requirements.txt.
+
+Then, navigate to the `pse_backend` directory and run the following commands to generate the database:
+```
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
+
+Since the categories are stored as actual rows in the database, we need to generate these. To do this, run the following command:
+```
+python3 manage.py gen_satcats
+```
+
+The backend makes use of the django-crontab package to handle certain cronjobs. For these to work however, we need to tell the crontab package to use them. To do this, enter the following command to add our cronjobs:
+```
+python3 manage.py crontab add
+```
+
+To make sure they were added correctly, you can run the `show` command:
+```
+python3 manage.py crontab show
+```
+
+Last but not least, we need to create a superuser account so that we can always log into our database and see our data. To do this, run the following command and follow the steps prompted from there:
+```
+python3 manage.py createsuperuser
+```
+
+Finally, to run the server, run the following command:
+```
+python3 manage.py runserver
+```
+
+Your instance of the backend should now be running. Make sure to read the section below about logging too to understand how to track the servers' activities.
+
+#### Logs
+There are two main activities that are logged:
+1. **Cronjob activities**: Everytime a cronjob is activated on the server to fetch some satellite data from an external source. This is especially important because these crons are performed at nighttimes, and tracking these activities would be near impossible without logging them.
+2. **API calls**: API calls that are made to the backend (from the front-end, presumably). This helps us keep track of how many, and from where, and at which times, API calls are made. 
+
+While these logs are printed to the console, they are also stored in logging files as `cron.log` and `views.log` respectively. They are located at `pse_backend/logs/`.
