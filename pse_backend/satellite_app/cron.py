@@ -6,15 +6,22 @@ import logging
 #TODO: (DONE) Add a filter endpoint for the frontend
 #TODO: (DONE) Add logging for the cronjobs
 
-#TODO: write clear documentation (comments & the readme)
+#TODO: (DONE) write clear documentation (comments & the readme)
 #TODO: Clean up the code, refactor the repeatable stuff
-#TODO: Maak nieuwe pull-request
 #TODO: (DONE) add a 'limit' parameter to the filter endpoint
+#TODO: Maak nieuwe pull-request
 
 #TODO: 'setup sample data' command toevoegen
 #TODO: Add testing stuff (e.g. pytest)
 
 #TODO: krijg de backend online/live
+
+"""
+File description:
+Contains several cronjobs responsible for fetching different categories of 
+satellites. To see how these cronjobs are scheduled, go to 'CRONJOBS' in 
+settings.py.
+"""
 
 # Sets up the logger (see /logs/cron.logs)
 cron_logger = logging.getLogger('cron')
@@ -22,12 +29,19 @@ cron_logger = logging.getLogger('cron')
 # For ease of use
 SATCAT = MinorCategory.MinorCategoryChoices
 
-def determine_request_source(affiliation):
+def determine_request_source(category):
+    """
+    Returns a URL corresponding to the given satellite 
+    category. Calling this URL will fetch the 
+    satellites of that category.
+    """
+
+    # The source of our data
     API_URL = 'https://celestrak.org/NORAD/elements/gp.php?'
 
     # Do not delete for any reason. Copy/pasting 
     # all this info was torture to me.
-    match affiliation:
+    match category:
         # Special interest
         case SATCAT.LAST_30_DAYS:
             request_source = API_URL + 'GROUP=last-30-days&FORMAT=tle'
@@ -93,36 +107,49 @@ def determine_request_source(affiliation):
             request_source = API_URL + 'GROUP=education&FORMAT=tle'
     return request_source
 
-def pull_satellites(affiliation, minor_category_row):
+def pull_satellites(category, category_object):
+    """
+    Pulls satellites of a given category from the source 
+    and puts them into our database as 'Satellite' objects. 
+    'category' is a string containing the name of the 
+    category, while 'category_object' is an actual 
+    category database row. The string is used to fetch the
+    URL corresponding to that category while the database 
+    row is used to establish a foreign-key relationship 
+    between a satellite and a category.
+    """
 
-    cron_logger.info("Pulling sattelites of category '" + affiliation + "'")
+    cron_logger.info("Pulling sattelites of category '" + category + "'")
     
     #NOTE: Use this when testing to avoid spamming the API:
     # data_lines = ['ISS (ZARYA)',
     #                '1 25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927',
     #                '2 25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537']
 
-    request_source = determine_request_source(affiliation)
+    # Retrieve the database URL
+    request_source = determine_request_source(category)
 
+    # Make the request
     res = requests.get(request_source)
 
+    # In case something goes wrong, log it
     if res.status_code != 200:
         cron_logger.warning('Did not get an OK message from external API.'
                            + ' Status code: ' + res.status_code + '\n')
+        
+    # All data from Celestrak, split line-by-line
+    data_lines =  res.text.splitlines()
 
-    data_lines =  res.text.splitlines()         # All data from Celestrak, line by line
-
+    # Some utility variables to process the lines
     tles = []
     current_name = ''
     current_line1 = ''
-
     counter = 0
 
     # Processes the fetched data and fills the 'tles' list with tles
     for line in data_lines:
         line = line.replace('\r', '')
         line = line.strip()
-        # print(line)
 
         if counter == 0:
             current_name = line
@@ -154,6 +181,7 @@ def pull_satellites(affiliation, minor_category_row):
         
         try:
             try:
+                # If the satellite already exists, simply update its properties
                 sat = Satellite.objects.get(satellite_catalog_number=tle.norad)
                 sat.name = tle.name
                 sat.line1=tleData[1]
@@ -166,22 +194,26 @@ def pull_satellites(affiliation, minor_category_row):
                 sat.revolutions=tle.rev_num
                 sat.revolutions_per_day=tle.n
 
-                sat.minor_categories.add(minor_category_row)
+                sat.minor_categories.add(category_object)
                 sat.save()
                 # Voeg een row toe aan de tussentabel
             except Satellite.DoesNotExist:
-                # Creates a new satellite and saves it
+                # Does the Satellite not exist? Then create a new satellite and save it
                 sat = Satellite(name=tle.name, line1=tleData[1], line2=tleData[2], satellite_catalog_number=tle.norad,
                          classification=tle.classification, launch_year=launch_year, epoch_year=tle.epoch_year, 
                          epoch=tle.epoch_day, revolutions=tle.rev_num, revolutions_per_day=tle.n)
-                sat.save()
-                sat.minor_categories.add(minor_category_row)
+                sat.save() # <- Yes, it is necessary to do this twice. Do not remove.
+                sat.minor_categories.add(category_object)
                 sat.save()
         except Exception as e:
             cron_logger.error("Could not create or update satellite after"
                                + " fetching data. Full exception: " + str(e))
 
 def pull_special_interest_satellites():
+    """
+    Cronjob method. Pulls all special interest satellites.
+    """
+
     cron_logger.info("Pulling 'Special Interest' satellites"
                       + " from the external API.")
 
@@ -201,6 +233,10 @@ def pull_special_interest_satellites():
 
 
 def pull_weather_and_earth_satellites():
+    """
+    Cronjob method. Pulls all 'weather and earth' type satellites.
+    """
+     
     cron_logger.info("Pulling 'Weather and Earth' satellites"
                       + " from the external API.")
         
@@ -232,6 +268,10 @@ def pull_weather_and_earth_satellites():
 
 
 def pull_communications_satellites():
+    """
+    Cronjob method. Pulls all communications type satellites.
+    """
+    
     cron_logger.info("Pulling 'Communications' satellites"
                       + " from the external API.")
     
@@ -257,6 +297,10 @@ def pull_communications_satellites():
 
 
 def pull_navigation_satellites():
+    """
+    Cronjob method. Pulls all navigational-type satellites.
+    """
+        
     cron_logger.info("Pulling 'Navigation' satellites"
                       + " from the external API.")
     
@@ -279,6 +323,10 @@ def pull_navigation_satellites():
 
 
 def pull_scientific_satellites():
+    """
+    Cronjob method. Pulls all scientific satellites.
+    """
+    
     cron_logger.info("Pulling 'Scientific' satellites"
                       + " from the external API.")
     

@@ -115,7 +115,7 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 ```
 
-Since the categories are stored as actual rows in the database, we need to generate these. To do this, run the following command:
+Since the satellite categories are stored as actual rows in the database, we need to generate these. To do this, run the following command:
 ```
 python3 manage.py gen_satcats
 ```
@@ -130,12 +130,12 @@ To make sure they were added correctly, you can run the `show` command:
 python3 manage.py crontab show
 ```
 
-Last but not least, we need to create a superuser account so that we can always log into our database and see our data. To do this, run the following command and follow the steps prompted from there:
+Before we can run the server, we need to create a superuser account so that we can always log into our database and see our data. To do this, run the following command and follow the steps prompted from there:
 ```
 python3 manage.py createsuperuser
 ```
 
-Finally, to run the server, run the following command:
+Finally, to start the server, run the following command:
 ```
 python3 manage.py runserver
 ```
@@ -144,7 +144,7 @@ Your instance of the backend should now be running. Make sure to read the sectio
 
 #### Logs
 There are two main activities that are logged:
-1. **Cronjob activities**: Everytime a cronjob is activated on the server to fetch some satellite data from an external source. This is especially important because these crons are performed at nighttimes, and tracking these activities would be near impossible without logging them.
+1. **Cronjob activities**: Everytime a cronjob is activated on the server to fetch some satellite data from an external source. This is especially important because these crons are performed at nighttimes, and tracking these activities would be near impossible without logging them. If anything goes wrong during fetching or creating satellites, the logs will show where and when.
 2. **API calls**: API calls that are made to the backend (from the front-end, presumably). This helps us keep track of how many, and from where, and at which times, API calls are made. 
 
 While these logs are printed to the console, they are also stored in logging files as `cron.log` and `views.log` respectively. They are located at `pse_backend/logs/`.
