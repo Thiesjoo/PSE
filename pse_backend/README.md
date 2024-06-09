@@ -11,7 +11,7 @@ Also, make sure to install the dependencies in requirements.txt
 
 Lastly, make sure to run the following command **once** to populate your database with satellite-categories:
 ```
-python3 manage.py setup_minor_cats
+python3 manage.py gen_satcats
 ```
 
 ## Developing the backend

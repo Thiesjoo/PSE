@@ -4,18 +4,21 @@ import requests
 import logging
 
 #TODO: (DONE) Add a filter endpoint for the frontend
-#TODO: Add logging for the cronjobs
-#TODO: Clean up the code, refactor the repeatable stuff
+#TODO: (DONE) Add logging for the cronjobs
+
 #TODO: write clear documentation (comments & the readme)
+#TODO: Clean up the code, refactor the repeatable stuff
+#TODO: Maak nieuwe pull-request
 #TODO: add a 'limit' parameter to the filter endpoint
-#TODO: Maak nieuw pull-request
+
 #TODO: 'setup sample data' command toevoegen
 #TODO: Add testing stuff (e.g. pytest)
 
+# Sets up the logger (see /logs/cron.logs)
 cron_logger = logging.getLogger('cron')
 
 # For ease of use
-SATAFF = MinorCategory.MinorCategoryChoices
+SATCAT = MinorCategory.MinorCategoryChoices
 
 def determine_request_source(affiliation):
     API_URL = 'https://celestrak.org/NORAD/elements/gp.php?'
@@ -24,67 +27,67 @@ def determine_request_source(affiliation):
     # all this info was torture to me.
     match affiliation:
         # Special interest
-        case SATAFF.LAST_30_DAYS:
+        case SATCAT.LAST_30_DAYS:
             request_source = API_URL + 'GROUP=last-30-days&FORMAT=tle'
-        case SATAFF.SPACE_STATIONS:
+        case SATCAT.SPACE_STATIONS:
             request_source = API_URL + 'GROUP=stations&FORMAT=tle'
-        case SATAFF.ACTIVE:
+        case SATCAT.ACTIVE:
             request_source = API_URL + 'GROUP=active&FORMAT=tle'
-        case SATAFF.ANALYST_SATELLITES:
+        case SATCAT.ANALYST_SATELLITES:
             request_source = API_URL + 'GROUP=analyst&FORMAT=tle'
 
         # Weather and earth
-        case SATAFF.WEATHER:
+        case SATCAT.WEATHER:
             request_source = API_URL + 'GROUP=weather&FORMAT=tle'
-        case SATAFF.NOAA:
+        case SATCAT.NOAA:
             request_source = API_URL + 'GROUP=noaa&FORMAT=tle'
-        case SATAFF.EARTH_RESOURCES:
+        case SATCAT.EARTH_RESOURCES:
             request_source = API_URL + 'GROUP=resource&FORMAT=tle'
-        case SATAFF.SEARCH_AND_RESCUE:
+        case SATCAT.SEARCH_AND_RESCUE:
             request_source = API_URL + 'GROUP=sarsat&FORMAT=tle'
-        case SATAFF.DISASTER_MONITORING:
+        case SATCAT.DISASTER_MONITORING:
             request_source = API_URL + 'GROUP=dmc&FORMAT=tle'
-        case SATAFF.ARGOS:
+        case SATCAT.ARGOS:
             request_source = API_URL + 'GROUP=argos&FORMAT=tle'
-        case SATAFF.PLANET:
+        case SATCAT.PLANET:
             request_source = API_URL + 'GROUP=planet&FORMAT=tle'
-        case SATAFF.SPIRE:
+        case SATCAT.SPIRE:
             request_source = API_URL + 'GROUP=spire&FORMAT=tle'
 
         # Communication
-        case SATAFF.ACTIVE_GEOSYNCHRONOUS:
+        case SATCAT.ACTIVE_GEOSYNCHRONOUS:
             request_source = API_URL + 'GROUP=geo&FORMAT=tle'
-        case SATAFF.STARLINK:
+        case SATCAT.STARLINK:
             request_source = API_URL + 'GROUP=starlink&FORMAT=tle'
-        case SATAFF.IRIDIUM:
+        case SATCAT.IRIDIUM:
             request_source = API_URL + 'GROUP=iridium&FORMAT=tle'
-        case SATAFF.INTELSAT:
+        case SATCAT.INTELSAT:
             request_source = API_URL + 'GROUP=intelsat&FORMAT=tle'
-        case SATAFF.SWARM:
+        case SATCAT.SWARM:
             request_source = API_URL + 'GROUP=swarm&FORMAT=tle'
-        case SATAFF.AMATEUR_RADIO:
+        case SATCAT.AMATEUR_RADIO:
             request_source = API_URL + 'GROUP=amateur&FORMAT=tle'
 
         # Navigation
-        case SATAFF.GNSS:
+        case SATCAT.GNSS:
             request_source = API_URL + 'GROUP=gnss&FORMAT=tle'
-        case SATAFF.GPS:
+        case SATCAT.GPS:
             request_source = API_URL + 'GROUP=gps-ops&FORMAT=tle'
-        case SATAFF.GLONASS:
+        case SATCAT.GLONASS:
             request_source = API_URL + 'GROUP=glo-ops&FORMAT=tle'
-        case SATAFF.GALILEO:
+        case SATCAT.GALILEO:
             request_source = API_URL + 'GROUP=galileo&FORMAT=tle'
-        case SATAFF.BEIDOU:
+        case SATCAT.BEIDOU:
             request_source = API_URL + 'GROUP=beidou&FORMAT=tle'
 
         # Scientific
-        case SATAFF.SPACE_AND_EARTH:
+        case SATCAT.SPACE_AND_EARTH:
             request_source = API_URL + 'GROUP=science&FORMAT=tle'
-        case SATAFF.GEODETICS:
+        case SATCAT.GEODETICS:
             request_source = API_URL + 'GROUP=geodetic&FORMAT=tle'
-        case SATAFF.ENGINEERING:
+        case SATCAT.ENGINEERING:
             request_source = API_URL + 'GROUP=engineering&FORMAT=tle'
-        case SATAFF.EDUCATION:
+        case SATCAT.EDUCATION:
             request_source = API_URL + 'GROUP=education&FORMAT=tle'
     return request_source
 
@@ -180,113 +183,113 @@ def pull_special_interest_satellites():
     cron_logger.info("Pulling 'Special Interest' satellites"
                       + " from the external API.")
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.LAST_30_DAYS)
-    pull_satellites(SATAFF.LAST_30_DAYS, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.LAST_30_DAYS)
+    pull_satellites(SATCAT.LAST_30_DAYS, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.SPACE_STATIONS)
-    pull_satellites(SATAFF.SPACE_STATIONS, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.SPACE_STATIONS)
+    pull_satellites(SATCAT.SPACE_STATIONS, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.ACTIVE)
-    pull_satellites(SATAFF.ACTIVE, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.ACTIVE)
+    pull_satellites(SATCAT.ACTIVE, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.ANALYST_SATELLITES)
-    pull_satellites(SATAFF.ANALYST_SATELLITES, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.ANALYST_SATELLITES)
+    pull_satellites(SATCAT.ANALYST_SATELLITES, mincat)
 
-    cron_logger.info("Succesfully pulled 'Special Interest' satellites.'")
+    cron_logger.info("Succesfully pulled 'Special Interest' satellites.")
 
 
 def pull_weather_and_earth_satellites():
     cron_logger.info("Pulling 'Weather and Earth' satellites"
                       + " from the external API.")
         
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.WEATHER)
-    pull_satellites(SATAFF.WEATHER, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.WEATHER)
+    pull_satellites(SATCAT.WEATHER, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.NOAA)
-    pull_satellites(SATAFF.NOAA, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.NOAA)
+    pull_satellites(SATCAT.NOAA, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.EARTH_RESOURCES)
-    pull_satellites(SATAFF.EARTH_RESOURCES, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.EARTH_RESOURCES)
+    pull_satellites(SATCAT.EARTH_RESOURCES, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.SEARCH_AND_RESCUE)
-    pull_satellites(SATAFF.SEARCH_AND_RESCUE, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.SEARCH_AND_RESCUE)
+    pull_satellites(SATCAT.SEARCH_AND_RESCUE, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.DISASTER_MONITORING)
-    pull_satellites(SATAFF.DISASTER_MONITORING, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.DISASTER_MONITORING)
+    pull_satellites(SATCAT.DISASTER_MONITORING, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.ARGOS)
-    pull_satellites(SATAFF.ARGOS, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.ARGOS)
+    pull_satellites(SATCAT.ARGOS, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.PLANET)
-    pull_satellites(SATAFF.PLANET, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.PLANET)
+    pull_satellites(SATCAT.PLANET, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.SPIRE)
-    pull_satellites(SATAFF.SPIRE, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.SPIRE)
+    pull_satellites(SATCAT.SPIRE, mincat)
 
-    cron_logger.info("Succesfully pulled 'Weather and Earth' satellites.'")
+    cron_logger.info("Succesfully pulled 'Weather and Earth' satellites.")
 
 
 def pull_communications_satellites():
     cron_logger.info("Pulling 'Communications' satellites"
                       + " from the external API.")
     
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.ACTIVE_GEOSYNCHRONOUS)
-    pull_satellites(SATAFF.ACTIVE_GEOSYNCHRONOUS, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.ACTIVE_GEOSYNCHRONOUS)
+    pull_satellites(SATCAT.ACTIVE_GEOSYNCHRONOUS, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.STARLINK)
-    pull_satellites(SATAFF.STARLINK, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.STARLINK)
+    pull_satellites(SATCAT.STARLINK, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.IRIDIUM)
-    pull_satellites(SATAFF.IRIDIUM, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.IRIDIUM)
+    pull_satellites(SATCAT.IRIDIUM, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.INTELSAT)
-    pull_satellites(SATAFF.INTELSAT, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.INTELSAT)
+    pull_satellites(SATCAT.INTELSAT, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.SWARM)
-    pull_satellites(SATAFF.SWARM, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.SWARM)
+    pull_satellites(SATCAT.SWARM, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.AMATEUR_RADIO)
-    pull_satellites(SATAFF.AMATEUR_RADIO, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.AMATEUR_RADIO)
+    pull_satellites(SATCAT.AMATEUR_RADIO, mincat)
 
-    cron_logger.info("Succesfully pulled 'Communications' satellites.'")
+    cron_logger.info("Succesfully pulled 'Communications' satellites.")
 
 
 def pull_navigation_satellites():
     cron_logger.info("Pulling 'Navigation' satellites"
                       + " from the external API.")
     
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.GNSS)
-    pull_satellites(SATAFF.GNSS, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.GNSS)
+    pull_satellites(SATCAT.GNSS, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.GPS)
-    pull_satellites(SATAFF.GPS, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.GPS)
+    pull_satellites(SATCAT.GPS, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.GLONASS)
-    pull_satellites(SATAFF.GLONASS, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.GLONASS)
+    pull_satellites(SATCAT.GLONASS, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.GALILEO)
-    pull_satellites(SATAFF.GALILEO, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.GALILEO)
+    pull_satellites(SATCAT.GALILEO, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.BEIDOU)
-    pull_satellites(SATAFF.BEIDOU, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.BEIDOU)
+    pull_satellites(SATCAT.BEIDOU, mincat)
 
-    cron_logger.info("Succesfully pulled 'Navigation' satellites.'")
+    cron_logger.info("Succesfully pulled 'Navigation' satellites.")
 
 
 def pull_scientific_satellites():
     cron_logger.info("Pulling 'Scientific' satellites"
                       + " from the external API.")
     
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.SPACE_AND_EARTH)
-    pull_satellites(SATAFF.SPACE_AND_EARTH, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.SPACE_AND_EARTH)
+    pull_satellites(SATCAT.SPACE_AND_EARTH, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.GEODETICS)
-    pull_satellites(SATAFF.GEODETICS, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.GEODETICS)
+    pull_satellites(SATCAT.GEODETICS, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.ENGINEERING)
-    pull_satellites(SATAFF.ENGINEERING, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.ENGINEERING)
+    pull_satellites(SATCAT.ENGINEERING, mincat)
 
-    mincat = MinorCategory.objects.get(minor_category=SATAFF.EDUCATION)
-    pull_satellites(SATAFF.EDUCATION, mincat)
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.EDUCATION)
+    pull_satellites(SATCAT.EDUCATION, mincat)
 
-    cron_logger.info("Succesfully pulled 'Scientific' satellites.'")
+    cron_logger.info("Succesfully pulled 'Scientific' satellites.")

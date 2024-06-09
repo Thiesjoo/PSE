@@ -6,8 +6,13 @@ SATAFF = MinorCategory.MinorCategoryChoices
 
 from django.core.management.base import BaseCommand
 
-#TODO: Make belows' uglyass code shorter
+#NOTE: DEPRECATED FILE. DO NOT USE.
 
+"""
+Description: This command-script populates the database with rows of all
+ minor categories used in our application. These categories are 
+ then used by the satellites to describe their nature.
+"""
 class Command(BaseCommand):
     help = 'Run custom script'
 
