@@ -9,10 +9,12 @@ import logging
 #TODO: write clear documentation (comments & the readme)
 #TODO: Clean up the code, refactor the repeatable stuff
 #TODO: Maak nieuwe pull-request
-#TODO: add a 'limit' parameter to the filter endpoint
+#TODO: (DONE) add a 'limit' parameter to the filter endpoint
 
 #TODO: 'setup sample data' command toevoegen
 #TODO: Add testing stuff (e.g. pytest)
+
+#TODO: krijg de backend online/live
 
 # Sets up the logger (see /logs/cron.logs)
 cron_logger = logging.getLogger('cron')
