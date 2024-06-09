@@ -1,17 +1,9 @@
 import logging
 
-from django.shortcuts import render
-
-# Create your views here.
-
 from django.http import HttpResponse, HttpRequest, JsonResponse
 
 from satellite_app.cron import pull_special_interest_satellites
 from satellite_app.models import Satellite, MinorCategory
-
-# def index(request: HttpRequest):
-#     all_satellites = Satellite.objects.all()
-#     return HttpResponse(all_satellites, content_type="text/plain")
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -37,7 +29,8 @@ def serializedSatellites(satellites):
             'epoch': sat.epoch,
             'revolutions': sat.revolutions,
             'revolutions_per_day': sat.revolutions_per_day,
-            'categories': [cat.minor_category for cat in sat.minor_categories.all()]
+            'categories': [cat.minor_category for cat in sat.minor_categories.all()],
+            'classification': sat.classification
             } for sat in satellites]
 
 @api_view(['GET'])
