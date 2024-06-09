@@ -3,19 +3,6 @@ from satellite_app.models import Satellite, MinorCategory
 import requests
 import logging
 
-#TODO: (DONE) Add a filter endpoint for the frontend
-#TODO: (DONE) Add logging for the cronjobs
-
-#TODO: (DONE) write clear documentation (comments & the readme)
-#TODO: Clean up the code, refactor the repeatable stuff
-#TODO: (DONE) add a 'limit' parameter to the filter endpoint
-#TODO: Maak nieuwe pull-request
-
-#TODO: 'setup sample data' command toevoegen
-#TODO: Add testing stuff (e.g. pytest)
-
-#TODO: krijg de backend online/live
-
 """
 File description:
 Contains several cronjobs responsible for fetching different categories of 
