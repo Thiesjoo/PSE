@@ -2,6 +2,7 @@ from tletools import TLE
 from satellite_app.models import Satellite, MinorCategory
 import requests
 import logging
+import csv
 
 """
 File description:
@@ -330,3 +331,23 @@ def pull_scientific_satellites():
     pull_satellites(SATCAT.EDUCATION, mincat)
 
     cron_logger.info("Succesfully pulled 'Scientific' satellites.")
+
+def pull_country_names():
+    mydict = {}
+    with open('util/country_codes.csv', mode='r') as infile:
+        reader = csv.reader(infile)
+        mydict = {rows[0]:rows[2] for rows in reader}
+
+    csv_data = requests.get('https://celestrak.org/pub/satcat.csv')
+    csv_data = csv_data.text.splitlines()
+
+    for line in csv_data:
+        line = line.split(',')
+        try:
+            sat = Satellite.objects.get(satellite_catalog_number=line[2])
+            sat.country = mydict[line[5]]
+            sat.save()
+        except Satellite.DoesNotExist:
+            cron_logger.warning("Could not find satellite with catalog number " + line[2] + " to add country name to.")
+        
+        
