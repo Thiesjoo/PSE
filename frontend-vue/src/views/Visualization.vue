@@ -32,6 +32,8 @@ props.simulation.addEventListener('select', (sat) => {
         <h1>{{react.name}}</h1>
         <p>{{react.satData.satnum}}</p>
     </div>
+
+    <button @click="props.simulation.setTimeSpeed(1009)"> boe</button>
 </template>
 
 <style>
