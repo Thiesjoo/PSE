@@ -1,7 +1,11 @@
 from django.db import models
 
 class MinorCategory(models.Model):
+    class Meta:
+        verbose_name_plural = 'Minor Categories'
+
     class MinorCategoryChoices(models.TextChoices):
+
         NONE = "None"
 
         # Special interest types:
