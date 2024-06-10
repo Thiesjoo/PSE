@@ -161,16 +161,19 @@ export class ThreeSimulation {
         this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
 
+    private popupInParent(element: HTMLElement): boolean {
+        if (element.id === "pop-up") return true;
+        if (element.parentNode) return this.popupInParent(element.parentNode as HTMLElement);
+        return false;
+    }
+
+
     private onClick(event: Event) {
-        // TODO: Port to new popup system?
-        // if (
-        //     event.target &&
-        //     //@ts-ignore // This is to prevent the popup from closing when clicking on the popup itself
-        //     (event.target.id === 'pop-up' ||
-        //         //@ts-ignore
-        //         event.target.parentNode.id === 'pop-up')
-        // )
-        //     return;
+        if (
+            event.target && this.popupInParent(event.target as HTMLElement)
+        )
+            return;
+
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
         

@@ -11,8 +11,8 @@
 
 
         const rawSatData = await fetchTLEs();
-        const sats = Satellite.fromMultipleTLEs(rawSatData);
-        
+        const sats = Satellite.fromMultipleTLEs(rawSatData).slice(0, 5000);
+
         sats.forEach(sat => props.simulation.addSatellite(sat));
         props.simulation.setTimeSpeed(20)
 
@@ -57,6 +57,7 @@
 
 <template>
 
+    <!-- Leave the pop-up id, it is used to prevent click through's -->
     <div class="pop-up"
          id="pop-up"
          v-if="react">

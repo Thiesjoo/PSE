@@ -87,23 +87,20 @@ export class Satellite {
       )
     }
 
-    if (cacheMeshes['satClickArea'] === undefined) {
-      cacheMeshes['satClickArea'] = new THREE.OctahedronGeometry(
+    if (cacheMeshes['satClickMesh'] === undefined) {
+      const satClickArea = new THREE.OctahedronGeometry(
         (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM / 2,
         5
       )
-    }
-
-    if (cacheMeshes['satMaterialClick'] === undefined) {
-      cacheMeshes['satMaterialClick'] = new THREE.MeshLambertMaterial({
+      const satMaterialClick = new THREE.MeshLambertMaterial({
         transparent: true,
         opacity: 0
       })
+
+      cacheMeshes['satClickMesh'] = new THREE.InstancedMesh(satClickArea, satMaterialClick, 5000)
     }
 
     const satGeometry = cacheMeshes['satGeometry']
-    const satClickArea = cacheMeshes['satClickArea']
-    const satMaterialClick = cacheMeshes['satMaterialClick']
 
     let color = SAT_COLOR
     if (selected) {
@@ -113,16 +110,17 @@ export class Satellite {
     }
 
     if (cacheMeshes['satMaterial' + color] === undefined) {
-        cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
-            color,
-            transparent: true,
-            opacity: 0.7
-        })
+      cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
+        color,
+        transparent: true,
+        opacity: 0.7
+      })
     }
 
     const satMaterial = cacheMeshes['satMaterial' + color]
     const sat = new THREE.Mesh(satGeometry, satMaterial)
-    const clickSat = new THREE.Mesh(satClickArea, satMaterialClick)
+
+    const clickSat = cacheMeshes['satClickMesh']
 
     const group = new THREE.Group()
     group.add(sat)
