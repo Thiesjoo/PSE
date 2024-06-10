@@ -6,8 +6,8 @@ import * as THREE from "three";
 import { EARTH_RADIUS_KM, SAT_COLOR, SAT_COLOR_HOVER, SAT_COLOR_SELECTED, SAT_SIZE, SAT_SIZE_CLICK } from "./common/constants";
 
 export class Satellite {
-    private name!: string;
-    private satData!: SatRec;
+    public name!: string;
+    public satData!: SatRec;
     public currentPosition: PositionAndVelocity | null = null;
 
     get id(): string {

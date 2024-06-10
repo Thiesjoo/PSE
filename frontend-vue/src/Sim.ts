@@ -33,6 +33,8 @@ export class ThreeSimulation {
 
     private currentlyHovering: Satellite | null = null;
     private currentlySelected: Satellite | null = null;
+
+    private eventListeners: Record<string, ((...args: any[]) => void)[]> = {};
     
 
     constructor() {
@@ -176,8 +178,10 @@ export class ThreeSimulation {
             if (!satData) return;
 
             this.currentlySelected = satData;
-            // TODO: Emit Event;
+
+            this.eventListeners['select']?.forEach(cb => cb(satData));
         } else {
+            this.eventListeners['select']?.forEach(cb => cb(null));
             this.currentlySelected = null;
         }
     }
@@ -208,7 +212,11 @@ export class ThreeSimulation {
     // select(sat | undefined )
 
     addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void) {
-        // TODO
+        if (!this.eventListeners[event]) {
+            this.eventListeners[event] = [];
+        }
+
+        this.eventListeners[event].push(callback);
     }
 
 }
