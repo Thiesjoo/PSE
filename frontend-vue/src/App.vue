@@ -24,10 +24,18 @@
     </header>
 
     <div class="content">
-        <RouterView v-slot="{ Component }">
-            <component :is="Component"
-                       :simulation="simulation" />
-        </RouterView>
+        <Suspense>
+            <RouterView v-slot="{ Component }">
+                <component :is="Component"
+                        :simulation="simulation" />
+            </RouterView>
+
+            <template #fallback>
+                <div class="loading">
+                    <p>Loading...</p>
+                </div>
+            </template>
+        </Suspense>
     </div>
     <canvas ref="canvas"></canvas>
 </template>
@@ -41,6 +49,19 @@
         position: absolute;
         top: 0;
         left: 0;
+    }
+
+    .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+
+        p {
+            font-size: 2em;
+
+        }
     }
 
     .content {
