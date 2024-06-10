@@ -4,11 +4,14 @@ import type { Group } from "three";
 
 import * as THREE from "three";
 import { EARTH_RADIUS_KM, SAT_COLOR, SAT_COLOR_HOVER, SAT_COLOR_SELECTED, SAT_SIZE, SAT_SIZE_CLICK } from "./common/constants";
+import { reactive } from "vue";
 
 export class Satellite {
     public name!: string;
     public satData!: SatRec;
     public currentPosition: PositionAndVelocity | null = null;
+    public realPosition = reactive({ lat: 0, lng: 0, alt: 0 });
+    public realSpeed = reactive({ x: 0, y: 0, z: 0 });
 
     get id(): string {
         return this.satData.satnum;
@@ -38,11 +41,14 @@ export class Satellite {
         if (eci.position) {
             const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime);
     
+            this.realPosition.lat = degreesLat(gdPos.latitude);
+            this.realPosition.lng = degreesLong(gdPos.longitude);
+            this.realPosition.alt = gdPos.height 
+
             return {
                 lat: degreesLat(gdPos.latitude),
                 lng: degreesLong(gdPos.longitude),
                 alt: (gdPos.height / EARTH_RADIUS_KM) * 3,
-                realAlt: gdPos.height,
                 id: this.id,
             };
         } else {

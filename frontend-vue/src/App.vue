@@ -35,12 +35,17 @@
 <style scoped
        lang="scss">
     canvas {
-        width: 100vh;
+        width: 100vw;
         height: 100vh;
         display: block;
         position: absolute;
         top: 0;
         left: 0;
+    }
+
+    .content {
+        z-index: 101;
+        padding-top: 3em;
     }
 
     header {
