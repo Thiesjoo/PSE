@@ -87,48 +87,52 @@ export class Satellite {
       )
     }
 
-    if (cacheMeshes['satClickMesh'] === undefined) {
-      const satClickArea = new THREE.OctahedronGeometry(
+    if (cacheMeshes['satMaterialClick'] === undefined) {
+      cacheMeshes["satMaterialClick"] = new THREE.MeshLambertMaterial({
+        transparent: true,
+        opacity: 0.0001
+      })
+    }
+ 
+    if (cacheMeshes['satClickArea'] === undefined) {
+      cacheMeshes['satClickArea'] = new THREE.OctahedronGeometry(
         (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM / 2,
         5
       )
-      const satMaterialClick = new THREE.MeshLambertMaterial({
-        transparent: true,
-        opacity: 0
-      })
-
-      cacheMeshes['satClickMesh'] = new THREE.InstancedMesh(satClickArea, satMaterialClick, 5000)
     }
 
     const satGeometry = cacheMeshes['satGeometry']
-
+    
     let color = SAT_COLOR
     if (selected) {
-      color = SAT_COLOR_SELECTED
+        color = SAT_COLOR_SELECTED
     } else if (hover) {
-      color = SAT_COLOR_HOVER
+        color = SAT_COLOR_HOVER
     }
-
+    
     if (cacheMeshes['satMaterial' + color] === undefined) {
-      cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
-        color,
-        transparent: true,
-        opacity: 0.7
-      })
+        cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
+            color,
+            transparent: true,
+            opacity: 0.7
+        })
     }
+    
+    const satMaterialClick = cacheMeshes['satMaterialClick']
+    const satClickArea = cacheMeshes['satClickArea']
 
     const satMaterial = cacheMeshes['satMaterial' + color]
     const sat = new THREE.Mesh(satGeometry, satMaterial)
+    const satClick = new THREE.Mesh(satClickArea, satMaterialClick)
 
-    const clickSat = cacheMeshes['satClickMesh']
 
     const group = new THREE.Group()
     group.add(sat)
-    group.add(clickSat)
+    group.add(satClick)
 
     group.userData = { satellite: this.id }
     sat.userData = { satellite: this.id }
-    clickSat.userData = { satellite: this.id }
+    satClick.userData = { satellite: this.id }
 
     return group
   }

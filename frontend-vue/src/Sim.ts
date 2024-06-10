@@ -176,6 +176,7 @@ export class ThreeSimulation {
 
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
+        console.log(intersects);
         
         if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
             const satData = this.satellites[intersects[0].object.userData.satellite];

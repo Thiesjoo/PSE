@@ -2,7 +2,7 @@
         lang="ts">
         import { Satellite } from '@/Satellite';
         import { ThreeSimulation } from '@/Sim';
-        import { computed, ref } from 'vue';
+        import { computed, ref, watch } from 'vue';
         import { fetchTLEs } from '@/api/celestrak';
 
         const props = defineProps<{
@@ -14,7 +14,10 @@
         const sats = Satellite.fromMultipleTLEs(rawSatData).slice(0, 5000);
 
         sats.forEach(sat => props.simulation.addSatellite(sat));
-        props.simulation.setTimeSpeed(20)
+        let speed = ref(1);
+        watch(speed, (newSpeed) => {
+            props.simulation.setTimeSpeed(newSpeed);
+        })
 
 
         const react = ref(undefined as Satellite | undefined);
@@ -86,7 +89,7 @@
         <p id="SatelliteEpoch">{{ epoch }}</p>
     </div>
 
-    <button @click="props.simulation.setTimeSpeed(1009)"> boe</button>
+    <button @click="speed = speed * 2">Speed * 2. Current speed: {{ speed }}</button>
 </template>
 
 <style scoped
