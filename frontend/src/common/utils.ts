@@ -46,6 +46,7 @@ export function propagate1Sat(
     time: Date,
     gmst: GMSTime
 ): Record<string, never> | SatPosition {
+    console.log(sat);
     const eci = propagate(sat.satrec, time);
     if (eci.position) {
         const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmst);
