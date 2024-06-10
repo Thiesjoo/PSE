@@ -40,9 +40,7 @@ export class ThreeSimulation {
         this.initScene().then(() => {
             this.initStats();
             this.initListeners();
-                // this.initLine();
-                // this.initTLEListener();
-
+            // this.initLine();
         })
     }
 
