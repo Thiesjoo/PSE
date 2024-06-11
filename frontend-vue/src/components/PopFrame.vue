@@ -6,17 +6,16 @@ const props = defineProps<{
 
 <template>
   <!-- Leave the pop-up id, it is used to prevent click through's -->
-  <div class="pop-up" id="pop-up" v-if="open"></div>
+  <div class="pop-up" id="pop-up" v-if="open">
+    <slot></slot>
+  </div>
 </template>
 
 <style scoped lang="scss">
 .pop-up {
-  width: 320px;
-  height: 500px;
-  padding: 10px;
+  width: 17vw;
+  height: 50vh;
   border: 8px solid gray;
-  //   margin: 100px;
-  //   margin-top: 250px;
 
   border-radius: 10pt;
   background-color: #05050a;
@@ -29,6 +28,5 @@ const props = defineProps<{
   right: 0;
 
   margin-right: 10em;
-  //   margin-top: 10em;
 }
 </style>
