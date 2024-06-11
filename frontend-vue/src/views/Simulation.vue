@@ -1,58 +1,50 @@
 <script setup
         lang="ts">
         import { ThreeSimulation } from '@/Sim';
+        import { ref } from 'vue';
 
         const props = defineProps<{
             simulation: ThreeSimulation
         }>();
 
-        // props.simulation.setTimeSpeed(10000);
+        const heightValue = ref(20);
+
 </script>
 
 <template>
-    <div class="container">
-        <div class="text-block">
-            <h4>Sliders</h4>
-            <p>Height</p>
-            <div class="slidecontainer">
-                <input
-                    type="range"
-                    min="160"
-                    max="2000"
-                    value="500"
-                    class="slider"
-                    id="height"
-                />
-                <p>Value: <span id="height_val"></span></p>
-            </div>
-            <p>Inclination</p>
-            <div class="slidecontainer">
-                <input
-                    type="range"
-                    min="0"
-                    max="90"
-                    value="50"
-                    class="slider"
-                    id="inclination"
-                />
-                <p>Value: <span id="incl_val"></span></p>
-            </div>
-            <p>RAAN</p>
-            <div class="slidecontainer">
-                <input
-                    type="range"
-                    min="0"
-                    max="360"
-                    value="50"
-                    class="slider"
-                    id="raan"
-                />
-                <p>Value: <span id="raan_val"></span></p>
-            </div>
+    <div class="slider-block">
+        <h2>Simulation Controls</h2>
+        <br />
+        <h4>Height</h4>
+        <div class="slider">
+            <input
+                type="range"
+                min="1"
+                max="100"
+                v-model="heightValue"
+                class="slider"
+            />
+            <br />
+            <p class="display">Value: {{ heightValue }}</p>
         </div>
     </div>
 
-    <div class="container">
+    <!-- <div class="custom-slider">
+        <input
+        v-model="heightValue"
+            type="range"
+            min="60"
+            max="2000"
+            class="slider"
+            />
+        <br />
+        Value: {{ heightValue }}
+    </div> -->
+
+</template>
+
+
+    <!-- <div class="container">
         <div class="text-block2">
             <h4>Satellite Type</h4>
 
@@ -83,20 +75,29 @@
                 </label>
             </form>
         </div>
-    </div>
+    </div> -->
+<!--
+</template> -->
 
-</template>
+<!-- <style src="@vueform/slider/themes/default.css"></style> -->
 
 <style scoped
        lang="scss">
 
-    .text-block {
+    h2 {
+        text-align: center;
+    }
+
+    h4 {
+        text-align: center;
+    }
+    .slider-block {
         position: absolute;
-        top: 260px;
-        right: 50px;
+        top: 0px;
+        left: 0;
         width: 320px;
-        height: 430px;
-        background-color: #05050aa2;
+        height: 100%;
+        background-color: #05050a7c;
         color: white;
         padding-left: 50px;
         padding-right: 50px;
@@ -109,8 +110,8 @@
 
     .text-block2 {
         position: absolute;
-        top: 50px;
-        right: 50px;
+        bottom: 50px;
+        left: 0;
         width: 120px;
         height: 150px;
         background-color: #05050aa2;
@@ -124,29 +125,32 @@
         padding: 20px;
     }
 
-    .slidecontainer {
-        width: 100%;
+    .display{
+        background: #00000000;
+        color: #ffffff;
     }
 
     .slider {
+        --trackHeight: 0.5rem;
+        --thumbRadius: 1rem;
+    }
+
+    .slider input[type="range"]{
+        appearance: none;
         width: 100%;
         height: 5px;
         background: #e8f8e5;
         outline: #e8f8e5;
-        opacity: 0.7;
+        opacity: 1;
         -webkit-transition: 0.2s;
         transition: opacity 0.2s;
     }
 
-    .slider:hover {
-        opacity: 1;
-    }
-
     .slider::-moz-range-thumb {
-        width: 10px;
-        height: 20px;
-        background: #fefefe;
-        cursor: pointer;
+    width: var(--thumbRadius);
+    height: var(--thumbRadius);
+    background: #fefefe;
+    cursor: pointer;
     }
 
 </style>
