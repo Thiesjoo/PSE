@@ -58,9 +58,11 @@ ISRO,Indian Space Research Organisation,IN
 ISS,International Space Station,INT
 IT,Italy,IT
 ITSO,International Telecommunications Satellite Organization (INTELSAT),INT
+JOR,Jordan,JO
 JPN,Japan,JP
 KAZ,Kazakhstan,KZ
 KEN,Republic of Kenya,KE
+KWT,Kuwait,KW
 LAOS,Laos,LA
 LKA,Democratic Socialist Republic of Sri Lanka,LK
 LTU,Lithuania,LT
@@ -106,6 +108,7 @@ SING,Singapore,SG
 SKOR,Republic of Korea,KR
 SPN,Spain,ES
 STCT,Singapore/Taiwan,SG/TW
+SVK,Slovakia,SK
 SVN,Slovenia,SI
 SWED,Sweden,SE
 SWTZ,Switzerland,CH
@@ -115,6 +118,7 @@ TMMC,Turkmenistan/Monaco,TM/MC
 TUN,Republic of Tunisia,TN
 TURK,Turkey,TR
 UAE,United Arab Emirates,AE
+UGA,Uganda,UG
 UK,United Kingdom,GB
 UKR,Ukraine,UA
 UNK,Unknown,UNK

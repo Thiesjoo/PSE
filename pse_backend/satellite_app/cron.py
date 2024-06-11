@@ -338,7 +338,7 @@ def pull_country_names():
         reader = csv.reader(infile)
         mydict = {rows[0]:rows[2] for rows in reader}
 
-    csv_data = requests.get('https://celestrak.org/pub/satcat.csv')
+    csv_data = csv.reader(open('util/satcat.csv', 'r'))
     csv_data = csv_data.text.splitlines()
 
     for line in csv_data:
@@ -349,5 +349,7 @@ def pull_country_names():
             sat.save()
         except Satellite.DoesNotExist:
             cron_logger.warning("Could not find satellite with catalog number " + line[2] + " to add country name to.")
+
+
         
         
