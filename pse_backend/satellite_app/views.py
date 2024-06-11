@@ -29,9 +29,9 @@ def serializedSatellites(satellites):
             'epoch': sat.epoch,
             'revolutions': sat.revolutions,
             'revolutions_per_day': sat.revolutions_per_day,
+            'country': sat.country,
             'categories': [cat.minor_category for cat in sat.minor_categories.all()],
             'classification': sat.classification,
-            'country': sat.country,
             } for sat in satellites]
 
 @api_view(['GET'])
@@ -76,6 +76,7 @@ def categories(request: HttpRequest):
     """
     Endpoint for fetching all satellite categories.
     """
+    views_logger.info("Endpoint 'categories' was called.")
     cats = MinorCategory.objects.all()
     catList = [cat.minor_category for cat in cats]
     return JsonResponse({'categories': catList})
@@ -83,8 +84,10 @@ def categories(request: HttpRequest):
 @api_view(['GET'])
 def launch_years(request: HttpRequest):
     """
-    Endpoint for fetching all known launch years of the satellites.
+    Endpoint for fetching all known launch years of 
+    the satellites.
     """
+    views_logger.info("Endpoint 'launch_years' was called.")
     distinct_launch_years = Satellite.objects.values('launch_year').distinct()
     launch_years_list = [ly['launch_year'] for ly in distinct_launch_years]
     return JsonResponse({'launch_years': launch_years_list})
@@ -92,10 +95,10 @@ def launch_years(request: HttpRequest):
 @api_view(['GET'])
 def countries(request: HttpRequest):
     """
-    Endpoint for fetching all known countries/affiliations of the satellites.
-    NOTE: This endpoint is currently just speculative and is made at a time
-      where countries haven't been fully implemented yet in the database.
+    Endpoint for fetching all known 
+    countries/affiliations of the satellites.
     """
+    views_logger.info("Endpoint 'countries' was called.")
     distinct_countries = Satellite.objects.values('country').distinct()
     countries_list = [c['country'] for c in distinct_countries] # <- This line might not be necessary
     return JsonResponse({'countries': countries_list})
