@@ -1,12 +1,22 @@
 <script setup
         lang="ts">
         import { ThreeSimulation } from '@/Sim';
+        import { Satellite } from '@/Satellite';
+        import {Own_Satellite} from '../new_eigen_satellite.js';
         import { ref } from 'vue';
 
         const props = defineProps<{
             simulation: ThreeSimulation
         }>();
 
+        //  Create a new satellite
+        let new_sat = new Own_Satellite();
+        let tle = new_sat.produceTLE();
+        const sats = Satellite.fromMultipleTLEs(tle);
+        //  Add satellite to the simulation
+        sats.forEach(sat => props.simulation.addSatellite(sat));
+
+        props.simulation.setTimeSpeed(1);
         const heightValue = ref(20);
 
 </script>

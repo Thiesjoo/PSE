@@ -88,7 +88,7 @@ export class Satellite {
         opacity: 0.0001
       })
     }
- 
+
     if (cacheMeshes['satClickArea'] === undefined) {
       cacheMeshes['satClickArea'] = new THREE.OctahedronGeometry(
         (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM / 2,
@@ -97,14 +97,14 @@ export class Satellite {
     }
 
     const satGeometry = cacheMeshes['satGeometry']
-    
+
     let color = SAT_COLOR
     if (selected) {
         color = SAT_COLOR_SELECTED
     } else if (hover) {
         color = SAT_COLOR_HOVER
     }
-    
+
     if (cacheMeshes['satMaterial' + color] === undefined) {
         cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
             color,
@@ -112,7 +112,7 @@ export class Satellite {
             opacity: 0.7
         })
     }
-    
+
     const satMaterialClick = cacheMeshes['satMaterialClick']
     const satClickArea = cacheMeshes['satClickArea']
 

@@ -16,7 +16,7 @@
         watch(() => route.path, () => {
             simulation.reset()
         })
-        
+
 </script>
 
 <template>
@@ -92,7 +92,7 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
-            
+
 
             .router-link-exact-active {
                 background-color: yellow;
