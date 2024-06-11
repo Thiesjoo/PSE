@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
-import { computed, ref, watch } from 'vue'
-import { fetchTLEs } from '@/api/celestrak'
-import { fetchTLEInformation, getRawTLES } from '@/api/ourApi'
-import PopFrame from '@/components/PopFrame.vue'
+import { fetchTLEInformation } from '@/api/ourApi'
 import PopSatInfo from '@/components/PopSatInfo.vue'
 import { ref, watch } from 'vue'
 
