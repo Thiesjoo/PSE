@@ -15,7 +15,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend
+        working-directory: ./frontend-vue
 
     steps:
       - name: Check out Git repository
