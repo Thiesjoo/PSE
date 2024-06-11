@@ -4,6 +4,7 @@
         import { Satellite } from '@/Satellite';
         import {Own_Satellite} from '../new_eigen_satellite.js';
         import { ref, watch } from 'vue';
+import { Value } from 'sass';
 
         const props = defineProps<{
             simulation: ThreeSimulation
@@ -22,10 +23,12 @@
         const raan = ref(0);
         const e = ref(0);
 
+        const picked = ref(80);
+
 </script>
 
 <template>
-    <div class="slider-block">
+    <div class="left-info-block">
         <h2>Simulation Controls</h2>
         <br />
         <h4>Height</h4>
@@ -79,34 +82,24 @@
             <br />
             <p class="display">Value: {{ e }}</p>
         </div>
-    </div>
-
-    <!-- <div class="custom-slider">
-        <input
-        v-model="heightValue"
-            type="range"
-            min="60"
-            max="2000"
-            class="slider"
-            />
         <br />
-        Value: {{ heightValue }}
-    </div> -->
-
-</template>
-
-
-    <!-- <div class="container">
-        <div class="text-block2">
-            <h4>Satellite Type</h4>
-
-            <form>
+        <h2>Satellite Type</h2>
+        <br />
+        <div> Selected: {{ height = picked }} </div>
+        <br />
+        <input type="radio" id="LEO" value="80" v-model.number="picked" />
+        <label for="80">LEO</label>
+        <br />
+        <input type="radio" id="GEO" value="1000" v-model.number="picked" />
+        <label for="1000">GEO</label>
+        <br />
+        <input type="radio" id="NEO" value="2000" v-model.number="picked" />
+        <label for="2000">NEO</label>
+            <!-- <form>
+                <input type="radio" id="one" value="One" v-model="picked" />
+<label for="one">One</label>
                 <label>
-                    <input
-                        type="radio"
-                        name="satelliteType"
-                        value="LEO"
-                    />
+                    <input type="radio" name="satelliteType" value="LEO"/>
                     LEO </label
                 ><br />
                 <label>
@@ -125,7 +118,15 @@
                     />
                     NEO
                 </label>
-            </form>
+            </form> -->
+    </div>
+
+</template>
+
+
+    <!-- <div class="container">
+        <div class="text-block2">
+
         </div>
     </div> -->
 <!--
@@ -143,7 +144,7 @@
     h4 {
         text-align: center;
     }
-    .slider-block {
+    .left-info-block {
         position: absolute;
         top: 0px;
         left: 0;
