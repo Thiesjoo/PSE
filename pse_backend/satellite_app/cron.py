@@ -161,12 +161,25 @@ def pull_satellites(category, category_object):
 
         # TODO: Change this hardcoded behaviour in the future. The way it decides 
         # whether it's 21th century or 20th century is pretty bad.
-
         launch_year_last_two_digits = str(tle.int_desig)[:2]
         if launch_year_last_two_digits != '':
             launch_year = int(str(tle.int_desig)[:2])
-            launch_year = int(('20' if int(launch_year) <= 24  else '19') + str(launch_year))
+
+            # BUGFIX (11-6-2024): If it's a post-2000's year, it needs 
+            # to decide whether it's in the 2000's or not. That way, it can decide 
+            # whether or not to add 2 zeroes. This bugfix should ensure that. If 
+            # there are still problems related to the launch year, this is where
+            # you should look.
+            if launch_year > 9 and launch_year <= 24:
+                launch_year_prefix = '20'
+            elif launch_year <= 24:
+                launch_year_prefix = '200'
+            else:
+                launch_year_prefix = '19'
+
+            launch_year = launch_year_prefix + str(launch_year)
         else:
+            # When the launch year is unknown, we pick -1
             launch_year = -1
         
         try:

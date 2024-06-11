@@ -6,6 +6,7 @@ import { fetchTLEs } from '@/api/celestrak'
 import { fetchTLEInformation, getRawTLES } from '@/api/ourApi'
 import PopFrame from '@/components/PopFrame.vue'
 import PopSatInfo from '@/components/PopSatInfo.vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
   simulation: ThreeSimulation
@@ -14,6 +15,7 @@ const props = defineProps<{
 const rawSatData = await fetchTLEInformation()
 const sats = Satellite.fromOurApiData(rawSatData).slice(0, 5000)
 sats.forEach((sat) => props.simulation.addSatellite(sat))
+
 
 let speed = ref(1)
 watch(speed, (newSpeed) => {
