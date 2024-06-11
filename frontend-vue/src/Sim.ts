@@ -10,12 +10,15 @@ import type { Satellite } from './Satellite';
 import { loadTexture, shiftLeft } from './common/utils';
 import { EARTH_RADIUS_KM, LINE_SIZE, MAX_CAMERA_DISTANCE, MIN_CAMERA_DISTANCE } from './common/constants'
 import {Time} from './Time';
-
+import * as TWEEN from '@tweenjs/tween.js'
 import * as satellite from 'satellite.js';
 
 export class ThreeSimulation { 
     private satellites: Record<string, Satellite> = {};
     private drawLines = true;
+    private followSelected = true;
+    private tweeningStatus: number = 0;
+    private escapedFollow = false;
 
     private renderer!: THREE.WebGLRenderer;
     private scene!: THREE.Scene;
@@ -125,6 +128,51 @@ export class ThreeSimulation {
         this.animate();
     }
 
+    private updateCamera(){
+        if (this.escapedFollow){
+            return;
+        }
+        const satPosition = this.currentlySelected?.realPosition
+        const lat = satPosition?.lat
+        const lng = satPosition?.lng
+
+        const oldCameraPosition = this.globe.toGeoCoords(this.camera.position)
+        const alt = oldCameraPosition.altitude;
+
+        if (!lat || !lng || !alt){
+            return
+        }
+
+        const newCameraPosition = this.globe.getCoords(lat, lng, alt);        
+        
+
+        if (this.tweeningStatus === 0){
+            this.tweeningStatus = 1;
+            this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 500, 2);
+        }
+        if (this.tweeningStatus === 2){
+            this.tweeningStatus = 3
+            this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 50, 4);
+        }
+        else if (this.tweeningStatus === 4){
+            this.camera.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z);
+        }
+    }
+
+    private tweenCamera(x: number, y: number, z: number, time: number, newStatus: number){
+        new TWEEN.Tween(this.camera.position)
+            .to({
+                x: x,
+                y: y,
+                z: z
+            }, time)
+            .easing(TWEEN.Easing.Sinusoidal.Out)
+            .onComplete(() => {
+                this.tweeningStatus = newStatus;
+            })
+            .start()
+    }
+
     //Creates a line that follows a satellite.
     initLine() {
         const lineMaterial = new THREE.LineBasicMaterial({
@@ -192,9 +240,11 @@ export class ThreeSimulation {
         if (this.controls) this.controls.update();
         this.renderer.render(this.scene, this.camera);
 
-        // TODO: Line drawing
         if (this.drawLines){
             this.updateLine();
+        }
+        if (this.followSelected && this.currentlySelected){
+            this.updateCamera();
         }
         // Update the picking ray with the camera and pointer position
         this.raycaster.setFromCamera(this.pointer, this.camera);
@@ -238,6 +288,7 @@ export class ThreeSimulation {
     private onMouseDown(event: Event) {
         this.lastPointer.x = this.pointer.x;
         this.lastPointer.y = this.pointer.y;
+        this.escapedFollow = true;
     }
 
     private onClick(event: Event) {
@@ -261,10 +312,14 @@ export class ThreeSimulation {
             this.removeLine();
 
             this.eventListeners['select']?.forEach(cb => cb(satData));
+            this.escapedFollow = false;
         } else {
             this.eventListeners['select']?.forEach(cb => cb(null));
             this.currentlySelected = null;
+            
         }
+        this.tweeningStatus = 0;
+        
     }
 
     reset() {
