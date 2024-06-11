@@ -27,13 +27,6 @@
         //  Add satellite to the simulation
         const sats = Satellite.fromMultipleTLEs(tle);
         let sat = sats[0]
-
-        // Changes inclination
-        console.log(sat.satData.inclo)
-        sat.satData.inclo = 0 * 3.14 /180 // [rad]
-        console.log(sat.satData.inclo)
-        // let sat.inclo = 50 * 3.14 /180
-        // console.log(sat)
         sats.forEach(sat => props.simulation.addSatellite(sat));
 
 
@@ -42,12 +35,10 @@
         const raan = ref(0);
         const e = ref(0);
 
-        // watch(height, (Value) => {
-        //     new_sat.height = Value;
-        //     tle = new_sat.produceTLE();
-        //     const sats = Satellite.fromMultipleTLEs(tle);
-        //     props.simulation.addSatellite(sats[0]);
-        // });
+        // Inclination slider live changes
+        watch(inclination, (Value) => {
+            sat.satData.inclo = Value * 3.14 /180 // [rad]
+        });
 
         props.simulation.setTimeSpeed(150);
 
