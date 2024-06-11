@@ -78,6 +78,8 @@ class Satellite {
         let day = Math.floor(diff / (1000 * 60 * 60 * 24));
         let seconds = now.getSeconds() + now.getMinutes() * 60 + now.getHours() * 3600;
         let day_fraction = (seconds / 86400).toFixed(8).slice(1);
+
+        // Formatting
         this.epoch = year + (day + parseFloat(day_fraction)).toFixed(8).padStart(12, '0');
     }
 
