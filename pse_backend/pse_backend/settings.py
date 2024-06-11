@@ -41,6 +41,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://pse.thies.dev',
 ]
 
+CSRF_TRUSTED_ORIGINS = ['https://pseapi.thies.dev']
 
 # Application definition
 
