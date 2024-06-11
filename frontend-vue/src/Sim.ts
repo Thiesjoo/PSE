@@ -241,6 +241,7 @@ export class ThreeSimulation {
             if (!satData) return;
 
             this.currentlySelected = satData;
+            this.removeLine();
 
             this.eventListeners['select']?.forEach(cb => cb(satData));
         } else {
