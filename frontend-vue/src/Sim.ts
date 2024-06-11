@@ -34,6 +34,7 @@ export class ThreeSimulation {
 
     private raycaster = new THREE.Raycaster();
     private pointer = new THREE.Vector2();
+    private lastPointer = new THREE.Vector2();
 
     private currentlyHovering: Satellite | null = null;
     private currentlySelected: Satellite | null = null;
@@ -207,6 +208,7 @@ export class ThreeSimulation {
         window.addEventListener('pointermove', this.onPointerMove.bind(this), false);
         window.addEventListener('resize', this.onWindowResize.bind(this), false);
         window.addEventListener('click', this.onClick.bind(this), false);
+        window.addEventListener('mousedown', this.onMouseDown.bind(this), false);
     }
 
     private onWindowResize() {
@@ -226,8 +228,18 @@ export class ThreeSimulation {
         return false;
     }
 
+    private onMouseDown(event: Event) {
+        this.lastPointer.x = this.pointer.x;
+        this.lastPointer.y = this.pointer.y;
+    }
 
     private onClick(event: Event) {
+        const xDif = Math.abs(this.lastPointer.x - this.pointer.x);
+        const yDif = Math.abs(this.lastPointer.y - this.pointer.y);
+        console.log("X: ", xDif, "Y: ", yDif)
+        if (xDif > 0.00001 || yDif > 0.00001){
+            return;
+        }
         if (
             event.target && this.popupInParent(event.target as HTMLElement)
         )
