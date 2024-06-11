@@ -7,8 +7,8 @@ import ThreeGlobe from 'three-globe';
 import Earth from "./assets/earth-blue-marble.jpg"
 import Gaia from "./assets/Gaia.png"
 import type { Satellite } from './Satellite';
-import { loadTexture } from './common/utils';
-
+import { loadTexture, shiftLeft } from './common/utils';
+import { EARTH_RADIUS_KM, LINE_SIZE } from './common/constants'
 import {Time} from './Time';
 
 import * as satellite from 'satellite.js';
@@ -25,6 +25,10 @@ export class ThreeSimulation {
     private globe!: ThreeGlobe;
     private stats!: any;
 
+    private line: THREE.Line | null = null;
+    // TODO: any weghalen
+    private lineGeometry: any;
+    private lineCounter: any = 0;
 
     private time: Time = new Time(new Date());
 
@@ -42,7 +46,7 @@ export class ThreeSimulation {
         this.initScene(canvas).then(() => {
             this.initStats();
             this.initListeners();
-            // this.initLine();
+            this.initLine();
         })
     }
 
@@ -113,6 +117,62 @@ export class ThreeSimulation {
         this.animate();
     }
 
+    //Creates a line that follows a satellite.
+    initLine() {
+        const lineMaterial = new THREE.LineBasicMaterial({
+            color: 'white',
+        });
+        this.lineGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(LINE_SIZE * 3);
+        this.lineGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        this.lineGeometry.setDrawRange(0, LINE_SIZE);
+        this.line = new THREE.Line(this.lineGeometry, lineMaterial);
+        this.scene.add(this.line);
+    }
+
+    updateLine() {
+        if (!this.line) return;
+        if (!this.currentlySelected){
+            if (this.line.parent === this.scene) this.removeLine();
+            return;
+        }
+        if (!(this.line.parent === this.scene)){
+            this.scene.add(this.line);
+        }
+        const satPositions = this.currentlySelected?.realPosition
+        if (!satPositions) return;
+        const lineCoords = this.globe.getCoords(
+            satPositions.lat,
+            satPositions.lng,
+            (satPositions.alt / EARTH_RADIUS_KM) * 3,
+        );
+
+        let positions = this.line.geometry.attributes.position.array;
+        if (this.lineCounter > LINE_SIZE) {
+            //Shift left is simular to a pop from a list.
+            //Removes first item and shifts all the others.
+            positions = shiftLeft(positions);
+            positions = shiftLeft(positions);
+            positions = shiftLeft(positions);
+            this.lineCounter -= 3;
+        }
+        positions[this.lineCounter++] = lineCoords.x;
+        positions[this.lineCounter++] = lineCoords.y;
+        positions[this.lineCounter++] = lineCoords.z;
+        
+        this.lineGeometry.setDrawRange(0, this.lineCounter / 3);
+        this.line.geometry.attributes.position.needsUpdate = true;
+    }
+
+    //Removes the line from the scene.
+    removeLine() {
+        if (this.line) {
+            this.scene.remove(this.line);
+            this.lineGeometry.setDrawRange(0, 0);
+            this.lineCounter = 0;
+        }
+    }
+
     private animate() {
         requestAnimationFrame(() => {
             this.animate();
@@ -125,7 +185,9 @@ export class ThreeSimulation {
         this.renderer.render(this.scene, this.camera);
 
         // TODO: Line drawing
-
+        if (this.drawLines){
+            this.updateLine();
+        }
         // Update the picking ray with the camera and pointer position
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
