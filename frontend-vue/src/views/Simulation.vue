@@ -2,7 +2,7 @@
         lang="ts">
         import { ThreeSimulation } from '@/Sim';
         import { Satellite } from '@/Satellite';
-        import {Own_Satellite, epochUpdate1, calculateRevolutionPerDay} from '../new_eigen_satellite.js';
+        import {epochUpdate, calculateRevolutionPerDay} from '../new_eigen_satellite.js';
         import type {SatRec} from 'satellite.js'
         import { ref, watch } from 'vue';
         import { Value } from 'sass';
@@ -12,7 +12,7 @@
         }>();
 
         // Set epoch as current time
-        let epoch = epochUpdate1();
+        let epoch = epochUpdate();
         let init_height = 160
         let alt = init_height * 1000 + 6371 * 1000; // Convert to meters and add Earth's radius
         let mean_motion = calculateRevolutionPerDay(alt)
@@ -29,8 +29,8 @@
         let sat = sats[0]
         sats.forEach(sat => props.simulation.addSatellite(sat));
 
-
-        const height = ref(20);
+        // Initializing slider variables
+        const height = ref(160);
         const inclination = ref(0);
         const raan = ref(0);
         const e = ref(0);
@@ -45,6 +45,11 @@
             sat.satData.nodeo = Value * Math.PI /180 // [rad]
         });
 
+        // Eccentricity slider live changes
+            watch(e, (Value) => {
+            sat.satData.ecco = Value/100
+        });
+
         props.simulation.setTimeSpeed(150);
 
 
@@ -52,13 +57,13 @@
 
 <template>
     <div class="left-info-block">
-        <h2>Simulation Controls</h2>
+        <h2>Simulation Variables</h2>
         <br />
         <h4>Height</h4>
         <div class="slider">
             <input
                 type="range"
-                min="60"
+                min="160"
                 max="2000"
                 v-model="height"
                 class="slider"
@@ -98,12 +103,12 @@
             <input
                 type="range"
                 min="0"
-                max="1"
+                max="100"
                 v-model="e"
                 class="slider"
             />
             <br />
-            <p class="display">Value: {{ e }}</p>
+            <p class="display">Value: {{ e/100 }}</p>
         </div>
         <br />
         <!-- <h2>Satellite Type</h2>
