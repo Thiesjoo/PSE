@@ -11,8 +11,9 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-const rawSatData = await getRawTLES(1000)
+const rawSatData = await getRawTLES(10000)
 const sats = Satellite.fromMultipleTLEs(rawSatData).slice(0, 5000)
+sats.forEach((sat) => props.simulation.addSatellite(sat))
 
 let speed = ref(1)
 watch(speed, (newSpeed) => {

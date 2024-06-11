@@ -31,7 +31,7 @@ def serializedSatellites(satellites):
             'revolutions_per_day': sat.revolutions_per_day,
             'country': sat.country,
             'categories': [cat.minor_category for cat in sat.minor_categories.all()],
-            'classification': sat.classification
+            'classification': sat.classification,
             } for sat in satellites]
 
 @api_view(['GET'])
@@ -77,8 +77,8 @@ def categories(request: HttpRequest):
     Endpoint for fetching all satellite categories.
     """
     views_logger.info("Endpoint 'categories' was called.")
-    cats = MinorCategory.objects.all()
     catList = [cat.minor_category for cat in cats]
+    cats = MinorCategory.objects.all()
     return JsonResponse({'categories': catList})
 
 @api_view(['GET'])

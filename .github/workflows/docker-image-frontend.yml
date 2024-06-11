@@ -1,8 +1,11 @@
-name: Build and deploy the frontend
+name: Build the frontend
 
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "frontend-vue/**"
+      - ".github/workflows/docker-image-frontend.yml"
   pull_request:
     branches: [ "main" ]
 
@@ -48,31 +51,9 @@ jobs:
       id: build-and-push
       uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
       with:
-        context: ./frontend
+        context: ./frontend-vue
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-  deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      packages: read
-
-    steps:
-    - name: SSH into VPS
-      uses: appleboy/ssh-action@71d43ea0f75a1f73c9b0e4608c059783968ad29c
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        port: ${{ secrets.VPS_PORT }}
-        username: ${{ secrets.VPS_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          echo 'Connected via SSH'
-          cd /opt/docker/
-          docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-          docker compose pull
-          docker compose up -d
-

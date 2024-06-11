@@ -5,3 +5,4 @@ TLE-tools
 python-dotenv
 djangorestframework
 django-cors-headers
+gunicorn

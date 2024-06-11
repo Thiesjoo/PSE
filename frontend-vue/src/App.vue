@@ -13,7 +13,7 @@
         })
 
         const route = useRoute()
-        watch(() => route.path, () => {
+        watch(() => route.path, (path   ) => {
             simulation.reset()
         })
         
