@@ -54,12 +54,25 @@ const sat_speed = () => {
   <PopFrame :open="true" class="popup">
     <div class="top">
       <h1>{{ currentSelectedSatellite.name }}</h1>
+
       <img
         :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
         width="100"
-        alt="US flag"
+        :alt="`${currentSelectedSatellite.country} flag`"
+        v-if="!currentSelectedSatellite.country.includes('/')"
       />
-
+      <div v-else>
+        <img
+          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[0]}.svg`"
+          width="100"
+          :alt="`${currentSelectedSatellite.country.split('/')[0]} flag`"
+        />
+        <img
+          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[1]}.svg`"
+          width="100"
+          :alt="`${currentSelectedSatellite.country.split('/')[1]} flag`"
+        />
+      </div>
       <p id="SatelliteCountry">{{ countryToNameConversion(currentSelectedSatellite.country) }}</p>
       <p>
         <span>NORAD Catalog Number:</span>
@@ -113,8 +126,7 @@ const sat_speed = () => {
     }
 
     img {
-      margin-top: 1em;
-      margin-bottom: 1em;
+      margin: 1em;
       border-radius: 10%;
     }
 

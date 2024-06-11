@@ -1,5 +1,3 @@
-import { not } from 'three/examples/jsm/nodes/Nodes.js'
-
 export const countryToName = {
   US: 'United States',
   FR: 'France',
