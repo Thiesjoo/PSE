@@ -3,7 +3,7 @@ import { Satellite } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
 import { computed, ref, watch } from 'vue'
 import { fetchTLEs } from '@/api/celestrak'
-import { getRawTLES } from '@/api/ourApi'
+import { fetchTLEInformation, getRawTLES } from '@/api/ourApi'
 import PopFrame from '@/components/PopFrame.vue'
 import PopSatInfo from '@/components/PopSatInfo.vue'
 
@@ -11,8 +11,8 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-const rawSatData = await getRawTLES(10000)
-const sats = Satellite.fromMultipleTLEs(rawSatData).slice(0, 5000)
+const rawSatData = await fetchTLEInformation()
+const sats = Satellite.fromOurApiData(rawSatData).slice(0, 5000)
 sats.forEach((sat) => props.simulation.addSatellite(sat))
 
 let speed = ref(1)

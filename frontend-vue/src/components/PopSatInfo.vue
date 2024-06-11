@@ -2,6 +2,7 @@
 import { Satellite } from '@/Satellite'
 import { computed } from 'vue'
 import PopFrame from './PopFrame.vue'
+import { countryToNameConversion } from '@/common/countries'
 
 // Aantal getallen achter de komma in satellietinformatie
 const numDigits = 3
@@ -53,8 +54,13 @@ const sat_speed = () => {
   <PopFrame :open="true" class="popup">
     <div class="top">
       <h1>{{ currentSelectedSatellite.name }}</h1>
-      <img src="@/assets/usflag.svg" width="100" alt="US flag" />
-      <p id="SatelliteCountry">Insert country</p>
+      <img
+        :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
+        width="100"
+        alt="US flag"
+      />
+
+      <p id="SatelliteCountry">{{ countryToNameConversion(currentSelectedSatellite.country) }}</p>
       <p>
         <span>NORAD Catalog Number:</span>
         <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
