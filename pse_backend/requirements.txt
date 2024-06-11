@@ -1,5 +1,5 @@
 django
 django-crontab
-tletools
+TLE-tools
 python-dotenv
 djangorestframework
