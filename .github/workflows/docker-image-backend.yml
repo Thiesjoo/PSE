@@ -3,6 +3,9 @@ name: Build the backend
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "pse_backend/**"
+      - ".github/workflows/docker-image-backend.yml"
   pull_request:
     branches: [ "main" ]
 
