@@ -13,7 +13,7 @@ import {Time} from './Time';
 
 import * as satellite from 'satellite.js';
 
-export class ThreeSimulation { 
+export class ThreeSimulation {
     private satellites: Record<string, Satellite> = {};
     private drawLines = true;
 
@@ -35,7 +35,7 @@ export class ThreeSimulation {
     private currentlySelected: Satellite | null = null;
 
     private eventListeners: Record<string, ((...args: any[]) => void)[]> = {};
-    
+
 
     // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
     initAll(canvas: HTMLCanvasElement) {

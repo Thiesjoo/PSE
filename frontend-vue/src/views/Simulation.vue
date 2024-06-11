@@ -2,7 +2,8 @@
         lang="ts">
         import { ThreeSimulation } from '@/Sim';
         import { Satellite } from '@/Satellite';
-        import {Own_Satellite} from '../new_eigen_satellite.js';
+        import {Own_Satellite, epochUpdate1, calculateRevolutionPerDay} from '../new_eigen_satellite.js';
+        import type {SatRec} from 'satellite.js'
         import { ref, watch } from 'vue';
         import { Value } from 'sass';
 
@@ -10,20 +11,39 @@
             simulation: ThreeSimulation
         }>();
 
-        //  Create a new satellite
-        let new_sat = new Own_Satellite();
-        let tle = new_sat.produceTLE();
-        const sats = Satellite.fromMultipleTLEs(tle);
-        //  Add satellite to the simulation
-        sats.forEach(sat => props.simulation.addSatellite(sat));
+        let epoch = epochUpdate1();
+        let init_height = 160
+        let alt = init_height * 1000 + 6371 * 1000; // Convert to meters and add Earth's radius
+        let mean_motion = calculateRevolutionPerDay(alt)
+        console.log(mean_motion)
 
-        props.simulation.setTimeSpeed(1);
+
+        let empty_tle = "New Satellite\n1 11111U 24001A   24163.61802083 -.00000000 00000000 00000-0 0 1111 1\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 16.44876274000001"
+        // 24163.61802083
+        //  Create a new satellite
+        // let new_sat = new Own_Satellite();
+        // let tle = new_sat.produceTLE();
+        const sats = Satellite.fromMultipleTLEs(empty_tle);
+        //  Add satellite to the simulation
+        // let sat = sats[0]
+        // let sat.inclo = 50 * 3.14 /180
+        // console.log(sat)
+        // sats.forEach(sat => props.simulation.addSatellite(sat));
+
+        // props.simulation.setTimeSpeed(1);
+
         const height = ref(20);
         const inclination = ref(0);
         const raan = ref(0);
         const e = ref(0);
 
-        const picked = ref(80);
+        // watch(height, (Value) => {
+        //     new_sat.height = Value;
+        //     tle = new_sat.produceTLE();
+        //     const sats = Satellite.fromMultipleTLEs(tle);
+        //     props.simulation.addSatellite(sats[0]);
+        // });
+
 
 </script>
 
