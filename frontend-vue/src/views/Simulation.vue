@@ -3,7 +3,7 @@
         import { ThreeSimulation } from '@/Sim';
         import { Satellite } from '@/Satellite';
         import {Own_Satellite} from '../new_eigen_satellite.js';
-        import { ref } from 'vue';
+        import { ref, watch } from 'vue';
 
         const props = defineProps<{
             simulation: ThreeSimulation
@@ -17,7 +17,10 @@
         sats.forEach(sat => props.simulation.addSatellite(sat));
 
         props.simulation.setTimeSpeed(1);
-        const heightValue = ref(20);
+        const height = ref(20);
+        const inclination = ref(0);
+        const raan = ref(0);
+        const e = ref(0);
 
 </script>
 
@@ -29,13 +32,52 @@
         <div class="slider">
             <input
                 type="range"
-                min="1"
-                max="100"
-                v-model="heightValue"
+                min="60"
+                max="2000"
+                v-model="height"
                 class="slider"
             />
             <br />
-            <p class="display">Value: {{ heightValue }}</p>
+            <p class="display">Value: {{ height }}</p>
+        </div>
+        <br />
+        <h4>Inclination</h4>
+        <div class="slider">
+            <input
+                type="range"
+                min="0"
+                max="90"
+                v-model="inclination"
+                class="slider"
+            />
+            <br />
+            <p class="display">Value: {{ inclination }}</p>
+        </div>
+        <br />
+        <h4>RAAN</h4>
+        <div class="slider">
+            <input
+                type="range"
+                min="0"
+                max="360"
+                v-model="raan"
+                class="slider"
+            />
+            <br />
+            <p class="display">Value: {{ raan }}</p>
+        </div>
+        <br />
+        <h4>Eccentricity</h4>
+        <div class="slider">
+            <input
+                type="range"
+                min="0"
+                max="1"
+                v-model="e"
+                class="slider"
+            />
+            <br />
+            <p class="display">Value: {{ e }}</p>
         </div>
     </div>
 
