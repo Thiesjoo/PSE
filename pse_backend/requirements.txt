@@ -1,5 +1,6 @@
+numpy
 django
 django-crontab
-tletools
 python-dotenv
 djangorestframework
+TLE-tools
