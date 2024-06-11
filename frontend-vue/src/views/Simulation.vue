@@ -95,44 +95,10 @@ import { Value } from 'sass';
         <br />
         <input type="radio" id="NEO" value="2000" v-model.number="picked" />
         <label for="2000">NEO</label>
-            <!-- <form>
-                <input type="radio" id="one" value="One" v-model="picked" />
-<label for="one">One</label>
-                <label>
-                    <input type="radio" name="satelliteType" value="LEO"/>
-                    LEO </label
-                ><br />
-                <label>
-                    <input
-                        type="radio"
-                        name="satelliteType"
-                        value="GEO"
-                    />
-                    GEO </label
-                ><br />
-                <label>
-                    <input
-                        type="radio"
-                        name="satelliteType"
-                        value="NEO"
-                    />
-                    NEO
-                </label>
-            </form> -->
     </div>
 
 </template>
 
-
-    <!-- <div class="container">
-        <div class="text-block2">
-
-        </div>
-    </div> -->
-<!--
-</template> -->
-
-<!-- <style src="@vueform/slider/themes/default.css"></style> -->
 
 <style scoped
        lang="scss">
