@@ -37,10 +37,7 @@ export class ThreeSimulation {
     private eventListeners: Record<string, ((...args: any[]) => void)[]> = {};
     
 
-    constructor() {
-        // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
-    }
-    
+    // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
     initAll(canvas: HTMLCanvasElement) {
         this.initScene(canvas).then(() => {
             this.initStats();
@@ -176,7 +173,6 @@ export class ThreeSimulation {
 
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
-        console.log(intersects);
         
         if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
             const satData = this.satellites[intersects[0].object.userData.satellite];
@@ -189,6 +185,16 @@ export class ThreeSimulation {
             this.eventListeners['select']?.forEach(cb => cb(null));
             this.currentlySelected = null;
         }
+    }
+
+    reset() {
+        this.satellites = {};
+        this.setTimeSpeed(1);
+        this.drawLines = true;
+        this.currentlyHovering = null;
+        this.currentlySelected = null;
+
+        this.eventListeners = {};
     }
 
 
