@@ -29,6 +29,7 @@ def serializedSatellites(satellites):
             'epoch': sat.epoch,
             'revolutions': sat.revolutions,
             'revolutions_per_day': sat.revolutions_per_day,
+            'country': sat.country,
             'categories': [cat.minor_category for cat in sat.minor_categories.all()],
             'classification': sat.classification
             } for sat in satellites]
