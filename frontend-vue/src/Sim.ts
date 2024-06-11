@@ -8,7 +8,7 @@ import Earth from "./assets/earth-blue-marble.jpg"
 import Gaia from "./assets/Gaia.png"
 import type { Satellite } from './Satellite';
 import { loadTexture, shiftLeft } from './common/utils';
-import { EARTH_RADIUS_KM, LINE_SIZE } from './common/constants'
+import { EARTH_RADIUS_KM, LINE_SIZE, MAX_CAMERA_DISTANCE, MIN_CAMERA_DISTANCE } from './common/constants'
 import {Time} from './Time';
 
 import * as satellite from 'satellite.js';
@@ -81,6 +81,8 @@ export class ThreeSimulation {
 
         // Controls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.maxDistance = MAX_CAMERA_DISTANCE;
+        this.controls.minDistance = MIN_CAMERA_DISTANCE;
 
         // Add lights
         this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
@@ -237,11 +239,9 @@ export class ThreeSimulation {
         const xDif = Math.abs(this.lastPointer.x - this.pointer.x);
         const yDif = Math.abs(this.lastPointer.y - this.pointer.y);
         console.log("X: ", xDif, "Y: ", yDif)
-        if (xDif > 0.00001 || yDif > 0.00001){
-            return;
-        }
         if (
-            event.target && this.popupInParent(event.target as HTMLElement)
+            (event.target && this.popupInParent(event.target as HTMLElement))
+            || xDif > 0.00001 || yDif > 0.00001
         )
             return;
 
