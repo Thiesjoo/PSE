@@ -11,26 +11,31 @@
             simulation: ThreeSimulation
         }>();
 
+        // Set epoch as current time
         let epoch = epochUpdate1();
         let init_height = 160
         let alt = init_height * 1000 + 6371 * 1000; // Convert to meters and add Earth's radius
         let mean_motion = calculateRevolutionPerDay(alt)
-        console.log(mean_motion)
 
+        // Initializing own satelite
+        let part1 = "New Satellite\n1 11111U 24001A   ";
+        let part2 =  " -.00000000 00000000 00000-0 0 1111 1\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 ";
+        let part3 = "000001";
+        let tle = part1 + epoch + part2 + mean_motion + part3;
+        console.log(tle)
 
-        let empty_tle = "New Satellite\n1 11111U 24001A   24163.61802083 -.00000000 00000000 00000-0 0 1111 1\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 16.44876274000001"
-        // 24163.61802083
-        //  Create a new satellite
-        // let new_sat = new Own_Satellite();
-        // let tle = new_sat.produceTLE();
-        const sats = Satellite.fromMultipleTLEs(empty_tle);
         //  Add satellite to the simulation
-        // let sat = sats[0]
+        const sats = Satellite.fromMultipleTLEs(tle);
+        let sat = sats[0]
+
+        // Changes inclination
+        console.log(sat.satData.inclo)
+        sat.satData.inclo = 0 * 3.14 /180 // [rad]
+        console.log(sat.satData.inclo)
         // let sat.inclo = 50 * 3.14 /180
         // console.log(sat)
-        // sats.forEach(sat => props.simulation.addSatellite(sat));
+        sats.forEach(sat => props.simulation.addSatellite(sat));
 
-        // props.simulation.setTimeSpeed(1);
 
         const height = ref(20);
         const inclination = ref(0);
@@ -43,6 +48,8 @@
         //     const sats = Satellite.fromMultipleTLEs(tle);
         //     props.simulation.addSatellite(sats[0]);
         // });
+
+        props.simulation.setTimeSpeed(150);
 
 
 </script>
@@ -103,7 +110,7 @@
             <p class="display">Value: {{ e }}</p>
         </div>
         <br />
-        <h2>Satellite Type</h2>
+        <!-- <h2>Satellite Type</h2>
         <br />
         <div> Selected: {{ height = picked }} </div>
         <br />
@@ -114,7 +121,7 @@
         <label for="1000">GEO</label>
         <br />
         <input type="radio" id="NEO" value="2000" v-model.number="picked" />
-        <label for="2000">NEO</label>
+        <label for="2000">NEO</label> -->
     </div>
 
 </template>
