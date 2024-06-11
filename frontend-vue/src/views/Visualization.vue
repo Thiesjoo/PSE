@@ -4,14 +4,15 @@
         import { ThreeSimulation } from '@/Sim';
         import { computed, ref, watch } from 'vue';
         import { fetchTLEs } from '@/api/celestrak';
+        import { getRawTLES } from '@/api/ourApi';
 
         const props = defineProps<{
             simulation: ThreeSimulation
         }>();
 
 
-        const rawSatData = await fetchTLEs();
-        const sats = Satellite.fromMultipleTLEs(rawSatData).slice(0, 5000);
+        const rawSatData = await getRawTLES(1000);
+        const sats = Satellite.fromMultipleTLEs(rawSatData)
 
         sats.forEach(sat => props.simulation.addSatellite(sat));
 
