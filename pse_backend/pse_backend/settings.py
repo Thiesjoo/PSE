@@ -31,7 +31,15 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 debugMode = os.getenv('DEBUG')
 DEBUG = False if debugMode == ('false' or 'False') else True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "pseapi.thies.dev"
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'https://pse.thies.dev',
+]
 
 
 # Application definition
@@ -46,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
 ]
 
 CRONJOBS = [
@@ -112,6 +121,7 @@ LOGGING = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
