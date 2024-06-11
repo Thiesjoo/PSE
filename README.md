@@ -28,6 +28,7 @@ A Satellite object fetched from the database consists of the following data:
 | `epoch` | Specific day and time that the TLE was recorded. |
 | `revolutions` | Total amount of revolutions this Satellite has taken at the time of the TLE recording. |
 | `revolutions_per_day` | The amount of revolutions this satellite travels per day. |
+| `country` | The country or countries that this satellite is associated with. |
 | `categories` | The categories (see below) that this satellite belongs to. |
 | `classification` | Can be either `U` (unclassified), `C` (classified) or `S` (secret). |
 
