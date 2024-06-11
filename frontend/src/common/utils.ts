@@ -11,6 +11,7 @@ import {
 } from 'satellite.js';
 import { EARTH_RADIUS_KM } from './constants';
 import { TypedArray } from 'three';
+import * as THREE from 'three';
 
 export interface SatInformation {
     name: string;
@@ -67,4 +68,13 @@ export const shiftLeft = (collection: TypedArray, steps = 1) => {
     collection.set(collection.subarray(steps));
     collection.fill(0, -steps);
     return collection;
+};
+
+export const loadTexture = async (url: string): Promise<THREE.Texture> => {
+    const textureLoader = new THREE.TextureLoader();
+    return new Promise(resolve => {
+        textureLoader.load(url, texture => {
+            resolve(texture);
+        });
+    });
 };

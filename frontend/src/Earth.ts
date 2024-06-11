@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 //@ts-ignore
 import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -173,6 +174,9 @@ STARLINK-1011
             .atmosphereAltitude(0);
         this.globe.objectThreeObject(d => {
             if ('id' in d) {
+                // zoek in ons lijstje naar id
+                // id.render(selected)
+
                 const satGeometry = new THREE.OctahedronGeometry(
                     (SAT_SIZE * this.globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2,
                     0
