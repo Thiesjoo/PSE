@@ -1,0 +1,32 @@
+<script setup lang="ts">
+const props = defineProps<{
+  open: boolean
+}>()
+</script>
+
+<template>
+  <!-- Leave the pop-up id, it is used to prevent click through's -->
+  <div class="pop-up" id="pop-up" v-if="open">
+    <slot></slot>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.pop-up {
+  width: 17vw;
+  height: 50vh;
+  border: 8px solid gray;
+
+  border-radius: 10pt;
+  background-color: #05050a;
+
+  display: block;
+
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+
+  margin-right: 10em;
+}
+</style>

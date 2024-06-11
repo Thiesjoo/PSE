@@ -1,127 +1,37 @@
-<script setup
-        lang="ts">
-        import { Satellite } from '@/Satellite';
-        import { ThreeSimulation } from '@/Sim';
-        import { computed, ref, watch } from 'vue';
-        import { fetchTLEs } from '@/api/celestrak';
-        import { getRawTLES } from '@/api/ourApi';
+<script setup lang="ts">
+import { Satellite } from '@/Satellite'
+import { ThreeSimulation } from '@/Sim'
+import { computed, ref, watch } from 'vue'
+import { fetchTLEs } from '@/api/celestrak'
+import { getRawTLES } from '@/api/ourApi'
+import PopFrame from '@/components/PopFrame.vue'
+import PopSatInfo from '@/components/PopSatInfo.vue'
 
-        const props = defineProps<{
-            simulation: ThreeSimulation
-        }>();
+const props = defineProps<{
+  simulation: ThreeSimulation
+}>()
 
+const rawSatData = await getRawTLES(1000)
+const sats = Satellite.fromMultipleTLEs(rawSatData).slice(0, 5000)
 
-        const rawSatData = await getRawTLES(1000);
-        const sats = Satellite.fromMultipleTLEs(rawSatData)
+let speed = ref(1)
+watch(speed, (newSpeed) => {
+  props.simulation.setTimeSpeed(newSpeed)
+})
 
-        sats.forEach(sat => props.simulation.addSatellite(sat));
-
-        let speed = ref(1);
-        watch(speed, (newSpeed) => {
-            props.simulation.setTimeSpeed(newSpeed);
-        })
-
-        const currentSelectedSatellite = ref(undefined as Satellite | undefined);
-        props.simulation.addEventListener('select', (sat) => {
-            currentSelectedSatellite.value = sat;
-        })
-
-        const epoch = computed(() => {
-            if (!currentSelectedSatellite.value) {
-                return '';
-            }
-
-            const day = Math.floor(currentSelectedSatellite.value.satData.epochdays);
-            const tmpYear = currentSelectedSatellite.value.satData.epochyr
-            const year = tmpYear > 50 ? 1900 + tmpYear : 2000 + tmpYear;
-            const hour = 24 * parseFloat('0.' + currentSelectedSatellite.value.satData.epochdays.toString().split('.')[1]);
-            const minute = 60 * (hour - Math.floor(hour));
-
-
-            const date = new Date();
-            date.setFullYear(year);
-            date.setMonth(0);
-            date.setDate(day);
-            date.setHours(Math.floor(hour));
-            date.setMinutes(Math.floor(minute));
-            date.setSeconds(0);
-            date.setMilliseconds(0);
-
-            return date.toDateString();
-        })
-
-
-        const rounded = (num: number, digits: number) => {
-            const factor = Math.pow(10, digits);
-            return Math.round(num * factor) / factor;
-        }
+const currentSelectedSatellite = ref(undefined as Satellite | undefined)
+props.simulation.addEventListener('select', (sat) => {
+  currentSelectedSatellite.value = sat
+})
 </script>
 
 <template>
+  <PopSatInfo
+    :currentSelectedSatellite="currentSelectedSatellite"
+    v-if="currentSelectedSatellite"
+  />
 
-    <!-- Leave the pop-up id, it is used to prevent click through's -->
-    <div class="pop-up"
-         id="pop-up"
-         v-if="currentSelectedSatellite">
-        <h1> {{ currentSelectedSatellite.name }}</h1>
-        <img src="@/assets/usflag.svg"
-             width="100"
-             alt="US flag" />
-        <p id="SatelliteCountry">Insert country</p>
-        <p>
-            <span>NORAD Catalog Number:</span>
-            <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
-        </p>
-        <p>
-            Longitude:
-            <span id="SatelliteLongitude">{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, 7) }}º</span>
-        </p>
-        <p>
-            Latitude:
-            <span id="SatelliteLatitude">{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, 7) }}º </span>
-        </p>
-        <p>
-            Altitude:
-            <span id="SatelliteAltitude">{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, 7) }}km</span>
-        </p>
-        <p>Last epoch:</p>
-        <p id="SatelliteEpoch">{{ epoch }}</p>
-    </div>
-
-    <button @click="speed = speed * 2">Speed * 2. Current speed: {{ speed }}</button>
+  <button @click="speed = speed * 2">Speed * 2. Current speed: {{ speed }}</button>
 </template>
 
-<style scoped
-       lang="scss">
-    .pop-up {
-        width: 320px;
-        height: 500px;
-        padding: 10px;
-        border: 8px solid gray;
-        margin: 100px;
-        margin-top: 250px;
-
-        border-radius: 10pt;
-        position: absolute;
-        background-color: #05050a;
-
-        display: block;
-        /* flex-direction: column;
-        justify-content: center;
-        align-items: center; */
-
-        h1 {
-            font-family: Tomorrow;
-            font-weight: 400;
-        }
-
-        p {
-            font-family: 'ComputerSaysNo';
-            font-size: 2em;
-        }
-
-        img {
-            border-radius: 10%;
-        }
-    }
-</style>
+<style scoped lang="scss"></style>

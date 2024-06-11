@@ -54,14 +54,19 @@ export class Satellite {
   // TODO: Waarom 2 tijden?
   public propagate(time: Date, gmsTime: GMSTime): Object {
     const eci = propagate(this.satData, time)
-    this.currentPosition = eci;
+    this.currentPosition = eci
 
-    if (eci.position) {
+    if (eci.position && eci.velocity) {
       const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime)
 
       this.realPosition.lat = degreesLat(gdPos.latitude)
       this.realPosition.lng = degreesLong(gdPos.longitude)
       this.realPosition.alt = gdPos.height
+
+      const vel = eci.velocity as EciVec3<Kilometer>
+      this.realSpeed.x = vel.x
+      this.realSpeed.y = vel.y
+      this.realSpeed.z = vel.z
 
       return {
         lat: degreesLat(gdPos.latitude),
@@ -83,12 +88,12 @@ export class Satellite {
     }
 
     if (cacheMeshes['satMaterialClick'] === undefined) {
-      cacheMeshes["satMaterialClick"] = new THREE.MeshLambertMaterial({
+      cacheMeshes['satMaterialClick'] = new THREE.MeshLambertMaterial({
         transparent: true,
         opacity: 0.0001
       })
     }
- 
+
     if (cacheMeshes['satClickArea'] === undefined) {
       cacheMeshes['satClickArea'] = new THREE.OctahedronGeometry(
         (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM / 2,
@@ -97,29 +102,28 @@ export class Satellite {
     }
 
     const satGeometry = cacheMeshes['satGeometry']
-    
+
     let color = SAT_COLOR
     if (selected) {
-        color = SAT_COLOR_SELECTED
+      color = SAT_COLOR_SELECTED
     } else if (hover) {
-        color = SAT_COLOR_HOVER
+      color = SAT_COLOR_HOVER
     }
-    
+
     if (cacheMeshes['satMaterial' + color] === undefined) {
-        cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
-            color,
-            transparent: true,
-            opacity: 0.7
-        })
+      cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
+        color,
+        transparent: true,
+        opacity: 0.7
+      })
     }
-    
+
     const satMaterialClick = cacheMeshes['satMaterialClick']
     const satClickArea = cacheMeshes['satClickArea']
 
     const satMaterial = cacheMeshes['satMaterial' + color]
     const sat = new THREE.Mesh(satGeometry, satMaterial)
     const satClick = new THREE.Mesh(satClickArea, satMaterialClick)
-
 
     const group = new THREE.Group()
     group.add(sat)
