@@ -30,7 +30,8 @@ def serializedSatellites(satellites):
             'revolutions': sat.revolutions,
             'revolutions_per_day': sat.revolutions_per_day,
             'categories': [cat.minor_category for cat in sat.minor_categories.all()],
-            'classification': sat.classification
+            'classification': sat.classification,
+            'country': sat.country,
             } for sat in satellites]
 
 @api_view(['GET'])
