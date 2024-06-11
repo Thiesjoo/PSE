@@ -77,8 +77,8 @@ def categories(request: HttpRequest):
     Endpoint for fetching all satellite categories.
     """
     views_logger.info("Endpoint 'categories' was called.")
-    catList = [cat.minor_category for cat in cats]
     cats = MinorCategory.objects.all()
+    catList = [cat.minor_category for cat in cats]
     return JsonResponse({'categories': catList})
 
 @api_view(['GET'])
