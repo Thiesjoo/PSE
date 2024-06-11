@@ -10,8 +10,6 @@
 </script>
 
 <template>
-    Yo test 123
-
     <div class="container">
         <div class="text-block">
             <h4>Sliders</h4>
@@ -91,4 +89,64 @@
 
 <style scoped
        lang="scss">
+
+    .text-block {
+        position: absolute;
+        top: 260px;
+        right: 50px;
+        width: 320px;
+        height: 430px;
+        background-color: #05050aa2;
+        color: white;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.75);
+        border-radius: 12px;
+        padding: 50px;
+    }
+
+    .text-block2 {
+        position: absolute;
+        top: 50px;
+        right: 50px;
+        width: 120px;
+        height: 150px;
+        background-color: #05050aa2;
+        color: white;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.75);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .slidecontainer {
+        width: 100%;
+    }
+
+    .slider {
+        width: 100%;
+        height: 5px;
+        background: #e8f8e5;
+        outline: #e8f8e5;
+        opacity: 0.7;
+        -webkit-transition: 0.2s;
+        transition: opacity 0.2s;
+    }
+
+    .slider:hover {
+        opacity: 1;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 10px;
+        height: 20px;
+        background: #fefefe;
+        cursor: pointer;
+    }
+
 </style>
