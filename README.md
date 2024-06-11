@@ -98,6 +98,15 @@ To filter on specific satellite categories, use the `filter` parameter and list 
 
 * Note that you can only filter on *minor* categories (e.g. you can't filter on 'Communications').
 
+#### List of special country codes
+The country codes will mostly be 2 letter ISO 3166-1 alpha-2 codes. There are some exceptions
+|Country code|Meaning|
+|------------|-------|
+|INT|Multiple countries, use internation flag of earth|
+|XX/YY|Two countries launched a satellite together|
+|UNK|Unkown, use a question mark|
+|EU|For the european union|
+
 ### Development & setup guide
 
 To setup the backend, make sure to follow all the steps below:
