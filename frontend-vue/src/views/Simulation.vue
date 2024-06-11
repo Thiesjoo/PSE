@@ -4,7 +4,7 @@
         import { Satellite } from '@/Satellite';
         import {Own_Satellite} from '../new_eigen_satellite.js';
         import { ref, watch } from 'vue';
-import { Value } from 'sass';
+        import { Value } from 'sass';
 
         const props = defineProps<{
             simulation: ThreeSimulation
