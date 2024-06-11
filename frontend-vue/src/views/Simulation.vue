@@ -11,10 +11,9 @@
             simulation: ThreeSimulation
         }>();
 
-        // Set epoch as current time
+        // Set epoch as current time and alt as 160km
         let epoch = epochUpdate();
-        let init_height = 160
-        let alt = init_height * 1000 + 6371 * 1000; // Convert to meters and add Earth's radius
+        let alt = 160000 + 6371 * 1000; // Add Earth's radius
         let mean_motion = calculateRevolutionPerDay(alt)
 
         // Initializing own satelite
@@ -29,11 +28,36 @@
         let sat = sats[0]
         sats.forEach(sat => props.simulation.addSatellite(sat));
 
+        // ********* SLIDERS *********
+
         // Initializing slider variables
         const height = ref(160);
         const inclination = ref(0);
         const raan = ref(0);
         const e = ref(0);
+
+        const picked = ref(0); // Initial orbit type is 0 = LEO
+
+        // Height slider live changes and update radio buttons
+        watch(height, (Value) => {
+            alt = Value * 1000 + 6371 * 1000; // Convert to meters and add Earth's radius
+            sat.satData.no = calculateRevolutionPerDay(alt); // no - mean motion per minute
+
+            if (Value >= 160 && Value < 2000) {
+                picked.value = 0; // LEO
+            } else if (Value >= 2000 && Value < 36000) {
+                picked.value = 1; // MEO
+            }
+        });
+
+        // watch(height, (value) => {
+        //     sat.satData.inclo = value * 1000 + 6371 * 1000; // Convert to meters and add Earth's radius
+        //     if (value >= 160 && value < 2000) {
+        //         picked.value = 80; // LEO
+        //     } else if (value >= 2000 && value < 36000) {
+        //         picked.value = 2000; // MEO
+        //     }
+        // });
 
         // Inclination slider live changes
         watch(inclination, (Value) => {
@@ -110,19 +134,18 @@
             <br />
             <p class="display">Value: {{ e/100 }}</p>
         </div>
-        <br />
-        <!-- <h2>Satellite Type</h2>
+        <!-- <br />
+        <h2>Orbit Category</h2>
         <br />
         <div> Selected: {{ height = picked }} </div>
         <br />
         <input type="radio" id="LEO" value="80" v-model.number="picked" />
-        <label for="80">LEO</label>
-        <br />
-        <input type="radio" id="GEO" value="1000" v-model.number="picked" />
-        <label for="1000">GEO</label>
-        <br />
+        <label for="80">LEO</label> -->
+        <!-- Range between 160 and 2000 -->
+        <!-- <br />
         <input type="radio" id="NEO" value="2000" v-model.number="picked" />
-        <label for="2000">NEO</label> -->
+        <label for="2000">MEO</label>
+        Range between 2 000 and 36 000 -->
     </div>
 
 </template>

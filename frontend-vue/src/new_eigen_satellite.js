@@ -15,6 +15,6 @@ export function calculateRevolutionPerDay(a) {
     const GRAVITATIONAL_PARAM = 3.986004418e14; // m^3/s^2
     let mean_motion = Math.sqrt(GRAVITATIONAL_PARAM / a ** 3);
     let revolutions_per_day = (mean_motion * 86400) / (2 * Math.PI);
-    console.log(revolutions_per_day.toFixed(8))
+
     return revolutions_per_day.toFixed(8);
 }
