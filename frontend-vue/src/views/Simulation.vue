@@ -37,7 +37,12 @@
 
         // Inclination slider live changes
         watch(inclination, (Value) => {
-            sat.satData.inclo = Value * 3.14 /180 // [rad]
+            sat.satData.inclo = Value * Math.PI /180 // [rad]
+        });
+
+        // RAAN slider live changes
+        watch(raan, (Value) => {
+            sat.satData.nodeo = Value * Math.PI /180 // [rad]
         });
 
         props.simulation.setTimeSpeed(150);
