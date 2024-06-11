@@ -277,8 +277,12 @@ export class ThreeSimulation {
         this.time.setSpeed(speed);
     };
 
-    enableLineDrawing() {};
-    disableLineDrawing() {};
+    enableLineDrawing() {
+        this.drawLines = true;
+    };
+    disableLineDrawing() {
+        this.drawLines = false;
+    };
 
     changeCameraLocation() {};
 
