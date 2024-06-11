@@ -83,6 +83,11 @@ export class ThreeSimulation {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.maxDistance = MAX_CAMERA_DISTANCE;
         this.controls.minDistance = MIN_CAMERA_DISTANCE;
+        this.controls.mouseButtons = {
+            LEFT: THREE.MOUSE.ROTATE,
+            MIDDLE: THREE.MOUSE.DOLLY,
+            RIGHT: null
+        }
 
         // Add lights
         this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI));
