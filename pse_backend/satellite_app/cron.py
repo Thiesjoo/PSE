@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from tletools import TLE
 from satellite_app.models import Satellite, MinorCategory
 import requests
@@ -333,23 +335,64 @@ def pull_scientific_satellites():
     cron_logger.info("Succesfully pulled 'Scientific' satellites.")
 
 def pull_country_names():
-    mydict = {}
-    with open('util/country_codes.csv', mode='r') as infile:
-        reader = csv.reader(infile)
-        mydict = {rows[0]:rows[2] for rows in reader}
+    """
+    Cronjob. Uses a local country_codes CSV file in combination with a 
+    catalogue of nearly all existing satellites to assign country codes 
+    to every satellite in our database.
+    """
 
-    csv_data = csv.reader(open('util/satcat.csv', 'r'))
-    csv_data = csv_data.text.splitlines()
+    cron_logger.info("Starting 'pull_country_names' cronjob: pulling all " +
+                      "country names and assigning them to stored satellites.")
+    
+    DIR = Path(__file__).resolve().parent
+    codes_path = os.path.join(DIR, 'util', 'country_codes.csv')
 
+    try:
+        mydict = {}
+        
+        with open(codes_path, mode='r') as infile:
+           reader = csv.reader(infile)
+           mydict = {rows[0]:rows[2] for rows in reader}
+
+        cron_logger.info("Loaded country data.")
+        csv_data = requests.get('https://celestrak.org/pub/satcat.csv')
+        if csv_data.status_code != 200:
+            cron_logger.error("Could not fetch 'satcat' data from Celestrak source."
+                               + " Most likely, this server has been temporarily " + 
+                               "blocked due to excessive API calls. Response code: "
+                                 + str(csv_data.status_code) + ".")
+            return
+        else:
+            csv_data = csv_data.text.splitlines()
+            cron_logger.info("Retrieved catalogue number data from server.")
+    except Exception as e:
+        cron_logger.error(e)
+
+    # Counter for the number of satellites for which a country code could be found
+    found_satellites = 0
+
+    # Counter for the number of satellites for which a country code could be found
+    unfound_satellites = 0
+
+    # Delete the first line since it's just the header, not data
+    csv_data.pop(0)
+
+    # Line by line, go through the satellite catalogue data, extract the 
+    # country code, and assign it to the corresponding satellite in our
+    #  database (if any). Note that it is expected behaviour for not all
+    # satellites to be found (i.e. the exception below does not indicate
+    # unintended behaviour).
     for line in csv_data:
-        line = line.split(',')
+        split_line = line.split(',')
+        
         try:
-            sat = Satellite.objects.get(satellite_catalog_number=line[2])
-            sat.country = mydict[line[5]]
+            sat = Satellite.objects.get(satellite_catalog_number=split_line[2])
+            sat.country = mydict[split_line[5]]
             sat.save()
+            found_satellites += 1
         except Satellite.DoesNotExist:
-            cron_logger.warning("Could not find satellite with catalog number " + line[2] + " to add country name to.")
-
-
-        
-        
+            unfound_satellites += 1
+    
+    cron_logger.info("Assigned country data to a total of " + found_satellites + " satellites.")
+    cron_logger.info("Could not find " + unfound_satellites + " satellites to assign country data to.")
+    cron_logger.info("Done assigning satellites to country data.")
