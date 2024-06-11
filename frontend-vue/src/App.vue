@@ -1,8 +1,8 @@
 <script setup
         lang="ts">
-        import { RouterLink, RouterView } from 'vue-router'
+        import { RouterLink, RouterView, useRoute } from 'vue-router'
         import { ThreeSimulation } from './Sim'
-        import { onMounted, ref } from 'vue'
+        import { onMounted, ref, watch } from 'vue'
 
         const canvas = ref<HTMLCanvasElement | null>(null)
 
@@ -11,6 +11,12 @@
         onMounted(() => {
             simulation.initAll(canvas.value!)
         })
+
+        const route = useRoute()
+        watch(() => route.path, () => {
+            simulation.reset()
+        })
+        
 </script>
 
 <template>
@@ -66,7 +72,7 @@
 
     .content {
         z-index: 101;
-        padding-top: 3em;
+        margin-top: 3em;
     }
 
     header {

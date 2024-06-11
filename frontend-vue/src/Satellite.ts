@@ -53,13 +53,8 @@ export class Satellite {
 
   // TODO: Waarom 2 tijden?
   public propagate(time: Date, gmsTime: GMSTime): Object {
-    let eci
-    if (+time % +this.satData.satnum == 0 || !this.currentPosition) {
-      eci = propagate(this.satData, time)
-      this.currentPosition = eci
-    } else {
-      eci = this.currentPosition
-    }
+    const eci = propagate(this.satData, time)
+    this.currentPosition = eci;
 
     if (eci.position) {
       const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime)
