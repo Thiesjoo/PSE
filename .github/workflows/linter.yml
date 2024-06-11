@@ -31,9 +31,4 @@ jobs:
         run: npm ci
 
       - name: Run linters
-        uses: wearerequired/lint-action@v2
-        with:
-          eslint: true
-          prettier: true
-          # eslint_dir: ./frontend
-          # prettier_dir: ./frontend
+        run: npx lint-staged
