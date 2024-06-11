@@ -70,6 +70,35 @@ def index(request: HttpRequest):
     # Returns a JSON-serialized list of the fetched satellites
     return JsonResponse({'satellites': serializedSatellites(sats)})
 
+@api_view(['GET'])
+def categories(request: HttpRequest):
+    """
+    Endpoint for fetching all satellite categories.
+    """
+    cats = MinorCategory.objects.all()
+    catList = [cat.minor_category for cat in cats]
+    return JsonResponse({'categories': catList})
+
+@api_view(['GET'])
+def launch_years(request: HttpRequest):
+    """
+    Endpoint for fetching all known launch years of the satellites.
+    """
+    distinct_launch_years = Satellite.objects.values('launch_year').distinct()
+    launch_years_list = [ly['launch_year'] for ly in distinct_launch_years]
+    return JsonResponse({'launch_years': launch_years_list})
+
+@api_view(['GET'])
+def countries(request: HttpRequest):
+    """
+    Endpoint for fetching all known countries/affiliations of the satellites.
+    NOTE: This endpoint is currently just speculative and is made at a time
+      where countries haven't been fully implemented yet in the database.
+    """
+    distinct_countries = Satellite.objects.values('country').distinct()
+    countries_list = [c['country'] for c in distinct_countries] # <- This line might not be necessary
+    return JsonResponse({'countries': countries_list})
+
 #NOTE: This is to be removed
 def pull(request: HttpRequest):
     views_logger.info("Endpoint 'pull' was called; now forcefully"

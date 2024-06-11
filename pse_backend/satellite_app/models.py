@@ -58,6 +58,7 @@ class Satellite(models.Model):
     epoch = models.FloatField()
     revolutions = models.IntegerField()
     revolutions_per_day = models.FloatField()
+    country = models.CharField(max_length=5,blank=True, default='')
 
     minor_categories = models.ManyToManyField(MinorCategory, related_name='satellites')
 

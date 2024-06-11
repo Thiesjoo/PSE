@@ -1,7 +1,7 @@
 numpy
 django
 django-crontab
-tle-tools
+TLE-tools
 python-dotenv
 djangorestframework
 django-cors-headers

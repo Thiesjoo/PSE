@@ -66,6 +66,7 @@ CRONJOBS = [
     ('0 4 * * *', 'satellite_app.cron.pull_communications_satellites'),
     ('0 6 * * *', 'satellite_app.cron.pull_navigation_satellites'),
     ('0 8 * * *', 'satellite_app.cron.pull_scientific_satellites'),
+    ('0 10 * * *', 'satellite_app.cron.pull_country_names'),
 ]
 
 LOGGING = {

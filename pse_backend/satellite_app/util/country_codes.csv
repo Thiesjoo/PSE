@@ -1,0 +1,131 @@
+Code,Description,country_code
+AB,Arab Satellite Communications Organization,SA
+ABS,Asia Broadcast Satellite,INT
+AC,Asia Satellite Telecommunications Company (ASIASAT),INT
+ALG,Algeria,DZ
+ANG,Angola,AO
+ARGN,Argentina,AR
+ARM,Republic of Armenia,AM
+ASRA,Austria,AT
+AUS,Australia,AU
+AZER,Azerbaijan,AZ
+BEL,Belgium,BE
+BELA,Belarus,BY
+BERM,Bermuda,BM
+BGD,Peoples Republic of Bangladesh,BD
+BHUT,Kingdom of Bhutan,BT
+BOL,Bolivia,BO
+BRAZ,Brazil,BR
+BUL,Bulgaria,BG
+CA,Canada,CA
+CHBZ,China/Brazil,CN/BR
+CHTU,China/Turkey,CN/TR
+CHLE,Chile,CL
+CIS,Commonwealth of Independent States (former USSR),RU
+COL,Colombia,CO
+CRI,Republic of Costa Rica,CR
+CZCH,Czech Republic (former Czechoslovakia),CZ
+DEN,Denmark,DK
+DJI,Republic of Djibouti,DJ
+ECU,Ecuador,EC
+EGYP,Egypt,EG
+ESA,European Space Agency,EU
+ESRO,European Space Research Organization,EU
+EST,Estonia,EE
+ETH,Ethiopia,ET
+EUME,European Organization for the Exploitation of Meteorological Satellites (EUMETSAT),EU
+EUTE,European Telecommunications Satellite Organization (EUTELSAT),EU
+FGER,France/Germany,FR/DE
+FIN,Finland,FI
+FR,France,FR
+FRIT,France/Italy,FR/IT
+GER,Germany,DE
+GHA,Republic of Ghana,GH
+GLOB,Globalstar,US
+GREC,Greece,GR
+GRSA,Greece/Saudi Arabia,GR/SA
+GUAT,Guatemala,GT
+HUN,Hungary,HU
+IM,International Mobile Satellite Organization (INMARSAT),INT
+IND,India,IN
+INDO,Indonesia,ID
+IRAN,Iran,IR
+IRAQ,Iraq,IQ
+IRID,Iridium,US
+IRL,Ireland,IE
+ISRA,Israel,IL
+ISRO,Indian Space Research Organisation,IN
+ISS,International Space Station,INT
+IT,Italy,IT
+ITSO,International Telecommunications Satellite Organization (INTELSAT),INT
+JOR,Jordan,JO
+JPN,Japan,JP
+KAZ,Kazakhstan,KZ
+KEN,Republic of Kenya,KE
+KWT,Kuwait,KW
+LAOS,Laos,LA
+LKA,Democratic Socialist Republic of Sri Lanka,LK
+LTU,Lithuania,LT
+LUXE,Luxembourg,LU
+MA,Morroco,MA
+MALA,Malaysia,MY
+MCO,Principality of Monaco,MC
+MDA,Republic of Moldova,MD
+MEX,Mexico,MX
+MMR,Republic of the Union of Myanmar,MM
+MNG,Mongolia,MN
+MUS,Mauritius,MU
+NATO,North Atlantic Treaty Organization,INT
+NETH,Netherlands,NL
+NICO,New ICO,US
+NIG,Nigeria,NG
+NKOR,Democratic People's Republic of Korea,KP
+NOR,Norway,NO
+NPL,Federal Democratic Republic of Nepal,NP
+NZ,New Zealand,NZ
+O3B,O3b Networks,LU
+ORB,ORBCOMM,US
+PAKI,Pakistan,PK
+PERU,Peru,PE
+POL,Poland,PL
+POR,Portugal,PT
+PRC,People's Republic of China,CN
+PRY,Republic of Paraguay,PY
+PRES,People's Republic of China/European Space Agency,CN/ESA
+QAT,State of Qatar,QA
+RASC,RascomStar-QAF,INT
+ROC,Taiwan (Republic of China),TW
+ROM,Romania,RO
+RP,Philippines (Republic of the Philippines),PH
+RWA,Republic of Rwanda,RW
+SAFR,South Africa,ZA
+SAUD,Saudi Arabia,SA
+SDN,Republic of Sudan,SD
+SEAL,Sea Launch,INT
+SES,SES,LU
+SGJP,Singapore/Japan,SG/JP
+SING,Singapore,SG
+SKOR,Republic of Korea,KR
+SPN,Spain,ES
+STCT,Singapore/Taiwan,SG/TW
+SVK,Slovakia,SK
+SVN,Slovenia,SI
+SWED,Sweden,SE
+SWTZ,Switzerland,CH
+TBD,To Be Determined,UNK
+THAI,Thailand,TH
+TMMC,Turkmenistan/Monaco,TM/MC
+TUN,Republic of Tunisia,TN
+TURK,Turkey,TR
+UAE,United Arab Emirates,AE
+UGA,Uganda,UG
+UK,United Kingdom,GB
+UKR,Ukraine,UA
+UNK,Unknown,UNK
+URY,Uruguay,UY
+US,United States,US
+USBZ,United States/Brazil,US/BR
+VAT,Vatican City State,VA
+VENZ,Venezuela,VE
+VTNM,Vietnam,VN
+ZWE,Republic of Zimbabwe,ZW
