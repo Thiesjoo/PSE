@@ -32,7 +32,7 @@ A Satellite object fetched from the database consists of the following data:
 | `classification` | Can be either `U` (unclassified), `C` (classified) or `S` (secret). |
 
 ### User guide
-The API contains a single generalized endpoint that can be reached via the URI:
+The API contains multiple endpoints. The main endpoint can be reached via the URI:
 ```
 /satellite_app
 ```
@@ -97,6 +97,24 @@ To filter on specific satellite categories, use the `filter` parameter and list 
 | Education |
 
 * Note that you can only filter on *minor* categories (e.g. you can't filter on 'Communications').
+
+#### Other endpoints
+Below are some other useful endpoints:
+
+To fetch all existing categories:
+```
+/satellite_app/categories
+```
+
+To fetch all launch years:
+```
+/satellite_app/launch_years
+```
+
+To fetch all countries with associated satellites:
+```
+/satellite_app/countries
+```
 
 #### List of special country codes
 The country codes will mostly be 2 letter ISO 3166-1 alpha-2 codes. There are some exceptions
