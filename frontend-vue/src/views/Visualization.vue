@@ -14,27 +14,26 @@
         const sats = Satellite.fromMultipleTLEs(rawSatData).slice(0, 5000);
 
         sats.forEach(sat => props.simulation.addSatellite(sat));
+
         let speed = ref(1);
         watch(speed, (newSpeed) => {
             props.simulation.setTimeSpeed(newSpeed);
         })
 
-
-        const react = ref(undefined as Satellite | undefined);
-
+        const currentSelectedSatellite = ref(undefined as Satellite | undefined);
         props.simulation.addEventListener('select', (sat) => {
-            react.value = sat;
+            currentSelectedSatellite.value = sat;
         })
 
         const epoch = computed(() => {
-            if (!react.value) {
+            if (!currentSelectedSatellite.value) {
                 return '';
             }
 
-            const day = Math.floor(react.value.satData.epochdays);
-            const tmpYear = react.value.satData.epochyr
+            const day = Math.floor(currentSelectedSatellite.value.satData.epochdays);
+            const tmpYear = currentSelectedSatellite.value.satData.epochyr
             const year = tmpYear > 50 ? 1900 + tmpYear : 2000 + tmpYear;
-            const hour = 24 * parseFloat('0.' + react.value.satData.epochdays.toString().split('.')[1]);
+            const hour = 24 * parseFloat('0.' + currentSelectedSatellite.value.satData.epochdays.toString().split('.')[1]);
             const minute = 60 * (hour - Math.floor(hour));
 
 
@@ -55,7 +54,6 @@
             const factor = Math.pow(10, digits);
             return Math.round(num * factor) / factor;
         }
-
 </script>
 
 <template>
@@ -63,27 +61,27 @@
     <!-- Leave the pop-up id, it is used to prevent click through's -->
     <div class="pop-up"
          id="pop-up"
-         v-if="react">
-        <h1> {{ react.name }}</h1>
+         v-if="currentSelectedSatellite">
+        <h1> {{ currentSelectedSatellite.name }}</h1>
         <img src="@/assets/usflag.svg"
              width="100"
              alt="US flag" />
         <p id="SatelliteCountry">Insert country</p>
         <p>
             <span>NORAD Catalog Number:</span>
-            <span id="SatelliteId">{{ react.id }}</span>
+            <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
         </p>
         <p>
             Longitude:
-            <span id="SatelliteLongitude">{{ rounded(react.realPosition?.lng || 0, 7) }}º</span>
+            <span id="SatelliteLongitude">{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, 7) }}º</span>
         </p>
         <p>
             Latitude:
-            <span id="SatelliteLatitude">{{ rounded(react.realPosition?.lat || 0, 7) }}º </span>
+            <span id="SatelliteLatitude">{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, 7) }}º </span>
         </p>
         <p>
             Altitude:
-            <span id="SatelliteAltitude">{{ rounded(react.realPosition?.alt || 0, 7) }}km</span>
+            <span id="SatelliteAltitude">{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, 7) }}km</span>
         </p>
         <p>Last epoch:</p>
         <p id="SatelliteEpoch">{{ epoch }}</p>

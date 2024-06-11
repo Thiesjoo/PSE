@@ -17,7 +17,7 @@ const router = createRouter({
     {
       path: '/simulation',
       name: 'Simulation',
-      component: () => import('../views/Visualization.vue')
+      component: () => import('../views/Simulation.vue')
     },
     {
       path: '/communication',
