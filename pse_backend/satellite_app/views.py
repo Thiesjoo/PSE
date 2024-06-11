@@ -96,7 +96,7 @@ def countries(request: HttpRequest):
       where countries haven't been fully implemented yet in the database.
     """
     distinct_countries = Satellite.objects.values('country').distinct()
-    countries_list = [str(c) for c in distinct_countries] # <- This line might not be necessary
+    countries_list = [c['country'] for c in distinct_countries] # <- This line might not be necessary
     return JsonResponse({'countries': countries_list})
 
 #NOTE: This is to be removed
