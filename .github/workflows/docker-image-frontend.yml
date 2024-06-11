@@ -3,6 +3,9 @@ name: Build the frontend
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "frontend-vue/**"
+      - ".github/workflows/docker-image-frontend.yml"
   pull_request:
     branches: [ "main" ]
 
