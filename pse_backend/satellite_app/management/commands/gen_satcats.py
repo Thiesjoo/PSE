@@ -17,10 +17,10 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         # Special Interest
-        self._save_minor_categories([
-            SATAFF.LAST_30_DAYS, SATAFF.SPACE_STATIONS, SATAFF.ACTIVE, SATAFF.ANALYST_SATELLITES
-            print('test')
-        ])
+        self._save_minor_categories([SATAFF.LAST_30_DAYS,
+                                     SATAFF.SPACE_STATIONS,
+                                     SATAFF.ACTIVE,
+                                     SATAFF.ANALYST_SATELLITES])
 
         # Weather and Earth
         self._save_minor_categories([
