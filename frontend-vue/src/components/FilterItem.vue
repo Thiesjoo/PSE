@@ -5,18 +5,16 @@ const props = defineProps<{
   modelValue: boolean
 }>()
 
-const emits = defineEmits()
+const emits = defineEmits(['update:modelValue'])
 
 const toggle = () => {
   emits('update:modelValue', !props.modelValue)
 }
-
 </script>
 
 <template>
   <label>
     <input type="checkbox" :checked="props.modelValue" @change="toggle" />
-    <slot>  </slot>
+    <slot> </slot>
   </label>
 </template>
-

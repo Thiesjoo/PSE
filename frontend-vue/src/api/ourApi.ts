@@ -56,10 +56,9 @@ export async function getRawTLES(limit: number | undefined = undefined): Promise
     .join('\n')
 }
 
-
 export async function getAllCategories(): Promise<string[]> {
-    const data = await fetch(`${API_URL}satellite_app/categories`);
-    const json = await data.json();
+  const data = await fetch(`${API_URL}satellite_app/categories`)
+  const json = await data.json()
 
-    return json.categories;
+  return json.categories
 }

@@ -9,7 +9,6 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-
 let speed = ref(1)
 watch(speed, (newSpeed) => {
   props.simulation.setTimeSpeed(newSpeed)
@@ -22,7 +21,7 @@ props.simulation.addEventListener('select', (sat) => {
 </script>
 
 <template>
-    <FilterBar :simulation="simulation"></FilterBar>
+  <FilterBar :simulation="simulation"></FilterBar>
   <PopSatInfo
     :currentSelectedSatellite="currentSelectedSatellite"
     v-if="currentSelectedSatellite"
