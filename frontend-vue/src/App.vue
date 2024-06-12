@@ -15,6 +15,12 @@
         const route = useRoute()
         watch(() => route.path, (path   ) => {
             simulation.reset()
+            if (route.path === "/"){
+                simulation.move_right()
+            }
+            else{
+                simulation.move_center()
+            }
         })
 </script>
 
