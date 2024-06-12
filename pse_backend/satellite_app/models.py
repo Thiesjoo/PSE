@@ -2,6 +2,10 @@ from django.db import models
 
 
 class MinorCategory(models.Model):
+    """
+    Category model. Has a single attribute
+    storing a satellite category.
+    """
     class Meta:
         verbose_name_plural = 'Minor Categories'
 
@@ -54,20 +58,27 @@ class MinorCategory(models.Model):
 
 
 class Satellite(models.Model):
-    # <-- dit is de 'title line (optional)'
+    """
+    Satellite model. Contains the information of a satellite
+    in the form of both a TLE and individual data.
+    """
     name = models.CharField(max_length=24)
     line1 = models.CharField(max_length=69)
     line2 = models.CharField(max_length=69)
     satellite_catalog_number = models.IntegerField(primary_key=True)
-    launch_year = models.IntegerField()  # max_length=4
+    launch_year = models.IntegerField(db_index=True)  # max_length=4
     epoch_year = models.IntegerField()  # max_length=4
     epoch = models.FloatField()
     revolutions = models.IntegerField()
     revolutions_per_day = models.FloatField()
-    country = models.CharField(max_length=5, blank=True, default='')
+    country = models.CharField(
+        max_length=5,
+        blank=True,
+        default='',
+        db_index=True)
 
     minor_categories = models.ManyToManyField(
-        MinorCategory, related_name='satellites')
+        MinorCategory, related_name='satellites', db_index=True)
 
     class ClassificationChoices(models.TextChoices):
         # U: unclassified, C: classified, S: secret

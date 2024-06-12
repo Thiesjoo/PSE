@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from satellite_app.models import Satellite, MinorCategory
+from satellite_app.models import MinorCategory
 
 # For ease of use
 SATAFF = MinorCategory.MinorCategoryChoices
@@ -12,7 +12,7 @@ Description: This command-script populates the database with rows of all
 
 
 class Command(BaseCommand):
-    help = 'Run custom script'
+    help = 'Run script to generate satellite categories in the database'
 
     def handle(self, *args, **kwargs):
 
