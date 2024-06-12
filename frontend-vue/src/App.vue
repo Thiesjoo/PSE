@@ -11,13 +11,15 @@ onMounted(() => {
   simulation.initAll(canvas.value!);
 });
 
-const route = useRoute();
-watch(
-  () => route.path,
-  (path) => {
-    simulation.reset();
-  }
-);
+
+const route = useRoute()
+  watch(() => route.path, (path   ) => {
+    simulation.reset()
+    if (route.path !== "/"){
+        simulation.moveCenter()
+    }
+})
+
 </script>
 
 <template>
