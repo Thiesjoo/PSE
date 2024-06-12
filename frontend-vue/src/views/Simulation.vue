@@ -41,7 +41,7 @@
         // Height slider live changes and update radio buttons
         watch(height, (Value) => {
             alt = Value * 1000 + 6371 * 1000; // Convert to meters and add Earth's radius
-            sat.satData.no = calculateRevolutionPerDay(alt); // no - mean motion per minute
+            sat.satData.no = calculateRevolutionPerDay(alt) / (60 * 24); // mean motion [/min]
 
             if (Value >= 160 && Value < 2000) {
                 picked.value = 0; // LEO
@@ -49,15 +49,6 @@
                 picked.value = 1; // MEO
             }
         });
-
-        // watch(height, (value) => {
-        //     sat.satData.inclo = value * 1000 + 6371 * 1000; // Convert to meters and add Earth's radius
-        //     if (value >= 160 && value < 2000) {
-        //         picked.value = 80; // LEO
-        //     } else if (value >= 2000 && value < 36000) {
-        //         picked.value = 2000; // MEO
-        //     }
-        // });
 
         // Inclination slider live changes
         watch(inclination, (Value) => {
@@ -134,18 +125,18 @@
             <br />
             <p class="display">Value: {{ e/100 }}</p>
         </div>
-        <!-- <br />
+        <br />
         <h2>Orbit Category</h2>
         <br />
-        <div> Selected: {{ height = picked }} </div>
+        <div> Selected: {{ picked }} </div>
         <br />
-        <input type="radio" id="LEO" value="80" v-model.number="picked" />
-        <label for="80">LEO</label> -->
+        <input type="radio" id="LEO" value="0" v-model.number="picked" />
+        <label for="80">LEO</label>
         <!-- Range between 160 and 2000 -->
-        <!-- <br />
-        <input type="radio" id="NEO" value="2000" v-model.number="picked" />
+        <br />
+        <input type="radio" id="NEO" value="1" v-model.number="picked" />
         <label for="2000">MEO</label>
-        Range between 2 000 and 36 000 -->
+        <!-- Range between 2 000 and 36 000-->
     </div>
 
 </template>
