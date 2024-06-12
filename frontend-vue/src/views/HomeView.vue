@@ -1,4 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ThreeSimulation } from '@/Sim'
+
+const props = defineProps<{
+  simulation: ThreeSimulation
+}>()
+
+props.simulation.moveRight();
+</script>
 
 <template>
   <h1>Satelliet</h1>

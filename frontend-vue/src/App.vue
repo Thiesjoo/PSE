@@ -15,10 +15,7 @@ onMounted(() => {
 const route = useRoute()
   watch(() => route.path, (path   ) => {
     simulation.reset()
-    if (route.path === "/"){
-        simulation.moveRight()
-    }
-    else{
+    if (route.path !== "/"){
         simulation.moveCenter()
     }
 })
