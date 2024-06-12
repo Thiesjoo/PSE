@@ -48,6 +48,9 @@
             } else if (Value >= 2000 && Value < 36000) {
                 picked.value = 1; // MEO
             }
+            else {
+                picked.value = 2;
+            }
         });
 
         // Inclination slider live changes
@@ -79,7 +82,7 @@
             <input
                 type="range"
                 min="160"
-                max="2000"
+                max="36000"
                 v-model="height"
                 class="slider"
             />
@@ -128,15 +131,12 @@
         <br />
         <h2>Orbit Category</h2>
         <br />
-        <div> Selected: {{ picked }} </div>
-        <br />
-        <input type="radio" id="LEO" value="0" v-model.number="picked" />
-        <label for="80">LEO</label>
-        <!-- Range between 160 and 2000 -->
-        <br />
-        <input type="radio" id="NEO" value="1" v-model.number="picked" />
-        <label for="2000">MEO</label>
-        <!-- Range between 2 000 and 36 000-->
+        <div id="categories">
+        <span :class="{'category': true, 'highlight': picked === 0}" id="LEO">LEO</span>
+        <span :class="{'category': true, 'highlight': picked === 1}" id="MEO">MEO</span>
+        <span :class="{'category': true, 'highlight': picked == 2 }" id="Other">Other</span>
+
+    </div>
     </div>
 
 </template>
@@ -213,5 +213,15 @@
     background: #fefefe;
     cursor: pointer;
     }
+
+    .category {
+            display: inline-block;
+            margin-right: 20px;
+            padding: 7px;
+            font-size: 1em;
+        }
+        .highlight {
+            background-color: rgba(195, 0, 255, 0.36);
+        }
 
 </style>
