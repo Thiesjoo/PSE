@@ -29,9 +29,8 @@ export class ThreeSimulation {
     private stats!: any;
 
     private line: THREE.Line | null = null;
-    // TODO: any weghalen
-    private lineGeometry: any;
-    private lineCounter: any = 0;
+    private lineGeometry: THREE.BufferGeometry | null = null;
+    private lineCounter = 0;
 
     private time: Time = new Time(new Date());
 
@@ -187,7 +186,7 @@ export class ThreeSimulation {
     }
 
     updateLine() {
-        if (!this.line) return;
+        if (!this.line || !this.lineGeometry) return;
         if (!this.currentlySelected){
             if (this.line.parent === this.scene) this.removeLine();
             return;
@@ -222,7 +221,7 @@ export class ThreeSimulation {
 
     //Removes the line from the scene.
     removeLine() {
-        if (this.line) {
+        if (this.line && this.lineGeometry) {
             this.scene.remove(this.line);
             this.lineGeometry.setDrawRange(0, 0);
             this.lineCounter = 0;
@@ -264,8 +263,8 @@ export class ThreeSimulation {
     private initListeners() {
         window.addEventListener('pointermove', this.onPointerMove.bind(this), false);
         window.addEventListener('resize', this.onWindowResize.bind(this), false);
-        window.addEventListener('click', this.onClick.bind(this), false);
-        window.addEventListener('mousedown', this.onMouseDown.bind(this), false);
+        document.getElementById("canvas")!.addEventListener('click', this.onClick.bind(this), false);
+        document.getElementById("canvas")!.addEventListener('mousedown', this.onMouseDown.bind(this), false);
     }
 
     private onWindowResize() {
@@ -279,12 +278,6 @@ export class ThreeSimulation {
         this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
 
-    private popupInParent(element: HTMLElement): boolean {
-        if (element.id === "pop-up") return true;
-        if (element.parentNode) return this.popupInParent(element.parentNode as HTMLElement);
-        return false;
-    }
-
     private onMouseDown(event: Event) {
         this.lastPointer.x = this.pointer.x;
         this.lastPointer.y = this.pointer.y;
@@ -294,10 +287,8 @@ export class ThreeSimulation {
     private onClick(event: Event) {
         const xDif = Math.abs(this.lastPointer.x - this.pointer.x);
         const yDif = Math.abs(this.lastPointer.y - this.pointer.y);
-        console.log("X: ", xDif, "Y: ", yDif)
         if (
-            (event.target && this.popupInParent(event.target as HTMLElement))
-            || xDif > 0.00001 || yDif > 0.00001
+         xDif > 0.00001 || yDif > 0.00001
         )
             return;
 
