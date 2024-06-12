@@ -41,7 +41,7 @@
       </template>
     </Suspense>
   </div>
-  <canvas ref="canvas"></canvas>
+  <canvas ref="canvas" id="canvas"></canvas>
 </template>
 
 <style scoped lang="scss">
