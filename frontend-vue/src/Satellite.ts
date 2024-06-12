@@ -16,62 +16,60 @@ import { API_TLE_DATA } from './api/ourApi'
 import { renderLimit } from './common/sat-manager'
 
 function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
-    const phi = (90 - lat) * Math.PI / 180;
-    const theta = (90 - lng) * Math.PI / 180;
-    const r = globeRadius * (1 + relAltitude);
-    return {
-      x: r * Math.sin(phi) * Math.cos(theta),
-      y: r * Math.cos(phi),
-      z: r * Math.sin(phi) * Math.sin(theta)
-    };
+  const phi = ((90 - lat) * Math.PI) / 180
+  const theta = ((90 - lng) * Math.PI) / 180
+  const r = globeRadius * (1 + relAltitude)
+  return {
+    x: r * Math.sin(phi) * Math.cos(theta),
+    y: r * Math.cos(phi),
+    z: r * Math.sin(phi) * Math.sin(theta)
   }
+}
 let cacheMeshes: { [key: string]: any } = {}
 
 export function constructSatelliteMesh(globeRadius: number): THREE.InstancedMesh {
-    if (cacheMeshes['satGeometry'] === undefined) {
-        cacheMeshes['satGeometry'] = new THREE.OctahedronGeometry(
-          (SAT_SIZE * globeRadius) / EARTH_RADIUS_KM / 2,
-          0
-        )
-      }
+  if (cacheMeshes['satGeometry'] === undefined) {
+    cacheMeshes['satGeometry'] = new THREE.OctahedronGeometry(
+      (SAT_SIZE * globeRadius) / EARTH_RADIUS_KM / 2,
+      0
+    )
+  }
 
-      let color = SAT_COLOR
-      if (cacheMeshes['satMaterial' + color] === undefined) {
-        cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
-          color,
-          transparent: true,
-          opacity: 0.7
-        })
-      }
+  let color = SAT_COLOR
+  if (cacheMeshes['satMaterial' + color] === undefined) {
+    cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
+      color,
+      transparent: true,
+      opacity: 0.7
+    })
+  }
 
-      if (cacheMeshes['satMaterialClick'] === undefined) {
-        cacheMeshes['satMaterialClick'] = new THREE.MeshLambertMaterial({
-          transparent: true,
-          opacity: 0.0001
-        })
-      }
-  
-      if (cacheMeshes['satClickArea'] === undefined) {
-        cacheMeshes['satClickArea'] = new THREE.OctahedronGeometry(
-          (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM / 2,
-          5
-        )
-      }
-  
-      const satGeometry = cacheMeshes['satGeometry']
-  
-  
-      const satMaterialClick = cacheMeshes['satMaterialClick']
-      const satClickArea = cacheMeshes['satClickArea']
-  
-      const satMaterial = cacheMeshes['satMaterial' + color]
-      const sat = new THREE.InstancedMesh(satGeometry, satMaterial, renderLimit);
-      sat.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-      sat.userData = { 'satellite': "een satelliet" }
+  if (cacheMeshes['satMaterialClick'] === undefined) {
+    cacheMeshes['satMaterialClick'] = new THREE.MeshLambertMaterial({
+      transparent: true,
+      opacity: 0.0001
+    })
+  }
 
-      return sat;
+  if (cacheMeshes['satClickArea'] === undefined) {
+    cacheMeshes['satClickArea'] = new THREE.OctahedronGeometry(
+      (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM / 2,
+      5
+    )
+  }
+
+  const satGeometry = cacheMeshes['satGeometry']
+
+  const satMaterialClick = cacheMeshes['satMaterialClick']
+  const satClickArea = cacheMeshes['satClickArea']
+
+  const satMaterial = cacheMeshes['satMaterial' + color]
+  const sat = new THREE.InstancedMesh(satGeometry, satMaterial, renderLimit)
+  sat.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
+  sat.userData = { satellite: 'een satelliet' }
+
+  return sat
 }
-
 
 export class Satellite {
   public name!: string
@@ -85,14 +83,14 @@ export class Satellite {
   private threeData = {
     matrix: new THREE.Matrix4(),
     quaternion: new THREE.Quaternion(),
-    scale: new THREE.Vector3(1, 1, 1)
+    scale: new THREE.Vector3(1, 1, 1), 
   }
 
-   get id(): string {
+  private currentColor = SAT_COLOR
+
+  get id(): string {
     return this.satData.satnum
   }
-
-  constructor() {}
 
   public static fromMultipleTLEs(data: string): Satellite[] {
     const tles = data.replace(/\r/g, '').split(/\n(?=[^12])/)
@@ -130,8 +128,7 @@ export class Satellite {
 
   // TODO: Waarom 2 tijden?
   public propagate(time: Date, gmsTime: GMSTime, index: number, frame: number) {
-    if (!this.currentPosition || 
-        frame === -1 || index % 60 === frame) {
+    if (!this.currentPosition || frame === -1 || index % 60 === frame) {
       const eci = propagate(this.satData, time)
       this.currentPosition = eci
 
@@ -146,12 +143,25 @@ export class Satellite {
         this.realSpeed.x = vel.x
         this.realSpeed.y = vel.y
         this.realSpeed.z = vel.z
-      } 
+      }
+    }
+  }
+
+  public setColor(color: string, index: number, mesh: THREE.InstancedMesh) {
+    this.currentColor = color;
+    mesh.setColorAt(index, new THREE.Color(color));
+    if (mesh.instanceColor) {
+        mesh.instanceColor.needsUpdate = true;
     }
   }
 
   public updatePositionOfMesh(mesh: THREE.InstancedMesh, index: number, globeRadius: number) {
-    const pos = polar2Cartesian(this.realPosition.lat, this.realPosition.lng, (this.realPosition.alt / EARTH_RADIUS_KM) * 3, globeRadius);
+    const pos = polar2Cartesian(
+      this.realPosition.lat,
+      this.realPosition.lng,
+      (this.realPosition.alt / EARTH_RADIUS_KM) * 3,
+      globeRadius
+    )
 
     this.threeData.matrix.compose(
       new THREE.Vector3(pos.x, pos.y, pos.z),

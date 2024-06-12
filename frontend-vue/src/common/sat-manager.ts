@@ -9,7 +9,7 @@ export interface Filter {
 }
 
 // TODO: Instanced mesh limit
-export const renderLimit = 1000;
+export const renderLimit = 12000;
 
 function satFulfillsFilter(sat: Satellite, filter: Filter, ignoreSelected = false) {
   if (ignoreSelected) {
@@ -32,9 +32,11 @@ export class SatManager {
   }
 
   private get filteredSatellites(): Satellite[] {
-    return this.allSatellites.filter((sat) => {
-      return this.currentFilters.some((filter) => satFulfillsFilter(sat, filter))
-    }).slice(0, renderLimit)
+    return this.allSatellites
+      .filter((sat) => {
+        return this.currentFilters.some((filter) => satFulfillsFilter(sat, filter))
+      })
+      .slice(0, renderLimit)
   }
 
   public async init() {
