@@ -13,7 +13,7 @@ import {Time} from './Time';
 import * as TWEEN from '@tweenjs/tween.js'
 import * as satellite from 'satellite.js';
 
-export class ThreeSimulation { 
+export class ThreeSimulation {
     private satellites: Record<string, Satellite> = {};
     private drawLines = true;
     private followSelected = true;
@@ -42,7 +42,7 @@ export class ThreeSimulation {
     private currentlySelected: Satellite | null = null;
 
     private eventListeners: Record<string, ((...args: any[]) => void)[]> = {};
-    
+
 
     // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
     initAll(canvas: HTMLCanvasElement) {
@@ -109,7 +109,7 @@ export class ThreeSimulation {
                 if (thisSatellite) {
                     return thisSatellite.render(this.currentlySelected?.id == d.id, this.currentlyHovering?.id == d.id, this.globe.getGlobeRadius());
                 }
-                
+
                 return new THREE.Mesh();
             } else {
                 return new THREE.Mesh();
@@ -294,7 +294,7 @@ export class ThreeSimulation {
 
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
-        
+
         if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
             const satData = this.satellites[intersects[0].object.userData.satellite];
             if (!satData) return;

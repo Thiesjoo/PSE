@@ -174,9 +174,8 @@ STARLINK-1011
             .atmosphereAltitude(0);
         this.globe.objectThreeObject(d => {
             if ('id' in d) {
-
-// zoek in ons lijstje naar id
-// id.render(selected)
+                // zoek in ons lijstje naar id
+                // id.render(selected)
 
                 const satGeometry = new THREE.OctahedronGeometry(
                     (SAT_SIZE * this.globe.getGlobeRadius()) / EARTH_RADIUS_KM / 2,
