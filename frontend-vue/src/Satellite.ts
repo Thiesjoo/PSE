@@ -20,6 +20,7 @@ export class Satellite {
   public name!: string
   public satData!: SatRec
   public country!: string
+  public categories!: string[];
   public currentPosition: PositionAndVelocity | null = null
   public realPosition = reactive({ lat: 0, lng: 0, alt: 0 })
   public realSpeed = reactive({ x: 0, y: 0, z: 0 })
@@ -45,6 +46,7 @@ export class Satellite {
       const sat = new Satellite()
       sat.fromTLEArray([satJSON.name, satJSON.line1, satJSON.line2])
       sat.country = satJSON.country
+        sat.categories = satJSON.categories
 
       return sat
     })

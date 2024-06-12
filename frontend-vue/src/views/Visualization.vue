@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
-import { fetchTLEInformation } from '@/api/ourApi'
+import FilterBar from '@/components/FilterBar.vue'
 import PopSatInfo from '@/components/PopSatInfo.vue'
 import { ref, watch } from 'vue'
 
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
-
-const rawSatData = await fetchTLEInformation()
-const sats = Satellite.fromOurApiData(rawSatData).slice(0, 5000)
-sats.forEach((sat) => props.simulation.addSatellite(sat))
 
 
 let speed = ref(1)
@@ -26,6 +22,7 @@ props.simulation.addEventListener('select', (sat) => {
 </script>
 
 <template>
+    <FilterBar :simulation="simulation"></FilterBar>
   <PopSatInfo
     :currentSelectedSatellite="currentSelectedSatellite"
     v-if="currentSelectedSatellite"

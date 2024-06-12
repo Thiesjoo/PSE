@@ -333,6 +333,17 @@ export class ThreeSimulation {
         this.satellites[sat.id] = sat;
     };
 
+    addSatellites(sats: Satellite[]) {
+        sats.forEach(sat => this.addSatellite(sat));
+    }
+
+    removeAllSatellites() {
+        this.satellites = {};
+        this.currentlyHovering = null;
+        this.currentlySelected = null;
+        this.eventListeners['select']?.forEach(cb => cb(null));
+    }
+
     addGroundStation() {};
 
     setTime(time: Date) {};

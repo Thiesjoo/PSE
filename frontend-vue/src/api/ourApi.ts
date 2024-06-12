@@ -5,6 +5,7 @@ export interface API_TLE_DATA {
   line1: string
   line2: string
   country: string
+  categories: string[]
   // ....
 }
 
@@ -36,7 +37,7 @@ export async function fetchTLEInformation(): Promise<API_TLE_DATA[]> {
     return cache
   }
 
-  const response = await fetch(`${API_URL}satellite_app/`)
+  const response = await fetch(`${API_URL}satellite_app/?limit=20000`)
   const rawData = await response.json()
   const data = rawData.satellites as API_TLE_DATA[]
 
@@ -53,4 +54,12 @@ export async function getRawTLES(limit: number | undefined = undefined): Promise
     })
     .slice(0, limit)
     .join('\n')
+}
+
+
+export async function getAllCategories(): Promise<string[]> {
+    const data = await fetch(`${API_URL}satellite_app/categories`);
+    const json = await data.json();
+
+    return json.categories;
 }
