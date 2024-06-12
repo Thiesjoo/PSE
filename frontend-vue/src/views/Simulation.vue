@@ -2,7 +2,7 @@
         lang="ts">
         import { ThreeSimulation } from '@/Sim';
         import { Satellite } from '@/Satellite';
-        import {epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin} from '../calc_helper.js';
+        import {epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin} from '@/calc_helper';
         import { ref, watch } from 'vue';
 
         const props = defineProps<{

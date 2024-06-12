@@ -1,21 +1,23 @@
-<script setup
-        lang="ts">
-        import { RouterLink, RouterView, useRoute } from 'vue-router'
-        import { ThreeSimulation } from './Sim'
-        import { onMounted, ref, watch } from 'vue'
+<script setup lang="ts">
+import { RouterLink, RouterView, useRoute } from "vue-router";
+import { ThreeSimulation } from "./Sim";
+import { onMounted, ref, watch } from "vue";
 
-        const canvas = ref<HTMLCanvasElement | null>(null)
+const canvas = ref<HTMLCanvasElement | null>(null);
 
-        const simulation = new ThreeSimulation()
+const simulation = new ThreeSimulation();
 
-        onMounted(() => {
-            simulation.initAll(canvas.value!)
-        })
+onMounted(() => {
+  simulation.initAll(canvas.value!);
+});
 
-        const route = useRoute()
-        watch(() => route.path, (path   ) => {
-            simulation.reset()
-        })
+const route = useRoute();
+watch(
+  () => route.path,
+  (path) => {
+    simulation.reset();
+  }
+);
 </script>
 
 <template>
