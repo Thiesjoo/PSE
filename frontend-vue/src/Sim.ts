@@ -95,7 +95,7 @@ export class ThreeSimulation {
                 if (thisSatellite) {
                     return thisSatellite.render(this.currentlySelected?.id == d.id, this.currentlyHovering?.id == d.id, this.globe.getGlobeRadius());
                 }
-                
+
                 return new THREE.Mesh();
             } else {
                 return new THREE.Mesh();
@@ -173,7 +173,7 @@ export class ThreeSimulation {
 
         this.raycaster.setFromCamera(this.pointer, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children);
-        
+
         if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
             const satData = this.satellites[intersects[0].object.userData.satellite];
             if (!satData) return;

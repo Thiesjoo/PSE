@@ -2,7 +2,7 @@
         lang="ts">
         import { ThreeSimulation } from '@/Sim';
         import { Satellite } from '@/Satellite';
-        import {epochUpdate, calculateRevolutionPerDay} from '../new_eigen_satellite.js';
+        import {epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin} from '../new_eigen_satellite.js';
         import type {SatRec} from 'satellite.js'
         import { ref, watch } from 'vue';
         import { Value } from 'sass';
@@ -41,15 +41,14 @@
         // Height slider live changes and update radio buttons
         watch(height, (Value) => {
             alt = Value * 1000 + 6371 * 1000; // Convert to meters and add Earth's radius
-            sat.satData.no = calculateRevolutionPerDay(alt) / (60 * 24); // mean motion [/min]
+            sat.satData.no = calculateMeanMotionRadPerMin(alt) // mean motion [rad/min]
 
             if (Value >= 160 && Value < 2000) {
                 picked.value = 0; // LEO
             } else if (Value >= 2000 && Value < 36000) {
                 picked.value = 1; // MEO
-            }
-            else {
-                picked.value = 2;
+            } else {
+                picked.value = 2; // Other
             }
         });
 
@@ -68,8 +67,7 @@
             sat.satData.ecco = Value/100
         });
 
-        props.simulation.setTimeSpeed(150);
-
+        props.simulation.setTimeSpeed(50);
 
 </script>
 

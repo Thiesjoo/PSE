@@ -18,3 +18,11 @@ export function calculateRevolutionPerDay(a) {
 
     return revolutions_per_day.toFixed(8);
 }
+
+export function calculateMeanMotionRadPerMin(a) {
+    const GRAVITATIONAL_PARAM = 3.986004418e14; // m^3/s^2
+    let mean_motion = Math.sqrt(GRAVITATIONAL_PARAM / a ** 3);
+    let revolutions_per_day = (mean_motion * 60);
+
+    return revolutions_per_day.toFixed(8);
+}
