@@ -1,4 +1,5 @@
 import logging
+import os
 
 from django.http import HttpResponse, HttpRequest, JsonResponse
 
@@ -9,11 +10,24 @@ from django.views.decorators.cache import cache_page
 
 from rest_framework.decorators import api_view
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Logger for endpoint calls. See logs/views.log
 views_logger = logging.getLogger('views')
 
-MAIN_ENDPOINT_CACHING_LENGTH = 3600
-MINOR_ENDPOINT_CACHING_LENGTH = 300
+# Default caching lengths (in seconds)
+DEFAULT_SATELLITES_CACHING_LENGTH = 3600
+DEFAULT_STANDARD_CACHING_LENGTH = 300
+
+# Retrieves the caching lengths from
+# environment variables
+SATELLITES_CACHING_LENGTH = int(os.getenv(
+    'SATELLITES_CACHING_LENGTH',
+    DEFAULT_SATELLITES_CACHING_LENGTH))
+STANDARD_CACHING_LENGTH = int(os.getenv(
+    'STANDARD_CACHING_LENGTH',
+    DEFAULT_STANDARD_CACHING_LENGTH))
 
 
 def serializedSatellites(satellites):
@@ -37,7 +51,7 @@ def serializedSatellites(satellites):
              } for sat in satellites]
 
 
-@cache_page(MAIN_ENDPOINT_CACHING_LENGTH)
+@cache_page(SATELLITES_CACHING_LENGTH)
 @api_view(['GET'])
 def index(request: HttpRequest):
     """
@@ -73,7 +87,7 @@ def index(request: HttpRequest):
     return JsonResponse({'satellites': serializedSatellites(sats)})
 
 
-@cache_page(MINOR_ENDPOINT_CACHING_LENGTH)
+@cache_page(STANDARD_CACHING_LENGTH)
 @api_view(['GET'])
 def categories(request: HttpRequest):
     """
@@ -86,7 +100,7 @@ def categories(request: HttpRequest):
     return JsonResponse({'categories': catList})
 
 
-@cache_page(MINOR_ENDPOINT_CACHING_LENGTH)
+@cache_page(STANDARD_CACHING_LENGTH)
 @api_view(['GET'])
 def launch_years(request: HttpRequest):
     """
@@ -99,7 +113,7 @@ def launch_years(request: HttpRequest):
     return JsonResponse({'launch_years': launch_years_list})
 
 
-@cache_page(MINOR_ENDPOINT_CACHING_LENGTH)
+@cache_page(STANDARD_CACHING_LENGTH)
 @api_view(['GET'])
 def countries(request: HttpRequest):
     """
