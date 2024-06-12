@@ -42,6 +42,8 @@ export class ThreeSimulation {
     private currentlySelected: Satellite | null = null;
 
     private eventListeners: Record<string, ((...args: any[]) => void)[]> = {};
+    
+    private onRightSide = false;
 
 
     // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
@@ -233,6 +235,10 @@ export class ThreeSimulation {
             this.animate();
         });
 
+        if (this.onRightSide){
+            this.globe.rotation.y += 0.001;
+        }
+
         this.time.step();
         this.propagateAllSatData();
         if (this.stats) this.stats.update();
@@ -345,6 +351,50 @@ export class ThreeSimulation {
     }
 
     addGroundStation() {};
+
+    move_right(){
+        this.controls.mouseButtons = {
+            LEFT: null,
+            MIDDLE: null,
+            RIGHT: null
+        }
+        new TWEEN.Tween(this.camera.position)
+            .to({
+                x: 0,
+                y: 0,
+                z: 500
+            }, 500)
+            .easing(TWEEN.Easing.Sinusoidal.Out)
+            .start()
+        // this.camera.position.set(0, 0, 500);
+        new TWEEN.Tween(this.controls.target)
+            .to({
+                x: -200,
+                y: 0,
+                z: 0
+            }, 500)
+            .easing(TWEEN.Easing.Sinusoidal.Out)
+            .start()
+        this.controls.target.set(-200, 0, 0)
+        this.onRightSide = true;
+    }
+
+    move_center(){
+        this.controls.mouseButtons = {
+            LEFT: THREE.MOUSE.ROTATE,
+            MIDDLE: THREE.MOUSE.DOLLY,
+            RIGHT: null
+        }
+        new TWEEN.Tween(this.controls.target)
+            .to({
+                x: 0,
+                y: 0,
+                z: 0
+            }, 500)
+            .easing(TWEEN.Easing.Sinusoidal.Out)
+            .start()
+        this.onRightSide = false;
+    }
 
     setTime(time: Date) {};
     setTimeSpeed(speed: number) {
