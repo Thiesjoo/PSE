@@ -5,7 +5,7 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-props.simulation.moveRight();
+props.simulation.moveRight()
 </script>
 
 <template>

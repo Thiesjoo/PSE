@@ -1,8 +1,5 @@
-
-
 export async function fetchTLEs() {
-
-    return `STARLINK-1007
+  return `STARLINK-1007
 1 44713U 19074A   24156.82459657  .00000816  00000+0  73650-4 0  9993
 2 44713  53.0529 192.5476 0001172  90.8030 269.3093 15.06396363251855
 STARLINK-1008
@@ -21,10 +18,12 @@ ISS (ZARYA)
 1 25544U 98067A   24157.15368287  .00000816  00000+0  23644-4 0  9990
 2 25544  51.6443  93.3196 0001401  97.3943 262.7326 15.48979729297868`
 
-
-  const response = await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle', {
-    cache: "force-cache"
-  });
-  const text = await response.text();
-  return text;
+  const response = await fetch(
+    'https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle',
+    {
+      cache: 'force-cache'
+    }
+  )
+  const text = await response.text()
+  return text
 }
