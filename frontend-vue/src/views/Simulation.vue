@@ -10,6 +10,29 @@
         const props = defineProps<{
             simulation: ThreeSimulation
         }>();
+        const sat_number = 1; // Used for naming satellites when creating multiple
+
+        function initialize_new_satellite(){
+            // Set epoch as current time and alt as 160km
+            let epoch = epochUpdate();
+            let alt = 160000 + 6371 * 1000; // Add Earth's radius
+            let mean_motion = calculateRevolutionPerDay(alt);
+
+            // Initializing own satelite
+            let name = "New Satellite" + sat_number.toString() + "\n";
+            let part1 = "1 11111U 24001A   ";
+            let part2 =  " -.00000000 00000000 00000-0 0 1111 1\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 ";
+            let part3 = "000001";
+            let tle = name + part1 + epoch + part2 + mean_motion + part3;
+            console.log(tle);
+
+            //  Add satellite to the simulation
+            const sats = Satellite.fromMultipleTLEs(tle);
+            let sat = sats[0];
+            sats.forEach(sat => props.simulation.addSatellite(sat));
+
+            // sat_number = sat_number + 1;
+        }
 
         // Set epoch as current time and alt as 160km
         let epoch = epochUpdate();
