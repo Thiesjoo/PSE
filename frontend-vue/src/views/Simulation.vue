@@ -73,6 +73,13 @@ watch(e, (Value) => {
 })
 
 props.simulation.setTimeSpeed(50)
+
+// ********* SATELLITE SPEED *********
+let speed = ref(1)
+watch(speed, (newSpeed) => {
+  props.simulation.setTimeSpeed(newSpeed)
+})
+
 </script>
 
 <template>
@@ -137,6 +144,7 @@ props.simulation.setTimeSpeed(50)
       </div>
     </div>
   </div>
+  <button class="speed-button" @click="speed = speed * 2">Speed * 2. Current speed: {{ speed }}</button>
 </template>
 
 <style scoped lang="scss">
@@ -153,6 +161,7 @@ h3 {
   text-align: center;
   font-weight: bold;
 }
+
 .left-info-block {
   position: absolute;
   top: 0px;
@@ -184,6 +193,16 @@ h3 {
   padding: 20px;
   background-color: rgba(195, 0, 255, 0.36);
   border-radius: 200px;
+  cursor: pointer;
+  color: white;
+}
+
+.speed-button {
+  appearance: none;
+  bottom: 50px;
+  padding: 20px;
+  background-color: rgba(195, 0, 255, 0.36);
+  border-radius: 2px;
   cursor: pointer;
   color: white;
 }
