@@ -6,14 +6,9 @@ from satellite_app.cron import pull_special_interest_satellites
 from satellite_app.models import Satellite, MinorCategory
 
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 
+# Logger for endpoint calls. See logs/views.log
 views_logger = logging.getLogger('views')
-
-# The default limit of satellites that will be fetched
-#  through the main endpoint. Since there are over 
-# 10K satellites in the database, this is required.
-DEFAULT_SATELLITE_LIMIT = 1000
 
 def serializedSatellites(satellites):
     """
@@ -38,16 +33,12 @@ def serializedSatellites(satellites):
 def index(request: HttpRequest):
     """
     Main filter endpoint. This endpoint lets the caller retrieve a number 
-    of satellites with optional parameters 'limit' (which limits the 
-    amount of fetched satellites), and 'filter' which filters 
+    of satellites with optional parameter 'filter' which filters 
     satellites on specific categories.
     """
 
     # Retrieve the query parameters
     query_params = request.GET
-
-    # Retrieve the 'limit' argument, if any was given
-    limit = int(query_params.get('limit', DEFAULT_SATELLITE_LIMIT))
 
     # Retrieve the filtered categories, if any were given
     filter = query_params.get('filter' , '')
@@ -55,8 +46,7 @@ def index(request: HttpRequest):
 
     # Logging
     views_logger.info("Endpoint 'index' was called with filter elements "
-                       + str(filter_elements) + " and a limit of '"
-                         + str(limit) + "'.")
+                       + str(filter_elements) + ".")
 
     # Retrieve the category objects corresponding to the enum values
     categories = MinorCategory.objects.filter(minor_category__in=filter_elements)
@@ -64,9 +54,9 @@ def index(request: HttpRequest):
     # By default, all satellites will be retrieved. Otherwise, 
     # the filter will be applied.
     if len(categories) == 0:
-        sats = Satellite.objects.all()[:limit]
+        sats = Satellite.objects.all()
     else:
-        sats = Satellite.objects.filter(minor_categories__in=categories)[:limit]
+        sats = Satellite.objects.filter(minor_categories__in=categories)
 
     # Returns a JSON-serialized list of the fetched satellites
     return JsonResponse({'satellites': serializedSatellites(sats)})

@@ -14,7 +14,7 @@ npm run dev
 ```
 
 ## Backend manual
-Fetching satellite data directly from external API's can be slow and cumbersome due to the many separate endpoints. Furthermore, API keys (if any) cannot be present in the front-end due to security risks. This project aims to prevent these issues through the use of a backend application made using the Django framework. Using this backend, users can rely on a single endpoint to make high-speed API calls to fetch satellites with filter criteria and a limit on the amount of satellites to fetch.
+Fetching satellite data directly from external API's can be slow and cumbersome due to the many separate endpoints. Furthermore, API keys (if any) cannot be present in the front-end due to security risks. This project aims to prevent these issues through the use of a backend application made using the Django framework. Using this backend, users can rely on a single endpoint to make high-speed API calls to fetch satellites with filter criteria.
 
 A Satellite object fetched from the database consists of the following data:
 | Attribute          | Description        |
@@ -38,14 +38,9 @@ The API contains multiple endpoints. The main endpoint can be reached via the UR
 /satellite_app
 ```
 
-By default, a fixed amount of satellites from all categories are fetched with a default limit of 1000. To pick a specific limit, use the `limit` parameter. For instance, to set a limit of 400:
+By default, all types of satellites are fetched. To filter on specific satellite categories, use the `filter` parameter and list each category separated by a comma, e.g.:
 ```
-/satellite_app?limit=400
-```
-
-To filter on specific satellite categories, use the `filter` parameter and list each category separated by a comma, e.g.:
-```
-/satellite_app?limit=400&filter=Space Stations, Starlink, Galileo
+/satellite_app?filter=Space Stations, Starlink, Galileo
 ```
 * Note: Don't pay heed to spaces in the category names. This is OK.
 
