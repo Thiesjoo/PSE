@@ -31,8 +31,18 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 debugMode = os.getenv('DEBUG')
 DEBUG = False if debugMode == ('false' or 'False') else True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "pseapi.thies.dev"
+]
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'https://pse.thies.dev',
+]
+
+CSRF_TRUSTED_ORIGINS = ['https://pseapi.thies.dev']
 
 # Application definition
 
@@ -46,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
 ]
 
 CRONJOBS = [
@@ -56,6 +67,7 @@ CRONJOBS = [
     ('0 4 * * *', 'satellite_app.cron.pull_communications_satellites'),
     ('0 6 * * *', 'satellite_app.cron.pull_navigation_satellites'),
     ('0 8 * * *', 'satellite_app.cron.pull_scientific_satellites'),
+    ('0 10 * * *', 'satellite_app.cron.pull_country_names'),
 ]
 
 LOGGING = {
@@ -111,6 +123,7 @@ LOGGING = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -185,6 +198,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

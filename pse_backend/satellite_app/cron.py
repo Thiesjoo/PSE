@@ -1,7 +1,10 @@
+import os
+from pathlib import Path
 from tletools import TLE
 from satellite_app.models import Satellite, MinorCategory
 import requests
 import logging
+import csv
 
 """
 File description:
@@ -158,12 +161,25 @@ def pull_satellites(category, category_object):
 
         # TODO: Change this hardcoded behaviour in the future. The way it decides 
         # whether it's 21th century or 20th century is pretty bad.
-
         launch_year_last_two_digits = str(tle.int_desig)[:2]
         if launch_year_last_two_digits != '':
             launch_year = int(str(tle.int_desig)[:2])
-            launch_year = int(('20' if int(launch_year) <= 24  else '19') + str(launch_year))
+
+            # BUGFIX (11-6-2024): If it's a post-2000's year, it needs 
+            # to decide whether it's in the 2000's or not. That way, it can decide 
+            # whether or not to add 2 zeroes. This bugfix should ensure that. If 
+            # there are still problems related to the launch year, this is where
+            # you should look.
+            if launch_year > 9 and launch_year <= 24:
+                launch_year_prefix = '20'
+            elif launch_year <= 24:
+                launch_year_prefix = '200'
+            else:
+                launch_year_prefix = '19'
+
+            launch_year = launch_year_prefix + str(launch_year)
         else:
+            # When the launch year is unknown, we pick -1
             launch_year = -1
         
         try:
@@ -330,3 +346,66 @@ def pull_scientific_satellites():
     pull_satellites(SATCAT.EDUCATION, mincat)
 
     cron_logger.info("Succesfully pulled 'Scientific' satellites.")
+
+def pull_country_names():
+    """
+    Cronjob. Uses a local country_codes CSV file in combination with a 
+    catalogue of nearly all existing satellites to assign country codes 
+    to every satellite in our database.
+    """
+
+    cron_logger.info("Starting 'pull_country_names' cronjob: pulling all " +
+                      "country names and assigning them to stored satellites.")
+    
+    DIR = Path(__file__).resolve().parent
+    codes_path = os.path.join(DIR, 'util', 'country_codes.csv')
+
+    try:
+        mydict = {}
+        
+        with open(codes_path, mode='r') as infile:
+           reader = csv.reader(infile)
+           mydict = {rows[0]:rows[2] for rows in reader}
+
+        cron_logger.info("Loaded country data.")
+        csv_data = requests.get('https://celestrak.org/pub/satcat.csv')
+        if csv_data.status_code != 200:
+            cron_logger.error("Could not fetch 'satcat' data from Celestrak source."
+                               + " Most likely, this server has been temporarily " + 
+                               "blocked due to excessive API calls. Response code: "
+                                 + str(csv_data.status_code) + ".")
+            return
+        else:
+            csv_data = csv_data.text.splitlines()
+            cron_logger.info("Retrieved catalogue number data from server.")
+    except Exception as e:
+        cron_logger.error(e)
+
+    # Counter for the number of satellites for which a country code could be found
+    found_satellites = 0
+
+    # Counter for the number of satellites for which a country code could be found
+    unfound_satellites = 0
+
+    # Delete the first line since it's just the header, not data
+    csv_data.pop(0)
+
+    # Line by line, go through the satellite catalogue data, extract the 
+    # country code, and assign it to the corresponding satellite in our
+    #  database (if any). Note that it is expected behaviour for not all
+    # satellites to be found (i.e. the exception below does not indicate
+    # unintended behaviour).
+    for line in csv_data:
+        split_line = line.split(',')
+        
+        try:
+            sat = Satellite.objects.get(satellite_catalog_number=split_line[2])
+            sat.country = mydict[split_line[5]]
+            sat.save()
+            found_satellites += 1
+        except Satellite.DoesNotExist:
+            unfound_satellites += 1
+    
+    cron_logger.info("Assigned country data to a total of " + found_satellites + " satellites.")
+    cron_logger.info("Could not find " + unfound_satellites + " satellites to assign country data to.")
+    cron_logger.info("Done assigning satellites to country data.")
