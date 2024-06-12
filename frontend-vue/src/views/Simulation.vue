@@ -96,68 +96,89 @@
 
 <template>
     <div class="left-info-block">
-        <h2>Simulation Variables</h2>
-        <br />
-        <h4>Height</h4>
-        <div class="slider">
-            <input
-                type="range"
-                min="160"
-                max="36000"
-                v-model="height"
-                class="slider"
-            />
+        <div class="sliders-sat">
             <br />
-            <p class="display">Value: {{ height }}</p>
+            <h2>Simulation Variables</h2>
+            <br />
+            <h4>Height</h4>
+            <div class="slider">
+                <input
+                    type="range"
+                    min="160"
+                    max="36000"
+                    v-model="height"
+                    class="slider"
+                />
+                <br />
+                <p class="display">Value: {{ height }}</p>
+            </div>
+            <br />
+            <h4>Inclination</h4>
+            <div class="slider">
+                <input
+                    type="range"
+                    min="0"
+                    max="90"
+                    v-model="inclination"
+                    class="slider"
+                />
+                <br />
+                <p class="display">Value: {{ inclination }}</p>
+            </div>
+            <br />
+            <h4>RAAN</h4>
+            <div class="slider">
+                <input
+                    type="range"
+                    min="0"
+                    max="360"
+                    v-model="raan"
+                    class="slider"
+                />
+                <br />
+                <p class="display">Value: {{ raan }}</p>
+            </div>
+            <br />
+            <h4>Eccentricity</h4>
+            <div class="slider">
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    v-model="e"
+                    class="slider"
+                />
+                <br />
+                <p class="display">Value: {{ e/100 }}</p>
+            </div>
         </div>
         <br />
-        <h4>Inclination</h4>
-        <div class="slider">
-            <input
-                type="range"
-                min="0"
-                max="90"
-                v-model="inclination"
-                class="slider"
-            />
+        <div class="add-button" style="text-align: center;">ADD</div>
+        <br />
+        <div class="orbit-sat">
+            <h2>Orbit Category</h2>
             <br />
-            <p class="display">Value: {{ inclination }}</p>
+            <div id="categories" style="text-align: center;">
+                <span :class="{'category': true, 'highlight': picked === 0}" id="LEO"> LEO</span>
+                <span :class="{'category': true, 'highlight': picked === 1}" id="MEO">MEO</span>
+                <span :class="{'category': true, 'highlight': picked == 2 }" id="Other">Other</span>
+            </div>
+            <div class="orbit-info" v-show="picked === 0">
+                <h3>Low Earth Orbit</h3>
+                <p>Height: 160-2000 km</p>
+                <p>Fun facts: :D</p>
+            </div>
+            <div class="orbit-info" v-show="picked === 1">
+                <h3>Medium Earth Orbit</h3>
+                <p>Height: 2000-36000 km</p>
+                <p>Fun facts: :D</p>
+            </div>
+            <div class="orbit-info" v-show="picked === 2">
+                <h3>Other</h3>
+                <p>Height: >36000 km</p>
+                <p>Fun facts: :D</p>
+            </div>
         </div>
-        <br />
-        <h4>RAAN</h4>
-        <div class="slider">
-            <input
-                type="range"
-                min="0"
-                max="360"
-                v-model="raan"
-                class="slider"
-            />
-            <br />
-            <p class="display">Value: {{ raan }}</p>
-        </div>
-        <br />
-        <h4>Eccentricity</h4>
-        <div class="slider">
-            <input
-                type="range"
-                min="0"
-                max="100"
-                v-model="e"
-                class="slider"
-            />
-            <br />
-            <p class="display">Value: {{ e/100 }}</p>
-        </div>
-        <br />
-        <h2>Orbit Category</h2>
-        <br />
-        <div id="categories">
-        <span :class="{'category': true, 'highlight': picked === 0}" id="LEO">LEO</span>
-        <span :class="{'category': true, 'highlight': picked === 1}" id="MEO">MEO</span>
-        <span :class="{'category': true, 'highlight': picked == 2 }" id="Other">Other</span>
-
-    </div>
     </div>
 
 </template>
@@ -172,40 +193,60 @@
 
     h4 {
         text-align: center;
+        size: 1rem;
+    }
+
+    h3 {
+        text-align: center;
+        font-weight: bold;
     }
     .left-info-block {
         position: absolute;
         top: 0px;
         left: 0;
-        width: 320px;
+        width: 400px;
         height: 100%;
         background-color: #05050a7c;
         color: white;
-        padding-left: 50px;
-        padding-right: 50px;
+        padding-left: 20px;
+        padding-right: 20px;
         padding-top: 10px;
         padding-bottom: 10px;
         border: 2px solid rgba(255, 255, 255, 0.75);
         border-radius: 12px;
         padding: 50px;
     }
-
-    .text-block2 {
-        position: absolute;
-        bottom: 50px;
-        left: 0;
-        width: 120px;
-        height: 150px;
-        background-color: #05050aa2;
-        color: white;
-        padding-left: 50px;
-        padding-right: 50px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        border: 2px solid rgba(255, 255, 255, 0.75);
-        border-radius: 12px;
-        padding: 20px;
+    .sliders-sat {
+        position: sticky;
+        top: 20px;
+        padding-bottom: 10%;
+        padding-left: 10%;
+        padding-right: 10%;
     }
+
+    .add-button{
+        position: sticky;
+        width: 50%;
+        padding: 20px;
+        background-color: rgba(195, 0, 255, 0.36);
+        border-radius: 200px;
+        cursor: pointer;
+    }
+    .orbit-sat {
+        position: sticky;
+        width: 100%;
+        padding-top: 10%;
+    }
+
+    .orbit-info {
+        position: sticky;
+        height: 100px;
+        width: 100%;
+        padding-top: 5%;
+        padding-bottom: 20%;
+        background-color: rgba(195, 0, 255, 0.36);
+    }
+
 
     .display{
         background: #00000000;
@@ -229,20 +270,23 @@
     }
 
     .slider::-moz-range-thumb {
-    width: var(--thumbRadius);
-    height: var(--thumbRadius);
-    background: #fefefe;
-    cursor: pointer;
+        width: var(--thumbRadius);
+        height: var(--thumbRadius);
+        background: #fefefe;
+        cursor: pointer;
     }
 
     .category {
-            display: inline-block;
-            margin-right: 20px;
-            padding: 7px;
-            font-size: 1em;
-        }
-        .highlight {
-            background-color: rgba(195, 0, 255, 0.36);
-        }
+        display: inline-table;
+        align-content: center;
+        margin-right: 5px;
+        width: var(--text-width);
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .highlight {
+        background-color: rgba(195, 0, 255, 0.36);
+    }
 
 </style>
