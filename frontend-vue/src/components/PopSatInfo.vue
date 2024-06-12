@@ -2,6 +2,7 @@
 import { Satellite } from '@/Satellite'
 import { computed } from 'vue'
 import PopFrame from './PopFrame.vue'
+import { countryToNameConversion } from '@/common/countries'
 
 // Aantal getallen achter de komma in satellietinformatie
 const numDigits = 3
@@ -32,7 +33,14 @@ const epoch = computed(() => {
   date.setSeconds(0)
   date.setMilliseconds(0)
 
-  return date.toDateString()
+  return date.toLocaleTimeString('nl-NL', {
+    hour: '2-digit',
+    minute: '2-digit',
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  })
 })
 
 const rounded = (num: number, digits: number) => {
@@ -53,8 +61,26 @@ const sat_speed = () => {
   <PopFrame :open="true" class="popup">
     <div class="top">
       <h1>{{ currentSelectedSatellite.name }}</h1>
-      <img src="@/assets/usflag.svg" width="100" alt="US flag" />
-      <p id="SatelliteCountry">Insert country</p>
+
+      <img
+        :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
+        width="100"
+        :alt="`${currentSelectedSatellite.country} flag`"
+        v-if="!currentSelectedSatellite.country.includes('/')"
+      />
+      <div v-else>
+        <img
+          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[0]}.svg`"
+          width="100"
+          :alt="`${currentSelectedSatellite.country.split('/')[0]} flag`"
+        />
+        <img
+          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[1]}.svg`"
+          width="100"
+          :alt="`${currentSelectedSatellite.country.split('/')[1]} flag`"
+        />
+      </div>
+      <p id="SatelliteCountry">{{ countryToNameConversion(currentSelectedSatellite.country) }}</p>
       <p>
         <span>NORAD Catalog Number:</span>
         <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
@@ -107,15 +133,13 @@ const sat_speed = () => {
     }
 
     img {
-      margin-top: 1em;
-      margin-bottom: 1em;
+      margin: 1em;
       border-radius: 10%;
     }
 
-    // Hier moet lettertype Tommorrow, maar is stuk
     h1 {
-      font-family: 'ComputerSaysNo';
-      font-size: 3em;
+      font-family: 'Tomorrow';
+      font-size: 1.5em;
       font-weight: 500;
     }
   }
@@ -138,7 +162,7 @@ const sat_speed = () => {
     left: 50%;
     bottom: 0;
     transform: translate(-50%, -50%);
-
+    width: 100%;
     line-height: 1.5em;
   }
 

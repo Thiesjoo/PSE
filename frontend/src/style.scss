@@ -51,19 +51,36 @@ body {
 
 .text-block {
     position: absolute;
-    top: 220px;
+    top: 260px;
     right: 50px;
     width: 320px;
-    height: 500px;
+    height: 430px;
     background-color: #05050aa2;
     color: white;
     padding-left: 50px;
     padding-right: 50px;
     padding-top: 10px;
-    padding-bottom: 30px;
+    padding-bottom: 10px;
     border: 2px solid rgba(255, 255, 255, 0.75);
     border-radius: 12px;
     padding: 50px;
+}
+
+.text-block2 {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 120px;
+    height: 150px;
+    background-color: #05050aa2;
+    color: white;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.75);
+    border-radius: 12px;
+    padding: 20px;
 }
 
 .slidecontainer {

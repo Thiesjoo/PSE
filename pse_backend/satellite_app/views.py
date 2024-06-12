@@ -50,7 +50,7 @@ def serializedSatellites(satellites):
              'classification': sat.classification,
              } for sat in satellites]
 
-
+  
 @cache_page(SATELLITES_CACHING_LENGTH)
 @api_view(['GET'])
 def index(request: HttpRequest):
@@ -79,7 +79,6 @@ def index(request: HttpRequest):
     # the filter will be applied.
     if len(categories) == 0:
         sats = Satellite.objects.all()
-
     else:
         sats = Satellite.objects.filter(minor_categories__in=categories)
 
@@ -122,7 +121,6 @@ def countries(request: HttpRequest):
     """
     views_logger.info("Endpoint 'countries' was called.")
     distinct_countries = Satellite.objects.values('country').distinct()
-    # <- This line might not be necessary
     countries_list = [c['country'] for c in distinct_countries]
     return JsonResponse({'countries': countries_list})
 

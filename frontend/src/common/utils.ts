@@ -70,7 +70,6 @@ export const shiftLeft = (collection: TypedArray, steps = 1) => {
     return collection;
 };
 
-
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     const textureLoader = new THREE.TextureLoader();
     return new Promise(resolve => {

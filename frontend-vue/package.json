@@ -10,11 +10,13 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "lint:report": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --output-file eslint_report.json --format json",
     "format": "prettier --write src/"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^23.1.2",
     "@types/three": "^0.165.0",
+    "@vueform/slider": "^2.1.10",
     "pinia": "^2.1.7",
     "sass": "^1.77.4",
     "satellite.js": "^5.0.0",
