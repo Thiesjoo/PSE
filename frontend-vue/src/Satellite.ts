@@ -13,8 +13,65 @@ import {
 } from './common/constants'
 import { reactive } from 'vue'
 import { API_TLE_DATA } from './api/ourApi'
+import { renderLimit } from './common/sat-manager'
 
-const cacheMeshes: { [key: string]: any } = {}
+function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
+    const phi = (90 - lat) * Math.PI / 180;
+    const theta = (90 - lng) * Math.PI / 180;
+    const r = globeRadius * (1 + relAltitude);
+    return {
+      x: r * Math.sin(phi) * Math.cos(theta),
+      y: r * Math.cos(phi),
+      z: r * Math.sin(phi) * Math.sin(theta)
+    };
+  }
+let cacheMeshes: { [key: string]: any } = {}
+
+export function constructSatelliteMesh(globeRadius: number): THREE.InstancedMesh {
+    if (cacheMeshes['satGeometry'] === undefined) {
+        cacheMeshes['satGeometry'] = new THREE.OctahedronGeometry(
+          (SAT_SIZE * globeRadius) / EARTH_RADIUS_KM / 2,
+          0
+        )
+      }
+
+      let color = SAT_COLOR
+      if (cacheMeshes['satMaterial' + color] === undefined) {
+        cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
+          color,
+          transparent: true,
+          opacity: 0.7
+        })
+      }
+
+      if (cacheMeshes['satMaterialClick'] === undefined) {
+        cacheMeshes['satMaterialClick'] = new THREE.MeshLambertMaterial({
+          transparent: true,
+          opacity: 0.0001
+        })
+      }
+  
+      if (cacheMeshes['satClickArea'] === undefined) {
+        cacheMeshes['satClickArea'] = new THREE.OctahedronGeometry(
+          (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM / 2,
+          5
+        )
+      }
+  
+      const satGeometry = cacheMeshes['satGeometry']
+  
+  
+      const satMaterialClick = cacheMeshes['satMaterialClick']
+      const satClickArea = cacheMeshes['satClickArea']
+  
+      const satMaterial = cacheMeshes['satMaterial' + color]
+      const sat = new THREE.InstancedMesh(satGeometry, satMaterial, renderLimit);
+      sat.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      sat.userData = { 'satellite': "een satelliet" }
+
+      return sat;
+}
+
 
 export class Satellite {
   public name!: string
@@ -25,7 +82,13 @@ export class Satellite {
   public realPosition = reactive({ lat: 0, lng: 0, alt: 0 })
   public realSpeed = reactive({ x: 0, y: 0, z: 0 })
 
-  get id(): string {
+  private threeData = {
+    matrix: new THREE.Matrix4(),
+    quaternion: new THREE.Quaternion(),
+    scale: new THREE.Vector3(1, 1, 1)
+  }
+
+   get id(): string {
     return this.satData.satnum
   }
 
@@ -66,87 +129,37 @@ export class Satellite {
   // TODO: public fromGosia(.....)
 
   // TODO: Waarom 2 tijden?
-  public propagate(time: Date, gmsTime: GMSTime): Object {
-    const eci = propagate(this.satData, time)
-    this.currentPosition = eci
+  public propagate(time: Date, gmsTime: GMSTime, index: number, frame: number) {
+    if (!this.currentPosition || 
+        frame === -1 || index % 60 === frame) {
+      const eci = propagate(this.satData, time)
+      this.currentPosition = eci
 
-    if (eci.position && eci.velocity) {
-      const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime)
+      if (eci.position && eci.velocity) {
+        const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime)
 
-      this.realPosition.lat = degreesLat(gdPos.latitude)
-      this.realPosition.lng = degreesLong(gdPos.longitude)
-      this.realPosition.alt = gdPos.height
+        this.realPosition.lat = degreesLat(gdPos.latitude)
+        this.realPosition.lng = degreesLong(gdPos.longitude)
+        this.realPosition.alt = gdPos.height
 
-      const vel = eci.velocity as EciVec3<Kilometer>
-      this.realSpeed.x = vel.x
-      this.realSpeed.y = vel.y
-      this.realSpeed.z = vel.z
-
-      return {
-        lat: degreesLat(gdPos.latitude),
-        lng: degreesLong(gdPos.longitude),
-        alt: (gdPos.height / EARTH_RADIUS_KM) * 3,
-        id: this.id
-      }
-    } else {
-      return {}
+        const vel = eci.velocity as EciVec3<Kilometer>
+        this.realSpeed.x = vel.x
+        this.realSpeed.y = vel.y
+        this.realSpeed.z = vel.z
+      } 
     }
   }
 
-  public render(selected: boolean, hover: boolean, globeRadius: number): Group {
-    if (cacheMeshes['satGeometry'] === undefined) {
-      cacheMeshes['satGeometry'] = new THREE.OctahedronGeometry(
-        (SAT_SIZE * globeRadius) / EARTH_RADIUS_KM / 2,
-        0
-      )
-    }
+  public updatePositionOfMesh(mesh: THREE.InstancedMesh, index: number, globeRadius: number) {
+    const pos = polar2Cartesian(this.realPosition.lat, this.realPosition.lng, (this.realPosition.alt / EARTH_RADIUS_KM) * 3, globeRadius);
 
-    if (cacheMeshes['satMaterialClick'] === undefined) {
-      cacheMeshes['satMaterialClick'] = new THREE.MeshLambertMaterial({
-        transparent: true,
-        opacity: 0.0001
-      })
-    }
+    this.threeData.matrix.compose(
+      new THREE.Vector3(pos.x, pos.y, pos.z),
+      this.threeData.quaternion,
+      this.threeData.scale
+    )
 
-    if (cacheMeshes['satClickArea'] === undefined) {
-      cacheMeshes['satClickArea'] = new THREE.OctahedronGeometry(
-        (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM / 2,
-        5
-      )
-    }
-
-    const satGeometry = cacheMeshes['satGeometry']
-
-    let color = SAT_COLOR
-    if (selected) {
-      color = SAT_COLOR_SELECTED
-    } else if (hover) {
-      color = SAT_COLOR_HOVER
-    }
-
-    if (cacheMeshes['satMaterial' + color] === undefined) {
-      cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
-        color,
-        transparent: true,
-        opacity: 0.7
-      })
-    }
-
-    const satMaterialClick = cacheMeshes['satMaterialClick']
-    const satClickArea = cacheMeshes['satClickArea']
-
-    const satMaterial = cacheMeshes['satMaterial' + color]
-    const sat = new THREE.Mesh(satGeometry, satMaterial)
-    const satClick = new THREE.Mesh(satClickArea, satMaterialClick)
-
-    const group = new THREE.Group()
-    group.add(sat)
-    group.add(satClick)
-
-    group.userData = { satellite: this.id }
-    sat.userData = { satellite: this.id }
-    satClick.userData = { satellite: this.id }
-
-    return group
+    mesh.setMatrixAt(index, this.threeData.matrix)
+    mesh.instanceMatrix.needsUpdate = true
   }
 }

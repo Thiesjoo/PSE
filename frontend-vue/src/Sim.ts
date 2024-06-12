@@ -4,17 +4,12 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import ThreeGlobe from 'three-globe'
 
-import Earth from './assets/earth-blue-marble.jpg'
-import Gaia from './assets/Gaia.png'
-import type { Satellite } from './Satellite'
-import { loadTexture, shiftLeft } from './common/utils'
-import {
-  EARTH_RADIUS_KM,
-  LINE_SIZE,
-  MAX_CAMERA_DISTANCE,
-  MIN_CAMERA_DISTANCE
-} from './common/constants'
-import { Time } from './Time'
+import Earth from "./assets/earth-blue-marble.jpg"
+import Gaia from "./assets/Gaia.png"
+import { constructSatelliteMesh, type Satellite } from './Satellite';
+import { loadTexture, shiftLeft } from './common/utils';
+import { EARTH_RADIUS_KM, LINE_SIZE, MAX_CAMERA_DISTANCE, MIN_CAMERA_DISTANCE } from './common/constants'
+import {Time} from './Time';
 import * as TWEEN from '@tweenjs/tween.js'
 import * as satellite from 'satellite.js'
 
@@ -46,7 +41,12 @@ export class ThreeSimulation {
   private currentlyHovering: Satellite | null = null
   private currentlySelected: Satellite | null = null
 
-  private eventListeners: Record<string, ((...args: any[]) => void)[]> = {}
+    private eventListeners: Record<string, ((...args: any[]) => void)[]> = {};
+
+    // The first frame, we want to render all the satellites.
+    frame = -1;
+    private mesh!: THREE.InstancedMesh;
+    
 
   private onRightSide = false
 
@@ -60,12 +60,18 @@ export class ThreeSimulation {
   }
 
   private propagateAllSatData() {
-    const gmst = satellite.gstime(this.time.time)
-    const currentPositions = Object.values(this.satellites).map((sat) =>
-      sat.propagate(this.time.time, gmst)
-    )
-    this.globe.objectsData(currentPositions)
-  }
+    const globeRadius = this.globe.getGlobeRadius();
+    const gmst = satellite.gstime(this.time.time);
+
+    Object.values(this.satellites).forEach((sat, index) => {
+        sat.propagate(this.time.time, gmst, index, this.frame);
+        sat.updatePositionOfMesh(this.mesh, index, globeRadius);
+    });
+
+    this.mesh.computeBoundingSphere();
+
+    this.frame = (this.frame + 1) % 60;
+}
 
   private initStats() {
     this.stats = new (Stats as any)()
@@ -103,36 +109,25 @@ export class ThreeSimulation {
     this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI))
     this.scene.add(new THREE.AmbientLight(0xcccccc, Math.PI))
 
-    // Add the Earth
-    this.globe = new ThreeGlobe()
-      .globeImageUrl(Earth)
-      .objectLat('lat')
-      .objectLng('lng')
-      .objectAltitude('alt')
-      .objectFacesSurface(false)
-      .atmosphereAltitude(0)
-    this.globe.objectThreeObject((d) => {
-      if ('id' in d) {
-        const thisSatellite = this.satellites[d.id as string]
-        if (thisSatellite) {
-          return thisSatellite.render(
-            this.currentlySelected?.id == d.id,
-            this.currentlyHovering?.id == d.id,
-            this.globe.getGlobeRadius()
-          )
-        }
-
-        return new THREE.Mesh()
-      } else {
-        return new THREE.Mesh()
-      }
-    })
-    this.scene.add(this.globe)
-
     // Add background
     const envMap = await loadTexture(Gaia)
     envMap.mapping = THREE.EquirectangularReflectionMapping
     this.scene.background = envMap
+
+    // Add the Earth
+        this.globe = new ThreeGlobe({
+            animateIn: true,
+        })
+            .globeImageUrl(Earth)
+            .objectLat('lat')
+            .objectLng('lng')
+            .objectAltitude('alt')
+            .objectFacesSurface(false)
+            .atmosphereAltitude(0);
+
+        this.mesh = constructSatelliteMesh(this.globe.getGlobeRadius());
+        this.scene.add(this.mesh)
+        this.scene.add(this.globe);
 
     // Add satellite
     this.propagateAllSatData()
