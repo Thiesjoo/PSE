@@ -9,33 +9,30 @@ const props = defineProps<{
 }>()
 
 let sat_number = 1 // Used for naming satellites when creating multiple
-let alt = 160000 + 6371 * 1000 // Add Earth's radius
+const basic_alt = 160000 + 6371 * 1000 // Add Earth's radius
 
-function initialize_new_satellite() {
+function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
-  let epoch = epochUpdate()
-  let mean_motion = calculateRevolutionPerDay(alt)
+  let epoch = epochUpdate();
+  let mean_motion = calculateRevolutionPerDay(alt);
 
   // Initializing own satelite
-  let name = 'New Satellite' + sat_number.toString() + '\n'
-  let part1 = '1 11111U 24001A   '
-  let part2 =
-    ' -.00000000 00000000 00000-0 0 1111 1\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
-  let part3 = '000001'
-  let tle = name + part1 + epoch + part2 + mean_motion + part3
-  console.log(tle)
-
-  //  Add satellite to the simulation
-  const sats = Satellite.fromMultipleTLEs(tle)
-  let sat = sats[0]
-  sats.forEach((sat) => props.simulation.addSatellite(sat))
-
-  sat_number = sat_number + 1
-
-  return sat
+  let name = 'New Satellite' + sat_number.toString() + '\n';
+  let part1 = '1 11111U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1';
+  let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 ';
+  let part3 = '000001';
+  let tle = name + part1 + part2 + mean_motion + part3;
+  console.log(tle);
+  return (tle)
 }
 
-let sat = initialize_new_satellite()
+function add_new_satellite(tle: string){
+    const sats = Satellite.fromMultipleTLEs(tle);
+    sats.forEach((sat) => props.simulation.addSatellite(sat));
+
+}
+
+let sat = initialize_new_satellite(basic_alt);
 
 // ********* SLIDERS *********
 
@@ -48,7 +45,7 @@ const picked = ref(0) // Initial orbit type is 0 = LEO
 
 // Height slider live changes and update radio buttons
 watch(height, (Value) => {
-  alt = Value * 1000 + 6371 * 1000 // Convert to meters and add Earth's radius
+  let alt = Value * 1000 + 6371 * 1000 // Convert to meters and add Earth's radius
   sat.satData.no = calculateMeanMotionRadPerMin(alt) // mean motion [rad/min]
 
   if (Value >= 160 && Value < 2000) {
