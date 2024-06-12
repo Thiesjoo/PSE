@@ -153,7 +153,12 @@
             </div>
         </div>
         <br />
-        <div class="add-button" style="text-align: center;">ADD</div>
+        <button
+            class="add-button"
+            style="text-align:center;"
+            on-click="initialize_new_satellite()"
+            >ADD
+        </button>
         <br />
         <div class="orbit-sat">
             <h2>Orbit Category</h2>
@@ -225,13 +230,16 @@
     }
 
     .add-button{
+        appearance: none;
         position: sticky;
         width: 50%;
         padding: 20px;
         background-color: rgba(195, 0, 255, 0.36);
         border-radius: 200px;
         cursor: pointer;
+        color: white;
     }
+
     .orbit-sat {
         position: sticky;
         width: 100%;
