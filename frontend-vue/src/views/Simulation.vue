@@ -143,7 +143,6 @@
         <button
             class="add-button"
             style="text-align:center;"
-            on-click="initialize_new_satellite()"
             >ADD
         </button>
         <br />
