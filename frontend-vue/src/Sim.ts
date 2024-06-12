@@ -352,7 +352,7 @@ export class ThreeSimulation {
 
     addGroundStation() {};
 
-    move_right(){
+    moveRight(){
         this.controls.mouseButtons = {
             LEFT: null,
             MIDDLE: null,
@@ -379,13 +379,21 @@ export class ThreeSimulation {
         this.onRightSide = true;
     }
 
-    move_center(){
+    moveCenter(){
         this.controls.mouseButtons = {
             LEFT: THREE.MOUSE.ROTATE,
             MIDDLE: THREE.MOUSE.DOLLY,
             RIGHT: null
         }
         new TWEEN.Tween(this.controls.target)
+            .to({
+                x: 0,
+                y: 0,
+                z: 0
+            }, 500)
+            .easing(TWEEN.Easing.Sinusoidal.Out)
+            .start()
+            new TWEEN.Tween(this.globe.rotation)
             .to({
                 x: 0,
                 y: 0,
