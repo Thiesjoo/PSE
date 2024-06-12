@@ -113,7 +113,7 @@ props.simulation.setTimeSpeed(50)
       </div>
     </div>
     <br />
-    <button class="add-button" style="text-align: center">ADD</button>
+    <button class="add-button" style="text-align: center">ADD sat</button>
     <br />
     <div class="orbit-sat">
       <h2>Orbit Category</h2>
