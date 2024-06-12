@@ -6,20 +6,19 @@ SATAFF = MinorCategory.MinorCategoryChoices
 
 """
 Description: This command-script populates the database with rows of all
- minor categories used in our application. These categories are 
+ minor categories used in our application. These categories are
  then used by the satellites to describe their nature.
 """
+
+
 class Command(BaseCommand):
     help = 'Run custom script'
 
     def handle(self, *args, **kwargs):
-        
+
         # Special Interest
         self._save_minor_categories([
-            SATAFF.LAST_30_DAYS,
-            SATAFF.SPACE_STATIONS,
-            SATAFF.ACTIVE,
-            SATAFF.ANALYST_SATELLITES
+            SATAFF.LAST_30_DAYS, SATAFF.SPACE_STATIONS, SATAFF.ACTIVE, SATAFF.ANALYST_SATELLITES
         ])
 
         # Weather and Earth
@@ -60,8 +59,9 @@ class Command(BaseCommand):
             SATAFF.ENGINEERING,
             SATAFF.EDUCATION
         ])
-        
-        self.stdout.write(self.style.SUCCESS('Successfully generated minor categories in the database.'))
+
+        self.stdout.write(self.style.SUCCESS(
+            'Successfully generated minor categories in the database.'))
 
     def _save_minor_categories(self, minor_categories):
         """

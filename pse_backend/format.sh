@@ -1,0 +1,1 @@
+autopep8 --in-place  -a -a -a --exclude migrations --recursive .

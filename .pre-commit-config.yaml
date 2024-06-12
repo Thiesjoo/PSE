@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: run-backend-formatting-script
+        name: Run a formatting script for the backend
+        entry: /pse_backend/format.sh
+        language: script
+        stages: [commit]
