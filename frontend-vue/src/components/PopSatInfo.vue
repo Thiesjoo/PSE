@@ -33,7 +33,14 @@ const epoch = computed(() => {
   date.setSeconds(0)
   date.setMilliseconds(0)
 
-  return date.toDateString()
+  return date.toLocaleTimeString('nl-NL', {
+    hour: '2-digit',
+    minute: '2-digit',
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  })
 })
 
 const rounded = (num: number, digits: number) => {
@@ -156,7 +163,7 @@ const sat_speed = () => {
     left: 50%;
     bottom: 0;
     transform: translate(-50%, -50%);
-
+    width: 100%;
     line-height: 1.5em;
   }
 
