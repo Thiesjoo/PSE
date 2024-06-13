@@ -150,17 +150,17 @@ const showOrbit = ref(false)
       <div class="orbit-info" v-show="picked === 0">
         <h3>Low Earth Orbit</h3>
         <p>Height: 160-2000 km</p>
-        <img src="/public/Leo-highlight.png" alt="LEO Image" width="300" />
+        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 1">
         <h3>Medium Earth Orbit</h3>
         <p>Height: 2000-36000 km</p>
-        <img src="/public/Meo-highlight.png" alt="MEO Image" width="300" />
+        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 2">
         <h3>Other</h3>
         <p>Height: >36000 km</p>
-        <img src="/public/Other-highlight.png" alt="Other Image" width="300" />
+        <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
   </div>
