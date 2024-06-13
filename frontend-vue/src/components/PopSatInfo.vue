@@ -137,10 +137,9 @@ const sat_speed = () => {
       border-radius: 10%;
     }
 
-    // Hier moet lettertype Tommorrow, maar is stuk
     h1 {
-      font-family: 'ComputerSaysNo';
-      font-size: 3em;
+      font-family: 'Tomorrow';
+      font-size: 1.5em;
       font-weight: 500;
     }
   }

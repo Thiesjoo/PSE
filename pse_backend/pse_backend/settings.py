@@ -60,7 +60,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    # This one should usually be picked (i.e. fetch all satellite data 
+    # This one should usually be picked (i.e. fetch all satellite data
     # at night, each category 2 hours apart):
     ('0 0 * * *', 'satellite_app.cron.pull_special_interest_satellites'),
     ('0 2 * * *', 'satellite_app.cron.pull_weather_and_earth_satellites'),

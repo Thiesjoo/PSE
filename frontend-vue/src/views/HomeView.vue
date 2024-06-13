@@ -9,24 +9,27 @@ props.simulation.moveRight()
 </script>
 
 <template>
-  <h1>Satelliet</h1>
+  <div class="header">
+    <h1>Satellite Radar</h1>
+    <img src="../assets/satellite_logo.png" alt="Satellite" width="200" height="200" />
+  </div>
 
   <div class="container">
     <RouterLink to="/visualization">
       <div class="box">
-        <h2>Alle satellieten</h2>
+        <h2>All satellites</h2>
         <!-- <p>Some text</p> -->
       </div>
     </RouterLink>
     <RouterLink to="/simulation">
       <div class="box">
-        <h2>Maak je eigen satelliet</h2>
+        <h2>Make your own satellite</h2>
         <!-- <p>Some text</p> -->
       </div>
     </RouterLink>
     <RouterLink to="/communication">
       <div class="box">
-        <h2>Communicatie</h2>
+        <h2>Communication</h2>
         <!-- <p>Some text</p> -->
       </div>
     </RouterLink>
@@ -34,9 +37,14 @@ props.simulation.moveRight()
 </template>
 
 <style scoped>
-h1 {
-  font-size: 10em;
-  color: white;
+.header {
+  display: flex;
+
+  h1 {
+    font-size: 10em;
+    color: white;
+    font-family: 'Tomorrow';
+  }
 }
 
 .container {
