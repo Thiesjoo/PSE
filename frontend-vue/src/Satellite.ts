@@ -115,6 +115,8 @@ export class Satellite {
     })
   }
 
+
+
   public fromTLE(tle: string) {
     const tleArray = tle.split('\n')
     this.name = tleArray[0]
@@ -145,6 +147,19 @@ export class Satellite {
       this.realSpeed.y = vel.y
       this.realSpeed.z = vel.z
     }
+  }
+
+  public propagateNoUpdate(time: Date): Object {
+    
+    return {}
+  }
+
+  public propagateOrbit(time: Date, numOfPoints: number, timeInterval: number): any {
+    let result: Object[] = []
+    for (let i = 0; i < numOfPoints; i++){
+      result.push()
+    }
+    return result;
   }
 
   public setColor(color: string, index: number, mesh: SatelliteMeshes) {
