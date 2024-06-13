@@ -205,7 +205,6 @@ export class ThreeSimulation {
     if (this.controls) this.controls.update()
     this.renderer.render(this.scene, this.camera)
 
-
     if (this.followSelected && this.currentlySelected) {
       this.updateCamera()
     }
@@ -304,7 +303,7 @@ export class ThreeSimulation {
       if (!satData) return
 
       this.currentlySelected = satData
-      this.addOrbit(this.currentlySelected);
+      this.addOrbit(this.currentlySelected, false)
       satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
 
       this.eventListeners['select']?.forEach((cb) => cb(satData))
@@ -337,7 +336,11 @@ export class ThreeSimulation {
     this.deselect()
     this.satellites = {}
     this.resetAllMeshes()
+<<<<<<< HEAD
     this.time.setSpeed(1)
+=======
+    this.setTimeSpeed(1)
+>>>>>>> 0749ab4 (option to show upcoming or historic orbit)
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
@@ -366,15 +369,15 @@ export class ThreeSimulation {
 
     this.eventListeners['select']?.forEach((cb) => cb(null))
   }
-  
+
   private updateOrbits() {
     for (const orbit of this.orbits) {
       orbit.updateLine(this.globe)
     }
   }
 
-  addOrbit(sat: Satellite) {
-    const orbit = new Orbit(sat, this.scene, this.time, this.globe.getGlobeRadius());
+  addOrbit(sat: Satellite, showUpcoming: boolean) {
+    const orbit = new Orbit(sat, this.scene, this.time, this.globe.getGlobeRadius(), showUpcoming)
     if (this.orbits.length > 3) {
       const removedOrbit = this.orbits.shift()
       removedOrbit?.removeLine(this.scene)

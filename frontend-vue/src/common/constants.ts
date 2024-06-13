@@ -11,8 +11,15 @@ export const MIN_CAMERA_DISTANCE = 150
 // TODO: Dit is het maximale aantal satellieten dat uberhaup gerenderd kan worden. Misschien hoger maken?
 // API returned er nu 10329.
 // Het hoger zetten zorgt er wel voor dat er meer satellieten gerenderd worden, en dus de performance omlaag gaat.
+<<<<<<< HEAD
 
 export const MAX_SATS_TO_RENDER = 12_000;
 
 export const TIME_INTERVAL_ORBIT = 1000;
 export const NUM_OF_STEPS_ORBIT = 10000;
+=======
+export const MAX_SATS_TO_RENDER = 12_000
+
+export const TIME_INTERVAL_ORBIT = 1000
+export const NUM_OF_STEPS_ORBIT = 10000
+>>>>>>> 0749ab4 (option to show upcoming or historic orbit)
