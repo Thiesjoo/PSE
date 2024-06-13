@@ -126,6 +126,16 @@ export class Satellite {
     this.satData = twoline2satrec(tle[1], tle[2])
   }
 
+  scale() {
+    // We want to make the satellites that are further away bigger to increase visibility
+    const distanceToEarth = this.realPosition.alt
+    const mapped = (distanceToEarth / 500) * 0.2 + 1
+
+    this.threeData.scale.set(
+        mapped,mapped, mapped
+    )
+  }
+
   // TODO: public fromGosia(.....)
 
   // TODO: Waarom 2 tijden?
@@ -139,6 +149,7 @@ export class Satellite {
       this.realPosition.lat = degreesLat(gdPos.latitude)
       this.realPosition.lng = degreesLong(gdPos.longitude)
       this.realPosition.alt = gdPos.height
+      this.scale()
 
       const vel = eci.velocity as EciVec3<Kilometer>
       this.realSpeed.x = vel.x

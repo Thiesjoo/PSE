@@ -94,7 +94,7 @@ export class ThreeSimulation {
     this.scene = new THREE.Scene()
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(50, 1, 1)
+    const camera = new THREE.PerspectiveCamera(50, 1, 1, 7500)
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     camera.position.z = 400
@@ -127,9 +127,7 @@ export class ThreeSimulation {
     this.scene.background = envMap
 
     // Add the Earth
-    this.globe = new ThreeGlobe({
-      animateIn: true
-    })
+    this.globe = new ThreeGlobe()
       .globeImageUrl(Earth)
       .objectLat('lat')
       .objectLng('lng')
