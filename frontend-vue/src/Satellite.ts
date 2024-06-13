@@ -86,8 +86,6 @@ export class Satellite {
     scale: new THREE.Vector3(1, 1, 1)
   }
 
-  private currentColor = SAT_COLOR
-
   get id(): string {
     return this.satData.satnum
   }
@@ -150,7 +148,6 @@ export class Satellite {
   }
 
   public setColor(color: string, index: number, mesh: SatelliteMeshes) {
-    this.currentColor = color
     mesh.sat.setColorAt(index, new THREE.Color(color))
     if (mesh.sat.instanceColor) {
       mesh.sat.instanceColor.needsUpdate = true

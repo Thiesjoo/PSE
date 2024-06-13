@@ -12,7 +12,7 @@ import {
   EARTH_RADIUS_KM,
   LINE_SIZE,
   MAX_CAMERA_DISTANCE,
-  MAX_PROPAGATES_PER_FRAME,
+  MAX_SATS_TO_RENDER,
   MIN_CAMERA_DISTANCE,
   SAT_COLOR,
   SAT_COLOR_HOVER,
@@ -50,8 +50,6 @@ export class ThreeSimulation {
   private currentlyHovering: Satellite | null = null
   private currentlySelected: Satellite | null = null
 
-  private currentIndex = 0
-
   private eventListeners: Record<string, ((...args: any[]) => void)[]> = {}
   private mesh!: SatelliteMeshes
 
@@ -78,25 +76,10 @@ export class ThreeSimulation {
     const globeRadius = this.globe.getGlobeRadius()
     const gmst = satellite.gstime(this.time.time)
 
-    const all = Object.values(this.satellites)
-    let start = this.currentIndex
-    let end = Math.min(start + MAX_PROPAGATES_PER_FRAME, all.length)
-
-    if (this.currentIndex === -1) {
-      start = 0
-      end = all.length
-    }
-
-    for (let i = 0; i < all.length; i++) {
-      const sat = all[i]
-      // if within start and end, or the sat hasn't rendered yet: propagate.
-      if ((i >= start && i < end) || sat.firstRender) {
+    Object.values(this.satellites).forEach((sat, i) => {
         sat.propagate(this.time.time, gmst)
         sat.updatePositionOfMesh(this.mesh, i, globeRadius)
-      }
-    }
-
-    this.currentIndex = end >= all.length ? 0 : end
+    })
 
     this.mesh.sat.computeBoundingSphere()
     this.mesh.satClick.computeBoundingSphere()
@@ -393,17 +376,34 @@ export class ThreeSimulation {
     this.tweeningStatus = 0
   }
 
+  private resetAllMeshes() {
+    const matrix = new THREE.Matrix4()
+    matrix.compose(
+        new THREE.Vector3(0,0,0),
+        new THREE.Quaternion(0,0,0,0),
+        new THREE.Vector3(1,1,1)
+      )
+
+      for (let i = 0; i <  MAX_SATS_TO_RENDER; i++) {
+        this.mesh.sat.setMatrixAt(i, matrix)
+        this.mesh.satClick.setMatrixAt(i, matrix)
+      }
+      
+      this.mesh.sat.instanceMatrix.needsUpdate = true
+      this.mesh.satClick.instanceMatrix.needsUpdate = true
+  }
+
   reset() {
     this.dehover()
     this.deselect()
     this.satellites = {}
+    this.resetAllMeshes();
     this.setTimeSpeed(1)
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
 
     this.eventListeners = {}
-    this.currentIndex = 0
   }
 
   addSatellite(sat: Satellite) {
@@ -423,6 +423,8 @@ export class ThreeSimulation {
     this.satellites = {}
     this.currentlyHovering = null
     this.currentlySelected = null
+    this.resetAllMeshes();
+
     this.eventListeners['select']?.forEach((cb) => cb(null))
   }
 
