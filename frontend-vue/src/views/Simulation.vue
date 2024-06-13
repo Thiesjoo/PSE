@@ -136,6 +136,7 @@ const showOrbit = ref(false)
     </div>
     <br />
     <button class="add-button" @click="add = 1" style="text-align: center">ADD sat</button>
+    <button class="add-button" @click="add = 1" style="text-align: center">DEL sat</button>
     <input type="checkbox" id="show-orbit" v-model="showOrbit" />
     <label for="show-orbit">Show orbit {{ showOrbit }}</label>
     <div class="orbit-sat">
@@ -149,7 +150,6 @@ const showOrbit = ref(false)
       <div class="orbit-info" v-show="picked === 0">
         <h3>Low Earth Orbit</h3>
         <p>Height: 160-2000 km</p>
-        <!-- <p>Fun facts: LEO is the most common orbit used for Earth observation satellites and the International Space Station (ISS) orbits in LEO.</p> -->
         <img src="/public/Leo-highlight.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 1">
