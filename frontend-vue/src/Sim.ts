@@ -276,6 +276,7 @@ export class ThreeSimulation {
   private deselect() {
     // Only change the color back to normal if you are not selecting the satellite and you are not hovering over it.
     if (this.currentlySelected && this.currentlyHovering !== this.currentlySelected) {
+      this.removeOrbit(this.currentlySelected)
       this.currentlySelected.setColor(
         SAT_COLOR,
         this.getMeshIDBySatellite(this.currentlySelected),
@@ -382,6 +383,11 @@ export class ThreeSimulation {
       removedOrbit?.removeLine(this.scene)
     }
     this.orbits.push(orbit)
+  }
+
+  removeOrbit(sat:Satellite){
+    this.orbits[0].removeLine(this.scene)
+    this.orbits.pop();
   }
 
   addGroundStation() {}
