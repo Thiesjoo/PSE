@@ -13,7 +13,7 @@ const cacheKey = 'tle-cache'
 
 function getCache(key: string) {
   const currentDate = new Date()
-  const expiry = localStorage.getItem(key + '-expiry')
+  const expiry = localStorage.getItem(`${key}-expiry-${import.meta.url}`)
 
   if (expiry && new Date(expiry) > currentDate) {
     const data = localStorage.getItem(key)
@@ -27,8 +27,8 @@ function getCache(key: string) {
 function setCache(key: string, cache: object) {
   localStorage.setItem(key, JSON.stringify(cache))
   const expiry = new Date()
-  expiry.setDate(expiry.getDate() + 10)
-  localStorage.setItem(key + '-expiry', expiry.toISOString())
+  expiry.setHours(expiry.getHours() + 1)
+  localStorage.setItem(`${key}-expiry-${import.meta.url}`, expiry.toISOString())
 }
 
 export async function fetchTLEInformation(): Promise<API_TLE_DATA[]> {
