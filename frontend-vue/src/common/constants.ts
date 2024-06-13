@@ -5,7 +5,7 @@ export const SAT_COLOR = 'palegreen'
 export const SAT_COLOR_HOVER = '#FFD700'
 export const SAT_COLOR_SELECTED = '#FF4500'
 export const LINE_SIZE = 10000
-export const MAX_CAMERA_DISTANCE = 700
+export const MAX_CAMERA_DISTANCE = 5000
 export const MIN_CAMERA_DISTANCE = 150
 
 // TODO: Dit is het maximale aantal satellieten dat uberhaup gerenderd kan worden. Misschien hoger maken?
