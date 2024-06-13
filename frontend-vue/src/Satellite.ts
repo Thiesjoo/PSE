@@ -65,8 +65,14 @@ export function constructSatelliteMesh(globeRadius: number): THREE.InstancedMesh
 
   const satMaterial = cacheMeshes['satMaterial' + color]
   const sat = new THREE.InstancedMesh(satGeometry, satMaterial, renderLimit)
+
   sat.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
-  sat.userData = { satellite: 'een satelliet' }
+  sat.userData = { satellite: 'een satelliet' };
+
+    const colorThree = new THREE.Color(SAT_COLOR)
+    for (let i = 0; i < renderLimit; i++) {
+        sat.setColorAt(i, colorThree);
+    }
 
   return sat
 }
@@ -90,6 +96,10 @@ export class Satellite {
 
   get id(): string {
     return this.satData.satnum
+  }
+
+  get firstRender(): boolean {
+    return this.currentPosition === null
   }
 
   public static fromMultipleTLEs(data: string): Satellite[] {
@@ -127,8 +137,7 @@ export class Satellite {
   // TODO: public fromGosia(.....)
 
   // TODO: Waarom 2 tijden?
-  public propagate(time: Date, gmsTime: GMSTime, index: number, frame: number) {
-    if (!this.currentPosition || frame === -1 || index % 60 === frame) {
+  public propagate(time: Date, gmsTime: GMSTime) {
       const eci = propagate(this.satData, time)
       this.currentPosition = eci
 
@@ -143,7 +152,6 @@ export class Satellite {
         this.realSpeed.x = vel.x
         this.realSpeed.y = vel.y
         this.realSpeed.z = vel.z
-      }
     }
   }
 

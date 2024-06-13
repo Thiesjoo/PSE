@@ -12,8 +12,10 @@ import {
   EARTH_RADIUS_KM,
   LINE_SIZE,
   MAX_CAMERA_DISTANCE,
+  MAX_PROPAGATES_PER_FRAME,
   MIN_CAMERA_DISTANCE,
   SAT_COLOR,
+  SAT_COLOR_HOVER,
   SAT_COLOR_SELECTED
 } from './common/constants'
 import { Time } from './Time'
@@ -45,14 +47,12 @@ export class ThreeSimulation {
   private pointer = new THREE.Vector2()
   private lastPointer = new THREE.Vector2()
 
-  private instancesWithDifferentColor: number[] = []
   private currentlyHovering: Satellite | null = null
   private currentlySelected: Satellite | null = null
 
-  private eventListeners: Record<string, ((...args: any[]) => void)[]> = {}
+  private currentIndex = 0
 
-  // The first frame, we want to render all the satellites.
-  frame = -1
+  private eventListeners: Record<string, ((...args: any[]) => void)[]> = {}
   private mesh!: THREE.InstancedMesh
 
   private onRightSide = false
@@ -78,13 +78,27 @@ export class ThreeSimulation {
     const globeRadius = this.globe.getGlobeRadius()
     const gmst = satellite.gstime(this.time.time)
 
-    Object.values(this.satellites).forEach((sat, index) => {
-      sat.propagate(this.time.time, gmst, index, this.frame)
-      sat.updatePositionOfMesh(this.mesh, index, globeRadius)
-    })
+    const all = Object.values(this.satellites)
+    let start = this.currentIndex
+    let end = Math.min(start + MAX_PROPAGATES_PER_FRAME, all.length)
+
+    if (this.currentIndex === -1) {
+      start = 0
+      end = all.length
+    }
+
+    for (let i = 0; i < all.length; i++) {
+      const sat = all[i]
+      // if within start and end, or the sat hasn't rendered yet: propagate.
+      if ((i >= start && i < end) || sat.firstRender) {
+        sat.propagate(this.time.time, gmst)
+        sat.updatePositionOfMesh(this.mesh, i, globeRadius)
+      }
+    }
+
+    this.currentIndex = end >= all.length ? 0 : end
 
     this.mesh.computeBoundingSphere()
-    this.frame = (this.frame + 1) % 60
   }
 
   private initStats() {
@@ -276,12 +290,20 @@ export class ThreeSimulation {
     const intersects = this.raycaster.intersectObjects(this.scene.children)
 
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
-      const ourSatellite = intersects[0].object.userData as {
-        satellite: string
+      this.dehover()
+
+      const meshID = intersects[0].instanceId
+      if (!meshID) return
+
+      const satData = this.getSatelliteByMeshID(meshID)
+      if (!satData) return
+
+      this.currentlyHovering = satData
+      if (this.currentlyHovering !== this.currentlySelected) {
+        satData.setColor(SAT_COLOR_HOVER, meshID, this.mesh)
       }
-      this.currentlyHovering = this.satellites[ourSatellite.satellite]
     } else {
-      this.currentlyHovering = null
+      this.dehover()
     }
   }
 
@@ -311,19 +333,37 @@ export class ThreeSimulation {
     this.escapedFollow = true
   }
 
+  private dehover() {
+    // If you are hovering over a satellite and you are not selecting it, change the color back to normal.
+
+    if (this.currentlyHovering && this.currentlySelected !== this.currentlyHovering) {
+      this.currentlyHovering.setColor(
+        SAT_COLOR,
+        this.getMeshIDBySatellite(this.currentlyHovering),
+        this.mesh
+      )
+    }
+    if (this.currentlyHovering) {
+      this.currentlyHovering = null
+    }
+  }
+
   private deselect() {
-    if (this.currentlySelected) {
+    // Only change the color back to normal if you are not selecting the satellite and you are not hovering over it.
+    if (this.currentlySelected && this.currentlyHovering !== this.currentlySelected) {
       this.currentlySelected.setColor(
         SAT_COLOR,
         this.getMeshIDBySatellite(this.currentlySelected),
         this.mesh
       )
+
+      this.eventListeners['select']?.forEach((cb) => cb(null))
+      this.currentlySelected = null
     }
-    this.eventListeners['select']?.forEach((cb) => cb(null))
-    this.currentlySelected = null
   }
 
-  private onClick(event: Event) {
+  private onClick() {
+    console.log(this.currentlySelected, this.currentlyHovering)
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
     const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
     if (xDif > 0.00001 || yDif > 0.00001) return
@@ -331,7 +371,7 @@ export class ThreeSimulation {
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
-        this.deselect();
+      this.deselect()
 
       const meshID = intersects[0].instanceId
       if (!meshID) return
@@ -345,22 +385,15 @@ export class ThreeSimulation {
       this.removeLine()
       this.eventListeners['select']?.forEach((cb) => cb(satData))
       this.escapedFollow = false
-
-      //   const satData = this.satellites[intersects[0].object.userData.satellite]
-      //   if (!satData) return
-
-      //   this.currentlySelected = satData
-      //   this.removeLine()
-
-      //   this.eventListeners['select']?.forEach((cb) => cb(satData))
-      //   this.escapedFollow = false
     } else {
-      this.deselect();
+      this.deselect()
     }
     this.tweeningStatus = 0
   }
 
   reset() {
+    this.dehover()
+    this.deselect()
     this.satellites = {}
     this.setTimeSpeed(1)
     this.drawLines = true
@@ -368,6 +401,7 @@ export class ThreeSimulation {
     this.currentlySelected = null
 
     this.eventListeners = {}
+    this.currentIndex = 0
   }
 
   addSatellite(sat: Satellite) {
