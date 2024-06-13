@@ -338,11 +338,8 @@ export class ThreeSimulation {
     this.deselect()
     this.satellites = {}
     this.resetAllMeshes()
-<<<<<<< HEAD
     this.time.setSpeed(1)
-=======
-    this.setTimeSpeed(1)
->>>>>>> 0749ab4 (option to show upcoming or historic orbit)
+
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
