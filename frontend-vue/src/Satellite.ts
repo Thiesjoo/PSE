@@ -1,19 +1,15 @@
 import type { EciVec3, GMSTime, Kilometer, PositionAndVelocity, SatRec } from 'satellite.js'
-import { degreesLat, degreesLong, twoline2satrec, propagate, eciToGeodetic } from 'satellite.js'
-import type { Group } from 'three'
-
+import { degreesLat, degreesLong, eciToGeodetic, propagate, twoline2satrec } from 'satellite.js'
 import * as THREE from 'three'
-import {
-  EARTH_RADIUS_KM,
-  SAT_COLOR,
-  SAT_COLOR_HOVER,
-  SAT_COLOR_SELECTED,
-  SAT_SIZE,
-  SAT_SIZE_CLICK
-} from './common/constants'
 import { reactive } from 'vue'
 import { API_TLE_DATA } from './api/ourApi'
-import { renderLimit } from './common/sat-manager'
+import {
+    EARTH_RADIUS_KM,
+    SAT_COLOR,
+    SAT_SIZE,
+    SAT_SIZE_CLICK,
+    MAX_SATS_TO_RENDER
+} from './common/constants'
 
 function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
   const phi = ((90 - lat) * Math.PI) / 180
@@ -25,56 +21,54 @@ function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRad
     z: r * Math.sin(phi) * Math.sin(theta)
   }
 }
-let cacheMeshes: { [key: string]: any } = {}
 
-export function constructSatelliteMesh(globeRadius: number): THREE.InstancedMesh {
-  if (cacheMeshes['satGeometry'] === undefined) {
-    cacheMeshes['satGeometry'] = new THREE.OctahedronGeometry(
-      (SAT_SIZE * globeRadius) / EARTH_RADIUS_KM / 2,
-      0
-    )
-  }
+export type SatelliteMeshes = {
+  sat: THREE.InstancedMesh
+  satClick: THREE.InstancedMesh
+}
 
-  let color = SAT_COLOR
-  if (cacheMeshes['satMaterial' + color] === undefined) {
-    cacheMeshes['satMaterial' + color] = new THREE.MeshLambertMaterial({
-      color,
-      transparent: true,
-      opacity: 0.7
-    })
-  }
+export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
+  const satGeometry = new THREE.OctahedronGeometry(
+    (SAT_SIZE * globeRadius) / EARTH_RADIUS_KM / 2,
+    0
+  )
 
-  if (cacheMeshes['satMaterialClick'] === undefined) {
-    cacheMeshes['satMaterialClick'] = new THREE.MeshLambertMaterial({
-      transparent: true,
-      opacity: 0.0001
-    })
-  }
+  const satMaterial = new THREE.MeshLambertMaterial({
+    color: SAT_COLOR,
+    transparent: true,
+    opacity: 0.7
+  })
 
-  if (cacheMeshes['satClickArea'] === undefined) {
-    cacheMeshes['satClickArea'] = new THREE.OctahedronGeometry(
-      (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM / 2,
-      5
-    )
-  }
+  const satClickMaterial = new THREE.MeshLambertMaterial({
+    opacity: 0,
+    transparent: true,
+  })
 
-  const satGeometry = cacheMeshes['satGeometry']
+  //   simple square for click detection
+  const satClickArea = new THREE.BoxGeometry(
+    (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM,
+    (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM,
+    (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM
+  )
 
-  const satMaterialClick = cacheMeshes['satMaterialClick']
-  const satClickArea = cacheMeshes['satClickArea']
-
-  const satMaterial = cacheMeshes['satMaterial' + color]
-  const sat = new THREE.InstancedMesh(satGeometry, satMaterial, renderLimit)
+  const sat = new THREE.InstancedMesh(satGeometry, satMaterial, MAX_SATS_TO_RENDER)
+  const satClick = new THREE.InstancedMesh(satClickArea, satClickMaterial, MAX_SATS_TO_RENDER)
+  satClick.renderOrder = 2
 
   sat.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
-  sat.userData = { satellite: 'een satelliet' };
+  satClick.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
+  sat.userData = { satellite: 'een satelliet' }
+  satClick.userData = { satellite: 'een satelliet' }
 
-    const colorThree = new THREE.Color(SAT_COLOR)
-    for (let i = 0; i < renderLimit; i++) {
-        sat.setColorAt(i, colorThree);
-    }
+  const colorThree = new THREE.Color(SAT_COLOR)
+  for (let i = 0; i < MAX_SATS_TO_RENDER; i++) {
+    sat.setColorAt(i, colorThree)
+  }
 
-  return sat
+  return {
+    sat,
+    satClick
+  }
 }
 
 export class Satellite {
@@ -89,7 +83,7 @@ export class Satellite {
   private threeData = {
     matrix: new THREE.Matrix4(),
     quaternion: new THREE.Quaternion(),
-    scale: new THREE.Vector3(1, 1, 1), 
+    scale: new THREE.Vector3(1, 1, 1)
   }
 
   private currentColor = SAT_COLOR
@@ -138,32 +132,32 @@ export class Satellite {
 
   // TODO: Waarom 2 tijden?
   public propagate(time: Date, gmsTime: GMSTime) {
-      const eci = propagate(this.satData, time)
-      this.currentPosition = eci
+    const eci = propagate(this.satData, time)
+    this.currentPosition = eci
 
-      if (eci.position && eci.velocity) {
-        const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime)
+    if (eci.position && eci.velocity) {
+      const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime)
 
-        this.realPosition.lat = degreesLat(gdPos.latitude)
-        this.realPosition.lng = degreesLong(gdPos.longitude)
-        this.realPosition.alt = gdPos.height
+      this.realPosition.lat = degreesLat(gdPos.latitude)
+      this.realPosition.lng = degreesLong(gdPos.longitude)
+      this.realPosition.alt = gdPos.height
 
-        const vel = eci.velocity as EciVec3<Kilometer>
-        this.realSpeed.x = vel.x
-        this.realSpeed.y = vel.y
-        this.realSpeed.z = vel.z
+      const vel = eci.velocity as EciVec3<Kilometer>
+      this.realSpeed.x = vel.x
+      this.realSpeed.y = vel.y
+      this.realSpeed.z = vel.z
     }
   }
 
-  public setColor(color: string, index: number, mesh: THREE.InstancedMesh) {
-    this.currentColor = color;
-    mesh.setColorAt(index, new THREE.Color(color));
-    if (mesh.instanceColor) {
-        mesh.instanceColor.needsUpdate = true;
+  public setColor(color: string, index: number, mesh: SatelliteMeshes) {
+    this.currentColor = color
+    mesh.sat.setColorAt(index, new THREE.Color(color))
+    if (mesh.sat.instanceColor) {
+      mesh.sat.instanceColor.needsUpdate = true
     }
   }
 
-  public updatePositionOfMesh(mesh: THREE.InstancedMesh, index: number, globeRadius: number) {
+  public updatePositionOfMesh(mesh: SatelliteMeshes, index: number, globeRadius: number) {
     const pos = polar2Cartesian(
       this.realPosition.lat,
       this.realPosition.lng,
@@ -177,7 +171,9 @@ export class Satellite {
       this.threeData.scale
     )
 
-    mesh.setMatrixAt(index, this.threeData.matrix)
-    mesh.instanceMatrix.needsUpdate = true
+    mesh.sat.setMatrixAt(index, this.threeData.matrix)
+    mesh.sat.instanceMatrix.needsUpdate = true
+    mesh.satClick.setMatrixAt(index, this.threeData.matrix)
+    mesh.satClick.instanceMatrix.needsUpdate = true
   }
 }

@@ -6,7 +6,7 @@ import ThreeGlobe from 'three-globe'
 
 import Earth from './assets/earth-blue-marble.jpg'
 import Gaia from './assets/Gaia.png'
-import { constructSatelliteMesh, type Satellite } from './Satellite'
+import { constructSatelliteMesh, SatelliteMeshes, type Satellite } from './Satellite'
 import { loadTexture, shiftLeft } from './common/utils'
 import {
   EARTH_RADIUS_KM,
@@ -53,7 +53,7 @@ export class ThreeSimulation {
   private currentIndex = 0
 
   private eventListeners: Record<string, ((...args: any[]) => void)[]> = {}
-  private mesh!: THREE.InstancedMesh
+  private mesh!: SatelliteMeshes
 
   private onRightSide = false
 
@@ -98,7 +98,8 @@ export class ThreeSimulation {
 
     this.currentIndex = end >= all.length ? 0 : end
 
-    this.mesh.computeBoundingSphere()
+    this.mesh.sat.computeBoundingSphere()
+    this.mesh.satClick.computeBoundingSphere()
   }
 
   private initStats() {
@@ -154,7 +155,8 @@ export class ThreeSimulation {
       .atmosphereAltitude(0)
 
     this.mesh = constructSatelliteMesh(this.globe.getGlobeRadius())
-    this.scene.add(this.mesh)
+    this.scene.add(this.mesh.sat)
+    this.scene.add(this.mesh.satClick)
     this.scene.add(this.globe)
 
     // Add satellite
