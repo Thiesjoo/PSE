@@ -4,11 +4,11 @@ import * as THREE from 'three'
 import { reactive } from 'vue'
 import { API_TLE_DATA } from './api/ourApi'
 import {
-    EARTH_RADIUS_KM,
-    SAT_COLOR,
-    SAT_SIZE,
-    SAT_SIZE_CLICK,
-    MAX_SATS_TO_RENDER
+  EARTH_RADIUS_KM,
+  SAT_COLOR,
+  SAT_SIZE,
+  SAT_SIZE_CLICK,
+  MAX_SATS_TO_RENDER
 } from './common/constants'
 
 function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
@@ -41,7 +41,7 @@ export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
 
   const satClickMaterial = new THREE.MeshLambertMaterial({
     opacity: 0,
-    transparent: true,
+    transparent: true
   })
 
   //   simple square for click detection

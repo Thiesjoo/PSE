@@ -75,7 +75,7 @@ watch(e, (Value) => {
   sat.satData.ecco = Value / 100
 })
 
-props.simulation.setTimeSpeed(50)
+props.simulation.getTime().setSpeed(50)
 </script>
 
 <template>

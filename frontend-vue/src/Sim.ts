@@ -77,8 +77,8 @@ export class ThreeSimulation {
     const gmst = satellite.gstime(this.time.time)
 
     Object.values(this.satellites).forEach((sat, i) => {
-        sat.propagate(this.time.time, gmst)
-        sat.updatePositionOfMesh(this.mesh, i, globeRadius)
+      sat.propagate(this.time.time, gmst)
+      sat.updatePositionOfMesh(this.mesh, i, globeRadius)
     })
 
     this.mesh.sat.computeBoundingSphere()
@@ -379,26 +379,26 @@ export class ThreeSimulation {
   private resetAllMeshes() {
     const matrix = new THREE.Matrix4()
     matrix.compose(
-        new THREE.Vector3(0,0,0),
-        new THREE.Quaternion(0,0,0,0),
-        new THREE.Vector3(1,1,1)
-      )
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Quaternion(0, 0, 0, 0),
+      new THREE.Vector3(1, 1, 1)
+    )
 
-      for (let i = 0; i <  MAX_SATS_TO_RENDER; i++) {
-        this.mesh.sat.setMatrixAt(i, matrix)
-        this.mesh.satClick.setMatrixAt(i, matrix)
-      }
-      
-      this.mesh.sat.instanceMatrix.needsUpdate = true
-      this.mesh.satClick.instanceMatrix.needsUpdate = true
+    for (let i = 0; i < MAX_SATS_TO_RENDER; i++) {
+      this.mesh.sat.setMatrixAt(i, matrix)
+      this.mesh.satClick.setMatrixAt(i, matrix)
+    }
+
+    this.mesh.sat.instanceMatrix.needsUpdate = true
+    this.mesh.satClick.instanceMatrix.needsUpdate = true
   }
 
   reset() {
     this.dehover()
     this.deselect()
     this.satellites = {}
-    this.resetAllMeshes();
-    this.setTimeSpeed(1)
+    this.resetAllMeshes()
+    this.time.setSpeed(1)
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
@@ -423,7 +423,7 @@ export class ThreeSimulation {
     this.satellites = {}
     this.currentlyHovering = null
     this.currentlySelected = null
-    this.resetAllMeshes();
+    this.resetAllMeshes()
 
     this.eventListeners['select']?.forEach((cb) => cb(null))
   }
@@ -494,9 +494,8 @@ export class ThreeSimulation {
     this.onRightSide = false
   }
 
-  setTime(time: Date) {}
-  setTimeSpeed(speed: number) {
-    this.time.setSpeed(speed)
+  getTime() {
+    return this.time
   }
 
   enableLineDrawing() {
