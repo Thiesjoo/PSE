@@ -129,8 +129,16 @@ watch(speed, (newSpeed) => {
       </div>
       <div class="orbit-info" v-show="picked === 0">
         <h3>Low Earth Orbit</h3>
-        <p>Height: 160-2000 km</p>
-        <p>Fun facts: :D</p>
+        <p>The region of space where satellites orbit closest to Earth's surface.
+          Average height is about 160 to 2000 km above the Earth.
+          Satellites in LEO that are designed to image Earth's surface can
+          take higher resolution images than those at greater altitudes.
+          Multiple LEO satellites can be used to create a network of linked
+          satellites that work together to cover part of the Earth,
+          this network can be used for telecomunnications.</p>
+        <p>A LEO satellite has a lifespan of 7 to 10 years. </p>
+        <p>The most well known LEO satellite is the International Space Station (ISS)</p>
+        <p>The lowest orbiting satellite is the Japanese satellite Tsubame</p>
       </div>
       <div class="orbit-info" v-show="picked === 1">
         <h3>Medium Earth Orbit</h3>
@@ -180,21 +188,23 @@ h3 {
 }
 .sliders-sat {
   position: sticky;
-  top: 20px;
-  padding-bottom: 10%;
+  top: 10px;
+  padding-bottom: 0%;
   padding-left: 10%;
   padding-right: 10%;
+  border: 2px solid rgba(255, 0, 0, 0.75);
 }
 
 .add-button {
   appearance: none;
   position: sticky;
   width: 50%;
-  padding: 20px;
+  padding: 10px;
   background-color: rgba(195, 0, 255, 0.36);
   border-radius: 200px;
   cursor: pointer;
   color: white;
+  border: 2px solid rgba(21, 255, 0, 0.75);
 }
 
 .speed-button {
@@ -211,15 +221,18 @@ h3 {
   position: sticky;
   width: 100%;
   padding-top: 10%;
+  border: 2px solid rgba(0, 247, 255, 0.75);
 }
 
 .orbit-info {
   position: sticky;
-  height: 100px;
+  right: 20%;
+  height: 300px;
   width: 100%;
   padding-top: 5%;
   padding-bottom: 20%;
   background-color: rgba(195, 0, 255, 0.36);
+  border: 2px solid rgb(255, 0, 221);
 }
 
 .display {
