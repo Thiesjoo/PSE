@@ -6,6 +6,9 @@ import ThreeGlobe from 'three-globe'
 
 import Earth from './assets/earth-blue-marble.jpg'
 import Gaia from './assets/Gaia.png'
+import Bump from './assets/Bump.jpg'
+import NightLights from "./assets/night_lights_modified.png"
+
 import { constructSatelliteMesh, SatelliteMeshes, type Satellite } from './Satellite'
 import { loadTexture, shiftLeft } from './common/utils'
 import {
@@ -116,22 +119,60 @@ export class ThreeSimulation {
     }
 
     // Add lights
-    this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI))
-    this.scene.add(new THREE.AmbientLight(0xcccccc, Math.PI))
+    const dir = new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI)
+    this.scene.add(dir)
+    dir.position.set(-50, 0, 30)
+    // this.scene.add(new THREE.AmbientLight(0xcccccc, Math.PI))
+
+    const nightLights = await loadTexture(NightLights)
 
     // Add background
     const envMap = await loadTexture(Gaia)
     envMap.mapping = THREE.EquirectangularReflectionMapping
     this.scene.background = envMap
 
+    const earth = await loadTexture(Earth)
+    earth.colorSpace = THREE.SRGBColorSpace;
+
+    const material = new THREE.MeshPhongMaterial({
+        map: earth,
+        emissiveMap: nightLights,
+        emissive: new THREE.Color(0xffff88),
+    })
+
+
+    // Code from: https://github.com/franky-adl/threejs-earth
+    material.onBeforeCompile = function( shader ) {
+        shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `
+            vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );
+            // Methodology of showing night lights only:
+            //
+            // going through the shader calculations in the meshphysical shader chunks (mostly on the vertex side),
+            // we can confirm that geometryNormal is the normalized normal in view space,
+            // for the night side of the earth, the dot product between geometryNormal and the directional light would be negative
+            // since the direction vector actually points from target to position of the DirectionalLight,
+            // for lit side of the earth, the reverse happens thus emissiveColor would be multiplied with 0.
+            // The smoothstep is to smoothen the change between night and day
+            emissiveColor *= 1.0 - smoothstep(-0.2, 0.2, dot(normal, directionalLights[0].direction));
+            totalEmissiveRadiance *= emissiveColor.rgb;
+        `)
+
+        material.userData.shader = shader
+    }
+
     // Add the Earth
     this.globe = new ThreeGlobe()
-      .globeImageUrl(Earth)
+    //   .globeImageUrl(Earth)
       .objectLat('lat')
       .objectLng('lng')
       .objectAltitude('alt')
       .objectFacesSurface(false)
       .atmosphereAltitude(0)
+      .globeMaterial(material)
+
+      // Compensate for axial tilt: 23.5 degrees
+      const axialTiltInRadians = 23.5 * (Math.PI / 180)
+    this.globe.rotation.x = axialTiltInRadians
 
     this.mesh = constructSatelliteMesh(this.globe.getGlobeRadius())
     this.scene.add(this.mesh.sat)
@@ -193,10 +234,12 @@ export class ThreeSimulation {
     if (this.onRightSide) {
       this.globe.rotation.y += 0.001
     }
+    this.globe.rotation.y += 0.01
 
     if (this.workerManager.finishPropagate(this.time.time, satellite.gstime(this.time.time))) {
       this.updatePositionsOfMeshes()
     }
+
 
     this.time.step()
     this.updateOrbits()
