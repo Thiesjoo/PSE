@@ -4,15 +4,12 @@ import { ThreeSimulation } from '@/Sim'
 import FilterBar from '@/components/FilterBar.vue'
 import PopSatInfo from '@/components/PopSatInfo.vue'
 import { ref, watch } from 'vue'
+import SpeedButtons from '@/components/SpeedButtons.vue'
 
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-let speed = ref(1)
-watch(speed, (newSpeed) => {
-  props.simulation.setTimeSpeed(newSpeed)
-})
 
 const currentSelectedSatellite = ref(undefined as Satellite | undefined)
 props.simulation.addEventListener('select', (sat) => {
@@ -27,7 +24,7 @@ props.simulation.addEventListener('select', (sat) => {
     v-if="currentSelectedSatellite"
   />
 
-  <button @click="speed = speed * 2">Speed * 2. Current speed: {{ speed }}</button>
+  <SpeedButtons :simulation="simulation"></SpeedButtons>
 </template>
 
 <style scoped lang="scss"></style>

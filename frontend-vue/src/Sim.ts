@@ -398,7 +398,7 @@ export class ThreeSimulation {
     this.deselect()
     this.satellites = {}
     this.resetAllMeshes();
-    this.setTimeSpeed(1)
+    this.time.setSpeed(1)
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
@@ -494,9 +494,8 @@ export class ThreeSimulation {
     this.onRightSide = false
   }
 
-  setTime(time: Date) {}
-  setTimeSpeed(speed: number) {
-    this.time.setSpeed(speed)
+  getTime() {
+    return this.time
   }
 
   enableLineDrawing() {
@@ -507,6 +506,7 @@ export class ThreeSimulation {
   }
 
   changeCameraLocation() {}
+  
 
   // Emits:
   // select(sat | undefined )
