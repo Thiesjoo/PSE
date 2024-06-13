@@ -10,7 +10,6 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-
 const currentSelectedSatellite = ref(undefined as Satellite | undefined)
 props.simulation.addEventListener('select', (sat) => {
   currentSelectedSatellite.value = sat

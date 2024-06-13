@@ -1,9 +1,9 @@
 import * as THREE from 'three'
-import { Ref, ref } from 'vue';
+import { Ref, ref } from 'vue'
 
 export class Time {
   private currentTime: Date
-  public multiplier: Ref<number> = ref(1);
+  public multiplier: Ref<number> = ref(1)
   private clock: THREE.Clock = new THREE.Clock()
 
   get time() {
