@@ -10,17 +10,25 @@ export class Orbit {
   private line: THREE.Line | null = null
   private lineGeometry: THREE.BufferGeometry | null = null
   private lineCounter = 0
-  private time: Time;
-  private linePoints: {x: number, y: number, z: number}[] = [];
-  private globeRadius: number;
-  private lastUpdate = new Date();
-  private numOfUpdates = 0;
+  private time: Time
+  private linePoints: { x: number; y: number; z: number }[] = []
+  private globeRadius: number
+  private lastUpdate = new Date()
+  private numOfUpdates = 0
+  private upcoming: boolean
 
-  constructor(sat: Satellite, scene: THREE.Scene, time: Time, globeRadius: number) {
+  constructor(
+    sat: Satellite,
+    scene: THREE.Scene,
+    time: Time,
+    globeRadius: number,
+    upcoming: boolean
+  ) {
     this.satellite = sat
-    this.time = time;
-    this.globeRadius = globeRadius;
-    
+    this.time = time
+    this.globeRadius = globeRadius
+    this.upcoming = upcoming
+
     const lineMaterial = new THREE.LineBasicMaterial({
       color: 'white'
     })
@@ -30,32 +38,37 @@ export class Orbit {
     this.lineGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
     this.lineGeometry.setDrawRange(0, LINE_SIZE)
     this.line = new THREE.Line(this.lineGeometry, lineMaterial)
-    this.generateLinePoints();
+    if (upcoming) {
+      this.generateLinePoints()
+    }
     scene.add(this.line)
   }
 
   generateLinePoints() {
-    this.linePoints = this.satellite.propagateOrbit(this.time.time, NUM_OF_STEPS_ORBIT, TIME_INTERVAL_ORBIT, this.globeRadius);
+    this.linePoints = this.satellite.propagateOrbit(
+      this.time.time,
+      NUM_OF_STEPS_ORBIT,
+      TIME_INTERVAL_ORBIT,
+      this.globeRadius
+    )
     let positions = this.line?.geometry.attributes.position.array
     if (!positions || !this.line) return
-    for (const pos of this.linePoints){
-        positions[this.lineCounter++] = pos.x
-        positions[this.lineCounter++] = pos.y
-        positions[this.lineCounter++] = pos.z
+    for (const pos of this.linePoints) {
+      positions[this.lineCounter++] = pos.x
+      positions[this.lineCounter++] = pos.y
+      positions[this.lineCounter++] = pos.z
     }
     this.lineGeometry?.setDrawRange(0, this.lineCounter / 3)
     this.line.geometry.attributes.position.needsUpdate = true
     console.log(this.linePoints)
-    this.lastUpdate = new Date(+this.time.time);
+    this.lastUpdate = new Date(+this.time.time)
   }
-
-  generateNewLinePoint() {}
 
   updateLine(globe: ThreeGlobe) {
     if (!this.line || !this.lineGeometry) return
-    const elapsed_time = (+this.time.time - +this.lastUpdate)
-    for (let i = 0; i < elapsed_time / TIME_INTERVAL_ORBIT - this.numOfUpdates; i++){ 
-        
+    if (this.upcoming) {
+      const elapsed_time = +this.time.time - +this.lastUpdate
+      for (let i = 0; i < elapsed_time / TIME_INTERVAL_ORBIT - this.numOfUpdates; i++) {
         let positions = this.line.geometry.attributes.position.array
         //Shift left is simular to a pop from a list.
         //Removes first item and shifts all the others.
@@ -64,8 +77,10 @@ export class Orbit {
         positions = shiftLeft(positions)
         this.lineCounter -= 3
 
-        const newPos: any = this.satellite.propagateNoUpdate(new Date(+this.time.time + NUM_OF_STEPS_ORBIT * TIME_INTERVAL_ORBIT)
-            , this.globeRadius);
+        const newPos: any = this.satellite.propagateNoUpdate(
+          new Date(+this.time.time + NUM_OF_STEPS_ORBIT * TIME_INTERVAL_ORBIT),
+          this.globeRadius
+        )
 
         positions[this.lineCounter++] = newPos.x
         positions[this.lineCounter++] = newPos.y
@@ -73,7 +88,32 @@ export class Orbit {
 
         this.lineGeometry.setDrawRange(0, this.lineCounter / 3)
         this.line.geometry.attributes.position.needsUpdate = true
-        this.numOfUpdates++;
+        this.numOfUpdates++
+      }
+    } else {
+      const satPositions = this.satellite.realPosition
+      if (!satPositions) return
+      const lineCoords = globe.getCoords(
+        satPositions.lat,
+        satPositions.lng,
+        (satPositions.alt / EARTH_RADIUS_KM) * 3
+      )
+
+      let positions = this.line.geometry.attributes.position.array
+      if (this.lineCounter > LINE_SIZE) {
+        //Shift left is simular to a pop from a list.
+        //Removes first item and shifts all the others.
+        positions = shiftLeft(positions)
+        positions = shiftLeft(positions)
+        positions = shiftLeft(positions)
+        this.lineCounter -= 3
+      }
+      positions[this.lineCounter++] = lineCoords.x
+      positions[this.lineCounter++] = lineCoords.y
+      positions[this.lineCounter++] = lineCoords.z
+
+      this.lineGeometry.setDrawRange(0, this.lineCounter / 3)
+      this.line.geometry.attributes.position.needsUpdate = true
     }
   }
 
@@ -84,6 +124,7 @@ export class Orbit {
       this.lineCounter = 0
     }
   }
+
   getLine() {
     return this.line
   }
