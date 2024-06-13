@@ -413,7 +413,13 @@ def pull_country_names():
     # satellites to be found (i.e. the exception below does not indicate
     # unintended behaviour).
     for line in csv_data:
+
+        # Checks if the end of the CSV has been reached
+        if line == '':
+            break
+
         split_line = line.split(',')
+        cron_logger.info(split_line)
 
         try:
             sat = Satellite.objects.get(satellite_catalog_number=split_line[2])
