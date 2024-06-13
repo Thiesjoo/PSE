@@ -95,6 +95,9 @@ watch(add, (newValue) => {
       }
     })
 
+// ********* ORBIT shown *********
+const showOrbit = ref(false)
+
 </script>
 
 <template>
@@ -133,7 +136,8 @@ watch(add, (newValue) => {
     </div>
     <br />
     <button class="add-button" @click="add = 1" style="text-align: center">ADD sat</button>
-    <br />
+    <input type="checkbox" id="show-orbit" v-model="showOrbit" />
+    <label for="show-orbit">Show orbit {{ showOrbit }}</label>
     <div class="orbit-sat">
       <h2>Orbit Category</h2>
       <br />
@@ -144,26 +148,19 @@ watch(add, (newValue) => {
       </div>
       <div class="orbit-info" v-show="picked === 0">
         <h3>Low Earth Orbit</h3>
-        <p>The region of space where satellites orbit closest to Earth's surface.
-          Average height is about 160 to 2000 km above the Earth.
-          Satellites in LEO that are designed to image Earth's surface can
-          take higher resolution images than those at greater altitudes.
-          Multiple LEO satellites can be used to create a network of linked
-          satellites that work together to cover part of the Earth,
-          this network can be used for telecomunnications.</p>
-        <p>A LEO satellite has a lifespan of 7 to 10 years. </p>
-        <p>The most well known LEO satellite is the International Space Station (ISS)</p>
-        <p>The lowest orbiting satellite is the Japanese satellite Tsubame</p>
+        <p>Height: 160-2000 km</p>
+        <!-- <p>Fun facts: LEO is the most common orbit used for Earth observation satellites and the International Space Station (ISS) orbits in LEO.</p> -->
+        <img src="/public/Leo-highlight.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 1">
         <h3>Medium Earth Orbit</h3>
         <p>Height: 2000-36000 km</p>
-        <p>Fun facts: :D</p>
+        <img src="/public/Meo-highlight.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 2">
         <h3>Other</h3>
         <p>Height: >36000 km</p>
-        <p>Fun facts: :D</p>
+        <img src="/public/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
   </div>
@@ -205,9 +202,8 @@ h3 {
   position: sticky;
   top: 10px;
   padding-bottom: 0%;
-  padding-left: 10%;
+  padding-left: 0%;
   padding-right: 10%;
-  border: 2px solid rgba(255, 0, 0, 0.75);
 }
 
 .add-button {
@@ -219,7 +215,6 @@ h3 {
   border-radius: 200px;
   cursor: pointer;
   color: white;
-  border: 2px solid rgba(21, 255, 0, 0.75);
 }
 
 .speed-button {
@@ -236,7 +231,6 @@ h3 {
   position: sticky;
   width: 100%;
   padding-top: 10%;
-  border: 2px solid rgba(0, 247, 255, 0.75);
 }
 
 .orbit-info {
@@ -245,9 +239,7 @@ h3 {
   height: 300px;
   width: 100%;
   padding-top: 5%;
-  padding-bottom: 20%;
-  background-color: rgba(195, 0, 255, 0.36);
-  border: 2px solid rgb(255, 0, 221);
+  // background-color: rgba(195, 0, 255, 0.36);
 }
 
 .display {
