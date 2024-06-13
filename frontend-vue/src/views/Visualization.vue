@@ -23,7 +23,7 @@ props.simulation.addEventListener('select', (sat) => {
 <template>
   <FilterBar :simulation="simulation"></FilterBar>
   <PopSatInfo
-    :currentSelectedSatellite="currentSelectedSatellite"
+    :currentSelectedSatellite="currentSelectedSatellite as Satellite"
     v-if="currentSelectedSatellite"
   />
 
