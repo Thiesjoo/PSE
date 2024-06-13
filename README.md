@@ -131,6 +131,7 @@ SECRET_KEY=<your secret key>
 DEBUG=<'true' or 'false' depending on whether it's in a production or development environment>
 SATELLITES_CACHING_LENGTH=<caching length of the satellites endpoint (in seconds). If not given, this value is set to 3600 seconds.>
 STANDARD_CACHING_LENGTH=<caching length of all other endpoints (in seconds). If not given, this value is set to 300 seconds.>
+TIME_ZONE=<The timezone. Important for crons. The default is UTC>
 ```
 Then, install the dependencies listed in requirements.txt.
 
