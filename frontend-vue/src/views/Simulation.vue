@@ -92,6 +92,12 @@ watch(add, (newValue) => {
         tle = tle_new_satellite(basic_alt);
         sat = add_new_satellite(tle);
         add.value = 0 // Reset 'add' to 0 (false)
+
+        height.value = 160;
+        inclination.value = 0;
+        raan.value = 0;
+        e.value = 0;
+        picked.value = 0;
       }
     })
 
