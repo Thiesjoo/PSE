@@ -135,7 +135,7 @@ const showOrbit = ref(false)
       </div>
     </div>
     <br />
-    <button class="add-button" @click="add = 1" style="text-align: center">ADD sat</button>
+    <button class="add-button" @click="add = 1" style="text-align: center">ADD another sat</button>
     <button class="add-button" @click="add = 1" style="text-align: center">DEL sat</button>
     <input type="checkbox" id="show-orbit" v-model="showOrbit" />
     <label for="show-orbit">Show orbit {{ showOrbit }}</label>
