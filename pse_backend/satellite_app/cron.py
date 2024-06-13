@@ -425,10 +425,10 @@ def pull_country_names():
 
     cron_logger.info(
         "Assigned country data to a total of " +
-        found_satellites +
+        str(found_satellites) +
         " satellites.")
     cron_logger.info(
         "Could not find " +
-        unfound_satellites +
+        str(unfound_satellites) +
         " satellites to assign country data to.")
     cron_logger.info("Done assigning satellites to country data.")
