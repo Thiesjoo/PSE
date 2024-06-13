@@ -10,6 +10,7 @@ const props = defineProps<{
 }>()
 
 let sat_number = 1 // Used for naming satellites when creating multiple
+let tle;
 const basic_alt = 160000 + 6371 * 1000 // Add Earth's radius
 
 function tle_new_satellite(alt: number) {
@@ -29,15 +30,14 @@ function tle_new_satellite(alt: number) {
   return (tle)
 }
 
-function add_new_satellite(tle: string){
+function add_new_satellite(alt: number){
+    let tle = tle_new_satellite(alt);
     const sats = Satellite.fromMultipleTLEs(tle);
     sats.forEach((sat) => props.simulation.addSatellite(sat));
     return sats[0]
 }
 
-//  Initialize the first satelite
-let tle = tle_new_satellite(basic_alt);
-let sat = add_new_satellite(tle);
+let sat = add_new_satellite(basic_alt);
 
 // ********* SLIDERS *********
 
@@ -77,15 +77,14 @@ watch(e, (Value) => {
   sat.satData.ecco = Value / 100
 })
 
-props.simulation.getTime().setSpeed(100)
+props.simulation.getTime().setSpeed(100);
 
 
 // ********* ADD SATELLITE BUTTON *********
-let add = ref(0)
+let add = ref(0);
 watch(add, (newValue) => {
       if (newValue === 1) {
-        tle = tle_new_satellite(basic_alt);
-        sat = add_new_satellite(tle);
+        sat = add_new_satellite(basic_alt);
         add.value = 0 // Reset 'add' to 0 (false)
 
         height.value = 160;
@@ -93,6 +92,25 @@ watch(add, (newValue) => {
         raan.value = 0;
         e.value = 0;
         picked.value = 0;
+      }
+    })
+
+// ********* REMOVE SAT BUTTON *********
+let remove = ref(0);
+watch(remove, (newValue) => {
+      if (newValue === 1) {
+
+        props.simulation.reset();
+        remove.value = 0; // Reset 'add' to 0 (false)
+        sat_number = 1;
+
+        height.value = 160;
+        inclination.value = 0;
+        raan.value = 0;
+        e.value = 0;
+        picked.value = 0;
+
+        add_new_satellite(basic_alt);
       }
     })
 
@@ -137,7 +155,7 @@ const showOrbit = ref(false)
     </div>
     <br />
     <button class="add-button" @click="add = 1" style="text-align: center">ADD another sat</button>
-    <button class="add-button" @click="add = 1" style="text-align: center">DEL sat</button>
+    <button class="add-button" @click="remove = 1" style="text-align: center">DEL sat</button>
     <input type="checkbox" id="show-orbit" v-model="showOrbit" />
     <label for="show-orbit">Show orbit {{ showOrbit }}</label>
     <div class="orbit-sat">
