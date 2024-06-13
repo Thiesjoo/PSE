@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
+import SpeedButtons from '@/components/SpeedButtons.vue'
 import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin } from '@/calc_helper'
 import { ref, watch } from 'vue'
 
@@ -76,13 +77,7 @@ watch(e, (Value) => {
   sat.satData.ecco = Value / 100
 })
 
-props.simulation.getTime().setSpeed(50)
-
-// ********* SATELLITE SPEED *********
-let speed = ref(1)
-watch(speed, (newSpeed) => {
-  props.simulation.setTimeSpeed(newSpeed)
-})
+props.simulation.getTime().setSpeed(100)
 
 
 // ********* ADD SATELLITE BUTTON *********
@@ -170,7 +165,7 @@ const showOrbit = ref(false)
       </div>
     </div>
   </div>
-  <button class="speed-button" @click="speed = speed * 2">Speed * 2. Current speed: {{ speed }}</button>
+  <SpeedButtons :simulation="props.simulation" />
 </template>
 
 <style scoped lang="scss">
