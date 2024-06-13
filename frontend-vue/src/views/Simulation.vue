@@ -14,30 +14,30 @@ const basic_alt = 160000 + 6371 * 1000 // Add Earth's radius
 
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
-  let epoch = epochUpdate();
-  let mean_motion = calculateRevolutionPerDay(alt);
+  let epoch = epochUpdate()
+  let mean_motion = calculateRevolutionPerDay(alt)
 
   // Initializing own satelite
-  let name = 'New Satellite' + sat_number.toString() + '\n';
-  let cat_n = sat_number.toString().padStart(5, '0');
-  let part1 = '1 ' + cat_n + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1';
-  let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 ';
-  let part3 = '000001';
-  let tle = name + part1 + part2 + mean_motion + part3;
-  console.log(tle);
-  sat_number = sat_number + 1;
-  return (tle)
+  let name = 'New Satellite' + sat_number.toString() + '\n'
+  let cat_n = sat_number.toString().padStart(5, '0')
+  let part1 = '1 ' + cat_n + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1'
+  let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
+  let part3 = '000001'
+  let tle = name + part1 + part2 + mean_motion + part3
+  console.log(tle)
+  sat_number = sat_number + 1
+  return tle
 }
 
-function add_new_satellite(tle: string){
-    const sats = Satellite.fromMultipleTLEs(tle);
-    sats.forEach((sat) => props.simulation.addSatellite(sat));
-    return sats[0]
+function add_new_satellite(tle: string) {
+  const sats = Satellite.fromMultipleTLEs(tle)
+  sats.forEach((sat) => props.simulation.addSatellite(sat))
+  return sats[0]
 }
 
 //  Initialize the first satelite
-let tle = tle_new_satellite(basic_alt);
-let sat = add_new_satellite(tle);
+let tle = tle_new_satellite(basic_alt)
+let sat = add_new_satellite(tle)
 
 // ********* SLIDERS *********
 
@@ -79,26 +79,24 @@ watch(e, (Value) => {
 
 props.simulation.getTime().setSpeed(100)
 
-
 // ********* ADD SATELLITE BUTTON *********
 let add = ref(0)
 watch(add, (newValue) => {
-      if (newValue === 1) {
-        tle = tle_new_satellite(basic_alt);
-        sat = add_new_satellite(tle);
-        add.value = 0 // Reset 'add' to 0 (false)
+  if (newValue === 1) {
+    tle = tle_new_satellite(basic_alt)
+    sat = add_new_satellite(tle)
+    add.value = 0 // Reset 'add' to 0 (false)
 
-        height.value = 160;
-        inclination.value = 0;
-        raan.value = 0;
-        e.value = 0;
-        picked.value = 0;
-      }
-    })
+    height.value = 160
+    inclination.value = 0
+    raan.value = 0
+    e.value = 0
+    picked.value = 0
+  }
+})
 
 // ********* ORBIT shown *********
 const showOrbit = ref(false)
-
 </script>
 
 <template>

@@ -383,9 +383,9 @@ export class ThreeSimulation {
     this.orbits.push(orbit)
   }
 
-  removeOrbit(sat:Satellite){
+  removeOrbit(sat: Satellite) {
     this.orbits[0].removeLine(this.scene)
-    this.orbits.pop();
+    this.orbits.pop()
   }
 
   addGroundStation() {}

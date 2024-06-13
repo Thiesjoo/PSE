@@ -15,4 +15,3 @@ export const MAX_SATS_TO_RENDER = 12_000
 
 export const TIME_INTERVAL_ORBIT = 1000
 export const NUM_OF_STEPS_ORBIT = 10000
-
