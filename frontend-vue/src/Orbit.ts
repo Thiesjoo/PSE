@@ -5,6 +5,7 @@ import { shiftLeft } from './common/utils'
 import ThreeGlobe from 'three-globe'
 import { Time } from './Time'
 import { NUM_OF_STEPS_ORBIT, TIME_INTERVAL_ORBIT } from './common/constants'
+
 export class Orbit {
   private satellite: Satellite
   private line: THREE.Line | null = null
@@ -51,7 +52,7 @@ export class Orbit {
       TIME_INTERVAL_ORBIT,
       this.globeRadius
     )
-    let positions = this.line?.geometry.attributes.position.array
+    const positions = this.line?.geometry.attributes.position.array
     if (!positions || !this.line) return
     for (const pos of this.linePoints) {
       positions[this.lineCounter++] = pos.x
@@ -115,6 +116,11 @@ export class Orbit {
       this.lineGeometry.setDrawRange(0, this.lineCounter / 3)
       this.line.geometry.attributes.position.needsUpdate = true
     }
+  }
+
+  recalculate(){
+    this.lineCounter = 0;
+    this.generateLinePoints();
   }
 
   removeLine(scene: THREE.Scene) {

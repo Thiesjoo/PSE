@@ -304,7 +304,7 @@ export class ThreeSimulation {
       if (!satData) return
 
       this.currentlySelected = satData
-      this.addOrbit(this.currentlySelected, false)
+      this.addOrbit(this.currentlySelected, false);
       satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
 
       this.eventListeners['select']?.forEach((cb) => cb(satData))

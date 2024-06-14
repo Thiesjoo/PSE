@@ -164,7 +164,7 @@ export class Satellite {
 
     if (eci.position && eci.velocity) {
       const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, satellite.gstime(time))
-      let realPosition = { lat: 0, lng: 0, alt: 0 }
+      const realPosition = { lat: 0, lng: 0, alt: 0 }
       realPosition.lat = degreesLat(gdPos.latitude)
       realPosition.lng = degreesLong(gdPos.longitude)
       realPosition.alt = gdPos.height
@@ -186,7 +186,7 @@ export class Satellite {
     timeInterval: number,
     globeRadius: number
   ): any {
-    let result: Object[] = []
+    const result: Object[] = []
     for (let i = 0; i < numOfPoints; i++) {
       const newTime = new Date(+time + i * timeInterval)
       result.push(this.propagateNoUpdate(newTime, globeRadius))
