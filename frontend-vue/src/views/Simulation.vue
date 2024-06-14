@@ -30,15 +30,21 @@ function tle_new_satellite(alt: number) {
   return (tle)
 }
 
+function reset_sliders(){
+    height.value = 160;
+    inclination.value = 0;
+    raan.value = 0;
+    e.value = 0;
+    picked.value = 0;
+}
+
 function add_new_satellite(alt: number){
     let tle = tle_new_satellite(alt);
     const sats = Satellite.fromMultipleTLEs(tle);
     sats.forEach((sat) => props.simulation.addSatellite(sat));
+    reset_sliders()
     return sats[0]
 }
-
-let sat = add_new_satellite(basic_alt);
-
 // ********* SLIDERS *********
 
 // Initializing slider variables
@@ -46,7 +52,9 @@ const height = ref(160)
 const inclination = ref(0)
 const raan = ref(0)
 const e = ref(0)
-const picked = ref(0) // Initial orbit type is 0 = LEO
+const picked = ref(0) // Orbit type is 0 = LEO
+let add = ref(0); // Used for adding new satellites (0==false)
+let remove = ref(0); // Used for removing all current satellites (0==false)
 
 // Height slider live changes and update radio buttons
 watch(height, (Value) => {
@@ -77,45 +85,31 @@ watch(e, (Value) => {
   sat.satData.ecco = Value / 100
 })
 
-props.simulation.getTime().setSpeed(100);
-
+// ********* first satellite *********
+let sat = add_new_satellite(basic_alt);
 
 // ********* ADD SATELLITE BUTTON *********
-let add = ref(0);
 watch(add, (newValue) => {
       if (newValue === 1) {
         sat = add_new_satellite(basic_alt);
         add.value = 0 // Reset 'add' to 0 (false)
-
-        height.value = 160;
-        inclination.value = 0;
-        raan.value = 0;
-        e.value = 0;
-        picked.value = 0;
       }
     })
 
 // ********* REMOVE SAT BUTTON *********
-let remove = ref(0);
 watch(remove, (newValue) => {
       if (newValue === 1) {
 
         props.simulation.reset();
         remove.value = 0; // Reset 'add' to 0 (false)
-        sat_number = 1;
+        sat_number = 1; // Resets the naming
 
-        height.value = 160;
-        inclination.value = 0;
-        raan.value = 0;
-        e.value = 0;
-        picked.value = 0;
-
-        add_new_satellite(basic_alt);
+        sat = add_new_satellite(basic_alt);
       }
     })
 
 // ********* ORBIT shown *********
-const showOrbit = ref(false)
+const showOrbit = ref(false);
 
 </script>
 
