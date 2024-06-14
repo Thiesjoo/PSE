@@ -419,7 +419,6 @@ def pull_country_names():
             break
 
         split_line = line.split(',')
-        cron_logger.info(split_line)
 
         try:
             sat = Satellite.objects.get(satellite_catalog_number=split_line[2])

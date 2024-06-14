@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
+import SpeedButtons from '@/components/SpeedButtons.vue'
 import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin } from '@/calc_helper'
 import { ref, watch } from 'vue'
 
@@ -9,33 +10,34 @@ const props = defineProps<{
 }>()
 
 let sat_number = 1 // Used for naming satellites when creating multiple
-let alt = 160000 + 6371 * 1000 // Add Earth's radius
+const basic_alt = 160000 + 6371 * 1000 // Add Earth's radius
 
-function initialize_new_satellite() {
+function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
-  let epoch = epochUpdate()
-  let mean_motion = calculateRevolutionPerDay(alt)
+  let epoch = epochUpdate();
+  let mean_motion = calculateRevolutionPerDay(alt);
 
   // Initializing own satelite
-  let name = 'New Satellite' + sat_number.toString() + '\n'
-  let part1 = '1 11111U 24001A   '
-  let part2 =
-    ' -.00000000 00000000 00000-0 0 1111 1\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
-  let part3 = '000001'
-  let tle = name + part1 + epoch + part2 + mean_motion + part3
-  console.log(tle)
-
-  //  Add satellite to the simulation
-  const sats = Satellite.fromMultipleTLEs(tle)
-  let sat = sats[0]
-  sats.forEach((sat) => props.simulation.addSatellite(sat))
-
-  sat_number = sat_number + 1
-
-  return sat
+  let name = 'New Satellite' + sat_number.toString() + '\n';
+  let cat_n = sat_number.toString().padStart(5, '0');
+  let part1 = '1 ' + cat_n + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1';
+  let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 ';
+  let part3 = '000001';
+  let tle = name + part1 + part2 + mean_motion + part3;
+  console.log(tle);
+  sat_number = sat_number + 1;
+  return (tle)
 }
 
-let sat = initialize_new_satellite()
+function add_new_satellite(tle: string){
+    const sats = Satellite.fromMultipleTLEs(tle);
+    sats.forEach((sat) => props.simulation.addSatellite(sat));
+    return sats[0]
+}
+
+//  Initialize the first satelite
+let tle = tle_new_satellite(basic_alt);
+let sat = add_new_satellite(tle);
 
 // ********* SLIDERS *********
 
@@ -48,7 +50,7 @@ const picked = ref(0) // Initial orbit type is 0 = LEO
 
 // Height slider live changes and update radio buttons
 watch(height, (Value) => {
-  alt = Value * 1000 + 6371 * 1000 // Convert to meters and add Earth's radius
+  let alt = Value * 1000 + 6371 * 1000 // Convert to meters and add Earth's radius
   sat.satData.no = calculateMeanMotionRadPerMin(alt) // mean motion [rad/min]
 
   if (Value >= 160 && Value < 2000) {
@@ -75,7 +77,28 @@ watch(e, (Value) => {
   sat.satData.ecco = Value / 100
 })
 
-props.simulation.setTimeSpeed(50)
+props.simulation.getTime().setSpeed(100)
+
+
+// ********* ADD SATELLITE BUTTON *********
+let add = ref(0)
+watch(add, (newValue) => {
+      if (newValue === 1) {
+        tle = tle_new_satellite(basic_alt);
+        sat = add_new_satellite(tle);
+        add.value = 0 // Reset 'add' to 0 (false)
+
+        height.value = 160;
+        inclination.value = 0;
+        raan.value = 0;
+        e.value = 0;
+        picked.value = 0;
+      }
+    })
+
+// ********* ORBIT shown *********
+const showOrbit = ref(false)
+
 </script>
 
 <template>
@@ -113,8 +136,10 @@ props.simulation.setTimeSpeed(50)
       </div>
     </div>
     <br />
-    <button class="add-button" style="text-align: center">ADD</button>
-    <br />
+    <button class="add-button" @click="add = 1" style="text-align: center">ADD another sat</button>
+    <button class="add-button" @click="add = 1" style="text-align: center">DEL sat</button>
+    <input type="checkbox" id="show-orbit" v-model="showOrbit" />
+    <label for="show-orbit">Show orbit {{ showOrbit }}</label>
     <div class="orbit-sat">
       <h2>Orbit Category</h2>
       <br />
@@ -126,20 +151,21 @@ props.simulation.setTimeSpeed(50)
       <div class="orbit-info" v-show="picked === 0">
         <h3>Low Earth Orbit</h3>
         <p>Height: 160-2000 km</p>
-        <p>Fun facts: :D</p>
+        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 1">
         <h3>Medium Earth Orbit</h3>
         <p>Height: 2000-36000 km</p>
-        <p>Fun facts: :D</p>
+        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 2">
         <h3>Other</h3>
         <p>Height: >36000 km</p>
-        <p>Fun facts: :D</p>
+        <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
   </div>
+  <SpeedButtons :simulation="props.simulation" />
 </template>
 
 <style scoped lang="scss">
@@ -156,6 +182,7 @@ h3 {
   text-align: center;
   font-weight: bold;
 }
+
 .left-info-block {
   position: absolute;
   top: 0px;
@@ -174,9 +201,9 @@ h3 {
 }
 .sliders-sat {
   position: sticky;
-  top: 20px;
-  padding-bottom: 10%;
-  padding-left: 10%;
+  top: 10px;
+  padding-bottom: 0%;
+  padding-left: 0%;
   padding-right: 10%;
 }
 
@@ -184,9 +211,19 @@ h3 {
   appearance: none;
   position: sticky;
   width: 50%;
-  padding: 20px;
+  padding: 10px;
   background-color: rgba(195, 0, 255, 0.36);
   border-radius: 200px;
+  cursor: pointer;
+  color: white;
+}
+
+.speed-button {
+  appearance: none;
+  bottom: 50px;
+  padding: 20px;
+  background-color: rgba(195, 0, 255, 0.36);
+  border-radius: 2px;
   cursor: pointer;
   color: white;
 }
@@ -199,11 +236,11 @@ h3 {
 
 .orbit-info {
   position: sticky;
-  height: 100px;
+  right: 20%;
+  height: 300px;
   width: 100%;
   padding-top: 5%;
-  padding-bottom: 20%;
-  background-color: rgba(195, 0, 255, 0.36);
+  // background-color: rgba(195, 0, 255, 0.36);
 }
 
 .display {

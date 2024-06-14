@@ -1,8 +1,9 @@
 import * as THREE from 'three'
+import { Ref, ref } from 'vue'
 
 export class Time {
   private currentTime: Date
-  private multiplier: number = 1
+  public multiplier: Ref<number> = ref(1)
   private clock: THREE.Clock = new THREE.Clock()
 
   get time() {
@@ -18,11 +19,11 @@ export class Time {
   }
 
   setSpeed(speed: number) {
-    this.multiplier = speed
+    this.multiplier.value = speed
   }
 
   step() {
     const delta = this.clock.getDelta()
-    this.currentTime = new Date(+this.currentTime + this.multiplier * 1000 * delta)
+    this.currentTime = new Date(+this.currentTime + this.multiplier.value * 1000 * delta)
   }
 }

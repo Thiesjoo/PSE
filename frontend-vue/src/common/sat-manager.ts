@@ -2,6 +2,7 @@ import { Satellite } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
 import { API_TLE_DATA, fetchTLEInformation, getAllCategories } from '@/api/ourApi'
 import { reactive, watch } from 'vue'
+import { MAX_SATS_TO_RENDER } from './constants'
 
 export interface Filter {
   name: string
@@ -29,9 +30,12 @@ export class SatManager {
   }
 
   private get filteredSatellites(): Satellite[] {
-    return this.allSatellites.filter((sat) => {
-      return this.currentFilters.some((filter) => satFulfillsFilter(sat, filter))
-    })
+    console.log(this.allSatellites.length)
+    return this.allSatellites
+      .filter((sat) => {
+        return this.currentFilters.some((filter) => satFulfillsFilter(sat, filter))
+      })
+      .slice(0, MAX_SATS_TO_RENDER)
   }
 
   public async init() {
