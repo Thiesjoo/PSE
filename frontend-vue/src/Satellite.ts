@@ -2,6 +2,7 @@ import type { EciVec3, GMSTime, Kilometer, PositionAndVelocity, SatRec } from 's
 import { degreesLat, degreesLong, eciToGeodetic, propagate, twoline2satrec } from 'satellite.js'
 import * as THREE from 'three'
 import { reactive } from 'vue'
+import * as satellite from 'satellite.js'
 import { API_TLE_DATA } from './api/ourApi'
 import {
   EARTH_RADIUS_KM,
@@ -156,6 +157,41 @@ export class Satellite {
       this.realSpeed.y = vel.y
       this.realSpeed.z = vel.z
     }
+  }
+
+  public propagateNoUpdate(time: Date, globeRadius: number): Object {
+    const eci = propagate(this.satData, time)
+
+    if (eci.position && eci.velocity) {
+      const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, satellite.gstime(time))
+      const realPosition = { lat: 0, lng: 0, alt: 0 }
+      realPosition.lat = degreesLat(gdPos.latitude)
+      realPosition.lng = degreesLong(gdPos.longitude)
+      realPosition.alt = gdPos.height
+
+      const cartesianPosition = polar2Cartesian(
+        realPosition.lat,
+        realPosition.lng,
+        (realPosition.alt / EARTH_RADIUS_KM) * 3,
+        globeRadius
+      )
+      return cartesianPosition
+    }
+    return {}
+  }
+
+  public propagateOrbit(
+    time: Date,
+    numOfPoints: number,
+    timeInterval: number,
+    globeRadius: number
+  ): any {
+    const result: Object[] = []
+    for (let i = 0; i < numOfPoints; i++) {
+      const newTime = new Date(+time + i * timeInterval)
+      result.push(this.propagateNoUpdate(newTime, globeRadius))
+    }
+    return result
   }
 
   public setColor(color: string, index: number, mesh: SatelliteMeshes) {
