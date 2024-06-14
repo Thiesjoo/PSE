@@ -46,10 +46,6 @@ function add_new_satellite(alt: number){
     return sats[0]
 }
 
-//  Initialize the first satelite
-let tle = tle_new_satellite(basic_alt);
-let sat = add_new_satellite(tle);
-
 // ********* SLIDERS *********
 
 // Initializing slider variables
