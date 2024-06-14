@@ -1,49 +1,91 @@
+import * as satellite from 'satellite.js'
 
-
-import * as satellite from 'satellite.js';
-
+export interface Reset {
+  event: 'reset'
+}
 
 export interface SatRecDump {
-    event: "init";
-    satrec: any;
+  event: 'add'
+  satrec: (satellite.SatRec & {
+    idx: number
+  })
 }
 
 export interface Calculate {
-    event: "calculate";
-    time: Date;
-}
-export interface CalculateResponse {
-    event: "calculate-res";
-    position: any
+  event: 'calculate'
+  time: Date
+  gmsTime: satellite.GMSTime
 }
 
-let counter = 0;
-const data = {} as { [key: number]: any };
+export type WorkerMessage = Reset | SatRecDump | Calculate
+
+export interface CalculateResponse {
+  event: 'calculate-res'
+  // TODO: Dit kan in principe ook zo'n array zijn.
+  data: {
+    idx: number
+    pos: {
+      lat: number
+      lng: number
+      alt: number
+    }
+    spd: {
+      x: number
+      y: number
+      z: number
+    }
+  }[]
+}
+
+export type WorkerResponse = CalculateResponse;
+
+let mySatellites: (satellite.SatRec & { idx: number })[] = []
 
 onmessage = (event) => {
-    const type = event.data.event as "init" | "calculate";
+  const type = event.data.event;
+  switch (type) {
+    case 'reset':
+      mySatellites = []
+      break
 
-    if (type === "init") {
-        const { satrec } = event.data as SatRecDump;
-        data[counter] = satrec;
-        counter += 1;
-    } else if (type === "calculate") {
-        const { time } = event.data as Calculate;
-        for (let i = 0; i < counter; i++) {
-            const satrec = data[i];
-            const positionAndVelocity = satellite.propagate(satrec, time);
-            const gmst = satellite.gstime(time);
-            const positionEci = positionAndVelocity.position;
-            if (!positionEci) {
-                continue;
-            }
-            //@ts-ignore
-            const positionEcf = satellite.eciToEcf(positionEci, gmst);
-            postMessage({
-                event: "calculate-res",
-                position: positionEcf
-            } as CalculateResponse);
+    case 'add':
+      const { satrec } = event.data as SatRecDump
+        mySatellites.push(satrec)
+      break
+
+    case 'calculate':
+      const { time, gmsTime } = event.data as Calculate
+      const res: CalculateResponse = {
+        event: 'calculate-res',
+        data: []
+      }
+      mySatellites.forEach((sat) => {
+        const eci = satellite.propagate(sat, time)
+        if (!eci.position) {
+          return
         }
-    }
+        const gdPos = satellite.eciToGeodetic(
+          eci.position as satellite.EciVec3<satellite.Kilometer>,
+          gmsTime
+        )
 
+        const vel = eci.velocity as satellite.EciVec3<satellite.Kilometer>
+        res.data.push({
+          idx: sat.idx,
+          pos: {
+            lat: satellite.degreesLat(gdPos.latitude),
+            lng: satellite.degreesLong(gdPos.longitude),
+            alt: gdPos.height
+          },
+          spd: {
+            x: vel.x,
+            y: vel.y,
+            z: vel.z
+          }
+        })
+      })
+
+      postMessage(res)
+      break
+  }
 }

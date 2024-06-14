@@ -22,6 +22,7 @@ import { Time } from './Time'
 import * as TWEEN from '@tweenjs/tween.js'
 import * as satellite from 'satellite.js'
 import { Orbit } from './Orbit'
+import { WorkerManager } from './worker/manager'
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
@@ -54,6 +55,8 @@ export class ThreeSimulation {
 
   private onRightSide = false
 
+  private workerManager = new WorkerManager()
+
   // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
   initAll(canvas: HTMLCanvasElement) {
     this.initScene(canvas).then(() => {
@@ -70,17 +73,21 @@ export class ThreeSimulation {
     return Object.values(this.satellites).indexOf(sat)
   }
 
-  private propagateAllSatData() {
+  private async propagateAllSatData() {
+    console.time('propagate')
     const globeRadius = this.globe.getGlobeRadius()
     const gmst = satellite.gstime(this.time.time)
-
+    await this.workerManager.propagate(this.time.time, gmst)
     Object.values(this.satellites).forEach((sat, i) => {
-      sat.propagate(this.time.time, gmst)
+      //   sat.propagate(this.time.time, gmst)
       sat.updatePositionOfMesh(this.mesh, i, globeRadius)
     })
 
     this.mesh.sat.computeBoundingSphere()
     this.mesh.satClick.computeBoundingSphere()
+    console.timeEnd('propagate')
+
+    this.propagateAllSatData();
   }
 
   private initStats() {
@@ -138,8 +145,7 @@ export class ThreeSimulation {
     this.scene.add(this.mesh.satClick)
     this.scene.add(this.globe)
 
-    // Add satellite
-    this.propagateAllSatData()
+    this.propagateAllSatData();
     this.animate()
   }
 
@@ -189,11 +195,63 @@ export class ThreeSimulation {
       .start()
   }
 
-  private animate() {
-    requestAnimationFrame(() => {
-      this.animate()
+  //Creates a line that follows a satellite.
+  initLine() {
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: 'white'
     })
+    this.lineGeometry = new THREE.BufferGeometry()
+    const positions = new Float32Array(LINE_SIZE * 3)
+    this.lineGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    this.lineGeometry.setDrawRange(0, LINE_SIZE)
+    this.line = new THREE.Line(this.lineGeometry, lineMaterial)
+    this.scene.add(this.line)
+  }
 
+  updateLine() {
+    if (!this.line || !this.lineGeometry) return
+    if (!this.currentlySelected) {
+      if (this.line.parent === this.scene) this.removeLine()
+      return
+    }
+    if (!(this.line.parent === this.scene)) {
+      this.scene.add(this.line)
+    }
+    const satPositions = this.currentlySelected?.realPosition
+    if (!satPositions) return
+    const lineCoords = this.globe.getCoords(
+      satPositions.lat,
+      satPositions.lng,
+      (satPositions.alt / EARTH_RADIUS_KM) * 3
+    )
+
+    let positions = this.line.geometry.attributes.position.array
+    if (this.lineCounter > LINE_SIZE) {
+      //Shift left is simular to a pop from a list.
+      //Removes first item and shifts all the others.
+      positions = shiftLeft(positions)
+      positions = shiftLeft(positions)
+      positions = shiftLeft(positions)
+      this.lineCounter -= 3
+    }
+    positions[this.lineCounter++] = lineCoords.x
+    positions[this.lineCounter++] = lineCoords.y
+    positions[this.lineCounter++] = lineCoords.z
+
+    this.lineGeometry.setDrawRange(0, this.lineCounter / 3)
+    this.line.geometry.attributes.position.needsUpdate = true
+  }
+
+  //Removes the line from the scene.
+  removeLine() {
+    if (this.line && this.lineGeometry) {
+      this.scene.remove(this.line)
+      this.lineGeometry.setDrawRange(0, 0)
+      this.lineCounter = 0
+    }
+  }
+
+  private async animate() {
     if (this.onRightSide) {
       this.globe.rotation.y += 0.001
     }
@@ -201,6 +259,12 @@ export class ThreeSimulation {
     this.time.step()
     this.updateOrbits()
     this.propagateAllSatData()
+    // await this.propagateAllSatData()
+
+    requestAnimationFrame(() => {
+      this.animate()
+    })
+
     if (this.stats) this.stats.update()
     if (this.controls) this.controls.update()
     this.renderer.render(this.scene, this.camera)
@@ -287,7 +351,8 @@ export class ThreeSimulation {
   }
 
   private onClick() {
-    console.log(this.currentlySelected, this.currentlyHovering)
+    this.workerManager.propagate(this.time.time, satellite.gstime(this.time.time))
+
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
     const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
     if (xDif > 0.00001 || yDif > 0.00001) return
@@ -337,6 +402,7 @@ export class ThreeSimulation {
     this.deselect()
     this.satellites = {}
     this.resetAllMeshes()
+    this.workerManager.reset()
     this.time.setSpeed(1)
 
     this.drawLines = true
@@ -353,6 +419,7 @@ export class ThreeSimulation {
     }
 
     this.satellites[sat.id] = sat
+    this.workerManager.addSatellite(sat, Object.keys(this.satellites).length - 1)
   }
 
   addSatellites(sats: Satellite[]) {

@@ -133,11 +133,9 @@ export class Satellite {
     const mapped = (distanceToEarth / 500) * 0.2 + 1
 
     this.threeData.scale.set(
-        mapped,mapped, mapped
+        mapped, mapped, mapped
     )
   }
-
-  // TODO: public fromGosia(.....)
 
   // TODO: Waarom 2 tijden?
   public propagate(time: Date, gmsTime: GMSTime) {
