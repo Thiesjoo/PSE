@@ -304,7 +304,8 @@ export class ThreeSimulation {
       if (!satData) return
 
       this.currentlySelected = satData
-      this.addOrbit(this.currentlySelected, false);
+      const orbit = this.addOrbit(this.currentlySelected, false);
+      this.currentlySelected.setOrbit(orbit);
       satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
 
       this.eventListeners['select']?.forEach((cb) => cb(satData))
@@ -381,11 +382,13 @@ export class ThreeSimulation {
       removedOrbit?.removeLine(this.scene)
     }
     this.orbits.push(orbit)
+    return orbit;
   }
 
   removeOrbit(sat: Satellite) {
-    this.orbits[0].removeLine(this.scene)
-    this.orbits.pop()
+    this.orbits.filter(function( obj ) {
+      return obj.satellite !== sat;
+    });
   }
 
   addGroundStation() {}

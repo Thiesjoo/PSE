@@ -11,6 +11,7 @@ import {
   SAT_SIZE_CLICK,
   MAX_SATS_TO_RENDER
 } from './common/constants'
+import { Orbit } from './Orbit'
 
 function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
   const phi = ((90 - lat) * Math.PI) / 180
@@ -80,6 +81,7 @@ export class Satellite {
   public currentPosition: PositionAndVelocity | null = null
   public realPosition = reactive({ lat: 0, lng: 0, alt: 0 })
   public realSpeed = reactive({ x: 0, y: 0, z: 0 })
+  public orbit: Orbit | null=null;
 
   private threeData = {
     matrix: new THREE.Matrix4(),
@@ -219,5 +221,13 @@ export class Satellite {
     mesh.sat.instanceMatrix.needsUpdate = true
     mesh.satClick.setMatrixAt(index, this.threeData.matrix)
     mesh.satClick.instanceMatrix.needsUpdate = true
+  }
+
+  public setOrbit(orbit: Orbit){
+    this.orbit = orbit;
+  }
+
+  public removeOrbit(orbit: Orbit){
+    this.orbit = null;
   }
 }
