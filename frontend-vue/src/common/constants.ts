@@ -12,3 +12,6 @@ export const MIN_CAMERA_DISTANCE = 150
 // API returned er nu 10329.
 // Het hoger zetten zorgt er wel voor dat er meer satellieten gerenderd worden, en dus de performance omlaag gaat.
 export const MAX_SATS_TO_RENDER = 12_000
+
+export const TIME_INTERVAL_ORBIT = 1000
+export const NUM_OF_STEPS_ORBIT = 10000
