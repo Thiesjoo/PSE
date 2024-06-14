@@ -50,7 +50,7 @@ def serializedSatellites(satellites):
              'classification': sat.classification,
              } for sat in satellites]
 
-  
+
 @cache_page(SATELLITES_CACHING_LENGTH)
 @api_view(['GET'])
 def index(request: HttpRequest):
