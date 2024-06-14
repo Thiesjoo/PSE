@@ -274,7 +274,7 @@ export class ThreeSimulation {
   private deselect() {
     // Only change the color back to normal if you are not selecting the satellite and you are not hovering over it.
     if (this.currentlySelected && this.currentlyHovering !== this.currentlySelected) {
-      this.removeOrbit(this.currentlySelected)
+      // this.removeOrbit(this.currentlySelected)
       this.currentlySelected.setColor(
         SAT_COLOR,
         this.getMeshIDBySatellite(this.currentlySelected),
@@ -287,7 +287,6 @@ export class ThreeSimulation {
   }
 
   private onClick() {
-    console.log(this.currentlySelected, this.currentlyHovering)
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
     const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
     if (xDif > 0.00001 || yDif > 0.00001) return
@@ -299,18 +298,20 @@ export class ThreeSimulation {
 
       const meshID = intersects[0].instanceId
       if (!meshID) return
-
       const satData = this.getSatelliteByMeshID(meshID)
       if (!satData) return
-
+      if (this.currentlySelected !== satData){
+        // const orbit = this.addOrbit(satData, false);
+        // satData.setOrbit(orbit);
+      }
       this.currentlySelected = satData
-      const orbit = this.addOrbit(this.currentlySelected, false);
-      this.currentlySelected.setOrbit(orbit);
+      
       satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
 
       this.eventListeners['select']?.forEach((cb) => cb(satData))
       this.escapedFollow = false
     } else {
+      // if (this.currentlySelected) this.removeOrbit(this.currentlySelected)
       this.deselect()
     }
     this.tweeningStatus = 0
@@ -386,7 +387,9 @@ export class ThreeSimulation {
   }
 
   removeOrbit(sat: Satellite) {
-    this.orbits.filter(function( obj ) {
+    console.log("REMOVEORBIT")
+    sat.orbit?.removeLine(this.scene)
+    this.orbits = this.orbits.filter(function(obj) {
       return obj.satellite !== sat;
     });
   }

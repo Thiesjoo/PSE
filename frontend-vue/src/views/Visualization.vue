@@ -11,9 +11,20 @@ const props = defineProps<{
 }>()
 
 const currentSelectedSatellite = ref(undefined as Satellite | undefined)
+let currentSelectedSatelliteLet: Satellite | undefined;
+
 props.simulation.addEventListener('select', (sat) => {
-  currentSelectedSatellite.value = sat
+  if (sat){
+    const orbit = props.simulation.addOrbit(sat, false);
+    sat.setOrbit(orbit)
+  }
+  else if (currentSelectedSatelliteLet){
+    props.simulation.removeOrbit(currentSelectedSatelliteLet)
+  }
+  currentSelectedSatellite.value = sat;
+  currentSelectedSatelliteLet = sat;
 })
+
 </script>
 
 <template>
