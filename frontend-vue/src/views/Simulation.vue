@@ -10,6 +10,7 @@ const props = defineProps<{
 }>()
 
 let sat_number = 1 // Used for naming satellites when creating multiple
+let tle;
 const basic_alt = 160000 + 6371 * 1000 // Add Earth's radius
 
 function tle_new_satellite(alt: number) {
@@ -29,15 +30,21 @@ function tle_new_satellite(alt: number) {
   return tle
 }
 
-function add_new_satellite(tle: string) {
-  const sats = Satellite.fromMultipleTLEs(tle)
-  sats.forEach((sat) => props.simulation.addSatellite(sat))
-  return sats[0]
+function reset_sliders(){
+    height.value = 160;
+    inclination.value = 0;
+    raan.value = 0;
+    e.value = 0;
+    picked.value = 0;
 }
 
-//  Initialize the first satelite
-let tle = tle_new_satellite(basic_alt)
-let sat = add_new_satellite(tle)
+function add_new_satellite(alt: number){
+    let tle = tle_new_satellite(alt);
+    const sats = Satellite.fromMultipleTLEs(tle);
+    sats.forEach((sat) => props.simulation.addSatellite(sat));
+    reset_sliders()
+    return sats[0]
+}
 
 // ********* SLIDERS *********
 
@@ -46,7 +53,9 @@ const height = ref(160)
 const inclination = ref(0)
 const raan = ref(0)
 const e = ref(0)
-const picked = ref(0) // Initial orbit type is 0 = LEO
+const picked = ref(0) // Orbit type is 0 = LEO
+let add = ref(0); // Used for adding new satellites (0==false)
+let remove = ref(0); // Used for removing all current satellites (0==false)
 
 // Height slider live changes and update radio buttons
 watch(height, (Value) => {
@@ -77,26 +86,32 @@ watch(e, (Value) => {
   sat.satData.ecco = Value / 100
 })
 
-props.simulation.getTime().setSpeed(100)
+// ********* first satellite *********
+let sat = add_new_satellite(basic_alt);
 
 // ********* ADD SATELLITE BUTTON *********
-let add = ref(0)
 watch(add, (newValue) => {
-  if (newValue === 1) {
-    tle = tle_new_satellite(basic_alt)
-    sat = add_new_satellite(tle)
-    add.value = 0 // Reset 'add' to 0 (false)
+      if (newValue === 1) {
+        sat = add_new_satellite(basic_alt);
+        add.value = 0 // Reset 'add' to 0 (false)
+      }
+    })
 
-    height.value = 160
-    inclination.value = 0
-    raan.value = 0
-    e.value = 0
-    picked.value = 0
-  }
-})
+// ********* REMOVE SAT BUTTON *********
+watch(remove, (newValue) => {
+      if (newValue === 1) {
+
+        props.simulation.reset();
+        remove.value = 0; // Reset 'add' to 0 (false)
+        sat_number = 1; // Resets the naming
+
+        sat = add_new_satellite(basic_alt);
+      }
+    })
 
 // ********* ORBIT shown *********
-const showOrbit = ref(false)
+const showOrbit = ref(false);
+
 </script>
 
 <template>
@@ -135,7 +150,7 @@ const showOrbit = ref(false)
     </div>
     <br />
     <button class="add-button" @click="add = 1" style="text-align: center">ADD another sat</button>
-    <button class="add-button" @click="add = 1" style="text-align: center">DEL sat</button>
+    <button class="add-button" @click="remove = 1" style="text-align: center">DEL sat</button>
     <input type="checkbox" id="show-orbit" v-model="showOrbit" />
     <label for="show-orbit">Show orbit {{ showOrbit }}</label>
     <div class="orbit-sat">
