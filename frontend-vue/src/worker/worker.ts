@@ -1,3 +1,4 @@
+import { EARTH_RADIUS_KM } from '@/common/constants'
 import * as satellite from 'satellite.js'
 
 export interface Reset {
@@ -23,23 +24,40 @@ export interface CalculateResponse {
   event: 'calculate-res'
   // TODO: Dit kan in principe ook zo'n array zijn.
   data: {
-    idx: number
-    pos: {
-      lat: number
-      lng: number
-      alt: number
-    }
-    spd: {
-      x: number
-      y: number
-      z: number
-    }
-  }[]
+    data: {
+        idx: number
+        pos: {
+          lat: number
+          lng: number
+          alt: number
+        }
+        spd: {
+          x: number
+          y: number
+          z: number
+        }
+    }[],
+    buffer: Float32Array
+  }
 }
 
 export type WorkerResponse = CalculateResponse;
 
+
+function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
+    const phi = ((90 - lat) * Math.PI) / 180
+    const theta = ((90 - lng) * Math.PI) / 180
+    const r = globeRadius * (1 + relAltitude)
+    return {
+      x: r * Math.sin(phi) * Math.cos(theta),
+      y: r * Math.cos(phi),
+      z: r * Math.sin(phi) * Math.sin(theta)
+    }
+  }
+
 let mySatellites: (satellite.SatRec & { idx: number })[] = []
+// TODO: Uit init methode halen
+let globeRadius = 100;
 
 onmessage = (event) => {
   const type = event.data.event;
@@ -57,8 +75,12 @@ onmessage = (event) => {
       const { time, gmsTime } = event.data as Calculate
       const res: CalculateResponse = {
         event: 'calculate-res',
-        data: []
+        data: {
+            data: [],
+            buffer: new Float32Array(mySatellites.length * 3)
+        }
       }
+
       mySatellites.forEach((sat) => {
         const eci = satellite.propagate(sat, time)
         if (!eci.position) {
@@ -70,7 +92,7 @@ onmessage = (event) => {
         )
 
         const vel = eci.velocity as satellite.EciVec3<satellite.Kilometer>
-        res.data.push({
+        const resultData = {
           idx: sat.idx,
           pos: {
             lat: satellite.degreesLat(gdPos.latitude),
@@ -82,7 +104,21 @@ onmessage = (event) => {
             y: vel.y,
             z: vel.z
           }
-        })
+        }
+
+        const pos = polar2Cartesian(
+            resultData.pos.lat,
+            resultData.pos.lng,
+            (resultData.pos.alt / EARTH_RADIUS_KM) * 3,
+            globeRadius
+          )
+
+
+        res.data.buffer[sat.idx * 3] = pos.x
+        res.data.buffer[sat.idx * 3 + 1] = pos.y
+        res.data.buffer[sat.idx * 3 + 2] = pos.z
+            
+        res.data.data.push(resultData)
       })
 
       postMessage(res)

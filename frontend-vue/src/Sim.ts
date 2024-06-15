@@ -87,7 +87,7 @@ export class ThreeSimulation {
     this.mesh.satClick.computeBoundingSphere()
     console.timeEnd('propagate')
 
-    this.propagateAllSatData();
+    // this.propagateAllSatData();
   }
 
   private initStats() {
@@ -99,7 +99,7 @@ export class ThreeSimulation {
     this.scene = new THREE.Scene()
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(50, 1, 1, 7500)
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 7500)
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     camera.position.z = 400
@@ -140,12 +140,13 @@ export class ThreeSimulation {
       .objectFacesSurface(false)
       .atmosphereAltitude(0)
 
+
     this.mesh = constructSatelliteMesh(this.globe.getGlobeRadius())
     this.scene.add(this.mesh.sat)
     this.scene.add(this.mesh.satClick)
     this.scene.add(this.globe)
 
-    this.propagateAllSatData();
+    // this.propagateAllSatData();
     this.animate()
   }
 

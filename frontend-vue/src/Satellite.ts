@@ -78,8 +78,8 @@ export class Satellite {
   public country!: string
   public categories!: string[]
   public currentPosition: PositionAndVelocity | null = null
-  public realPosition = reactive({ lat: 0, lng: 0, alt: 0 })
-  public realSpeed = reactive({ x: 0, y: 0, z: 0 })
+  public realPosition = { lat: 0, lng: 0, alt: 0 }
+  public realSpeed = { x: 0, y: 0, z: 0 }
 
   private threeData = {
     matrix: new THREE.Matrix4(),
@@ -137,25 +137,25 @@ export class Satellite {
     )
   }
 
-  // TODO: Waarom 2 tijden?
-  public propagate(time: Date, gmsTime: GMSTime) {
-    const eci = propagate(this.satData, time)
-    this.currentPosition = eci
+//   // TODO: Waarom 2 tijden?
+//   public propagate(time: Date, gmsTime: GMSTime) {
+//     const eci = propagate(this.satData, time)
+//     this.currentPosition = eci
 
-    if (eci.position && eci.velocity) {
-      const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime)
+//     if (eci.position && eci.velocity) {
+//       const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime)
 
-      this.realPosition.lat = degreesLat(gdPos.latitude)
-      this.realPosition.lng = degreesLong(gdPos.longitude)
-      this.realPosition.alt = gdPos.height
-      this.scale()
+//       this.realPosition.lat = degreesLat(gdPos.latitude)
+//       this.realPosition.lng = degreesLong(gdPos.longitude)
+//       this.realPosition.alt = gdPos.height
+//       this.scale()
 
-      const vel = eci.velocity as EciVec3<Kilometer>
-      this.realSpeed.x = vel.x
-      this.realSpeed.y = vel.y
-      this.realSpeed.z = vel.z
-    }
-  }
+//       const vel = eci.velocity as EciVec3<Kilometer>
+//       this.realSpeed.x = vel.x
+//       this.realSpeed.y = vel.y
+//       this.realSpeed.z = vel.z
+//     }
+//   }
 
   public propagateNoUpdate(time: Date, globeRadius: number): Object {
     const eci = propagate(this.satData, time)

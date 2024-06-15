@@ -60,9 +60,14 @@ export class WorkerManager {
     }
 
 
-    public propagate(time: Date, gmsTime: GMSTime) {
+    public startPropagate(time: Date, gmsTime: GMSTime) {
         if (this.received !== 0) {
-            console.error("Received is not 0");
+            console.error("Received is not 0, we are still processing an old one");
+            return;
+        }
+
+        if (this.promiseResolve) {
+            console.error("Promise already exists, previous one never resolved")
             return;
         }
 
@@ -73,6 +78,7 @@ export class WorkerManager {
             });
         });
     }
+
 
     private done() {
         this.received = 0;
@@ -89,7 +95,7 @@ export class WorkerManager {
     private onMessage(event: WorkerResponse) {
         switch (event.event) {
             case "calculate-res":
-                const positionData = event.data;
+                const positionData = event.data.data;
 
                 positionData.forEach((data) => {
                     const satellite = this.satellites[data.idx];
