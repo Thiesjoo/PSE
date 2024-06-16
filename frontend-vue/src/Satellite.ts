@@ -200,9 +200,7 @@ export class Satellite {
   }
 
   public updatePositionOfMesh(mesh: SatelliteMeshes, index: number, globeRadius: number) {
-    if (this.threeData.scale.x === 1) {
-        this.scale()
-    }
+    this.scale()
 
     const pos = polar2Cartesian(
       this.realPosition.lat,

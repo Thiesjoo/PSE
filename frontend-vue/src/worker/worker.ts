@@ -43,10 +43,8 @@ function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRad
   }
 }
 
-let mySatellites: (satellite.SatRec & { idx: number })[] = []
-// TODO: Uit init methode halen
-let globeRadius = 100
-let myWorkerIndex = -1
+let mySatellites: (satellite.SatRec & { idx: number })[] = [];
+let myWorkerIndex = -1;
 
 onmessage = (event) => {
   const type = event.data.event
@@ -56,9 +54,6 @@ onmessage = (event) => {
       break
 
     case 'add':
-      if (mySatellites.length > 0) {
-        // console.warn('Satellites already added, resetting')
-      }
       const { satrec, workerIndex } = event.data as SatRecDump
       mySatellites = satrec
       myWorkerIndex = workerIndex
@@ -104,7 +99,6 @@ onmessage = (event) => {
         res.data.buffer[sat.idx * 3] = resultData.pos.lat
         res.data.buffer[sat.idx * 3 + 1] = resultData.pos.lng
         res.data.buffer[sat.idx * 3 + 2] = resultData.pos.alt
-
       })
 
       postMessage(res)
