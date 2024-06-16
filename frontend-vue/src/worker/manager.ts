@@ -14,6 +14,7 @@ export class WorkerManager {
     private received = 0;
 
     private promiseResolve: any;
+    private finished = true;
 
     constructor() {
         this.initWorkers();
@@ -66,29 +67,33 @@ export class WorkerManager {
             return;
         }
 
-        if (this.promiseResolve) {
-            console.error("Promise already exists, previous one never resolved")
+        if (!this.finished) {
+            console.error("We are not finished with the previous calculation");
             return;
         }
 
-        return new Promise((resolve) => {
-            this.promiseResolve = resolve;
-            this.workers.forEach((worker, idx) => {
-                this.sendMsg(idx, { event: "calculate", time, gmsTime });
-            });
+        this.finished = false;
+        this.workers.forEach((worker, idx) => {
+            this.sendMsg(idx, { event: "calculate", time, gmsTime });
+        });
+    }
+
+
+    public async finishPropagate() {
+        return new Promise<boolean>((resolve) => {
+            const interval = setInterval(() => {
+                if (this.finished) {
+                    clearInterval(interval);
+                    resolve(true);
+                }
+            })
         });
     }
 
 
     private done() {
         this.received = 0;
-
-        if (this.promiseResolve) {
-            this.promiseResolve();
-            this.promiseResolve = null;
-        } else {
-            console.error("Promise not resolved, but done")
-        }
+        this.finished = true;
     }
 
 

@@ -73,21 +73,16 @@ export class ThreeSimulation {
     return Object.values(this.satellites).indexOf(sat)
   }
 
-  private async propagateAllSatData() {
-    console.time('propagate')
+  private updatePositionsOfMeshes() {
+    console.time('updateMesh')
     const globeRadius = this.globe.getGlobeRadius()
-    const gmst = satellite.gstime(this.time.time)
-    await this.workerManager.propagate(this.time.time, gmst)
     Object.values(this.satellites).forEach((sat, i) => {
-      //   sat.propagate(this.time.time, gmst)
       sat.updatePositionOfMesh(this.mesh, i, globeRadius)
     })
 
     this.mesh.sat.computeBoundingSphere()
     this.mesh.satClick.computeBoundingSphere()
-    console.timeEnd('propagate')
-
-    // this.propagateAllSatData();
+    console.timeEnd('updateMesh')
   }
 
   private initStats() {
@@ -146,7 +141,7 @@ export class ThreeSimulation {
     this.scene.add(this.mesh.satClick)
     this.scene.add(this.globe)
 
-    // this.propagateAllSatData();
+    this.workerManager.startPropagate(this.time.time, satellite.gstime(this.time.time));
     this.animate()
   }
 
@@ -253,18 +248,18 @@ export class ThreeSimulation {
   }
 
   private async animate() {
+      
+      requestAnimationFrame(() => {
+        this.animate()
+      })
     if (this.onRightSide) {
       this.globe.rotation.y += 0.001
     }
 
+    await this.workerManager.finishPropagate();
     this.time.step()
-    this.updateOrbits()
-    this.propagateAllSatData()
-    // await this.propagateAllSatData()
-
-    requestAnimationFrame(() => {
-      this.animate()
-    })
+    this.workerManager.startPropagate(this.time.time, satellite.gstime(this.time.time));
+    this.updatePositionsOfMeshes();
 
     if (this.stats) this.stats.update()
     if (this.controls) this.controls.update()
@@ -352,8 +347,6 @@ export class ThreeSimulation {
   }
 
   private onClick() {
-    this.workerManager.propagate(this.time.time, satellite.gstime(this.time.time))
-
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
     const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
     if (xDif > 0.00001 || yDif > 0.00001) return
