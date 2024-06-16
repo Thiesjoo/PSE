@@ -15,6 +15,7 @@ export class WorkerManager {
 
     private promiseResolve: any;
     private finished = true;
+    private results = new Float64Array(0);
 
     constructor() {
         this.initWorkers();
@@ -46,18 +47,30 @@ export class WorkerManager {
         }
 
         this.satellites.push(satellite);
-        // find the worker with the least amount of satellites
-        let minIdx = 0;
-        let min = this.count[0];
-        for (let i = 1; i < this.count.length; i++) {
-            if (this.count[i] < min) {
-                min = this.count[i];
-                minIdx = i;
-            }
+        const blocks = Math.floor(this.satellites.length / AMT_OF_WORKERS);
+        
+        for (let i = 0; i < AMT_OF_WORKERS; i++) {
+            const start = i * blocks;
+            const end = i === AMT_OF_WORKERS - 1 ? this.satellites.length : (i + 1) * blocks;
+            const data = this.satellites.slice(start, end).map((sat, idx) => ({ ...sat.satData, idx: start + idx }));
+            this.sendMsg(i, { event: "add", satrec: data, workerIndex: i});
+            this.count[i] = start;
         }
+    }
 
-        this.sendMsg(minIdx, { event: "add", satrec: {...satellite.satData, idx} });
-        this.count[minIdx]++;
+    addSatellites(satellites: Satellite[]) {
+        this.reset();
+
+        this.satellites = satellites;
+        const blocks = Math.floor(this.satellites.length / AMT_OF_WORKERS);
+
+        for (let i = 0; i < AMT_OF_WORKERS; i++) {
+            const start = i * blocks;
+            const end = i === AMT_OF_WORKERS - 1 ? this.satellites.length : (i + 1) * blocks;
+            const data = this.satellites.slice(start, end).map((sat, idx) => ({ ...sat.satData, idx: start + idx }));
+            this.sendMsg(i, { event: "add", satrec: data, workerIndex: i});
+            this.count[i] = start;
+        }
     }
 
 
@@ -72,6 +85,7 @@ export class WorkerManager {
             return;
         }
 
+        this.results = new Float64Array(this.satellites.length * 3);
         this.finished = false;
         this.workers.forEach((worker, idx) => {
             this.sendMsg(idx, { event: "calculate", time, gmsTime });
@@ -79,15 +93,21 @@ export class WorkerManager {
     }
 
 
-    public async finishPropagate() {
-        return new Promise<boolean>((resolve) => {
-            const interval = setInterval(() => {
-                if (this.finished) {
-                    clearInterval(interval);
-                    resolve(true);
-                }
-            })
-        });
+    public finishPropagate(time: Date, gmsTime: GMSTime) {
+        if (this.finished) {
+            for (let i = 0; i < this.satellites.length; i++) {
+                const idx = i * 3;
+                this.satellites[i].realPosition = {
+                    lat: this.results[idx],
+                    lng: this.results[idx + 1],
+                    alt: this.results[idx + 2]
+                };
+            }
+
+            this.startPropagate(time, gmsTime);
+            return true;
+        }
+        return false;
     }
 
 
@@ -100,22 +120,8 @@ export class WorkerManager {
     private onMessage(event: WorkerResponse) {
         switch (event.event) {
             case "calculate-res":
-                const positionData = event.data.data;
-
-                positionData.forEach((data) => {
-                    const satellite = this.satellites[data.idx];
-                    const { lat, lng, alt } = data.pos;
-                    const { x, y, z } = data.spd;
-
-
-                    satellite.realPosition.alt = alt;
-                    satellite.realPosition.lat = lat;
-                    satellite.realPosition.lng = lng;
-
-                    satellite.realSpeed.x = x;
-                    satellite.realSpeed.y = y;
-                    satellite.realSpeed.z = z;
-                });
+                const {buffer, workerIndex} = event.data;
+                this.results.set(buffer, this.count[workerIndex] * 3);
 
                 this.received++;
                 if (this.received === AMT_OF_WORKERS) {

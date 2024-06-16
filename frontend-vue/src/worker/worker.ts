@@ -9,7 +9,8 @@ export interface SatRecDump {
   event: 'add'
   satrec: (satellite.SatRec & {
     idx: number
-  })
+  })[]
+  workerIndex: number
 }
 
 export interface Calculate {
@@ -22,53 +23,46 @@ export type WorkerMessage = Reset | SatRecDump | Calculate
 
 export interface CalculateResponse {
   event: 'calculate-res'
-  // TODO: Dit kan in principe ook zo'n array zijn.
   data: {
-    data: {
-        idx: number
-        pos: {
-          lat: number
-          lng: number
-          alt: number
-        }
-        spd: {
-          x: number
-          y: number
-          z: number
-        }
-    }[],
     buffer: Float32Array
+    workerIndex: number
+    // TODO: Speed buffer.
   }
 }
 
-export type WorkerResponse = CalculateResponse;
-
+export type WorkerResponse = CalculateResponse
 
 function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
-    const phi = ((90 - lat) * Math.PI) / 180
-    const theta = ((90 - lng) * Math.PI) / 180
-    const r = globeRadius * (1 + relAltitude)
-    return {
-      x: r * Math.sin(phi) * Math.cos(theta),
-      y: r * Math.cos(phi),
-      z: r * Math.sin(phi) * Math.sin(theta)
-    }
+  const phi = ((90 - lat) * Math.PI) / 180
+  const theta = ((90 - lng) * Math.PI) / 180
+  const r = globeRadius * (1 + relAltitude)
+  return {
+    x: r * Math.sin(phi) * Math.cos(theta),
+    y: r * Math.cos(phi),
+    z: r * Math.sin(phi) * Math.sin(theta)
   }
+}
 
 let mySatellites: (satellite.SatRec & { idx: number })[] = []
 // TODO: Uit init methode halen
-let globeRadius = 100;
+let globeRadius = 100
+let myWorkerIndex = -1
 
 onmessage = (event) => {
-  const type = event.data.event;
+  const type = event.data.event
   switch (type) {
     case 'reset':
       mySatellites = []
       break
 
     case 'add':
-      const { satrec } = event.data as SatRecDump
-        mySatellites.push(satrec)
+      if (mySatellites.length > 0) {
+        // console.warn('Satellites already added, resetting')
+      }
+      const { satrec, workerIndex } = event.data as SatRecDump
+      mySatellites = satrec
+      myWorkerIndex = workerIndex
+
       break
 
     case 'calculate':
@@ -76,8 +70,8 @@ onmessage = (event) => {
       const res: CalculateResponse = {
         event: 'calculate-res',
         data: {
-            data: [],
-            buffer: new Float32Array(mySatellites.length * 3)
+          buffer: new Float32Array(mySatellites.length * 3),
+          workerIndex: myWorkerIndex
         }
       }
 
@@ -106,19 +100,11 @@ onmessage = (event) => {
           }
         }
 
-        const pos = polar2Cartesian(
-            resultData.pos.lat,
-            resultData.pos.lng,
-            (resultData.pos.alt / EARTH_RADIUS_KM) * 3,
-            globeRadius
-          )
 
+        res.data.buffer[sat.idx * 3] = resultData.pos.lat
+        res.data.buffer[sat.idx * 3 + 1] = resultData.pos.lng
+        res.data.buffer[sat.idx * 3 + 2] = resultData.pos.alt
 
-        res.data.buffer[sat.idx * 3] = pos.x
-        res.data.buffer[sat.idx * 3 + 1] = pos.y
-        res.data.buffer[sat.idx * 3 + 2] = pos.z
-            
-        res.data.data.push(resultData)
       })
 
       postMessage(res)

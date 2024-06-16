@@ -74,7 +74,6 @@ export class ThreeSimulation {
   }
 
   private updatePositionsOfMeshes() {
-    console.time('updateMesh')
     const globeRadius = this.globe.getGlobeRadius()
     Object.values(this.satellites).forEach((sat, i) => {
       sat.updatePositionOfMesh(this.mesh, i, globeRadius)
@@ -82,7 +81,6 @@ export class ThreeSimulation {
 
     this.mesh.sat.computeBoundingSphere()
     this.mesh.satClick.computeBoundingSphere()
-    console.timeEnd('updateMesh')
   }
 
   private initStats() {
@@ -135,13 +133,11 @@ export class ThreeSimulation {
       .objectFacesSurface(false)
       .atmosphereAltitude(0)
 
-
     this.mesh = constructSatelliteMesh(this.globe.getGlobeRadius())
     this.scene.add(this.mesh.sat)
     this.scene.add(this.mesh.satClick)
     this.scene.add(this.globe)
 
-    this.workerManager.startPropagate(this.time.time, satellite.gstime(this.time.time));
     this.animate()
   }
 
@@ -248,18 +244,18 @@ export class ThreeSimulation {
   }
 
   private async animate() {
-      
-      requestAnimationFrame(() => {
-        this.animate()
-      })
+    requestAnimationFrame(() => {
+      this.animate()
+    })
     if (this.onRightSide) {
       this.globe.rotation.y += 0.001
     }
 
-    await this.workerManager.finishPropagate();
+    if (this.workerManager.finishPropagate(this.time.time, satellite.gstime(this.time.time))) {
+      this.updatePositionsOfMeshes()
+    }
+
     this.time.step()
-    this.workerManager.startPropagate(this.time.time, satellite.gstime(this.time.time));
-    this.updatePositionsOfMeshes();
 
     if (this.stats) this.stats.update()
     if (this.controls) this.controls.update()
@@ -406,18 +402,21 @@ export class ThreeSimulation {
     this.eventListeners = {}
   }
 
-  addSatellite(sat: Satellite) {
+  addSatellite(sat: Satellite, updateWorker = true) {
     if (this.satellites[sat.id]) {
       console.warn('Satellite already exists')
       return
     }
 
     this.satellites[sat.id] = sat
-    this.workerManager.addSatellite(sat, Object.keys(this.satellites).length - 1)
+    if (updateWorker) {
+      this.workerManager.addSatellite(sat, Object.keys(this.satellites).length - 1)
+    }
   }
 
   addSatellites(sats: Satellite[]) {
-    sats.forEach((sat) => this.addSatellite(sat))
+    sats.forEach((sat) => this.addSatellite(sat, false))
+    this.workerManager.addSatellites(sats)
   }
 
   removeAllSatellites() {
