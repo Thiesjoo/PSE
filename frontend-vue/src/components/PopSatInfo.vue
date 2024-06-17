@@ -127,6 +127,7 @@ const sat_speed = () => {
     justify-content: center;
     margin-bottom: 1em;
     margin-top: 0;
+    border: 2px solid rgb(255, 255, 0);
 
     #SatelliteCountry {
       margin-bottom: 0.5em;
@@ -145,12 +146,14 @@ const sat_speed = () => {
   }
 
   .live_info {
-    // display: flex;
-    // flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     // align-items: left;
     margin-top: 2em;
-    margin-left: 1.3em;
+    // margin-left: 1.3em;
     line-height: 2.5em;
+    border: 2px solid rgb(0, 255, 0);
   }
 
   .epoch {
@@ -164,6 +167,7 @@ const sat_speed = () => {
     transform: translate(-50%, -50%);
     width: 100%;
     line-height: 1.5em;
+    border: 2px solid rgb(247, 0, 255);
   }
 
   p {
