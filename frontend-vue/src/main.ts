@@ -6,8 +6,15 @@ import App from './App.vue'
 import router from './router'
 import * as Sentry from "@sentry/vue";
 
-const app = createApp(App)
+import { createI18n } from 'vue-i18n'
 
+const i18n = createI18n({
+    legacy: false,
+    locale: "en",
+    fallbackLocale: "nl"
+})
+
+const app = createApp(App)
 Sentry.init({
     app,
     dsn: "https://546d97d526d5375e17160136713489b0@o4507446872834048.ingest.de.sentry.io/4507446875455568",
@@ -24,6 +31,7 @@ Sentry.init({
     replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
   });
 
+app.use(i18n)
 app.use(router)
 app.mount('#app')
 

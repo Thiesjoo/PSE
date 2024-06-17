@@ -3,6 +3,8 @@ import { Satellite } from '@/Satellite'
 import { computed, getCurrentInstance, onUnmounted, ref, watch } from 'vue'
 import PopFrame from './PopFrame.vue'
 import { countryToNameConversion } from '@/common/countries'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n() 
 
 // Aantal getallen achter de komma in satellietinformatie
 const numDigits = 3

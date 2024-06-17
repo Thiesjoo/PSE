@@ -2,9 +2,10 @@
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { ThreeSimulation } from './Sim'
 import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n() 
 
 const canvas = ref<HTMLCanvasElement | null>(null)
-
 const simulation = new ThreeSimulation()
 
 onMounted(() => {
@@ -26,12 +27,27 @@ watch(
 <template>
   <header v-if="route.path !== '/'">
     <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/visualization">Visualization</RouterLink>
-      <RouterLink to="/simulation">Simulation</RouterLink>
-      <RouterLink to="/communication">Communication</RouterLink>
+      <RouterLink to="/"> {{ t("home") }} </RouterLink>
+      <RouterLink to="/visualization">{{ t("visualization") }}</RouterLink>
+      <RouterLink to="/simulation">{{ t("simulation") }}</RouterLink>
+      <RouterLink to="/communication">{{ t("communication") }}</RouterLink>
     </nav>
   </header>
+
+  <div class="flags">
+    <img
+      src="http://purecatamphetamine.github.io/country-flag-icons/3x2/NL.svg"
+      alt="Dutch flag"
+      @click="$i18n.locale = 'nl'"
+      :class="{ active: $i18n.locale === 'nl' }"
+    />
+    <img
+      src="http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg"
+      alt="English flag"
+      @click="$i18n.locale = 'en'"
+    :class="{ active: $i18n.locale === 'en' }"
+    />
+  </div>
 
   <div class="content">
     <Suspense>
@@ -41,7 +57,7 @@ watch(
 
       <template #fallback>
         <div class="loading">
-          <p>Loading...</p>
+          <p>{{ t("loading") }}</p>
         </div>
       </template>
     </Suspense>
@@ -74,6 +90,24 @@ canvas {
 .content {
   z-index: 101;
   margin-top: 3em;
+}
+
+.flags {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 100;
+    
+    img {
+        width: 2em;
+        margin: 0.5em;
+        cursor: pointer;
+        border-radius: 0.2em;
+    }
+    
+    .active {
+        border: 2px solid yellow;
+    }
 }
 
 header {
@@ -110,3 +144,21 @@ header {
   }
 }
 </style>
+<i18n>
+    {
+        "en": {
+            "home": "Home",
+            "visualization": "Visualization",
+            "simulation": "Simulation",
+            "communication": "Communication",
+            "loading": "Loading..."
+        },
+        "nl": {
+            "home": "Home",
+            "visualization": "Visualisatie",
+            "simulation": "Simulatie",
+            "communication": "Communicatie",
+            "loading": "Bezig met laden..."
+        },
+    }
+</i18n>
