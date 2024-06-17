@@ -11,7 +11,7 @@ const props = defineProps<{
 
 let sat_number = 1 // Used for naming satellites when creating multiple
 let tle;
-const basic_alt = 160000 + 6371 * 1000 // Add Earth's radius
+const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
 const CURRENT_COLOR = '#F5EEF8'// '#ff12b7'; // Pink
 
