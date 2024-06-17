@@ -258,7 +258,6 @@ export class ThreeSimulation {
 
   private dehover() {
     // If you are hovering over a satellite and you are not selecting it, change the color back to normal.
-
     if (this.currentlyHovering && this.currentlySelected !== this.currentlyHovering) {
       this.currentlyHovering.setColor(
         SAT_COLOR,
@@ -274,7 +273,6 @@ export class ThreeSimulation {
   private deselect() {
     // Only change the color back to normal if you are not selecting the satellite and you are not hovering over it.
     if (this.currentlySelected && this.currentlyHovering !== this.currentlySelected) {
-      this.removeOrbit(this.currentlySelected)
       this.currentlySelected.setColor(
         SAT_COLOR,
         this.getMeshIDBySatellite(this.currentlySelected),
@@ -287,7 +285,6 @@ export class ThreeSimulation {
   }
 
   private onClick() {
-    console.log(this.currentlySelected, this.currentlyHovering)
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
     const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
     if (xDif > 0.00001 || yDif > 0.00001) return
@@ -299,17 +296,16 @@ export class ThreeSimulation {
 
       const meshID = intersects[0].instanceId
       if (!meshID) return
-
       const satData = this.getSatelliteByMeshID(meshID)
       if (!satData) return
-
       this.currentlySelected = satData
-      this.addOrbit(this.currentlySelected, false);
+      
       satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
 
       this.eventListeners['select']?.forEach((cb) => cb(satData))
       this.escapedFollow = false
-    } else {
+    } 
+    else {
       this.deselect()
     }
     this.tweeningStatus = 0
@@ -338,10 +334,12 @@ export class ThreeSimulation {
     this.satellites = {}
     this.resetAllMeshes()
     this.time.setSpeed(1)
+    this.removeAllOrbits();
 
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
+    
 
     this.eventListeners = {}
   }
@@ -381,11 +379,21 @@ export class ThreeSimulation {
       removedOrbit?.removeLine(this.scene)
     }
     this.orbits.push(orbit)
+    return orbit;
   }
 
   removeOrbit(sat: Satellite) {
-    this.orbits[0].removeLine(this.scene)
-    this.orbits.pop()
+    sat.orbit?.removeLine(this.scene)
+    this.orbits = this.orbits.filter(function(obj) {
+      return obj.satellite.id !== sat.id;
+    });
+  }
+
+  removeAllOrbits(){
+    for (const orbit of this.orbits){
+      orbit.removeLine(this.scene)
+    }
+    this.orbits = [];
   }
 
   addGroundStation() {}
