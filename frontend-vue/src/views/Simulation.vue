@@ -134,6 +134,11 @@ watch(showOrbit, (newValue) => {
 
 // ********** SAT NAME **********
 const satName = ref('New Satellite 1')
+watch(satName, (newValue) => {
+
+  satName.value = sat.name;
+
+})
 </script>
 
 <template>
