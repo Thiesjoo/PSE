@@ -15,7 +15,8 @@ const props = defineProps<{
 .pop-up {
   display: flex;
   flex-flow: column nowrap;
-  width: 17vw;
+
+  min-width: 17vw;
   // height: 50vh; // Epoch info would clip into live info above.
   border: 8px solid #858385;
 
