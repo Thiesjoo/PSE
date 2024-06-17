@@ -34,15 +34,17 @@ DEBUG = False if debugMode == ('false' or 'False') else True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "pseapi.thies.dev"
+    "pseapi.thies.dev",
+    "api.satradar.space",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'https://pse.thies.dev',
+    'https://satradar.space'
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://pseapi.thies.dev']
+CSRF_TRUSTED_ORIGINS = ['https://pseapi.thies.dev', 'https://api.satradar.space']
 
 # Application definition
 

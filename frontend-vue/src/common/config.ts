@@ -1,7 +1,7 @@
 export const ALWAYS_USE_PROD = true
 
 const API_DEV_URL = 'http://localhost:8000/'
-const API_PROD_URL = 'https://pseapi.thies.dev/'
+const API_PROD_URL = 'https://api.satradar.space/'
 
 export const API_URL = ALWAYS_USE_PROD
   ? API_PROD_URL
