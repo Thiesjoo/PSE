@@ -270,7 +270,7 @@ export class ThreeSimulation {
     }
   }
 
-  private deselect() {
+  deselect() {
     // Only change the color back to normal if you are not selecting the satellite and you are not hovering over it.
     if (this.currentlySelected && this.currentlyHovering !== this.currentlySelected) {
       this.currentlySelected.setColor(
@@ -299,12 +299,12 @@ export class ThreeSimulation {
       const satData = this.getSatelliteByMeshID(meshID)
       if (!satData) return
       this.currentlySelected = satData
-      
+
       satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
 
       this.eventListeners['select']?.forEach((cb) => cb(satData))
       this.escapedFollow = false
-    } 
+    }
     else {
       this.deselect()
     }
@@ -460,6 +460,18 @@ export class ThreeSimulation {
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
     this.onRightSide = false
+  }
+
+  setCurrentlySelected(sat: Satellite){
+    this.currentlySelected = sat;
+  }
+
+  changeColor(color: string, sat: Satellite){
+    sat.setColor(
+      color,
+      this.getMeshIDBySatellite(sat),
+      this.mesh
+    )
   }
 
   getTime() {

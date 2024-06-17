@@ -13,6 +13,7 @@ let sat_number = 1 // Used for naming satellites when creating multiple
 let tle;
 const basic_alt = 160000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
+const CURRENT_COLOR = 'red'// '#ff12b7'; // Pink
 
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
@@ -48,6 +49,12 @@ function add_new_satellite(alt: number){
       sats[0].setOrbit(orbit);
     }
     return sats[0]
+}
+
+function change_selected(satellite: Satellite){
+  props.simulation.deselect();
+  props.simulation.setCurrentlySelected(satellite);
+  props.simulation.changeColor(CURRENT_COLOR, satellite);
 }
 
 // ********* SLIDERS *********
@@ -100,6 +107,7 @@ let sat = add_new_satellite(basic_alt);
 watch(add, (newValue) => {
       if (newValue === 1) {
         sat = add_new_satellite(basic_alt);
+        change_selected(sat);
         add.value = 0 // Reset 'add' to 0 (false)
       }
     })
@@ -128,6 +136,15 @@ watch(showOrbit, (newValue) => {
   }
 })
 
+// ********* Clicked sat can be edited *********
+props.simulation.addEventListener('select', (satellite) => {
+  if (satellite){
+    sat = satellite;
+    change_selected(satellite);
+  }
+})
+
+
 </script>
 
 <template>
@@ -136,21 +153,21 @@ watch(showOrbit, (newValue) => {
       <br />
       <h2>Simulation Variables</h2>
       <br />
-      <h4>Height</h4>
+      <h4>Height [km]</h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
         <p class="display">Value: {{ height }}</p>
       </div>
       <br />
-      <h4>Inclination</h4>
+      <h4>Inclination [deg]</h4>
       <div class="slider">
         <input type="range" min="0" max="90" v-model="inclination" class="slider" />
         <br />
         <p class="display">Value: {{ inclination }}</p>
       </div>
       <br />
-      <h4>RAAN</h4>
+      <h4>RAAN [deg]</h4>
       <div class="slider">
         <input type="range" min="0" max="360" v-model="raan" class="slider" />
         <br />
