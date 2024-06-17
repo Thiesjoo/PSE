@@ -31,6 +31,7 @@ function tle_new_satellite(alt: number) {
   return tle
 }
 
+// Set to initial values or the values of a selected satellite
 function reset_sliders(sat: Satellite){
     height.value = calculateHeight(sat.satData.no);
     console.log("Height: ", height.value);
@@ -52,6 +53,7 @@ function add_new_satellite(alt: number){
     return sats[0]
 }
 
+// Change selected satellite
 function change_selected(satellite: Satellite){
   props.simulation.deselect();
   props.simulation.setCurrentlySelected(satellite);
