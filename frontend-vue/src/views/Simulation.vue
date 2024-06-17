@@ -2,7 +2,7 @@
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
 import SpeedButtons from '@/components/SpeedButtons.vue'
-import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin } from '@/calc_helper'
+import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin, calculateHeight} from '@/calc_helper'
 import { ref, watch } from 'vue'
 
 const props = defineProps<{
@@ -13,7 +13,7 @@ let sat_number = 1 // Used for naming satellites when creating multiple
 let tle;
 const basic_alt = 160000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
-const CURRENT_COLOR = 'red'// '#ff12b7'; // Pink
+const CURRENT_COLOR = '#F5EEF8'// '#ff12b7'; // Pink
 
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
@@ -32,12 +32,8 @@ function tle_new_satellite(alt: number) {
 }
 
 function reset_sliders(sat: Satellite){
-    // height.value = 160;
-    // inclination.value = 0;
-    // raan.value = 0;
-    // e.value = 0;
-    // picked.value = 0;
-    height.value = 160;
+    height.value = calculateHeight(sat.satData.no);
+    console.log("Height: ", height.value);
     inclination.value = sat.satData.inclo * 180 / Math.PI;
     raan.value = sat.satData.nodeo * 180 / Math.PI;
     e.value = sat.satData.ecco * 100;
@@ -75,9 +71,11 @@ let remove = ref(0); // Used for removing all current satellites (0==false)
 
 // Height slider live changes and update radio buttons
 watch(height, (Value) => {
-  let alt = (Value + 6371) * 1000 // Convert to meters and add Earth's radius
+  let alt = Value * 1000 + 6371 * 1000 // Convert to meters and add Earth's radius
   sat.satData.no = calculateMeanMotionRadPerMin(alt) // mean motion [rad/min]
   sat.orbit?.recalculate();
+
+  // Changing image with LEO, MEO orbit
   if (Value >= 160 && Value < 2000) {
     picked.value = 0 // LEO
   } else if (Value >= 2000 && Value < 36000) {
@@ -107,7 +105,7 @@ watch(e, (Value) => {
 
 // ********* first satellite *********
 let sat = add_new_satellite(basic_alt);
-// change_selected(sat);
+change_selected(sat);
 
 // ********* ADD SATELLITE BUTTON *********
 watch(add, (newValue) => {
