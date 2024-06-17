@@ -23,7 +23,9 @@
     "three": "^0.165.0",
     "three-globe": "^2.31.0",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-range-slider": "^0.6.0",
+    "vue-router": "^4.3.0",
+    "vue-slider-component": "^4.1.0-beta.7"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",

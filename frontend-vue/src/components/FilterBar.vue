@@ -3,6 +3,10 @@ import { ThreeSimulation } from '@/Sim'
 import { SatManager } from '@/common/sat-manager'
 import FilterItem from './FilterItem.vue'
 
+import VueSlider from 'vue-slider-component';
+import 'vue-slider-component/theme/material.css';
+import { ref } from 'vue';
+
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
@@ -11,6 +15,9 @@ const manager = new SatManager(props.simulation)
 await manager.init()
 
 const filters = manager.currentFilters
+
+const value = ref([1960,2024]);
+
 </script>
 
 <template>
@@ -22,6 +29,7 @@ const filters = manager.currentFilters
         {{ filter.name }} - {{ manager.count[filter.name] }}
       </FilterItem>
     </div>
+    <vue-slider v-model="value" :min="1960" :max="2024" :min-range="1" :enable-cross="false" id="launch-year-slider" />
   </div>
 </template>
 
@@ -46,5 +54,10 @@ const filters = manager.currentFilters
 .tmp {
   display: flex;
   flex-direction: column;
+}
+
+#launch-year-slider {
+  /* overwrite slider styles */
+  margin-top: 20px;
 }
 </style>
