@@ -15,6 +15,18 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 load_dotenv()
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn="https://c8f84ab2e602cdcadca26de9103b7149@o4507446872834048.ingest.de.sentry.io/4507447559323728",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,15 +46,17 @@ DEBUG = False if debugMode == ('false' or 'False') else True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "pseapi.thies.dev"
+    "pseapi.thies.dev",
+    "api.satradar.space",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'https://pse.thies.dev',
+    'https://satradar.space'
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://pseapi.thies.dev']
+CSRF_TRUSTED_ORIGINS = ['https://pseapi.thies.dev', 'https://api.satradar.space']
 
 # Application definition
 

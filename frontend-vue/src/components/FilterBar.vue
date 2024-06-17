@@ -30,12 +30,12 @@ const filters = manager.currentFilters
   position: absolute;
   top: 0px;
   left: 0;
-  width: 320px;
+  width: 350px;
   height: 100%;
-  background-color: #05050a7c;
+  background-color: #01023890;
   color: white;
-  padding-left: 50px;
-  padding-right: 50px;
+  padding-left: 25px;
+  padding-right: 25px;
   padding-top: 10px;
   padding-bottom: 10px;
   border: 2px solid rgba(255, 255, 255, 0.75);

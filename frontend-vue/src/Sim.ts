@@ -22,6 +22,7 @@ import { Time } from './Time'
 import * as TWEEN from '@tweenjs/tween.js'
 import * as satellite from 'satellite.js'
 import { Orbit } from './Orbit'
+import { WorkerManager } from './worker/manager'
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
@@ -54,6 +55,8 @@ export class ThreeSimulation {
 
   private onRightSide = false
 
+  private workerManager = new WorkerManager()
+
   // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
   initAll(canvas: HTMLCanvasElement) {
     this.initScene(canvas).then(() => {
@@ -70,12 +73,9 @@ export class ThreeSimulation {
     return Object.values(this.satellites).indexOf(sat)
   }
 
-  private propagateAllSatData() {
+  private updatePositionsOfMeshes() {
     const globeRadius = this.globe.getGlobeRadius()
-    const gmst = satellite.gstime(this.time.time)
-
     Object.values(this.satellites).forEach((sat, i) => {
-      sat.propagate(this.time.time, gmst)
       sat.updatePositionOfMesh(this.mesh, i, globeRadius)
     })
 
@@ -92,7 +92,7 @@ export class ThreeSimulation {
     this.scene = new THREE.Scene()
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(50, 1, 1, 7500)
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 7500)
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     camera.position.z = 400
@@ -138,8 +138,6 @@ export class ThreeSimulation {
     this.scene.add(this.mesh.satClick)
     this.scene.add(this.globe)
 
-    // Add satellite
-    this.propagateAllSatData()
     this.animate()
   }
 
@@ -189,18 +187,21 @@ export class ThreeSimulation {
       .start()
   }
 
-  private animate() {
+  private async animate() {
     requestAnimationFrame(() => {
       this.animate()
     })
-
     if (this.onRightSide) {
       this.globe.rotation.y += 0.001
     }
 
+    if (this.workerManager.finishPropagate(this.time.time, satellite.gstime(this.time.time))) {
+      this.updatePositionsOfMeshes()
+    }
+
     this.time.step()
     this.updateOrbits()
-    this.propagateAllSatData()
+
     if (this.stats) this.stats.update()
     if (this.controls) this.controls.update()
     this.renderer.render(this.scene, this.camera)
@@ -333,6 +334,7 @@ export class ThreeSimulation {
     this.deselect()
     this.satellites = {}
     this.resetAllMeshes()
+    this.workerManager.reset()
     this.time.setSpeed(1)
     this.removeAllOrbits();
 
@@ -344,17 +346,26 @@ export class ThreeSimulation {
     this.eventListeners = {}
   }
 
-  addSatellite(sat: Satellite) {
+  addSatellite(sat: Satellite, updateWorker = true) {
     if (this.satellites[sat.id]) {
       console.warn('Satellite already exists')
       return
     }
 
     this.satellites[sat.id] = sat
+    if (updateWorker) {
+        this.workerManager.addSatellites(Object.values(this.satellites))
+    }
   }
 
   addSatellites(sats: Satellite[]) {
-    sats.forEach((sat) => this.addSatellite(sat))
+    sats.forEach((sat) => this.addSatellite(sat, false))
+    this.workerManager.addSatellites(sats)
+  }
+
+  resendDataToWorkers() {
+    // This should be called when satData is changed 
+    this.workerManager.addSatellites(Object.values(this.satellites))
   }
 
   removeAllSatellites() {
