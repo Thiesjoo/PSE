@@ -63,10 +63,10 @@ export class WorkerManager {
 
         this.satellites = satellites;
         const blocks = Math.floor(this.satellites.length / AMT_OF_WORKERS);
-
         for (let i = 0; i < AMT_OF_WORKERS; i++) {
             const start = i * blocks;
             const end = i === AMT_OF_WORKERS - 1 ? this.satellites.length : (i + 1) * blocks;
+            console.log(`Worker ${i}: `, start, end)
             const data = this.satellites.slice(start, end).map((sat, idx) => ({ ...sat.satData, idx: start + idx }));
             this.sendMsg(i, { event: "add", satrec: data, workerIndex: i});
             this.count[i] = start;
@@ -121,10 +121,11 @@ export class WorkerManager {
         switch (event.event) {
             case "calculate-res":
                 const {buffer, workerIndex} = event.data;
+                this.received++;
+
                 this.results.set(buffer, this.count[workerIndex] * 3);
                 this.speedResults.set(event.data.speedBuffer, this.count[workerIndex]);
-
-                this.received++;
+                
                 if (this.received === AMT_OF_WORKERS) {
                     this.done();
                 }

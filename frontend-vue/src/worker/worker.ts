@@ -86,9 +86,9 @@ onmessage = (event) => {
         }
 
 
-        res.data.buffer[sat.idx * 3] = resultData.pos.lat
-        res.data.buffer[sat.idx * 3 + 1] = resultData.pos.lng
-        res.data.buffer[sat.idx * 3 + 2] = resultData.pos.alt
+        res.data.buffer[indexInArray * 3] = resultData.pos.lat
+        res.data.buffer[indexInArray * 3 + 1] = resultData.pos.lng
+        res.data.buffer[indexInArray * 3 + 2] = resultData.pos.alt
 
         res.data.speedBuffer[indexInArray] = Math.sqrt(
             resultData.spd.x ** 2 + resultData.spd.y ** 2 + resultData.spd.z ** 2
