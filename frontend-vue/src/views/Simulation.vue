@@ -26,7 +26,6 @@ function tle_new_satellite(alt: number) {
   let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
   let part3 = '000001'
   let tle = name + part1 + part2 + mean_motion + part3
-  console.log(tle)
   sat_number = sat_number + 1
   return tle
 }

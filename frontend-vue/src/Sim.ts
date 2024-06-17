@@ -334,10 +334,12 @@ export class ThreeSimulation {
     this.satellites = {}
     this.resetAllMeshes()
     this.time.setSpeed(1)
+    this.removeAllOrbits();
 
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
+    
 
     this.eventListeners = {}
   }
@@ -381,11 +383,17 @@ export class ThreeSimulation {
   }
 
   removeOrbit(sat: Satellite) {
-    console.log("REMOVEORBIT")
     sat.orbit?.removeLine(this.scene)
     this.orbits = this.orbits.filter(function(obj) {
-      return obj.satellite !== sat;
+      return obj.satellite.id !== sat.id;
     });
+  }
+
+  removeAllOrbits(){
+    for (const orbit of this.orbits){
+      orbit.removeLine(this.scene)
+    }
+    this.orbits = [];
   }
 
   addGroundStation() {}
