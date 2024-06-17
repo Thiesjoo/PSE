@@ -174,3 +174,11 @@ There are two main activities that are logged:
 2. **API calls**: API calls that are made to the backend (from the front-end, presumably). This helps us keep track of how many, and from where, and at which times, API calls are made. 
 
 While these logs are printed to the console, they are also stored in logging files as `cron.log` and `views.log` respectively. They are located at `pse_backend/logs/`.
+
+### Tests
+The back-end uses Django's built-in testing tools for testing. To execute the tests, navigate to the `pse_backend` directory and run:
+```
+python3 manage.py test
+```
+
+Currently only the endpoints are tested.

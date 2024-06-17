@@ -151,22 +151,23 @@ def pull_satellites(category, category_object):
 
             counter = 0
 
-    # For every TLE in 'tles', use the 'tletools' library to retrieve important bits
-    # of data of it and create a new satellite object in the database.
+    # For every TLE in 'tles', use the 'tletools' library to retrieve
+    # important bits of data of it and create a new satellite
+    # object in the database.
     for tleData in tles:
         tle = TLE.from_lines(tleData[0], tleData[1], tleData[2])
 
-        # TODO: Change this hardcoded behaviour in the future. The way it decides
-        # whether it's 21th century or 20th century is pretty bad.
+        # TODO: Change this hardcoded behaviour in the future. The way
+        # it decides whether it's 21th century or 20th century is pretty bad.
         launch_year_last_two_digits = str(tle.int_desig)[:2]
         if launch_year_last_two_digits != '':
             launch_year = int(str(tle.int_desig)[:2])
 
             # BUGFIX (11-6-2024): If it's a post-2000's year, it needs
-            # to decide whether it's in the 2000's or not. That way, it can decide
-            # whether or not to add 2 zeroes. This bugfix should ensure that. If
-            # there are still problems related to the launch year, this is where
-            # you should look.
+            # to decide whether it's in the 2000's or not. That way, it can
+            # decide whether or not to add 2 zeroes. This bugfix should
+            # ensure that. If there are still problems related to the launch
+            # year, this is where you should look.
             if launch_year > 9 and launch_year <= 24:
                 launch_year_prefix = '20'
             elif launch_year <= 24:
