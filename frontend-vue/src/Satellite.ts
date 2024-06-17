@@ -2,6 +2,7 @@ import type { EciVec3, GMSTime, Kilometer, PositionAndVelocity, SatRec } from 's
 import { degreesLat, degreesLong, eciToGeodetic, propagate, twoline2satrec } from 'satellite.js'
 import * as THREE from 'three'
 import { reactive } from 'vue'
+import * as satellite from 'satellite.js'
 import { API_TLE_DATA } from './api/ourApi'
 import {
   EARTH_RADIUS_KM,
@@ -10,6 +11,7 @@ import {
   SAT_SIZE_CLICK,
   MAX_SATS_TO_RENDER
 } from './common/constants'
+import { Orbit } from './Orbit'
 
 function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
   const phi = ((90 - lat) * Math.PI) / 180
@@ -79,6 +81,7 @@ export class Satellite {
   public currentPosition: PositionAndVelocity | null = null
   public realPosition = reactive({ lat: 0, lng: 0, alt: 0 })
   public realSpeed = reactive({ x: 0, y: 0, z: 0 })
+  public orbit: Orbit | null=null;
 
   private threeData = {
     matrix: new THREE.Matrix4(),
@@ -158,6 +161,41 @@ export class Satellite {
     }
   }
 
+  public propagateNoUpdate(time: Date, globeRadius: number): Object {
+    const eci = propagate(this.satData, time)
+
+    if (eci.position && eci.velocity) {
+      const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, satellite.gstime(time))
+      const realPosition = { lat: 0, lng: 0, alt: 0 }
+      realPosition.lat = degreesLat(gdPos.latitude)
+      realPosition.lng = degreesLong(gdPos.longitude)
+      realPosition.alt = gdPos.height
+
+      const cartesianPosition = polar2Cartesian(
+        realPosition.lat,
+        realPosition.lng,
+        (realPosition.alt / EARTH_RADIUS_KM) * 3,
+        globeRadius
+      )
+      return cartesianPosition
+    }
+    return {}
+  }
+
+  public propagateOrbit(
+    time: Date,
+    numOfPoints: number,
+    timeInterval: number,
+    globeRadius: number
+  ): any {
+    const result: Object[] = []
+    for (let i = 0; i < numOfPoints; i++) {
+      const newTime = new Date(+time + i * timeInterval)
+      result.push(this.propagateNoUpdate(newTime, globeRadius))
+    }
+    return result
+  }
+
   public setColor(color: string, index: number, mesh: SatelliteMeshes) {
     mesh.sat.setColorAt(index, new THREE.Color(color))
     if (mesh.sat.instanceColor) {
@@ -183,5 +221,13 @@ export class Satellite {
     mesh.sat.instanceMatrix.needsUpdate = true
     mesh.satClick.setMatrixAt(index, this.threeData.matrix)
     mesh.satClick.instanceMatrix.needsUpdate = true
+  }
+
+  public setOrbit(orbit: Orbit){
+    this.orbit = orbit;
+  }
+
+  public removeOrbit(orbit: Orbit){
+    this.orbit = null;
   }
 }
