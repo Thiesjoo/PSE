@@ -13,9 +13,9 @@ export class WorkerManager {
 
     private received = 0;
 
-    private promiseResolve: any;
     private finished = true;
     private results = new Float64Array(0);
+    private speedResults = new Float64Array(0);
 
     constructor() {
         this.initWorkers();
@@ -86,6 +86,7 @@ export class WorkerManager {
         }
 
         this.results = new Float64Array(this.satellites.length * 3);
+        this.speedResults = new Float64Array(this.satellites.length);
         this.finished = false;
         this.workers.forEach((worker, idx) => {
             this.sendMsg(idx, { event: "calculate", time, gmsTime });
@@ -97,11 +98,10 @@ export class WorkerManager {
         if (this.finished) {
             for (let i = 0; i < this.satellites.length; i++) {
                 const idx = i * 3;
-                this.satellites[i].realPosition = {
-                    lat: this.results[idx],
-                    lng: this.results[idx + 1],
-                    alt: this.results[idx + 2]
-                };
+                this.satellites[i].realPosition.lat = this.results[idx]
+                this.satellites[i].realPosition.lng = this.results[idx + 1]
+                this.satellites[i].realPosition.alt = this.results[idx + 2];
+                this.satellites[i].realSpeed.value = this.speedResults[i];
             }
 
             this.startPropagate(time, gmsTime);
@@ -122,6 +122,7 @@ export class WorkerManager {
             case "calculate-res":
                 const {buffer, workerIndex} = event.data;
                 this.results.set(buffer, this.count[workerIndex] * 3);
+                this.speedResults.set(event.data.speedBuffer, this.count[workerIndex]);
 
                 this.received++;
                 if (this.received === AMT_OF_WORKERS) {

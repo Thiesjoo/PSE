@@ -25,23 +25,12 @@ export interface CalculateResponse {
   event: 'calculate-res'
   data: {
     buffer: Float32Array
+    speedBuffer: Float32Array
     workerIndex: number
-    // TODO: Speed buffer.
   }
 }
 
 export type WorkerResponse = CalculateResponse
-
-function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
-  const phi = ((90 - lat) * Math.PI) / 180
-  const theta = ((90 - lng) * Math.PI) / 180
-  const r = globeRadius * (1 + relAltitude)
-  return {
-    x: r * Math.sin(phi) * Math.cos(theta),
-    y: r * Math.cos(phi),
-    z: r * Math.sin(phi) * Math.sin(theta)
-  }
-}
 
 let mySatellites: (satellite.SatRec & { idx: number })[] = [];
 let myWorkerIndex = -1;
@@ -66,11 +55,12 @@ onmessage = (event) => {
         event: 'calculate-res',
         data: {
           buffer: new Float32Array(mySatellites.length * 3),
+            speedBuffer: new Float32Array(mySatellites.length),
           workerIndex: myWorkerIndex
         }
       }
 
-      mySatellites.forEach((sat) => {
+      mySatellites.forEach((sat, indexInArray) => {
         const eci = satellite.propagate(sat, time)
         if (!eci.position) {
           return
@@ -99,6 +89,10 @@ onmessage = (event) => {
         res.data.buffer[sat.idx * 3] = resultData.pos.lat
         res.data.buffer[sat.idx * 3 + 1] = resultData.pos.lng
         res.data.buffer[sat.idx * 3 + 2] = resultData.pos.alt
+
+        res.data.speedBuffer[indexInArray] = Math.sqrt(
+            resultData.spd.x ** 2 + resultData.spd.y ** 2 + resultData.spd.z ** 2
+        )
       })
 
       postMessage(res)
