@@ -73,24 +73,28 @@ watch(height, (Value) => {
   } else {
     picked.value = 2 // Other
   }
+  props.simulation.resendDataToWorkers()
 })
 
 // Inclination slider live changes
 watch(inclination, (Value) => {
   sat.satData.inclo = (Value * Math.PI) / 180 // [rad]
   sat.orbit?.recalculate();
+  props.simulation.resendDataToWorkers()
 })
 
 // RAAN slider live changes
 watch(raan, (Value) => {
   sat.satData.nodeo = (Value * Math.PI) / 180 // [rad]
   sat.orbit?.recalculate();
+  props.simulation.resendDataToWorkers()
 })
 
 // Eccentricity slider live changes
 watch(e, (Value) => {
   sat.satData.ecco = Value / 100
   sat.orbit?.recalculate();
+  props.simulation.resendDataToWorkers()
 })
 
 // ********* first satellite *********

@@ -17,6 +17,8 @@ export class WorkerManager {
     private results = new Float64Array(0);
     private speedResults = new Float64Array(0);
 
+    private currentHash = 0;
+
     constructor() {
         this.initWorkers();
     }
@@ -38,27 +40,13 @@ export class WorkerManager {
         this.workers.forEach((worker, idx) => {
             this.sendMsg(idx, { event: "reset" });
         });
+        this.done()
         this.satellites = [];
+        this.currentHash++; 
     }
 
-    public addSatellite(satellite: Satellite, idx: number) {
-        if (idx !== this.satellites.length) {
-            throw new Error("Desync between worker manager + sim")
-        }
-
-        this.satellites.push(satellite);
-        const blocks = Math.floor(this.satellites.length / AMT_OF_WORKERS);
-        
-        for (let i = 0; i < AMT_OF_WORKERS; i++) {
-            const start = i * blocks;
-            const end = i === AMT_OF_WORKERS - 1 ? this.satellites.length : (i + 1) * blocks;
-            const data = this.satellites.slice(start, end).map((sat, idx) => ({ ...sat.satData, idx: start + idx }));
-            this.sendMsg(i, { event: "add", satrec: data, workerIndex: i});
-            this.count[i] = start;
-        }
-    }
-
-    addSatellites(satellites: Satellite[]) {
+    public addSatellites(satellites: Satellite[]) {
+        // You cannot add a single satellite, as the workers are already initialized
         this.reset();
 
         this.satellites = satellites;
@@ -89,7 +77,7 @@ export class WorkerManager {
         this.speedResults = new Float64Array(this.satellites.length);
         this.finished = false;
         this.workers.forEach((worker, idx) => {
-            this.sendMsg(idx, { event: "calculate", time, gmsTime });
+            this.sendMsg(idx, { event: "calculate", time, gmsTime, hash: this.currentHash});
         });
     }
 
@@ -120,9 +108,13 @@ export class WorkerManager {
     private onMessage(event: WorkerResponse) {
         switch (event.event) {
             case "calculate-res":
-                const {buffer, workerIndex} = event.data;
-                this.received++;
+                const {buffer, workerIndex, hash} = event.data;
+                if (hash !== this.currentHash) {
+                    console.error("Hashes do not match, out of sync");
+                    return;
+                }
 
+                this.received++;
                 this.results.set(buffer, this.count[workerIndex] * 3);
                 this.speedResults.set(event.data.speedBuffer, this.count[workerIndex]);
                 

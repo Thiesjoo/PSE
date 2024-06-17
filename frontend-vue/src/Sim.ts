@@ -354,13 +354,18 @@ export class ThreeSimulation {
 
     this.satellites[sat.id] = sat
     if (updateWorker) {
-      this.workerManager.addSatellite(sat, Object.keys(this.satellites).length - 1)
+        this.workerManager.addSatellites(Object.values(this.satellites))
     }
   }
 
   addSatellites(sats: Satellite[]) {
     sats.forEach((sat) => this.addSatellite(sat, false))
     this.workerManager.addSatellites(sats)
+  }
+
+  resendDataToWorkers() {
+    // This should be called when satData is changed 
+    this.workerManager.addSatellites(Object.values(this.satellites))
   }
 
   removeAllSatellites() {
