@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
-import { computed } from 'vue'
+import { computed, getCurrentInstance, onUnmounted, ref, watch } from 'vue'
 import PopFrame from './PopFrame.vue'
 import { countryToNameConversion } from '@/common/countries'
 
@@ -48,18 +48,28 @@ const rounded = (num: number, digits: number) => {
   return Math.round(num * factor) / factor
 }
 
-const sat_speed = () => {
-  return Math.sqrt(
-    Math.pow(props.currentSelectedSatellite.realSpeed?.x || 0, 2) +
-      Math.pow(props.currentSelectedSatellite.realSpeed?.y || 0, 2) +
-      Math.pow(props.currentSelectedSatellite.realSpeed?.z || 0, 2)
-  )
-}
+
+const speed = computed(() => {
+  if (!props.currentSelectedSatellite) {
+    return ''
+  }
+  return rounded(props.currentSelectedSatellite.realSpeed.value, numDigits)
+})
+
+const key = ref(0)
+const interval = setInterval(() => {
+    key.value++
+}, 100)
+
+onUnmounted(() => {
+  clearInterval(interval)
+})
+
 </script>
 
 <template>
-  <PopFrame :open="true" class="popup">
-    <div class="top">
+  <PopFrame :open="true" class="popup" >
+    <div class="top" :key="key">
       <h1>{{ currentSelectedSatellite.name }}</h1>
 
       <img
@@ -107,7 +117,7 @@ const sat_speed = () => {
       </p>
       <p>
         Speed:
-        <span id="SatelliteSpeed">{{ rounded(sat_speed(), numDigits) }}km/s</span>
+        <span id="SatelliteSpeed">{{ speed }}km/s</span>
       </p>
     </div>
     <div class="epoch">
