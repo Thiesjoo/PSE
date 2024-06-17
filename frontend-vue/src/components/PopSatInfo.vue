@@ -135,9 +135,8 @@ onUnmounted(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1em;
-    margin-top: 0;
-    border: 2px solid rgb(255, 255, 0);
+    // margin-bottom: 1em;
+    // margin-top: 0;
 
     #SatelliteCountry {
       margin-bottom: 0.5em;
@@ -163,7 +162,6 @@ onUnmounted(() => {
     margin-top: 2em;
     // margin-left: 1.3em;
     line-height: 2.5em;
-    border: 2px solid rgb(0, 255, 0);
   }
 
   .epoch {
@@ -171,13 +169,9 @@ onUnmounted(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: fixed;
-    left: 50%;
-    bottom: 0;
-    transform: translate(-50%, -50%);
+    margin-top: 2em;
     width: 100%;
     line-height: 1.5em;
-    border: 2px solid rgb(247, 0, 255);
   }
 
   p {

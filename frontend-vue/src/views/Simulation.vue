@@ -128,14 +128,19 @@ watch(showOrbit, (newValue) => {
   }
 })
 
+// ********** SAT NAME **********
+const satName = ref('New Satellite 1')
 </script>
 
 <template>
   <div class="left-info-block">
+    <br />
+    <h2>Simulation Variables</h2>
+    <br />
+    <div class="name-sat">
+      <h4 class="display">{{ satName }}</h4>
+    </div>
     <div class="sliders-sat">
-      <br />
-      <h2>Simulation Variables</h2>
-      <br />
       <h4>Height</h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
@@ -224,7 +229,7 @@ h3 {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: flex-start;
+  justify-content: space-evenly;
   align-items: stretch;
   background-color: #05050a7c;
   color: white;
@@ -237,12 +242,18 @@ h3 {
   padding: 25px;
 }
 
+.name-sat{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 5%
+}
+
 .sliders-sat {
+  display: flex;
+  flex-direction: column;
   top: 10px;
   padding-bottom: 10%;
-  padding-left: 0%;
-  padding-right: 10%;
-  // border: 2px solid rgba(251, 0, 255, 0.75);
 }
 
 .button-box{
@@ -275,14 +286,11 @@ h3 {
   bottom: 50px;
   padding: 5%;
   padding-bottom: 5%;
-  // border: 2px solid rgba(255, 102, 0, 0.75);
-
 }
 
 .orbit-sat {
   width: 100%;
   padding-top: 10%;
-  border: 2px solid rgba(4, 255, 0, 0.75);
 }
 
 .orbit-info {
@@ -290,8 +298,6 @@ h3 {
   height: 200px;
   width: 100%;
   padding-top: 5%;
-  border: 2px solid rgba(106, 0, 255, 0.75);
-
 }
 
 .display {

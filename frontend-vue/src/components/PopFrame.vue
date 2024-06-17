@@ -13,14 +13,15 @@ const props = defineProps<{
 
 <style scoped lang="scss">
 .pop-up {
+  display: flex;
+  flex-flow: column nowrap;
   width: 17vw;
-  height: 50vh;
-  border: 8px solid gray;
+  // height: 50vh; // Epoch info would clip into live info above.
+  border: 8px solid #858385;
 
   border-radius: 10pt;
-  background-color: #05050a;
+  background-color: #010238;
 
-  display: block;
 
   position: absolute;
   top: 50%;

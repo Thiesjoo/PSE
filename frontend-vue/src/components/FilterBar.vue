@@ -32,7 +32,7 @@ const filters = manager.currentFilters
   left: 0;
   width: 350px;
   height: 100%;
-  background-color: #05050a7c;
+  background-color: #01023890;
   color: white;
   padding-left: 25px;
   padding-right: 25px;
