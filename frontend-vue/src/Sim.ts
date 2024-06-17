@@ -200,6 +200,7 @@ export class ThreeSimulation {
     }
 
     this.time.step()
+    this.updateOrbits()
 
     if (this.stats) this.stats.update()
     if (this.controls) this.controls.update()
