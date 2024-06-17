@@ -132,14 +132,19 @@ watch(showOrbit, (newValue) => {
   }
 })
 
+// ********** SAT NAME **********
+const satName = ref('New Satellite 1')
 </script>
 
 <template>
   <div class="left-info-block">
+    <br />
+    <h2>Simulation Variables</h2>
+    <br />
+    <div class="name-sat">
+      <h4 class="display">{{ satName }}</h4>
+    </div>
     <div class="sliders-sat">
-      <br />
-      <h2>Simulation Variables</h2>
-      <br />
       <h4>Height</h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
@@ -169,10 +174,14 @@ watch(showOrbit, (newValue) => {
       </div>
     </div>
     <br />
-    <button class="add-button" @click="add = 1" style="text-align: center">ADD another sat</button>
-    <button class="add-button" @click="remove = 1" style="text-align: center">DEL sat</button>
-    <input type="checkbox" id="show-orbit" v-model="showOrbit" />
-    <label for="show-orbit">Show orbit {{ showOrbit }}</label>
+    <div class="button-box">
+      <button class="add-button" @click="add = 1" style="text-align: center">Add another satellite</button>
+      <button class="del-button" @click="remove = 1" style="text-align: center">Delete satellites</button>
+    </div>
+    <div class="show-orbit-check">
+      <input type="checkbox" id="show-orbit" v-model="showOrbit" />
+      <label for="show-orbit">Show orbit {{ showOrbit }}</label>
+    </div>
     <div class="orbit-sat">
       <h2>Orbit Category</h2>
       <br />
@@ -220,8 +229,12 @@ h3 {
   position: absolute;
   top: 0px;
   left: 0;
-  width: 400px;
+  width: 350px;
   height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+  align-items: stretch;
   background-color: #05050a7c;
   color: white;
   padding-left: 20px;
@@ -230,50 +243,65 @@ h3 {
   padding-bottom: 10px;
   border: 2px solid rgba(255, 255, 255, 0.75);
   border-radius: 12px;
-  padding: 50px;
+  padding: 25px;
 }
+
+.name-sat{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 5%
+}
+
 .sliders-sat {
-  position: sticky;
+  display: flex;
+  flex-direction: column;
   top: 10px;
-  padding-bottom: 0%;
-  padding-left: 0%;
-  padding-right: 10%;
+  padding-bottom: 10%;
+}
+
+.button-box{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 5%;
 }
 
 .add-button {
   appearance: none;
-  position: sticky;
   width: 50%;
-  padding: 10px;
+  padding: 5px;
   background-color: rgba(195, 0, 255, 0.36);
   border-radius: 200px;
   cursor: pointer;
   color: white;
 }
 
-.speed-button {
+.del-button{
+  justify-content: space-around;;
   appearance: none;
-  bottom: 50px;
-  padding: 20px;
   background-color: rgba(195, 0, 255, 0.36);
-  border-radius: 2px;
-  cursor: pointer;
+  border-radius: 200px;
   color: white;
 }
 
+.show-orbit-check{
+  display: flex;
+  bottom: 50px;
+  padding: 5%;
+  padding-bottom: 5%;
+}
+
 .orbit-sat {
-  position: sticky;
   width: 100%;
   padding-top: 10%;
 }
 
 .orbit-info {
-  position: sticky;
   right: 20%;
-  height: 300px;
+  height: 200px;
   width: 100%;
   padding-top: 5%;
-  // background-color: rgba(195, 0, 255, 0.36);
 }
 
 .display {
@@ -316,4 +344,5 @@ h3 {
 .highlight {
   background-color: rgba(195, 0, 255, 0.36);
 }
+
 </style>
