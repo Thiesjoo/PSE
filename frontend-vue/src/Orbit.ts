@@ -7,7 +7,7 @@ import { Time } from './Time'
 import { NUM_OF_STEPS_ORBIT, TIME_INTERVAL_ORBIT } from './common/constants'
 
 export class Orbit {
-  private satellite: Satellite
+  public satellite: Satellite
   private line: THREE.Line | null = null
   private lineGeometry: THREE.BufferGeometry | null = null
   private lineCounter = 0
@@ -124,6 +124,7 @@ export class Orbit {
   }
 
   removeLine(scene: THREE.Scene) {
+    console.log("TEST REMOVELINE")
     if (this.line && this.lineGeometry) {
       scene.remove(this.line)
       this.lineGeometry.setDrawRange(0, 0)
