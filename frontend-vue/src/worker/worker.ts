@@ -17,6 +17,7 @@ export interface Calculate {
   event: 'calculate'
   time: Date
   gmsTime: satellite.GMSTime
+  hash: number
 }
 
 export type WorkerMessage = Reset | SatRecDump | Calculate
@@ -27,13 +28,14 @@ export interface CalculateResponse {
     buffer: Float32Array
     speedBuffer: Float32Array
     workerIndex: number
+    hash: number
   }
 }
 
 export type WorkerResponse = CalculateResponse
 
-let mySatellites: (satellite.SatRec & { idx: number })[] = [];
-let myWorkerIndex = -1;
+let mySatellites: (satellite.SatRec & { idx: number })[] = []
+let myWorkerIndex = -1
 
 onmessage = (event) => {
   const type = event.data.event
@@ -50,13 +52,14 @@ onmessage = (event) => {
       break
 
     case 'calculate':
-      const { time, gmsTime } = event.data as Calculate
+      const { time, gmsTime, hash } = event.data as Calculate
       const res: CalculateResponse = {
         event: 'calculate-res',
         data: {
           buffer: new Float32Array(mySatellites.length * 3),
-            speedBuffer: new Float32Array(mySatellites.length),
-          workerIndex: myWorkerIndex
+          speedBuffer: new Float32Array(mySatellites.length),
+          workerIndex: myWorkerIndex,
+          hash
         }
       }
 
@@ -85,13 +88,12 @@ onmessage = (event) => {
           }
         }
 
-
         res.data.buffer[indexInArray * 3] = resultData.pos.lat
         res.data.buffer[indexInArray * 3 + 1] = resultData.pos.lng
         res.data.buffer[indexInArray * 3 + 2] = resultData.pos.alt
 
         res.data.speedBuffer[indexInArray] = Math.sqrt(
-            resultData.spd.x ** 2 + resultData.spd.y ** 2 + resultData.spd.z ** 2
+          resultData.spd.x ** 2 + resultData.spd.y ** 2 + resultData.spd.z ** 2
         )
       })
 
