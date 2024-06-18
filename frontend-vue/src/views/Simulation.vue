@@ -378,8 +378,8 @@ h3 {
       "Delete satellites": "Verwijder satellieten",
       "Show orbit": "Toon baan",
       "Orbit Category": "Baancategorie",
-      "Low Earth Orbit": "Lage Aardebaan",
-      "Medium Earth Orbit": "Middelhoge Aardebaan",
+      "Low Earth Orbit": "Lage Omloopbaan",
+      "Medium Earth Orbit": "Middelhoge Omloopbaan",
       "Other": "Andere",
       "true": "waar",
       "false": "onwaar"
