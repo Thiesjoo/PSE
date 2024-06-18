@@ -11,7 +11,6 @@ const props = defineProps<{
 }>()
 
 let sat: Satellite;
-let satName: string;
 let selectedSat = ref<Satellite | null>(null)
 let sat_number = 1 // Used for naming satellites when creating multiple
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
@@ -64,17 +63,18 @@ function add_new_satellite(alt: number){
 
 // Change selected satellite
 function change_selected(satellite: Satellite){
+  console.log("change_select", satellite.name);
   props.simulation.deselect();
   props.simulation.setCurrentlySelected(satellite);
   props.simulation.changeColor(CURRENT_COLOR, satellite);
-  satName = satellite.name;
+  reset_sliders(sat);
 }
 
-function selectSatellite(satellite:Satellite){
+function selectSatellite(satellite: Satellite){
   if (satellite != sat){
+    console.log("here we are");
     sat = satellite;
-    change_selected(satellite);
-    reset_sliders(sat);
+    change_selected(sat);
   }
 }
 
@@ -180,7 +180,6 @@ props.simulation.addEventListener('select', (satellite) => {
   if (satellite){
     sat = satellite;
     change_selected(satellite);
-    reset_sliders(sat);
   }
 })
 
@@ -192,7 +191,7 @@ props.simulation.addEventListener('select', (satellite) => {
     <h2>Simulation Variables</h2>
     <br />
     <div class="name-sat">
-      <h4 class="display">{{ satName }}</h4>
+      <h4 class="display">{{ sat.name }}</h4>
     </div>
     <div class="sliders-sat">
       <br />
