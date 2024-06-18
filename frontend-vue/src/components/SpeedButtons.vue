@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps<{
   simulation: ThreeSimulation
@@ -38,7 +40,7 @@ const intervals = [1, 10, 100, 1000]
           active: interval === time.multiplier.value
         }"
       >
-        Speed x{{ interval }}
+        {{t("Speed")}} x{{ interval }}
       </button>
     </div>
   </div>
@@ -74,3 +76,13 @@ const intervals = [1, 10, 100, 1000]
   }
 }
 </style>
+<i18n>
+{
+  "en":{
+    "Speed": "Speed"
+  },
+  "nl":{
+    "Speed": "Snelheid"
+  }
+}
+</i18n>
