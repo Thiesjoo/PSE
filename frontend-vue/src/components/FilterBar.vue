@@ -19,14 +19,11 @@ const filters = manager.currentFilters
 // Keeps track of whether sats without launch year should be included
 let include_sats_without_launch_year = ref(true)
 
-// Sort satellites ascending and remove sats without launch year
-let all_satellites = manager.allSatellites
-all_satellites.sort((a, b) => a.launch_year - b.launch_year)
-all_satellites = all_satellites.filter((sat) => sat.launch_year !== -1)
+const LAUNCH_YEAR_BOUNDS = manager.launchYearBounds
 
 // Boundary launch years
-const FIRST_LAUNCH_YEAR = all_satellites[0].launch_year
-const MOST_RECENT_LAUNCH_YEAR = all_satellites[all_satellites.length-1].launch_year
+const FIRST_LAUNCH_YEAR = LAUNCH_YEAR_BOUNDS[0]
+const MOST_RECENT_LAUNCH_YEAR = LAUNCH_YEAR_BOUNDS[1]
 
 // Stores the slider values
 const slider_values = ref([
@@ -34,13 +31,16 @@ const slider_values = ref([
   MOST_RECENT_LAUNCH_YEAR
 ]);
 
+// Iteratively updates the launch year
+// range on every filter.
 const updateLaunchYearFilter = () => {
-  console.log('Updating launch year filter to between ' + slider_values.value[0] + ' and ' + slider_values.value[1])
   filters.forEach(filter => {
   filter.min_launch_year = slider_values.value[0]
   filter.max_launch_year = slider_values.value[1]
-})
+  })
 }
+
+updateLaunchYearFilter()
 
 </script>
 
@@ -54,7 +54,7 @@ const updateLaunchYearFilter = () => {
       </FilterItem>
       
       <div class="launch-year-filter-block">
-        <label>Filter on launch years</label>
+        <label>Filtering on launches from {{ slider_values[0] }} to {{ slider_values[1] }}. </label>
         <vue-slider v-model="slider_values" 
           :min="FIRST_LAUNCH_YEAR" 
           :max="MOST_RECENT_LAUNCH_YEAR"

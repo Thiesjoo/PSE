@@ -71,7 +71,9 @@ export class SatManager {
     this.allFilters = await getAllCategories()
 
     this.allFilters.forEach((filter) => {
-      this.currentFilters.push({ name: filter, selected: true, min_launch_year: 1964, max_launch_year: 2024})
+      this.currentFilters.push({ name: filter, selected: true, 
+        min_launch_year: this.launchYearBounds[0],
+         max_launch_year: this.launchYearBounds[1]})
     })
   }
 
@@ -100,4 +102,15 @@ export class SatManager {
       filter.selected = true
     })
   }
+
+    /**
+   * Retrieves the earliest and latest launch
+   *  years of all the satellites.
+   */
+    public get launchYearBounds(): number[] {
+      this.allSatellites.sort((a, b) => a.launch_year - b.launch_year)
+      this.allSatellites = this.allSatellites.filter((sat) => sat.launch_year !== -1)
+      return [this.allSatellites[0].launch_year,
+       this.allSatellites[this.allSatellites.length-1].launch_year]
+    }
 }
