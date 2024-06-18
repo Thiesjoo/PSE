@@ -3,6 +3,7 @@ import { Satellite } from '@/Satellite'
 import { computed, getCurrentInstance, onUnmounted, ref, watch } from 'vue'
 import PopFrame from './PopFrame.vue'
 import { countryToNameConversion } from '@/common/countries'
+import InfoPopup from '@/components/InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
 const { t, locale } = useI18n() 
 
@@ -63,7 +64,7 @@ const speed = computed(() => {
 const key = ref(0)
 const interval = setInterval(() => {
     key.value++
-}, 100)
+}, 10000)
 
 onUnmounted(() => {
   clearInterval(interval)
@@ -74,7 +75,11 @@ onUnmounted(() => {
 <template>
   <PopFrame :open="true" class="popup" >
     <div class="top" :key="key">
-      <h1>{{ currentSelectedSatellite.name }}</h1>
+      <h1>{{ currentSelectedSatellite.name }}
+        <InfoPopup>
+            description
+        </InfoPopup>
+      </h1>
 
       <img
         :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
