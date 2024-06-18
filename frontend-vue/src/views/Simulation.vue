@@ -10,10 +10,10 @@ const props = defineProps<{
 }>()
 
 let sat_number = 1 // Used for naming satellites when creating multiple
-let tle;
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
-const CURRENT_COLOR = '#F5EEF8'// '#ff12b7'; // Pink
+const CURRENT_COLOR = 'red' // '#F5EEF8';
+let satName: string;
 
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
@@ -58,6 +58,7 @@ function change_selected(satellite: Satellite){
   props.simulation.deselect();
   props.simulation.setCurrentlySelected(satellite);
   props.simulation.changeColor(CURRENT_COLOR, satellite);
+  satName = satellite.name;
 }
 
 // ********* SLIDERS *********
@@ -158,12 +159,12 @@ props.simulation.addEventListener('select', (satellite) => {
 
 
 // ********** SAT NAME **********
-const satName = ref('New Satellite 1')
-watch(satName, (newValue) => {
 
-  satName.value = sat.name;
+// watch(satName, (newValue) => {
 
-})
+//   satName.value = sat.name;
+
+// })
 </script>
 
 <template>
