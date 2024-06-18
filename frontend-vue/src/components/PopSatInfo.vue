@@ -64,7 +64,7 @@ const speed = computed(() => {
 const key = ref(0)
 const interval = setInterval(() => {
     key.value++
-}, 100000)
+}, 100)
 
 onUnmounted(() => {
   clearInterval(interval)

@@ -174,7 +174,6 @@ const satName = ref('New Satellite 1')
     </div>
     <div class="sliders-sat">
       <br />
-      <h2>Simulation Variables</h2>
       <br />
       <h4>{{t("Height")}} [km]</h4>
       <div class="slider">
