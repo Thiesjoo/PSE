@@ -50,13 +50,10 @@ props.simulation.moveRight()
   display: flex;
   flex-direction: column;
   align-items: left;
-  /* justify-content: space-around; */
-  /* border: 2px solid rgb(255, 255, 255); */
 }
 
 .header {
   display: flex;
-  /* border: 2px solid rgb(255, 0, 0); */
 
   h1 {
     font-size: 10em;
@@ -69,7 +66,6 @@ props.simulation.moveRight()
   display: flex;
   flex-direction: column;
   align-self: flex-start;
-  /* border: 2px solid rgb(0, 68, 255); */
 
   a {
     text-decoration: none;
@@ -80,7 +76,6 @@ props.simulation.moveRight()
     min-width: 30vw;
     min-height: 10vh;
     padding-left: 1%;
-    /* border: 2px solid rgb(255, 255, 0); */
 
     border-radius: 2pt;
     background-color: #090929;
@@ -100,7 +95,6 @@ props.simulation.moveRight()
 }
 
 .icon {
-  /* border: 2px solid rgb(0, 255, 217); */
   min-height: 100px;
   min-width: 100px;
 }
