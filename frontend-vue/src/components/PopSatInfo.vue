@@ -74,7 +74,7 @@ onUnmounted(() => {
 
 <template>
   <PopFrame :open="true" class="popup" >
-    <div class="top" :key="key">
+    <div class="top">
       <h1>{{ currentSelectedSatellite.name }}</h1>
 
       <img
@@ -104,7 +104,7 @@ onUnmounted(() => {
         <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
       </p>
     </div>
-    <div class="live_info">
+    <div class="live_info"  :key="key">
       <p>
         {{ t("Longitude") }}:
         <span id="SatelliteLongitude"
@@ -140,7 +140,7 @@ onUnmounted(() => {
         </InfoPopup>
       </p>
     </div>
-    <div class="epoch">
+    <div class="epoch"  :key="key">
       <p>{{ t("Last epoch") }}:</p>
       <p id="SatelliteEpoch">{{ epoch }}</p>
       <InfoPopup>
