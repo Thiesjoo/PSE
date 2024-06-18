@@ -152,10 +152,9 @@ export class ThreeSimulation {
     const oldCameraPosition = this.globe.toGeoCoords(this.camera.position)
     const alt = oldCameraPosition.altitude
 
-    if (!lat || !lng || !alt) {
+    if (lat === undefined || lng === undefined || alt == undefined) {
       return
     }
-
     const newCameraPosition = this.globe.getCoords(lat, lng, alt)
 
     if (this.tweeningStatus === 0) {
@@ -292,11 +291,12 @@ export class ThreeSimulation {
 
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
+    console.log(intersects)
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
       this.deselect()
 
       const meshID = intersects[0].instanceId
-      if (!meshID) return
+      if (meshID === undefined) return
       const satData = this.getSatelliteByMeshID(meshID)
       if (!satData) return
       this.currentlySelected = satData
