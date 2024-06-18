@@ -4,6 +4,7 @@ export interface API_TLE_DATA {
   name: string
   line1: string
   line2: string
+  launch_year: number
   country: string
   categories: string[]
   // ....
