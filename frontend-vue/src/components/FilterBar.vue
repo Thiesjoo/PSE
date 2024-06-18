@@ -4,7 +4,7 @@ import { SatManager } from '@/common/sat-manager'
 import FilterItem from './FilterItem.vue'
 
 import VueSlider from 'vue-slider-component';
-import 'vue-slider-component/theme/material.css';
+import 'vue-slider-component/theme/default.css';
 import { ref } from 'vue';
 
 const props = defineProps<{
@@ -14,6 +14,7 @@ const props = defineProps<{
 const manager = new SatManager(props.simulation)
 await manager.init()
 
+// Get the filters from the SatManager
 const filters = manager.currentFilters
 
 // Keeps track of whether sats without launch year should be included
@@ -63,8 +64,8 @@ updateLaunchYearFilter()
           id="launch-year-slider"
           v-on:change="updateLaunchYearFilter"/>
           
-        <input type="checkbox" id="include_without_launch_year" v-model="include_sats_without_launch_year">
-        <label for="include_without_launch_year">Include satellites without launch year</label>
+        <input type="checkbox" id="include_without_launch_year" v-model="include_sats_without_launch_year" hidden>
+        <label for="include_without_launch_year" hidden>Include satellites without launch year</label>
       </div>
 
     </div>
