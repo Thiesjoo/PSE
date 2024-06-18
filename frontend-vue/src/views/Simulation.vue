@@ -323,7 +323,7 @@ h3 {
 
 .orbit-sat {
   width: 100%;
-  padding-top: 10%;
+  border: 2px solid rgb(0, 110, 255);
 }
 
 .orbit-info {
@@ -331,6 +331,7 @@ h3 {
   height: 200px;
   width: 100%;
   padding-top: 5%;
+  border: 2px solid rgb(255, 0, 212);
 }
 
 .display {
