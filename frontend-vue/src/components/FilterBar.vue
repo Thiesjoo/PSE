@@ -33,6 +33,15 @@ const slider_values = ref([
   FIRST_LAUNCH_YEAR,
   MOST_RECENT_LAUNCH_YEAR
 ]);
+
+const updateLaunchYearFilter = () => {
+  console.log('Updating launch year filter to between ' + slider_values.value[0] + ' and ' + slider_values.value[1])
+  filters.forEach(filter => {
+  filter.min_launch_year = slider_values.value[0]
+  filter.max_launch_year = slider_values.value[1]
+})
+}
+
 </script>
 
 <template>
@@ -51,7 +60,8 @@ const slider_values = ref([
           :max="MOST_RECENT_LAUNCH_YEAR"
           :min-range="1"
           :enable-cross="false"
-          id="launch-year-slider"/>
+          id="launch-year-slider"
+          v-on:change="updateLaunchYearFilter"/>
           
         <input type="checkbox" id="include_without_launch_year" v-model="include_sats_without_launch_year">
         <label for="include_without_launch_year">Include satellites without launch year</label>
