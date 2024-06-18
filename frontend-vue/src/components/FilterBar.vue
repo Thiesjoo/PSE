@@ -16,8 +16,23 @@ await manager.init()
 
 const filters = manager.currentFilters
 
-const value = ref([1960,2024]);
+// Keeps track of whether sats without launch year should be included
+let include_sats_without_launch_year = ref(true)
 
+// Sort satellites ascending and remove sats without launch year
+let all_satellites = manager.allSatellites
+all_satellites.sort((a, b) => a.launch_year - b.launch_year)
+all_satellites = all_satellites.filter((sat) => sat.launch_year !== -1)
+
+// Boundary launch years
+const FIRST_LAUNCH_YEAR = all_satellites[0].launch_year
+const MOST_RECENT_LAUNCH_YEAR = all_satellites[all_satellites.length-1].launch_year
+
+// Stores the slider values
+const slider_values = ref([
+  FIRST_LAUNCH_YEAR,
+  MOST_RECENT_LAUNCH_YEAR
+]);
 </script>
 
 <template>
@@ -78,36 +93,4 @@ const value = ref([1960,2024]);
   margin-right: 5px;
 }
 
-    </div>
-    <vue-slider v-model="value" :min="1960" :max="2024" :min-range="1" :enable-cross="false" id="launch-year-slider" />
-  </div>
-</template>
-
-<style scoped lang="scss">
-.left-info-block {
-  position: absolute;
-  top: 0px;
-  left: 0;
-  width: 320px;
-  height: 100%;
-  background-color: #05050a7c;
-  color: white;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.75);
-  border-radius: 12px;
-  padding: 50px;
-}
-
-.tmp {
-  display: flex;
-  flex-direction: column;
-}
-
-#launch-year-slider {
-  /* overwrite slider styles */
-  margin-top: 20px;
-}
 </style>
