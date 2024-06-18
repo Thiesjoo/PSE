@@ -30,5 +30,7 @@ const props = defineProps<{
   right: 0;
 
   margin-right: 10em;
+
+  z-index: 500;
 }
 </style>

@@ -1,17 +1,20 @@
-<script setup>
+<script setup
+        lang="ts">
 
-import { ref } from 'vue';
+        import { ref } from 'vue';
+        import { vOnClickOutside } from '@vueuse/components';
 
-const showPopup = ref(false);
-
+        const showPopup = ref(false);
 </script>
 
 <template>
-    <div>
-        <img src="@/assets/info.svg"
-             @click="showPopup = !showPopup"
-             width="25" />
+    <div class="wrapper">
+        <button @click="showPopup = !showPopup">
+            <img src="@/assets/info.svg"
+                />
+        </button>
         <div v-if="showPopup"
+             v-on-click-outside="() => showPopup = false"
              class="popup">
             <slot></slot>
         </div>
@@ -20,33 +23,43 @@ const showPopup = ref(false);
 
 <style scoped
        lang="scss">
+    .wrapper {
+        z-index: 100;
 
-    .popup {
-        position: absolute;
-        top: 0;
-        right: 0;
+        button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
 
-        width: 300px;
-        display: flex;
-        background-color: rgba(255, 255, 255);
-        color: black;
-        font-size: 1em;
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            top: 0;
+            right: 0;
 
-        border: 1px solid black;
-        padding: 10px;
-        z-index: 1000;
-    }
-
-    img {
-        position: absolute;
-        top: 0;
-        right: 0;
-
-        path {
-            fill: red;
+            img {
+                width: 100%;
+                height: 100%;
+                opacity: 0.7;
+            }
         }
-
-        color: red;
+        .popup {
+            position: absolute;
+            top: 0;
+            right: 0;
+    
+            width: 300px;
+            display: flex;
+            background-color: rgba(255, 255, 255);
+            color: black;
+            font-size: 1em;
+    
+            border: 1px solid black;
+            padding: 10px;
+            z-index: 1000;
+        }
+    
     }
+
 
 </style>

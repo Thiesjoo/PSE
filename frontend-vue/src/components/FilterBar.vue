@@ -2,6 +2,7 @@
 import { ThreeSimulation } from '@/Sim'
 import { SatManager } from '@/common/sat-manager'
 import FilterItem from './FilterItem.vue'
+import InfoPopup from './InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n() 
 
@@ -22,6 +23,9 @@ const filters = manager.currentFilters
       <button @click="manager.selectAll()">Select All</button>
       <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
         {{ t(filter.name) }} - {{ manager.count[filter.name] }}
+        <InfoPopup>
+            {{ t(filter.name + '_description') }}
+        </InfoPopup>
       </FilterItem>
     </div>
   </div>
