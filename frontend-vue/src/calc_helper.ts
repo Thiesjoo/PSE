@@ -20,9 +20,19 @@ export function calculateRevolutionPerDay(a: number) {
 }
 
 export function calculateMeanMotionRadPerMin(a: number): number {
-  const GRAVITATIONAL_PARAM = 3.986004418e14 // m^3/s^2
-  const mean_motion = Math.sqrt(GRAVITATIONAL_PARAM / a ** 3)
-  const revolutions_per_day = mean_motion * 60
+  const GRAVITATIONAL_PARAM = 3.986004418e14; // m^3/s^2
+  const mean_motion = Math.sqrt(GRAVITATIONAL_PARAM / a ** 3);
+  const rad_per_minute = mean_motion * 60;
+  console.log("No: ", rad_per_minute);
 
-  return +revolutions_per_day.toFixed(8)
+  return +rad_per_minute
+}
+
+// Input is in [rad/minute]
+export function calculateHeight(no: number): number {
+  const GRAVITATIONAL_PARAM = 3.986004418e14 // m^3/s^2;
+  const a = Math.cbrt( GRAVITATIONAL_PARAM * (60/no) ** 2);
+  const height = (a / 1000) - 6371;
+
+  return +height.toFixed(0)
 }

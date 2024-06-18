@@ -2,7 +2,7 @@
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
 import SpeedButtons from '@/components/SpeedButtons.vue'
-import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin } from '@/calc_helper'
+import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin, calculateHeight} from '@/calc_helper'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
@@ -13,8 +13,9 @@ const props = defineProps<{
 
 let sat_number = 1 // Used for naming satellites when creating multiple
 let tle;
-const basic_alt = 160000 + 6371 * 1000 // Add Earth's radius
+const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
+const CURRENT_COLOR = '#F5EEF8'// '#ff12b7'; // Pink
 
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
@@ -32,11 +33,13 @@ function tle_new_satellite(alt: number) {
   return tle
 }
 
-function reset_sliders(){
-    height.value = 160;
-    inclination.value = 0;
-    raan.value = 0;
-    e.value = 0;
+// Set to initial values or the values of a selected satellite
+function reset_sliders(sat: Satellite){
+    height.value = calculateHeight(sat.satData.no);
+    console.log("Height: ", height.value);
+    inclination.value = sat.satData.inclo * 180 / Math.PI;
+    raan.value = sat.satData.nodeo * 180 / Math.PI;
+    e.value = sat.satData.ecco * 100;
     picked.value = 0;
 }
 
@@ -44,12 +47,19 @@ function add_new_satellite(alt: number){
     let tle = tle_new_satellite(alt);
     const sats = Satellite.fromMultipleTLEs(tle);
     sats.forEach((sat) => props.simulation.addSatellite(sat));
-    reset_sliders()
+    reset_sliders(sats[0])
     if (showOrbit.value){
       const orbit = props.simulation.addOrbit(sats[0], true);
       sats[0].setOrbit(orbit);
     }
     return sats[0]
+}
+
+// Change selected satellite
+function change_selected(satellite: Satellite){
+  props.simulation.deselect();
+  props.simulation.setCurrentlySelected(satellite);
+  props.simulation.changeColor(CURRENT_COLOR, satellite);
 }
 
 // ********* SLIDERS *********
@@ -68,6 +78,8 @@ watch(height, (Value) => {
   let alt = Value * 1000 + 6371 * 1000 // Convert to meters and add Earth's radius
   sat.satData.no = calculateMeanMotionRadPerMin(alt) // mean motion [rad/min]
   sat.orbit?.recalculate();
+
+  // Changing image with LEO, MEO orbit
   if (Value >= 160 && Value < 2000) {
     picked.value = 0 // LEO
   } else if (Value >= 2000 && Value < 36000) {
@@ -101,11 +113,13 @@ watch(e, (Value) => {
 
 // ********* first satellite *********
 let sat = add_new_satellite(basic_alt);
+change_selected(sat);
 
 // ********* ADD SATELLITE BUTTON *********
 watch(add, (newValue) => {
       if (newValue === 1) {
         sat = add_new_satellite(basic_alt);
+        change_selected(sat);
         add.value = 0 // Reset 'add' to 0 (false)
       }
     })
@@ -134,8 +148,20 @@ watch(showOrbit, (newValue) => {
   }
 })
 
+
+// ********* Clicked sat can be edited *********
+props.simulation.addEventListener('select', (satellite) => {
+  if (satellite){
+    sat = satellite;
+    change_selected(satellite);
+    reset_sliders(sat);
+  }
+})
+
+
 // ********** SAT NAME **********
 const satName = ref('New Satellite 1')
+
 </script>
 
 <template>
@@ -147,30 +173,33 @@ const satName = ref('New Satellite 1')
       <h4 class="display">{{ satName }}</h4>
     </div>
     <div class="sliders-sat">
-      <h4>{{t("Height")}}</h4>
+      <br />
+      <h2>Simulation Variables</h2>
+      <br />
+      <h4>{{t("Height")}} [km]</h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
         <p class="display">Value: {{ height }}</p>
       </div>
       <br />
-      <h4>{{t("Inclination")}}</h4>
+      <h4>{{t("Inclination")}} [deg]</h4>
       <div class="slider">
-        <input type="range" min="0" max="90" v-model="inclination" class="slider" />
+        <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
         <p class="display">Value: {{ inclination }}</p>
       </div>
       <br />
-      <h4>{{t("RAAN")}}</h4>
+      <h4>{{t("RAAN")}} [deg]</h4>
       <div class="slider">
-        <input type="range" min="0" max="360" v-model="raan" class="slider" />
+        <input type="range" min="0" max="359" v-model="raan" class="slider" />
         <br />
         <p class="display">Value: {{ raan }}</p>
       </div>
       <br />
       <h4>{{t("Eccentricity")}}</h4>
       <div class="slider">
-        <input type="range" min="0" max="100" v-model="e" class="slider" />
+        <input type="range" min="0" max="99" v-model="e" class="slider" />
         <br />
         <p class="display">Value: {{ e / 100 }}</p>
       </div>

@@ -152,10 +152,9 @@ export class ThreeSimulation {
     const oldCameraPosition = this.globe.toGeoCoords(this.camera.position)
     const alt = oldCameraPosition.altitude
 
-    if (!lat || !lng || !alt) {
+    if (lat === undefined || lng === undefined || alt == undefined) {
       return
     }
-
     const newCameraPosition = this.globe.getCoords(lat, lng, alt)
 
     if (this.tweeningStatus === 0) {
@@ -271,7 +270,7 @@ export class ThreeSimulation {
     }
   }
 
-  private deselect() {
+  deselect() {
     // Only change the color back to normal if you are not selecting the satellite and you are not hovering over it.
     if (this.currentlySelected && this.currentlyHovering !== this.currentlySelected) {
       this.currentlySelected.setColor(
@@ -292,20 +291,21 @@ export class ThreeSimulation {
 
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
+    console.log(intersects)
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
       this.deselect()
 
       const meshID = intersects[0].instanceId
-      if (!meshID) return
+      if (meshID === undefined) return
       const satData = this.getSatelliteByMeshID(meshID)
       if (!satData) return
       this.currentlySelected = satData
-      
+
       satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
 
       this.eventListeners['select']?.forEach((cb) => cb(satData))
       this.escapedFollow = false
-    } 
+    }
     else {
       this.deselect()
     }
@@ -471,6 +471,18 @@ export class ThreeSimulation {
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
     this.onRightSide = false
+  }
+
+  setCurrentlySelected(sat: Satellite){
+    this.currentlySelected = sat;
+  }
+
+  changeColor(color: string, sat: Satellite){
+    sat.setColor(
+      color,
+      this.getMeshIDBySatellite(sat),
+      this.mesh
+    )
   }
 
   getTime() {
