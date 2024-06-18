@@ -75,11 +75,7 @@ onUnmounted(() => {
 <template>
   <PopFrame :open="true" class="popup" >
     <div class="top" :key="key">
-      <h1>{{ currentSelectedSatellite.name }}
-        <InfoPopup>
-            description
-        </InfoPopup>
-      </h1>
+      <h1>{{ currentSelectedSatellite.name }}</h1>
 
       <img
         :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
@@ -101,6 +97,9 @@ onUnmounted(() => {
       </div>
       <p id="SatelliteCountry">{{ countryToNameConversion(currentSelectedSatellite.country) }}</p>
       <p>
+        <InfoPopup>
+            {{ t("NORAD Catalog Number_description") }}
+        </InfoPopup>
         <span>{{ t("NORAD Catalog Number") }}:</span>
         <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
       </p>
@@ -111,33 +110,52 @@ onUnmounted(() => {
         <span id="SatelliteLongitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, numDigits) }}º</span
         >
+        <InfoPopup>
+            {{ t("NORAD Catalog Number_description") }}
+        </InfoPopup>
       </p>
       <p>
         {{ t("Latitude") }}:
         <span id="SatelliteLatitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, numDigits) }}º
         </span>
+        <InfoPopup>
+            {{ t("NORAD Catalog Number_description") }}
+        </InfoPopup>
       </p>
       <p>
         {{ t("Altitude") }}:
         <span id="SatelliteAltitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, numDigits) }}km</span
         >
+        <InfoPopup>
+            {{ t("NORAD Catalog Number_description") }}
+        </InfoPopup>
       </p>
       <p>
         {{ t("Speed") }}:
         <span id="SatelliteSpeed">{{ speed }}km/s</span>
+        <InfoPopup>
+            {{ t("NORAD Catalog Number_description") }}
+        </InfoPopup>
       </p>
     </div>
     <div class="epoch">
       <p>{{ t("Last epoch") }}:</p>
       <p id="SatelliteEpoch">{{ epoch }}</p>
+      <InfoPopup>
+            {{ t("NORAD Catalog Number_description") }}
+        </InfoPopup>
     </div>
   </PopFrame>
 </template>
 
 <style scoped lang="scss">
 .popup {
+    p, .epoch {
+        position: relative
+    }
+
   .top {
     //  display items in center
     display: flex;
