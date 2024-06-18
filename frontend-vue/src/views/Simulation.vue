@@ -4,6 +4,8 @@ import { Satellite } from '@/Satellite'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin, calculateHeight} from '@/calc_helper'
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps<{
   simulation: ThreeSimulation
@@ -165,37 +167,36 @@ const satName = ref('New Satellite 1')
 <template>
   <div class="left-info-block">
     <br />
-    <h2>Simulation Variables</h2>
+    <h2>{{t('Simulation Variables')}}</h2>
     <br />
     <div class="name-sat">
       <h4 class="display">{{ satName }}</h4>
     </div>
     <div class="sliders-sat">
       <br />
-      <h2>Simulation Variables</h2>
       <br />
-      <h4>Height [km]</h4>
+      <h4>{{t("Height")}} [km]</h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
         <p class="display">Value: {{ height }}</p>
       </div>
       <br />
-      <h4>Inclination [deg]</h4>
+      <h4>{{t("Inclination")}} [deg]</h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
         <p class="display">Value: {{ inclination }}</p>
       </div>
       <br />
-      <h4>RAAN [deg]</h4>
+      <h4>{{t("RAAN")}} [deg]</h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
         <br />
         <p class="display">Value: {{ raan }}</p>
       </div>
       <br />
-      <h4>Eccentricity</h4>
+      <h4>{{t("Eccentricity")}}</h4>
       <div class="slider">
         <input type="range" min="0" max="99" v-model="e" class="slider" />
         <br />
@@ -204,15 +205,15 @@ const satName = ref('New Satellite 1')
     </div>
     <br />
     <div class="button-box">
-      <button class="add-button" @click="add = 1" style="text-align: center">Add another satellite</button>
-      <button class="del-button" @click="remove = 1" style="text-align: center">Delete satellites</button>
+      <button class="add-button" @click="add = 1" style="text-align: center">{{t("Add another satellite")}}</button>
+      <button class="del-button" @click="remove = 1" style="text-align: center">{{t("Delete satellites")}}</button>
     </div>
     <div class="show-orbit-check">
       <input type="checkbox" id="show-orbit" v-model="showOrbit" />
-      <label for="show-orbit">Show orbit {{ showOrbit }}</label>
+      <label for="show-orbit">{{t("Show orbit")}} {{ t(showOrbit.toString()) }}</label>
     </div>
     <div class="orbit-sat">
-      <h2>Orbit Category</h2>
+      <h2>{{t("Orbit Category")}}</h2>
       <br />
       <div id="categories" style="text-align: center">
         <span :class="{ category: true, highlight: picked === 0 }" id="LEO"> LEO</span>
@@ -220,18 +221,18 @@ const satName = ref('New Satellite 1')
         <span :class="{ category: true, highlight: picked == 2 }" id="Other">Other</span>
       </div>
       <div class="orbit-info" v-show="picked === 0">
-        <h3>Low Earth Orbit</h3>
-        <p>Height: 160-2000 km</p>
+        <h3>{{t("Low Earth Orbit")}}</h3>
+        <p>{{t("Height")}}: 160-2000 km</p>
         <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 1">
-        <h3>Medium Earth Orbit</h3>
-        <p>Height: 2000-36000 km</p>
+        <h3>{{t("Medium Earth Orbit")}}</h3>
+        <p>{{t("Height")}}: 2000-36000 km</p>
         <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 2">
-        <h3>Other</h3>
-        <p>Height: >36000 km</p>
+        <h3>{{t("Other")}}</h3>
+        <p>{{t("Height")}}: >36000 km</p>
         <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
@@ -375,3 +376,42 @@ h3 {
 }
 
 </style>
+<i18n>
+  {
+    "en": {
+      "Simulation Variables": "Simulation Variables",
+      "New satellite": "New Satellite",
+      "Height": "Height",
+      "Inclination": "Inclination",
+      "RAAN": "RAAN",
+      "Eccentricity": "Eccentricity",
+      "Add another satellite": "Add another satellite",
+      "Delete satellites": "Delete satellites",
+      "Show orbit": "Show orbit",
+      "Orbit Category": "Orbit Category",
+      "Low Earth Orbit": "Low Earth Orbit",
+      "Medium Earth Orbit": "Medium Earth Orbit",
+      "Other": "Other",
+      "true": "true",
+      "false": "false"
+    },
+    "nl": {
+      "Simulation Variables": "Simulatie Variabelen",
+      "New satellite": "Nieuwe satelliet",
+      "Height": "Hoogte",
+      "Inclination": "Inclinatie",
+      "RAAN": "RAAN",
+      "Eccentricity": "Excentriciteit",
+      "Add another satellite": "Voeg een andere satelliet toe",
+      "Delete satellites": "Verwijder satellieten",
+      "Show orbit": "Toon baan",
+      "Orbit Category": "Baancategorie",
+      "Low Earth Orbit": "Lage Omloopbaan",
+      "Medium Earth Orbit": "Middelhoge Omloopbaan",
+      "Other": "Andere",
+      "true": "waar",
+      "false": "onwaar"
+    }
+  }
+</i18n>
+

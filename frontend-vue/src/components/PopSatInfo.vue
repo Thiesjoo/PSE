@@ -3,6 +3,9 @@ import { Satellite } from '@/Satellite'
 import { computed, getCurrentInstance, onUnmounted, ref, watch } from 'vue'
 import PopFrame from './PopFrame.vue'
 import { countryToNameConversion } from '@/common/countries'
+import InfoPopup from '@/components/InfoPopup.vue'
+import { useI18n } from 'vue-i18n'
+const { t, locale } = useI18n() 
 
 // Aantal getallen achter de komma in satellietinformatie
 const numDigits = 3
@@ -33,7 +36,9 @@ const epoch = computed(() => {
   date.setSeconds(0)
   date.setMilliseconds(0)
 
-  return date.toLocaleTimeString('nl-NL', {
+  const localeCode = locale.value === 'nl' ?  'nl-NL' : 'en-US'
+
+  return date.toLocaleTimeString(localeCode, {
     hour: '2-digit',
     minute: '2-digit',
     weekday: 'short',
@@ -91,55 +96,80 @@ onUnmounted(() => {
         />
       </div>
       <p id="SatelliteCountry">{{ countryToNameConversion(currentSelectedSatellite.country) }}</p>
-      <p>
-        <span>NORAD Catalog Number:</span>
+      <p id="norad">
+        <InfoPopup>
+            {{ t("NORAD Catalog Number_description") }}
+        </InfoPopup>
+        <span>{{ t("NORAD Catalog Number") }}:</span>
         <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
       </p>
     </div>
     <div class="live_info">
       <p>
-        Longitude:
+        {{ t("Longitude") }}:
         <span id="SatelliteLongitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, numDigits) }}º</span
         >
+        <InfoPopup>
+            {{ t("Longitude_description") }}
+        </InfoPopup>
       </p>
       <p>
-        Latitude:
+        {{ t("Latitude") }}:
         <span id="SatelliteLatitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, numDigits) }}º
         </span>
+        <InfoPopup>
+            {{ t("Latitude_description") }}
+        </InfoPopup>
       </p>
       <p>
-        Altitude:
+        {{ t("Altitude") }}:
         <span id="SatelliteAltitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, numDigits) }}km</span
         >
+        <InfoPopup>
+            {{ t("Altitude_description") }}
+        </InfoPopup>
       </p>
       <p>
-        Speed:
+        {{ t("Speed") }}:
         <span id="SatelliteSpeed">{{ speed }}km/s</span>
+        <InfoPopup>
+            {{ t("Speed_description") }}
+        </InfoPopup>
       </p>
     </div>
     <div class="epoch">
-      <p>Last epoch:</p>
+      <p>{{ t("Last epoch") }}:</p>
       <p id="SatelliteEpoch">{{ epoch }}</p>
+      <InfoPopup>
+            {{ t("Last epoch_description") }}
+        </InfoPopup>
     </div>
   </PopFrame>
 </template>
 
 <style scoped lang="scss">
 .popup {
+    p, .epoch {
+        position: relative
+    }
+
   .top {
-    //  display items in center
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    // margin-bottom: 1em;
-    // margin-top: 0;
 
     #SatelliteCountry {
       margin-bottom: 0.5em;
+    }
+
+    #norad {
+        div {
+                margin-bottom: 1em;
+        }
     }
 
     img {
@@ -158,9 +188,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    // align-items: left;
     margin-top: 2em;
-    // margin-left: 1.3em;
     line-height: 2.5em;
   }
 
@@ -182,3 +210,36 @@ onUnmounted(() => {
   padding: 1em;
 }
 </style>
+<i18n>
+{
+    "en": {
+        "NORAD Catalog Number": "NORAD Catalog Number",
+        "NORAD Catalog Number_description": "This is a nine-digit number assigned by the United States Space Command in the order of launch or discovery to all artificial objects in the orbits of Earth and those that left Earth's orbit.",
+        "Longitude": "Longitude",
+        "Longitude_description": "How much east or west is the satellite.",
+        "Latitude": "Latitude",
+        "Latitude_description": "How much north or south is the satellite.",
+        "Altitude": "Altitude",
+        "Altitude_description": "How high is the satellite.",
+        "Speed": "Speed",
+        "Speed_description": "How fast the satellite is.",
+        "Last epoch": "Last epoch",
+        "Last epoch_description": "Last time the satellite published the orbit it currently is in."
+    },
+    "nl": {
+        "NORAD Catalog Number": "NORAD Catalogusnummer",
+        "NORAD Catalog Number_description": "Dit is een negen-cijferig nummer toegewezen door het United States Space Command in de volgorde van lancering of ontdekking aan alle kunstmatige objecten in de banen van de aarde en diegene die de baan van de aarde hebben verlaten.",
+        "Longitude": "Lengtegraad",
+        "Longitude_description": "Hoeveel oost of west is de satelliet.",
+        "Latitude": "Breedtegraad",
+        "Latitude_description": "Hoeveel noord of zuid is de satelliet.",
+        "Altitude": "Hoogte",
+        "Altitude_description": "Hoe hoog is de satelliet.",
+        "Speed": "Snelheid",
+        "Speed_description": "Hoe snel is de satelliet.",
+        "Last epoch": "Laatste epoch",
+        "Last epoch_description": "Laatste keer dat de satelliet de huidige baan publiceerde."
+    }
+}
+
+</i18n>
