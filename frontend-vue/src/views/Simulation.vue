@@ -17,9 +17,8 @@ const showOrbit = ref(false);
 const CURRENT_COLOR = 'red' // '#F5EEF8';
 let satName: string;
 
+
 const satellites = ref<Satellite[]>([]);
-
-
 
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
@@ -125,6 +124,10 @@ watch(add, (newValue) => {
         sat = add_new_satellite(basic_alt);
         change_selected(sat);
         add.value = 0 // Reset 'add' to 0 (false)
+
+        // Update sat-list
+        console.log("bullshit");
+        satellites.value = props.simulation.getNameOfSats()
       }
     })
 
@@ -162,11 +165,11 @@ props.simulation.addEventListener('select', (satellite) => {
   }
 })
 
-// ********* Satellite List *********
-watch(sat, (Value) => {
-  console.log("bullshit");
-  satellites.value = props.simulation.getNameOfSats()
-}, { immediate: true });
+// // ********* Satellite List *********
+// watch(sat, (Value) => {
+//   console.log("bullshit");
+//   satellites.value = props.simulation.getNameOfSats()
+// }, { immediate: true });
 
 </script>
 
