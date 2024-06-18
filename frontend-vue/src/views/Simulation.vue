@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
+import SatList from '@/components/SatList.vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin, calculateHeight} from '@/calc_helper'
 import { ref, watch } from 'vue'
@@ -9,11 +10,16 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
+let sat: Satellite;
 let sat_number = 1 // Used for naming satellites when creating multiple
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
 const CURRENT_COLOR = 'red' // '#F5EEF8';
 let satName: string;
+
+const satellites = ref<Satellite[]>([]);
+
+
 
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
@@ -34,7 +40,6 @@ function tle_new_satellite(alt: number) {
 // Set to initial values or the values of a selected satellite
 function reset_sliders(sat: Satellite){
     height.value = calculateHeight(sat.satData.no);
-    console.log("Height: ", height.value);
     inclination.value = sat.satData.inclo * 180 / Math.PI;
     raan.value = sat.satData.nodeo * 180 / Math.PI;
     e.value = sat.satData.ecco * 100;
@@ -111,7 +116,7 @@ watch(e, (Value) => {
 })
 
 // ********* first satellite *********
-let sat = add_new_satellite(basic_alt);
+sat = add_new_satellite(basic_alt);
 change_selected(sat);
 
 // ********* ADD SATELLITE BUTTON *********
@@ -157,14 +162,12 @@ props.simulation.addEventListener('select', (satellite) => {
   }
 })
 
+// ********* Satellite List *********
+watch(sat, (Value) => {
+  console.log("bullshit");
+  satellites.value = props.simulation.getNameOfSats()
+}, { immediate: true });
 
-// ********** SAT NAME **********
-
-// watch(satName, (newValue) => {
-
-//   satName.value = sat.name;
-
-// })
 </script>
 
 <template>
@@ -242,6 +245,23 @@ props.simulation.addEventListener('select', (satellite) => {
     </div>
   </div>
   <SpeedButtons :simulation="props.simulation" />
+  <!-- <SatList :simulation="simulation"></SatList> -->
+
+  <div class="right-info-block">
+    <h2>Satellites Created</h2>
+    <div class="satellite-list">
+      <div
+        v-for="satellite in satellites"
+        :key="satellite.name"
+        :class="{'selected': selectedSatellite === satellite}"
+        @click="selectSatellite(satellite)"
+        class="satellite-item"
+      >
+        {{ satellite.name }}
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <style scoped lang="scss">
@@ -377,6 +397,38 @@ h3 {
 
 .highlight {
   background-color: rgba(195, 0, 255, 0.36);
+}
+
+.right-info-block {
+  position: absolute;
+  top: 50px;
+  right: 0; /* Position it to the right side */
+  width: 175px;
+  height: 50%;
+  background-color: #01023890;
+  color: white;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.satellite-list {
+  overflow-y: auto; /* Enable vertical scroll if needed */
+  max-height: 78%; /* Limit max height to parent height */
+}
+
+.satellite-item {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.satellite-item.selected {
+  background-color: rgb(213, 247, 73);
 }
 
 </style>

@@ -341,7 +341,7 @@ export class ThreeSimulation {
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
-    
+
 
     this.eventListeners = {}
   }
@@ -364,7 +364,7 @@ export class ThreeSimulation {
   }
 
   resendDataToWorkers() {
-    // This should be called when satData is changed 
+    // This should be called when satData is changed
     this.workerManager.addSatellites(Object.values(this.satellites))
   }
 
@@ -483,6 +483,10 @@ export class ThreeSimulation {
       this.getMeshIDBySatellite(sat),
       this.mesh
     )
+  }
+
+  getNameOfSats(){
+    return Object.values(this.satellites);
   }
 
   getTime() {
