@@ -11,11 +11,12 @@ const props = defineProps<{
 }>()
 
 let sat: Satellite;
+let satName: string;
+let selectedSat = ref<Satellite | null>(null)
 let sat_number = 1 // Used for naming satellites when creating multiple
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
 const CURRENT_COLOR = 'red' // '#F5EEF8';
-let satName: string;
 
 
 const satellites = ref<Satellite[]>([]);
@@ -39,8 +40,8 @@ function tle_new_satellite(alt: number) {
 // Set to initial values or the values of a selected satellite
 function reset_sliders(sat: Satellite){
     height.value = calculateHeight(sat.satData.no);
-    inclination.value = sat.satData.inclo * 180 / Math.PI;
-    raan.value = sat.satData.nodeo * 180 / Math.PI;
+    inclination.value = +(sat.satData.inclo * 180 / Math.PI).toFixed(0);
+    raan.value = +(sat.satData.nodeo * 180 / Math.PI).toFixed(0);
     e.value = sat.satData.ecco * 100;
     picked.value = 0;
 }
@@ -76,6 +77,10 @@ function selectSatellite(satellite:Satellite){
     reset_sliders(sat);
   }
 }
+
+// const isSelected = (satellite: Satellite) => {
+//   return sat === satellite;
+// };
 
 // ********* SLIDERS *********
 
@@ -126,6 +131,7 @@ watch(e, (Value) => {
   props.simulation.resendDataToWorkers()
 })
 
+
 // ********* first satellite *********
 sat = add_new_satellite(basic_alt);
 change_selected(sat);
@@ -151,6 +157,11 @@ watch(remove, (newValue) => {
       }
     })
 
+// ********* Reactive variable sat *********
+watch(sat, (Value) => {
+  selectedSat.value = Value
+})
+
 // ********* ORBIT shown *********
 
 watch(showOrbit, (newValue) => {
@@ -172,12 +183,6 @@ props.simulation.addEventListener('select', (satellite) => {
     reset_sliders(sat);
   }
 })
-
-// // ********* Satellite List *********
-// watch(sat, (Value) => {
-//   console.log("bullshit");
-//   satellites.value = props.simulation.getNameOfSats()
-// }, { immediate: true });
 
 </script>
 
@@ -264,7 +269,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div
         v-for="satellite in satellites"
         :key="satellite.name"
-        :class="{'selected': sat === satellite}"
+        :class="{'selected': sat === satellite }"
         @click="selectSatellite(satellite)"
         class="satellite-item"
       >
