@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps<{
   simulation: ThreeSimulation
@@ -11,14 +13,14 @@ props.simulation.moveRight()
 <template>
   <div class="home">
     <div class="header">
-      <h1>Satellite Radar</h1>
+      <h1>{{ t("Satellite Radar") }}</h1>
       <img src="../assets/satellite_logo.png" alt="Satellite" width="200" height="200" />
     </div>
 
     <div class="container">
       <RouterLink to="/visualization">
         <div class="box">
-          <h2>All satellites</h2>
+          <h2>{{ t("All satellites") }}</h2>
           <div class="icon">
             <img src="../assets/visualisation1.png" alt="Satellites" width="100" height="100" />
           </div>
@@ -26,7 +28,7 @@ props.simulation.moveRight()
       </RouterLink>
       <RouterLink to="/simulation">
         <div class="box">
-          <h2>Launch your own satellite</h2>
+          <h2>{{ t("Make your own satellite") }}</h2>
           <br />
           <div class="icon">
             <img src="../assets/simulation.png" alt="Launch" width="100" height="100" />
@@ -35,7 +37,7 @@ props.simulation.moveRight()
       </RouterLink>
       <RouterLink to="/communication">
         <div class="box">
-          <h2>Communication</h2>
+          <h2>{{ t("Communication") }}</h2>
           <div class="icon">
             <img src="../assets/communication.png" alt="Communication" width="100" height="100" />
           </div>
@@ -100,3 +102,19 @@ props.simulation.moveRight()
 }
 
 </style>
+<i18n>
+    {
+        "en": {
+            "Satellite Radar": "Satellite Radar",
+            "All satellites": "All satellites",
+            "Make your own satellite": "Make your own satellite",
+            "Communication": "Communication"
+        },
+        "nl": {
+            "Satellite Radar": "Satelliet Radar",
+            "All satellites": "Alle satellieten",
+            "Make your own satellite": "Maak je eigen satelliet",
+            "Communication": "Communicatie"
+        }
+    }
+</i18n>
