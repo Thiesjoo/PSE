@@ -54,6 +54,10 @@ function add_new_satellite(alt: number){
       const orbit = props.simulation.addOrbit(sats[0], true);
       sats[0].setOrbit(orbit);
     }
+
+    // Update sat-list
+    satellites.value = props.simulation.getNameOfSats()
+
     return sats[0]
 }
 
@@ -63,6 +67,14 @@ function change_selected(satellite: Satellite){
   props.simulation.setCurrentlySelected(satellite);
   props.simulation.changeColor(CURRENT_COLOR, satellite);
   satName = satellite.name;
+}
+
+function selectSatellite(satellite:Satellite){
+  if (satellite != sat){
+    sat = satellite;
+    change_selected(satellite);
+    reset_sliders(sat);
+  }
 }
 
 // ********* SLIDERS *********
@@ -124,10 +136,6 @@ watch(add, (newValue) => {
         sat = add_new_satellite(basic_alt);
         change_selected(sat);
         add.value = 0 // Reset 'add' to 0 (false)
-
-        // Update sat-list
-        console.log("bullshit");
-        satellites.value = props.simulation.getNameOfSats()
       }
     })
 
@@ -247,8 +255,8 @@ props.simulation.addEventListener('select', (satellite) => {
       </div>
     </div>
   </div>
+
   <SpeedButtons :simulation="props.simulation" />
-  <!-- <SatList :simulation="simulation"></SatList> -->
 
   <div class="right-info-block">
     <h2>Satellites Created</h2>
@@ -256,7 +264,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div
         v-for="satellite in satellites"
         :key="satellite.name"
-        :class="{'selected': selectedSatellite === satellite}"
+        :class="{'selected': sat === satellite}"
         @click="selectSatellite(satellite)"
         class="satellite-item"
       >
@@ -431,7 +439,7 @@ h3 {
 }
 
 .satellite-item.selected {
-  background-color: rgb(213, 247, 73);
+  background-color: rgba(195, 0, 255, 0.36);
 }
 
 </style>
