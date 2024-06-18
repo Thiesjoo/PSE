@@ -16,8 +16,7 @@ const props = defineProps<{
   display: flex;
   flex-flow: column nowrap;
 
-  min-width: 17vw;
-  // height: 50vh; // Epoch info would clip into live info above.
+  min-width: 25vw;
   border: 8px solid #858385;
 
   border-radius: 10pt;

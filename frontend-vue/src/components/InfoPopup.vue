@@ -26,6 +26,8 @@
     .wrapper {
         z-index: 100;
 
+        font-family: 'ComputerSaysNo';
+
         button {
             background-color: transparent;
             border: none;
@@ -52,7 +54,7 @@
             display: flex;
             background-color: rgba(255, 255, 255);
             color: black;
-            font-size: 1em;
+            font-size: 4vh;
     
             border: 1px solid black;
             padding: 10px;

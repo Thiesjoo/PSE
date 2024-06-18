@@ -64,7 +64,7 @@ const speed = computed(() => {
 const key = ref(0)
 const interval = setInterval(() => {
     key.value++
-}, 10000)
+}, 100000)
 
 onUnmounted(() => {
   clearInterval(interval)
@@ -96,7 +96,7 @@ onUnmounted(() => {
         />
       </div>
       <p id="SatelliteCountry">{{ countryToNameConversion(currentSelectedSatellite.country) }}</p>
-      <p>
+      <p id="norad">
         <InfoPopup>
             {{ t("NORAD Catalog Number_description") }}
         </InfoPopup>
@@ -111,7 +111,7 @@ onUnmounted(() => {
           >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, numDigits) }}º</span
         >
         <InfoPopup>
-            {{ t("NORAD Catalog Number_description") }}
+            {{ t("Longitude_description") }}
         </InfoPopup>
       </p>
       <p>
@@ -120,7 +120,7 @@ onUnmounted(() => {
           >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, numDigits) }}º
         </span>
         <InfoPopup>
-            {{ t("NORAD Catalog Number_description") }}
+            {{ t("Latitude_description") }}
         </InfoPopup>
       </p>
       <p>
@@ -129,14 +129,14 @@ onUnmounted(() => {
           >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, numDigits) }}km</span
         >
         <InfoPopup>
-            {{ t("NORAD Catalog Number_description") }}
+            {{ t("Altitude_description") }}
         </InfoPopup>
       </p>
       <p>
         {{ t("Speed") }}:
         <span id="SatelliteSpeed">{{ speed }}km/s</span>
         <InfoPopup>
-            {{ t("NORAD Catalog Number_description") }}
+            {{ t("Speed_description") }}
         </InfoPopup>
       </p>
     </div>
@@ -144,7 +144,7 @@ onUnmounted(() => {
       <p>{{ t("Last epoch") }}:</p>
       <p id="SatelliteEpoch">{{ epoch }}</p>
       <InfoPopup>
-            {{ t("NORAD Catalog Number_description") }}
+            {{ t("Last epoch_description") }}
         </InfoPopup>
     </div>
   </PopFrame>
@@ -157,16 +157,19 @@ onUnmounted(() => {
     }
 
   .top {
-    //  display items in center
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    // margin-bottom: 1em;
-    // margin-top: 0;
 
     #SatelliteCountry {
       margin-bottom: 0.5em;
+    }
+
+    #norad {
+        div {
+                margin-bottom: 1em;
+        }
     }
 
     img {
@@ -185,9 +188,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    // align-items: left;
     margin-top: 2em;
-    // margin-left: 1.3em;
     line-height: 2.5em;
   }
 
