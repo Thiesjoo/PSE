@@ -9,36 +9,48 @@ props.simulation.moveRight()
 </script>
 
 <template>
-  <div class="header">
-    <h1>Satellite Radar</h1>
-    <img src="../assets/satellite_logo.png" alt="Satellite" width="200" height="200" />
-  </div>
+  <div class="home">
+    <div class="header">
+      <h1>Satellite Radar</h1>
+      <img src="../assets/satellite_logo.png" alt="Satellite" width="200" height="200" />
+    </div>
 
-  <div class="container">
-    <RouterLink to="/visualization">
-      <div class="box">
-        <h2>All satellites</h2>
-        <!-- <p>Some text</p> -->
-      </div>
-    </RouterLink>
-    <RouterLink to="/simulation">
-      <div class="box">
-        <h2>Make your own satellite</h2>
-        <!-- <p>Some text</p> -->
-      </div>
-    </RouterLink>
-    <RouterLink to="/communication">
-      <div class="box">
-        <h2>Communication</h2>
-        <!-- <p>Some text</p> -->
-      </div>
-    </RouterLink>
+    <div class="container">
+      <RouterLink to="/visualization">
+        <div class="box">
+          <h2>All satellites</h2>
+          <div class="icon">Some Icon</div>
+        </div>
+      </RouterLink>
+      <RouterLink to="/simulation">
+        <div class="box">
+          <h2>Make your own satellite</h2>
+          <br />
+          <div class="icon">Some Icon</div>
+        </div>
+      </RouterLink>
+      <RouterLink to="/communication">
+        <div class="box">
+          <h2>Communication</h2>
+          <div class="icon">Some Icon</div>
+        </div>
+      </RouterLink>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.home{
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  /* justify-content: space-around; */
+  /* border: 2px solid rgb(255, 255, 255); */
+}
+
 .header {
   display: flex;
+  /* border: 2px solid rgb(255, 0, 0); */
 
   h1 {
     font-size: 10em;
@@ -50,28 +62,26 @@ props.simulation.moveRight()
 .container {
   display: flex;
   flex-direction: column;
-  align-items: left;
-  justify-content: center;
-  position: fixed;
-  left: 10%;
-  top: 50%;
-  transform: translateY(-50%);
+  align-self: flex-start;
+  /* border: 2px solid rgb(0, 68, 255); */
 
   a {
     text-decoration: none;
   }
 
+
   .box {
-    width: 30vw;
-    height: 10vh;
-    /* border: 8px solid gray; */
+    min-width: 30vw;
+    min-height: 10vh;
+    padding-left: 1%;
+    /* border: 2px solid rgb(255, 255, 0); */
 
     border-radius: 2pt;
     background-color: #090929;
 
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 
     margin-top: 1em;
     margin-bottom: 1em;
@@ -82,4 +92,11 @@ props.simulation.moveRight()
     }
   }
 }
+
+.icon {
+  border: 2px solid rgb(0, 255, 217);
+  min-height: 100px;
+  min-width: 100px;
+}
+
 </style>
