@@ -19,8 +19,8 @@ const filters = manager.currentFilters
 <template>
   <div class="left-info-block">
     <div class="tmp">
-      <button @click="manager.selectNone()">Unselect All</button>
-      <button @click="manager.selectAll()">Select All</button>
+      <button @click="manager.selectNone()">{{t("Unselect All")}}</button>
+      <button @click="manager.selectAll()">{{t("Select All")}}</button>
       <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
         {{ t(filter.name) }} - {{ manager.count[filter.name] }}
         <InfoPopup>
@@ -106,7 +106,9 @@ const filters = manager.currentFilters
       "Geodetics": "Geodetics",
       "Geodetics_description": "Passive satellites with no moving parts. These carried 60 retroreflectors, which reflect back lasers sent by ground stations to pinpoint the orbit of the satellite. The small mass of these satellite’s means that their orbits are influenced by slight changes in Earth’s gravitational fields and these small adjustments to their orbits can be detected. The causes of the slight gravitational changes, oceanic tides and Earth's structure.",
       "Engineering": "Engineering",
-      "Engineering_description": "Satellites which are used to test technologies."
+      "Engineering_description": "Satellites which are used to test technologies.",
+      "Unselect All": "Unselect All",
+      "Select All": "Select All"
   },
   "nl": {
       "Last 30 Days' Launches": "Laatste 30 Dagen Lanceringen",
@@ -158,7 +160,9 @@ const filters = manager.currentFilters
       "Geodetics": "Geodetica",
       "Geodetics_description": "Passieve satellieten zonder bewegende onderdelen. Deze droegen 60 retroreflectoren, die lasers die door grondstations worden gestuurd, terugkaatsen om de baan van de satelliet nauwkeurig te bepalen. De kleine massa van deze satellieten betekent dat hun banen worden beïnvloed door kleine veranderingen in de zwaartekrachtvelden van de aarde en deze kleine aanpassingen aan hun banen kunnen worden gedetecteerd. De oorzaken van de lichte zwaartekrachtsveranderingen, oceanische getijden en de structuur van de aarde.",
       "Engineering": "Techniek",
-      "Engineering_description": "Satellieten die worden gebruikt om technologieën te testen."
+      "Engineering_description": "Satellieten die worden gebruikt om technologieën te testen.",
+      "Unselect All": "Deselecteer alles",
+      "Select All": "Selecteer alles"
   }
 }
 </i18n>
