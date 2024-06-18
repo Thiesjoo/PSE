@@ -211,21 +211,34 @@ onUnmounted(() => {
 </style>
 <i18n>
 {
-  "en": {
-    "Longitude": "Longitude",
-    "Latitude": "Latitude",
-    "Altitude": "Altitude",
-    "Speed": "Speed",
-    "Last epoch": "Last epoch",
-    "NORAD Catalog Number": "NORAD Catalog Number"
-  },
-  "nl": {
-    "Longitude": "Lengtegraad",
-    "Latitude": "Breedtegraad",
-    "Altitude": "Hoogte",
-    "Speed": "Snelheid",
-    "Last epoch": "Laatste epoch",
-    "NORAD Catalog Number": "NORAD Catalogusnummer"
-  }
+    "en": {
+        "NORAD Catalog Number": "NORAD Catalog Number",
+        "NORAD Catalog Number_description": "This is a nine-digit number assigned by the United States Space Command in the order of launch or discovery to all artificial objects in the orbits of Earth and those that left Earth's orbit.",
+        "Longitude": "Longitude",
+        "Longitude_description": "How much east or west is the satellite.",
+        "Latitude": "Latitude",
+        "Latitude_description": "How much north or south is the satellite.",
+        "Altitude": "Altitude",
+        "Altitude_description": "How high is the satellite.",
+        "Speed": "Speed",
+        "Speed_description": "How fast the satellite is.",
+        "Last epoch": "Last epoch",
+        "Last epoch_description": "Last time the satellite published the orbit it currently is in."
+    },
+    "nl": {
+        "NORAD Catalog Number": "NORAD Catalogusnummer",
+        "NORAD Catalog Number_description": "Dit is een negen-cijferig nummer toegewezen door het United States Space Command in de volgorde van lancering of ontdekking aan alle kunstmatige objecten in de banen van de aarde en diegene die de baan van de aarde hebben verlaten.",
+        "Longitude": "Lengtegraad",
+        "Longitude_description": "Hoeveel oost of west is de satelliet.",
+        "Latitude": "Breedtegraad",
+        "Latitude_description": "Hoeveel noord of zuid is de satelliet.",
+        "Altitude": "Hoogte",
+        "Altitude_description": "Hoe hoog is de satelliet.",
+        "Speed": "Snelheid",
+        "Speed_description": "Hoe snel is de satelliet.",
+        "Last epoch": "Laatste epoch",
+        "Last epoch_description": "Laatste keer dat de satelliet de huidige baan publiceerde."
+    }
 }
+
 </i18n>
