@@ -4,7 +4,7 @@ import { computed, getCurrentInstance, onUnmounted, ref, watch } from 'vue'
 import PopFrame from './PopFrame.vue'
 import { countryToNameConversion } from '@/common/countries'
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n() 
+const { t, locale } = useI18n() 
 
 // Aantal getallen achter de komma in satellietinformatie
 const numDigits = 3
@@ -35,7 +35,9 @@ const epoch = computed(() => {
   date.setSeconds(0)
   date.setMilliseconds(0)
 
-  return date.toLocaleTimeString('nl-NL', {
+  const localeCode = locale.value === 'nl' ?  'nl-NL' : 'en-US'
+
+  return date.toLocaleTimeString(localeCode, {
     hour: '2-digit',
     minute: '2-digit',
     weekday: 'short',
@@ -94,36 +96,36 @@ onUnmounted(() => {
       </div>
       <p id="SatelliteCountry">{{ countryToNameConversion(currentSelectedSatellite.country) }}</p>
       <p>
-        <span>NORAD Catalog Number:</span>
+        <span>{{ t("NORAD Catalog Number") }}:</span>
         <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
       </p>
     </div>
     <div class="live_info">
       <p>
-        Longitude:
+        {{ t("Longitude") }}:
         <span id="SatelliteLongitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, numDigits) }}º</span
         >
       </p>
       <p>
-        Latitude:
+        {{ t("Latitude") }}:
         <span id="SatelliteLatitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, numDigits) }}º
         </span>
       </p>
       <p>
-        Altitude:
+        {{ t("Altitude") }}:
         <span id="SatelliteAltitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, numDigits) }}km</span
         >
       </p>
       <p>
-        Speed:
+        {{ t("Speed") }}:
         <span id="SatelliteSpeed">{{ speed }}km/s</span>
       </p>
     </div>
     <div class="epoch">
-      <p>Last epoch:</p>
+      <p>{{ t("Last epoch") }}:</p>
       <p id="SatelliteEpoch">{{ epoch }}</p>
     </div>
   </PopFrame>
@@ -184,3 +186,23 @@ onUnmounted(() => {
   padding: 1em;
 }
 </style>
+<i18n>
+{
+  "en": {
+    "Longitude": "Longitude",
+    "Latitude": "Latitude",
+    "Altitude": "Altitude",
+    "Speed": "Speed",
+    "Last epoch": "Last epoch",
+    "NORAD Catalog Number": "NORAD Catalog Number"
+  },
+  "nl": {
+    "Longitude": "Lengtegraad",
+    "Latitude": "Breedtegraad",
+    "Altitude": "Hoogte",
+    "Speed": "Snelheid",
+    "Last epoch": "Laatste epoch",
+    "NORAD Catalog Number": "NORAD Catalogusnummer"
+  }
+}
+</i18n>
