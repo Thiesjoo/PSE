@@ -19,20 +19,26 @@ props.simulation.moveRight()
       <RouterLink to="/visualization">
         <div class="box">
           <h2>All satellites</h2>
-          <div class="icon">Some Icon</div>
+          <div class="icon">
+            <img src="../assets/visualisation1.png" alt="Satellites" width="100" height="100" />
+          </div>
         </div>
       </RouterLink>
       <RouterLink to="/simulation">
         <div class="box">
-          <h2>Make your own satellite</h2>
+          <h2>Launch your own satellite</h2>
           <br />
-          <div class="icon">Some Icon</div>
+          <div class="icon">
+            <img src="../assets/simulation.png" alt="Launch" width="100" height="100" />
+          </div>
         </div>
       </RouterLink>
       <RouterLink to="/communication">
         <div class="box">
           <h2>Communication</h2>
-          <div class="icon">Some Icon</div>
+          <div class="icon">
+            <img src="../assets/communication.png" alt="Communication" width="100" height="100" />
+          </div>
         </div>
       </RouterLink>
     </div>
@@ -94,7 +100,7 @@ props.simulation.moveRight()
 }
 
 .icon {
-  border: 2px solid rgb(0, 255, 217);
+  /* border: 2px solid rgb(0, 255, 217); */
   min-height: 100px;
   min-width: 100px;
 }
