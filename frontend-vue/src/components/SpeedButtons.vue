@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t, locale } = useI18n()
 
 const props = defineProps<{
   simulation: ThreeSimulation
@@ -11,7 +13,15 @@ const time = props.simulation.getTime()
 const currentTimeString = ref('')
 
 const updateCurrentTimeString = () => {
-  currentTimeString.value = time.time.toUTCString()
+const localeCode = locale.value === 'nl' ?  'nl-NL' : 'en-US'
+  currentTimeString.value = time.time.toLocaleTimeString(localeCode, {
+    hour: '2-digit',
+    minute: '2-digit',
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  })
 }
 
 onMounted(() => {
@@ -38,7 +48,7 @@ const intervals = [1, 10, 100, 1000]
           active: interval === time.multiplier.value
         }"
       >
-        Speed x{{ interval }}
+        {{t("Speed")}} x{{ interval }}
       </button>
     </div>
   </div>
@@ -74,3 +84,13 @@ const intervals = [1, 10, 100, 1000]
   }
 }
 </style>
+<i18n>
+{
+  "en":{
+    "Speed": "Speed"
+  },
+  "nl":{
+    "Speed": "Snelheid"
+  }
+}
+</i18n>

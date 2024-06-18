@@ -6,3 +6,4 @@ python-dotenv
 djangorestframework
 django-cors-headers
 gunicorn
+sentry-sdk[django]

@@ -1,7 +1,7 @@
 import type { EciVec3, GMSTime, Kilometer, PositionAndVelocity, SatRec } from 'satellite.js'
 import { degreesLat, degreesLong, eciToGeodetic, propagate, twoline2satrec } from 'satellite.js'
 import * as THREE from 'three'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import * as satellite from 'satellite.js'
 import { API_TLE_DATA } from './api/ourApi'
 import {
@@ -80,8 +80,8 @@ export class Satellite {
   public launch_year!: number
   public categories!: string[]
   public currentPosition: PositionAndVelocity | null = null
-  public realPosition = reactive({ lat: 0, lng: 0, alt: 0 })
-  public realSpeed = reactive({ x: 0, y: 0, z: 0 })
+  public realPosition = { lat: 0, lng: 0, alt: 0 }
+  public realSpeed  = { value: 0 };
   public orbit: Orbit | null=null;
 
   private threeData = {
@@ -137,30 +137,8 @@ export class Satellite {
     const mapped = (distanceToEarth / 500) * 0.2 + 1
 
     this.threeData.scale.set(
-        mapped,mapped, mapped
+        mapped, mapped, mapped
     )
-  }
-
-  // TODO: public fromGosia(.....)
-
-  // TODO: Waarom 2 tijden?
-  public propagate(time: Date, gmsTime: GMSTime) {
-    const eci = propagate(this.satData, time)
-    this.currentPosition = eci
-
-    if (eci.position && eci.velocity) {
-      const gdPos = eciToGeodetic(eci.position as EciVec3<Kilometer>, gmsTime)
-
-      this.realPosition.lat = degreesLat(gdPos.latitude)
-      this.realPosition.lng = degreesLong(gdPos.longitude)
-      this.realPosition.alt = gdPos.height
-      this.scale()
-
-      const vel = eci.velocity as EciVec3<Kilometer>
-      this.realSpeed.x = vel.x
-      this.realSpeed.y = vel.y
-      this.realSpeed.z = vel.z
-    }
   }
 
   public propagateNoUpdate(time: Date, globeRadius: number): Object {
@@ -206,6 +184,8 @@ export class Satellite {
   }
 
   public updatePositionOfMesh(mesh: SatelliteMeshes, index: number, globeRadius: number) {
+    this.scale()
+
     const pos = polar2Cartesian(
       this.realPosition.lat,
       this.realPosition.lng,
