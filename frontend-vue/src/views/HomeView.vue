@@ -11,6 +11,7 @@ props.simulation.moveRight()
 </script>
 
 <template>
+
   <div class="home">
     <div class="header">
       <h1>{{ t("Satellite Radar") }}</h1>
@@ -44,6 +45,12 @@ props.simulation.moveRight()
         </div>
       </RouterLink>
     </div>
+  </div>
+
+  <div class="about">
+    <RouterLink to="/about">
+      <h2>About</h2>
+    </RouterLink>
   </div>
 </template>
 
@@ -93,6 +100,20 @@ props.simulation.moveRight()
       font-size: 3em;
       color: white;
     }
+  }
+}
+
+.about {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 1em;
+  background-color: blueviolet;
+  width: 5vw;
+
+  a {
+    color: white;
+    text-decoration: none;
   }
 }
 
