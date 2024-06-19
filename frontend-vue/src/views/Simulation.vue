@@ -2,6 +2,7 @@
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
 import SpeedButtons from '@/components/SpeedButtons.vue'
+import InfoPopup from '@/components/InfoPopup.vue'
 import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin, calculateHeight} from '@/calc_helper'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -213,12 +214,15 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>{{t("Height")}} [km]</h4>
       <div class="slider">
+        <InfoPopup>
+        Some Information
+       </InfoPopup>
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
         <p class="display">Value: {{ height }}</p>
       </div>
       <br />
-      <h4>{{t("Inclination")}} [deg]</h4>
+      <h4>{{t("Inclination")}} [deg] </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
