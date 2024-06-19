@@ -41,7 +41,6 @@ export class SatManager {
   }
 
   private get filteredSatellites(): Satellite[] {
-    console.log(this.allSatellites.length)
     return this.allSatellites
       .filter((sat) => {
         return this.currentFilters.some((filter) => satFulfillsFilter(sat, filter))
@@ -86,7 +85,7 @@ export class SatManager {
     )
   }
 
-  private updateSatellites() {
+  public updateSatellites() {
     this.simulation.removeAllSatellites()
     this.simulation.addSatellites(this.filteredSatellites)
   }

@@ -36,7 +36,6 @@ export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
   )
 
   const satMaterial = new THREE.MeshLambertMaterial({
-    color: SAT_COLOR,
     transparent: true,
     opacity: 0.7
   })
@@ -76,13 +75,14 @@ export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
 export class Satellite {
   public name!: string
   public satData!: SatRec
-  public country!: string
+  public country!: string  
   public launch_year!: number
   public categories!: string[]
-  public currentPosition: PositionAndVelocity | null = null
   public realPosition = { lat: 0, lng: 0, alt: 0 }
-  public realSpeed  = { value: 0 };
-  public orbit: Orbit | null=null;
+  public realSpeed = { value: 0 }
+  public xyzPosition = { x: 0, y: 0, z: 0 }
+
+  public orbit: Orbit | null = null
 
   private threeData = {
     matrix: new THREE.Matrix4(),
@@ -92,10 +92,6 @@ export class Satellite {
 
   get id(): string {
     return this.satData.satnum
-  }
-
-  get firstRender(): boolean {
-    return this.currentPosition === null
   }
 
   public static fromMultipleTLEs(data: string): Satellite[] {
@@ -136,9 +132,7 @@ export class Satellite {
     const distanceToEarth = this.realPosition.alt
     const mapped = (distanceToEarth / 500) * 0.2 + 1
 
-    this.threeData.scale.set(
-        mapped, mapped, mapped
-    )
+    this.threeData.scale.set(mapped, mapped, mapped)
   }
 
   public propagateNoUpdate(time: Date, globeRadius: number): Object {
@@ -186,7 +180,7 @@ export class Satellite {
   public updatePositionOfMesh(mesh: SatelliteMeshes, index: number, globeRadius: number) {
     this.scale()
 
-    const pos = polar2Cartesian(
+    this.xyzPosition = polar2Cartesian(
       this.realPosition.lat,
       this.realPosition.lng,
       (this.realPosition.alt / EARTH_RADIUS_KM) * 3,
@@ -194,7 +188,7 @@ export class Satellite {
     )
 
     this.threeData.matrix.compose(
-      new THREE.Vector3(pos.x, pos.y, pos.z),
+      new THREE.Vector3(this.xyzPosition.x, this.xyzPosition.y, this.xyzPosition.z),
       this.threeData.quaternion,
       this.threeData.scale
     )
@@ -205,11 +199,11 @@ export class Satellite {
     mesh.satClick.instanceMatrix.needsUpdate = true
   }
 
-  public setOrbit(orbit: Orbit){
-    this.orbit = orbit;
+  public setOrbit(orbit: Orbit) {
+    this.orbit = orbit
   }
 
-  public removeOrbit(orbit: Orbit){
-    this.orbit = null;
+  public removeOrbit(orbit: Orbit) {
+    this.orbit = null
   }
 }

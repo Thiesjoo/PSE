@@ -11,12 +11,20 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-let sat_number = 1 // Used for naming satellites when creating multiple
-let tle;
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
-const CURRENT_COLOR = '#F5EEF8'// '#ff12b7'; // Pink
+const CURRENT_COLOR = '#FF00FF' // '#F5EEF8' (pink);
+const satellites = ref<Satellite[]>([]);
 
+let sat: Satellite;
+let current_sat = ref<Satellite | null>(null)
+let sat_number = 1 // Used for naming satellites when creating multiple
+
+/**
+ * Compiles a TLE for a new satellite with the given altitude.
+ *
+ * @param alt - The altitude of the satellite.
+ */
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
   let epoch = epochUpdate()
@@ -33,33 +41,71 @@ function tle_new_satellite(alt: number) {
   return tle
 }
 
-// Set to initial values or the values of a selected satellite
-function reset_sliders(sat: Satellite){
+/**
+ * Set to initial values or the values of a selected satellite
+ *
+ * @param {Satellite} sat - The satellite to reset the sliders to.
+ */
+function update_display(sat: Satellite){
     height.value = calculateHeight(sat.satData.no);
-    console.log("Height: ", height.value);
-    inclination.value = sat.satData.inclo * 180 / Math.PI;
-    raan.value = sat.satData.nodeo * 180 / Math.PI;
+    inclination.value = +(sat.satData.inclo * 180 / Math.PI).toFixed(0);
+    raan.value = +(sat.satData.nodeo * 180 / Math.PI).toFixed(0);
     e.value = sat.satData.ecco * 100;
     picked.value = 0;
+
+    showOrbit.value = false; // TODO: I am not 100% sure, maybe it should be true
+
+    // Update sat-list
+    satellites.value = props.simulation.getNameOfSats()
 }
 
+/**
+ * Adds a new satellite to the simulation.
+ *
+ * @param {number} alt - The altitude for the new satellite.
+ * @returns {Satellite} The newly created satellite.
+ */
 function add_new_satellite(alt: number){
+    // Creating Satellite object and adding it to simulation
     let tle = tle_new_satellite(alt);
     const sats = Satellite.fromMultipleTLEs(tle);
     sats.forEach((sat) => props.simulation.addSatellite(sat));
-    reset_sliders(sats[0])
+    let new_sat = sats[0]
+
+    //  Some settings
+    update_display(new_sat)
+    new_sat.country = 'NL';
+
+    // Orbit
     if (showOrbit.value){
-      const orbit = props.simulation.addOrbit(sats[0], true);
-      sats[0].setOrbit(orbit);
+      const orbit = props.simulation.addOrbit(new_sat, true);
+      new_sat.setOrbit(orbit);
     }
-    return sats[0]
+
+    // Update sat-list
+    satellites.value = props.simulation.getNameOfSats()
+
+    return new_sat
 }
 
-// Change selected satellite
+/**
+ * Switch to selected satellite and change color.
+ *
+ * @param {Satellite} satellite - The satellite to select.
+ *  */
 function change_selected(satellite: Satellite){
-  props.simulation.deselect();
-  props.simulation.setCurrentlySelected(satellite);
-  props.simulation.changeColor(CURRENT_COLOR, satellite);
+  if (satellite != sat){
+    set_current_sat(satellite);
+    props.simulation.deselect();
+    props.simulation.setCurrentlySelected(satellite);
+    props.simulation.changeColor(CURRENT_COLOR, satellite);
+    update_display(sat);
+  }
+}
+
+function set_current_sat(satellite: Satellite){
+  sat = satellite;
+  current_sat.value = sat;
 }
 
 // ********* SLIDERS *********
@@ -112,14 +158,12 @@ watch(e, (Value) => {
 })
 
 // ********* first satellite *********
-let sat = add_new_satellite(basic_alt);
-change_selected(sat);
+change_selected(add_new_satellite(basic_alt));
 
 // ********* ADD SATELLITE BUTTON *********
 watch(add, (newValue) => {
       if (newValue === 1) {
-        sat = add_new_satellite(basic_alt);
-        change_selected(sat);
+        change_selected(add_new_satellite(basic_alt));
         add.value = 0 // Reset 'add' to 0 (false)
       }
     })
@@ -132,12 +176,11 @@ watch(remove, (newValue) => {
         remove.value = 0; // Reset 'add' to 0 (false)
         sat_number = 1; // Resets the naming
 
-        sat = add_new_satellite(basic_alt);
+        set_current_sat(add_new_satellite(basic_alt));
       }
     })
 
 // ********* ORBIT shown *********
-
 watch(showOrbit, (newValue) => {
   if (newValue === true){
     const orbit = props.simulation.addOrbit(sat, true);
@@ -148,19 +191,12 @@ watch(showOrbit, (newValue) => {
   }
 })
 
-
 // ********* Clicked sat can be edited *********
 props.simulation.addEventListener('select', (satellite) => {
   if (satellite){
-    sat = satellite;
     change_selected(satellite);
-    reset_sliders(sat);
   }
 })
-
-
-// ********** SAT NAME **********
-const satName = ref('New Satellite 1')
 
 </script>
 
@@ -170,7 +206,7 @@ const satName = ref('New Satellite 1')
     <h2>{{t('Simulation Variables')}}</h2>
     <br />
     <div class="name-sat">
-      <h4 class="display">{{ satName }}</h4>
+      <h4 class="display">{{ sat.name }}</h4>
     </div>
     <div class="sliders-sat">
       <br />
@@ -237,7 +273,24 @@ const satName = ref('New Satellite 1')
       </div>
     </div>
   </div>
+
   <SpeedButtons :simulation="props.simulation" />
+
+  <div class="right-info-block">
+    <h2>Satellites Created</h2>
+    <div class="satellite-list">
+      <div
+        v-for="satellite in satellites"
+        :key="satellite.name"
+        :class="{'selected': current_sat === satellite }"
+        @click="change_selected(satellite as Satellite)"
+        class="satellite-item"
+      >
+        {{ satellite.name }}
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <style scoped lang="scss">
@@ -313,6 +366,8 @@ h3 {
 
 .show-orbit-check{
   display: flex;
+  appearance: none;
+  align-self: center;
 }
 
 .orbit-sat {
@@ -364,6 +419,38 @@ h3 {
 .highlight {
   background-color: rgba(195, 0, 255, 0.523);
   padding: 5px;
+}
+
+.right-info-block {
+  position: absolute;
+  top: 50px;
+  right: 0; /* Position it to the right side */
+  width: 175px;
+  height: 30%;
+  background-color: #01023890;
+  color: white;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.satellite-list {
+  overflow-y: auto; /* Enable vertical scroll if needed */
+  max-height: 78%; /* Limit max height to parent height */
+}
+
+.satellite-item {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.satellite-item.selected {
+  background-color: rgba(195, 0, 255, 0.36);
 }
 
 </style>

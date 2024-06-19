@@ -20,7 +20,7 @@ const props = defineProps<{
     <h2>{{ t('Team') }}</h2>
     <!-- List -->
     <ul>
-      <li>Gosia Giadek</li>
+      <li>Gosia Gniadek</li>
       <li>Mabel Traube</li>
       <li>Mike Schouten</li>
       <li>Sasha van der Linden</li>
