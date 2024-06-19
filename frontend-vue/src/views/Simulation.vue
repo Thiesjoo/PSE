@@ -11,15 +11,14 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-let sat: Satellite;
-let current_sat = ref<Satellite | null>(null)
-let sat_number = 1 // Used for naming satellites when creating multiple
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
 const CURRENT_COLOR = '#FF00FF' // '#F5EEF8';
-
-
 const satellites = ref<Satellite[]>([]);
+
+let sat: Satellite;
+let current_sat = ref<Satellite | null>(null)
+let sat_number = 1 // Used for naming satellites when creating multiple
 
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
@@ -38,29 +37,33 @@ function tle_new_satellite(alt: number) {
 }
 
 // Set to initial values or the values of a selected satellite
-function reset_sliders(sat: Satellite){
+function update_display(sat: Satellite){
     height.value = calculateHeight(sat.satData.no);
     inclination.value = +(sat.satData.inclo * 180 / Math.PI).toFixed(0);
     raan.value = +(sat.satData.nodeo * 180 / Math.PI).toFixed(0);
     e.value = sat.satData.ecco * 100;
     picked.value = 0;
-
-    showOrbit.value = false; // TODO: I am not 100% sure, maybe it should be true
-
-    // Update sat-list
-    satellites.value = props.simulation.getNameOfSats()
 }
 
 function add_new_satellite(alt: number){
+    // Creating Satellite object and adding it to simulation
     let tle = tle_new_satellite(alt);
     const sats = Satellite.fromMultipleTLEs(tle);
     sats.forEach((sat) => props.simulation.addSatellite(sat));
-    reset_sliders(sats[0])
-    sats[0].country = 'NL';
+    let new_sat = sats[0]
+
+    //  Some settings
+    update_display(new_sat)
+    new_sat.country = 'NL';
+
+    // Orbit
     if (showOrbit.value){
-      const orbit = props.simulation.addOrbit(sats[0], true);
-      sats[0].setOrbit(orbit);
+      const orbit = props.simulation.addOrbit(new_sat, true);
+      new_sat.setOrbit(orbit);
     }
+
+    // Update sat-list
+    satellites.value = props.simulation.getNameOfSats()
 
     return sats[0]
 }
@@ -69,11 +72,10 @@ function add_new_satellite(alt: number){
 function change_selected(satellite: Satellite){
   if (satellite != sat){
     set_current_sat(satellite);
-    console.log("change_selected:", satellite);
     props.simulation.deselect();
     props.simulation.setCurrentlySelected(satellite);
     props.simulation.changeColor(CURRENT_COLOR, satellite);
-    reset_sliders(sat);
+    update_display(sat);
   }
 }
 
@@ -130,7 +132,6 @@ watch(e, (Value) => {
   sat.orbit?.recalculate();
   props.simulation.resendDataToWorkers()
 })
-
 
 // ********* first satellite *********
 change_selected(add_new_satellite(basic_alt));
