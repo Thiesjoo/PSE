@@ -26,6 +26,12 @@ export interface SatPosition {
   id: string
 }
 
+export type geoCoords = {
+  lat: number,
+  lng: number,
+  altitude: number
+}
+
 /**
  * Parse TLE data to satellite information object
  * @param tleString

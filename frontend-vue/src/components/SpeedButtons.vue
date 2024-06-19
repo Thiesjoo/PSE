@@ -116,7 +116,7 @@ const intervals = [1, 10, 100, 1000, 10000]
   },
   "nl":{
     "Speed": "Snelheid",
-    "Reset to current time": "Reset naar huidige tijd"
+    "Reset to current time": "Herstel naar huidige tijd"
   }
 }
 </i18n>

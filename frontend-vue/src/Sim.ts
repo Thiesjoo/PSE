@@ -25,6 +25,7 @@ import * as TWEEN from '@tweenjs/tween.js'
 import * as satellite from 'satellite.js'
 import { Orbit } from './Orbit'
 import { WorkerManager } from './worker/manager'
+import { AllSatLinks } from './SatLinks'
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
@@ -35,16 +36,17 @@ export class ThreeSimulation {
 
   private sun!: THREE.DirectionalLight;
   private renderer!: THREE.WebGLRenderer
-  private scene!: THREE.Scene
+  public scene!: THREE.Scene //TODO: private maken
   private camera!: THREE.PerspectiveCamera
 
   private controls!: OrbitControls
-  private globe!: ThreeGlobe
+  public globe!: ThreeGlobe
   private stats!: any
 
   private orbits: Orbit[] = []
+  private satelliteLinks: AllSatLinks | null = null;
 
-  private time: Time = new Time(new Date())
+  public time: Time = new Time(new Date()) //TODO: private maken
 
   private raycaster = new THREE.Raycaster()
   private pointer = new THREE.Vector2()
@@ -182,10 +184,12 @@ export class ThreeSimulation {
       .objectFacesSurface(false)
       .atmosphereAltitude(0)
       .globeMaterial(material)
-      this.sun.position.copy(this.getSunPosition())
+    this.sun.position.copy(this.getSunPosition())
 
     const axialTiltInRadians = 23.5 * (Math.PI / 180)
     this.globe.rotation.x = axialTiltInRadians
+    
+    this.globe.userData = {name: "globe"};
 
     this.mesh = constructSatelliteMesh(this.globe.getGlobeRadius())
     this.scene.add(this.mesh.sat)
@@ -254,6 +258,7 @@ export class ThreeSimulation {
     }
     this.time.step()
     this.updateOrbits()
+    this.satelliteLinks?.render()
 
     if (this.stats) this.stats.update()
     if (this.controls) this.controls.update()
@@ -344,19 +349,28 @@ export class ThreeSimulation {
 
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
-    if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
-      this.deselect()
+    
+    if (intersects.length > 0) {
+      if ('satellite' in intersects[0].object.userData) {
+        this.deselect()
+        const meshID = intersects[0].instanceId
+        if (meshID === undefined) return
+        const satData = this.getSatelliteByMeshID(meshID)
+        if (!satData) return
+        this.currentlySelected = satData
 
-      const meshID = intersects[0].instanceId
-      if (meshID === undefined) return
-      const satData = this.getSatelliteByMeshID(meshID)
-      if (!satData) return
-      this.currentlySelected = satData
+        satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
 
-      satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
-
-      this.eventListeners['select']?.forEach((cb) => cb(satData))
-      this.escapedFollow = false
+        this.eventListeners['select']?.forEach((cb) => cb(satData))
+        this.escapedFollow = false
+      }
+      else if (intersects[0].object.position.x === 0
+              && intersects[0].object.position.y === 0
+              && intersects[0].object.position.z === 0){
+        this.deselect();
+        const clickedPosition: geoCoords = this.globe.toGeoCoords(intersects[0].point)
+        this.eventListeners['earthClicked']?.forEach((cb) => cb(clickedPosition))
+      }
     }
     else {
       this.deselect()
@@ -364,7 +378,7 @@ export class ThreeSimulation {
     this.tweeningStatus = 0
   }
 
-  private resetAllMeshes() {
+  private resetMeshes() {
     const matrix = new THREE.Matrix4()
     matrix.compose(
       new THREE.Vector3(0, 0, 0),
@@ -385,7 +399,7 @@ export class ThreeSimulation {
     this.dehover()
     this.deselect()
     this.satellites = {}
-    this.resetAllMeshes()
+    this.resetMeshes()
     this.workerManager.reset()
     this.time.setSpeed(1)
     this.removeAllOrbits();
@@ -393,7 +407,7 @@ export class ThreeSimulation {
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
-    
+
 
     this.eventListeners = {}
   }
@@ -412,11 +426,15 @@ export class ThreeSimulation {
 
   addSatellites(sats: Satellite[]) {
     sats.forEach((sat) => this.addSatellite(sat, false))
-    this.workerManager.addSatellites(sats)
+    this.workerManager.addSatellites(Object.values(this.satellites))
+  }
+
+  getSatellites(): Satellite[]{
+    return Object.values(this.satellites)
   }
 
   resendDataToWorkers() {
-    // This should be called when satData is changed 
+    // This should be called when satData is changed
     this.workerManager.addSatellites(Object.values(this.satellites))
   }
 
@@ -424,7 +442,7 @@ export class ThreeSimulation {
     this.satellites = {}
     this.currentlyHovering = null
     this.currentlySelected = null
-    this.resetAllMeshes()
+    this.resetMeshes()
 
     this.eventListeners['select']?.forEach((cb) => cb(null))
   }
@@ -457,6 +475,16 @@ export class ThreeSimulation {
       orbit.removeLine(this.scene)
     }
     this.orbits = [];
+  }
+
+  
+  addAllSatLinks(link: AllSatLinks) {
+    this.satelliteLinks = link
+  }
+
+  removeSatLink() {
+    this.satelliteLinks?.destroy()
+    this.satelliteLinks = null
   }
 
   addGroundStation() {}
@@ -537,6 +565,10 @@ export class ThreeSimulation {
     )
   }
 
+  getNameOfSats(): Satellite[]{
+    return Object.values(this.satellites);
+  }
+
   getTime() {
     return this.time
   }
@@ -552,7 +584,10 @@ export class ThreeSimulation {
 
   // Emits:
   // select(sat | undefined )
-  addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void) {
+
+  addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void
+  addEventListener(event: 'earthClicked', callback: (sat: geoCoords | undefined) => void): void
+  addEventListener(event: 'select' | 'earthClicked', callback: ((sat: Satellite | undefined) => void) | ((sat: geoCoords | undefined) => void)): void {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = []
     }

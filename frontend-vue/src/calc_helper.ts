@@ -23,7 +23,6 @@ export function calculateMeanMotionRadPerMin(a: number): number {
   const GRAVITATIONAL_PARAM = 3.986004418e14; // m^3/s^2
   const mean_motion = Math.sqrt(GRAVITATIONAL_PARAM / a ** 3);
   const rad_per_minute = mean_motion * 60;
-  console.log("No: ", rad_per_minute);
 
   return +rad_per_minute
 }
