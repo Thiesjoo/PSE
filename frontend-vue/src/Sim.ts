@@ -134,6 +134,8 @@ export class ThreeSimulation {
       .objectAltitude('alt')
       .objectFacesSurface(false)
       .atmosphereAltitude(0)
+    
+    this.globe.userData = {name: "globe"};
 
     this.mesh = constructSatelliteMesh(this.globe.getGlobeRadius())
     this.scene.add(this.mesh.sat)
@@ -294,20 +296,28 @@ export class ThreeSimulation {
 
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
-    console.log(intersects)
-    if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
-      this.deselect()
+    
+    if (intersects.length > 0) {
+      if ('satellite' in intersects[0].object.userData) {
+        this.deselect()
+        const meshID = intersects[0].instanceId
+        if (meshID === undefined) return
+        const satData = this.getSatelliteByMeshID(meshID)
+        if (!satData) return
+        this.currentlySelected = satData
 
-      const meshID = intersects[0].instanceId
-      if (meshID === undefined) return
-      const satData = this.getSatelliteByMeshID(meshID)
-      if (!satData) return
-      this.currentlySelected = satData
+        satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
 
-      satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
-
-      this.eventListeners['select']?.forEach((cb) => cb(satData))
-      this.escapedFollow = false
+        this.eventListeners['select']?.forEach((cb) => cb(satData))
+        this.escapedFollow = false
+      }
+      else if (intersects[0].object.position.x === 0
+              && intersects[0].object.position.y === 0
+              && intersects[0].object.position.z === 0){
+        this.deselect();
+        // const clickedPosition = 
+        // this.eventListeners['earthClicked']?.forEach((cb) => cb(satData))
+      }
     }
     else {
       this.deselect()

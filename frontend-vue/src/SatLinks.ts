@@ -50,7 +50,7 @@ export class AllSatLinks {
 
     //@ts-ignore
     const pathLineMaterial = new MeshLineMaterial({
-      color: new THREE.Color(0xff0000),
+      color: new THREE.Color("blue"),
       lineWidth: 1,
     })
 
