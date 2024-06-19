@@ -263,13 +263,12 @@ h3 {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
+  justify-content: space-between;
   align-items: stretch;
   background-color: #05050a7c;
   color: white;
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 10px;
   padding-bottom: 10px;
   border: 2px solid rgba(255, 255, 255, 0.75);
   border-radius: 12px;
@@ -280,21 +279,18 @@ h3 {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding: 5%
 }
 
 .sliders-sat {
   display: flex;
   flex-direction: column;
   top: 10px;
-  padding-bottom: 10%;
 }
 
 .button-box{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 5%;
 }
 
 .add-button {
@@ -308,7 +304,6 @@ h3 {
 }
 
 .del-button{
-  justify-content: space-around;;
   appearance: none;
   background-color: rgba(195, 0, 255, 0.36);
   border-radius: 200px;
@@ -317,22 +312,17 @@ h3 {
 
 .show-orbit-check{
   display: flex;
-  bottom: 50px;
   padding: 5%;
-  padding-bottom: 5%;
 }
 
 .orbit-sat {
   width: 100%;
-  // border: 2px solid rgb(0, 110, 255);
 }
 
 .orbit-info {
   right: 20%;
   height: 200px;
   width: 100%;
-  padding-top: 5%;
-  // border: 2px solid rgb(255, 0, 212);
 }
 
 .display {
@@ -368,7 +358,6 @@ h3 {
   align-content: center;
   margin-right: 5px;
   width: var(--text-width);
-  padding: 10px;
   font-size: 14px;
 }
 
