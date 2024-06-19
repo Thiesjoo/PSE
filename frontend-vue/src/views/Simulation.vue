@@ -11,18 +11,14 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-// const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
-// const showOrbit = ref(false);
-// const CURRENT_COLOR = '#FF00FF' // '#F5EEF8' (pink);
-// const satellites = ref<Satellite[]>([]);
-
-let sat: Satellite;
-let current_sat = ref<Satellite | null>(null)
-let sat_number = 1 // Used for naming satellites when creating multiple
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
 const CURRENT_COLOR = '#FF00FF' // '#F5EEF8' (pink);
 const satellites = ref<Satellite[]>([]);
+
+let sat: Satellite;
+let current_sat = ref<Satellite | null>(null)
+let sat_number = 1 // Used for naming satellites when creating multiple
 
 /**
  * Compiles a TLE for a new satellite with the given altitude.
