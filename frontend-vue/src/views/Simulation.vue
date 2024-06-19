@@ -54,9 +54,6 @@ function update_display(sat: Satellite){
     picked.value = 0;
 
     showOrbit.value = false; // TODO: I am not 100% sure, maybe it should be true
-
-    // Update sat-list
-    satellites.value = props.simulation.getNameOfSats()
 }
 
 /**
