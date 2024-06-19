@@ -17,25 +17,30 @@ export class Graph{
         this.globe = globe;
     }
 
+    private toRadians(degrees: number): number {
+        return degrees * (Math.PI / 180);
+    }
+
     private calculateDistance(sat1: Satellite, sat2: Satellite){
         const position1 = sat1.realPosition
         const position2 = sat2.realPosition
 
-        const dLat = position1.lat - position2.lat
-        const dLng = position1.lng - position2.lng
+        const lat1Rad = this.toRadians(position1.lat);
+        const lon1Rad = this.toRadians(position1.lng);
+        const lat2Rad = this.toRadians(position2.lat);
+        const lon2Rad = this.toRadians(position2.lng);
 
-        const distance = Math.sqrt(dLat * dLat + dLng * dLng)
-        return distance
+        // Haversine formula
+        const dLat = lat2Rad - lat1Rad;
+        const dLon = lon2Rad - lon1Rad;
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.sin(dLon / 2) ** 2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        // const {lat: lat1, lng: lng1} = sat1.realPosition 
-        // const {lat: lat2, lng: lng2} = sat2.realPosition 
-    
-        // const distance = Math.acos( 
-        //     Math.sin(lat1) * Math.sin(lat2) + 
-        //     Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) 
-        //     ) * EARTH_RADIUS_KM 
-    
-        // return distance
+        // Radius of Earth in kilometers. Use 3956 for miles
+        const R = 6371.0;
+        const distance = R * c;
+
+        return distance;
     }
 
     makeGraph(sats: Satellite[]){
@@ -44,7 +49,7 @@ export class Graph{
             this.adjList.push(satData)
             for (const compareSat of sats){
                 const diff = this.calculateDistance(sat, compareSat);
-                if (diff < 6){
+                if (diff < 550){
                     satData.connections.push(compareSat);
                 }
             }
