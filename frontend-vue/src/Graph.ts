@@ -1,6 +1,7 @@
 import { Satellite } from "./Satellite";
 import { EARTH_RADIUS_KM } from "./common/constants";
 import ThreeGlobe from "three-globe";
+import { geoCoords } from "./common/utils";
 
 type node = {sat: Satellite,
             connections: Satellite[],
@@ -8,6 +9,12 @@ type node = {sat: Satellite,
             gScore: number,
             hScore: number,
             parent: node | null}
+
+type coords = {
+    lat: number,
+    lng: number,
+    alt: number
+}
 
 export class Graph{
     private globe!: ThreeGlobe;
@@ -21,14 +28,15 @@ export class Graph{
         return degrees * (Math.PI / 180);
     }
 
-    private calculateDistance(sat1: Satellite, sat2: Satellite){
-        const position1 = sat1.realPosition
-        const position2 = sat2.realPosition
+    private calculateDistanceSat(sat1: Satellite, sat2: Satellite){
+        return this.calculateDistance(sat1.realPosition, sat2.realPosition);
+    }
 
-        const lat1Rad = this.toRadians(position1.lat);
-        const lon1Rad = this.toRadians(position1.lng);
-        const lat2Rad = this.toRadians(position2.lat);
-        const lon2Rad = this.toRadians(position2.lng);
+    private calculateDistance(coords1: coords, coords2: coords){
+        const lat1Rad = this.toRadians(coords1.lat);
+        const lon1Rad = this.toRadians(coords1.lng);
+        const lat2Rad = this.toRadians(coords2.lat);
+        const lon2Rad = this.toRadians(coords2.lng);
 
         // Haversine formula
         const dLat = lat2Rad - lat1Rad;
@@ -48,7 +56,7 @@ export class Graph{
             const satData: node = {sat: sat, connections: [], fScore: Infinity, gScore: Infinity, hScore: Infinity, parent: null};
             this.adjList.push(satData)
             for (const compareSat of sats){
-                const diff = this.calculateDistance(sat, compareSat);
+                const diff = this.calculateDistanceSat(sat, compareSat);
                 if (diff < 550){
                     satData.connections.push(compareSat);
                 }
@@ -111,8 +119,8 @@ export class Graph{
                 if (closedList.includes(connectingNode)){
                     continue;
                 }
-                const newGScore = current.gScore + this.calculateDistance(current.sat, connectingNode.sat);
-                const newHScore = this.calculateDistance(connectingNode.sat, goalNode.sat);
+                const newGScore = current.gScore + this.calculateDistanceSat(current.sat, connectingNode.sat);
+                const newHScore = this.calculateDistanceSat(connectingNode.sat, goalNode.sat);
                 const newFScore = newGScore + newHScore;
                 if (!openList.includes(connectingNode) || newFScore < connectingNode.fScore){
                     connectingNode.gScore = newGScore;
@@ -125,5 +133,22 @@ export class Graph{
                 }
             }
         }
+    }
+
+    findClosestSat(coords: coords){
+        let closest = Infinity;
+        let closestNode: node | null = null;
+
+        for (const node of this.adjList){
+            const distance = this.calculateDistance(coords, node.sat.realPosition);
+            if (distance < closest){
+                closest = distance;
+                closestNode = node;
+            }
+        }
+        if (closestNode){
+            return closestNode.sat
+        }
+        
     }
 }

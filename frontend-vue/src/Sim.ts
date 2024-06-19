@@ -7,7 +7,7 @@ import ThreeGlobe from 'three-globe'
 import Earth from './assets/earth-blue-marble.jpg'
 import Gaia from './assets/Gaia.png'
 import { constructSatelliteMesh, SatelliteMeshes, type Satellite } from './Satellite'
-import { loadTexture, shiftLeft } from './common/utils'
+import { loadTexture, shiftLeft, geoCoords } from './common/utils'
 import {
   EARTH_RADIUS_KM,
   LINE_SIZE,
@@ -315,8 +315,8 @@ export class ThreeSimulation {
               && intersects[0].object.position.y === 0
               && intersects[0].object.position.z === 0){
         this.deselect();
-        // const clickedPosition = 
-        // this.eventListeners['earthClicked']?.forEach((cb) => cb(satData))
+        const clickedPosition: geoCoords = this.globe.toGeoCoords(intersects[0].point)
+        this.eventListeners['earthClicked']?.forEach((cb) => cb(clickedPosition))
       }
     }
     else {
@@ -527,8 +527,9 @@ export class ThreeSimulation {
 
   // Emits:
   // select(sat | undefined )
-
-  addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void) {
+  addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void
+  addEventListener(event: 'earthClicked', callback: (sat: geoCoords | undefined) => void): void
+  addEventListener(event: 'select' | 'earthClicked', callback: ((sat: Satellite | undefined) => void) | ((sat: geoCoords | undefined) => void)): void {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = []
     }

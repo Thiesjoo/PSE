@@ -8,9 +8,14 @@ import SpeedButtons from '@/components/SpeedButtons.vue'
 import { Graph } from '@/Graph'
 import { SatManager, Filter } from '@/common/sat-manager'
 import { AllSatLinks, SatLinks } from '@/SatLinks'
+import { geoCoords } from '@/common/utils'
+
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
+
+let firstCoords: geoCoords
+let secondCoords: geoCoords;
 
 const manager = new SatManager(props.simulation)
 await manager.init()
@@ -23,15 +28,16 @@ manager.updateSatellites()
 
 const currentSelectedSatellite = ref(undefined as Satellite | undefined)
 
-props.simulation.addEventListener('select', (sat) => {
-  if (sat){
-    const orbit = props.simulation.addOrbit(sat, false);
-    sat.setOrbit(orbit)
+props.simulation.addEventListener('earthClicked', (coords) => {
+  if (coords){
+    if (!firstCoords){
+      firstCoords = coords;
+    }
+    else if (!secondCoords){
+      secondCoords = coords;
+      makeGraph();
+    }
   }
-  else if (currentSelectedSatellite.value){
-    props.simulation.removeOrbit(currentSelectedSatellite.value as Satellite)
-  }
-  currentSelectedSatellite.value = sat;
 })
 
 function makeGraph() {
@@ -48,8 +54,12 @@ function makeGraph() {
     })
     props.simulation.addAllSatLinks(all)
 
-
-    const path = graph.findPath(satellites[0], satellites[100]);
+    const sat1 = graph.findClosestSat({alt: firstCoords.altitude, lat: firstCoords.lat, lng: firstCoords.lng})
+    const sat2 = graph.findClosestSat({alt: secondCoords.altitude, lat: secondCoords.lat, lng: secondCoords.lng})
+    if (!sat1 || !sat2){
+      return
+    }
+    const path = graph.findPath(sat1, sat2);
     const satList = []
     if (path) {
         for (const node of path) {
