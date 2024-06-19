@@ -2,7 +2,6 @@
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
 import SpeedButtons from '@/components/SpeedButtons.vue'
-import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import {
   epochUpdate,
   calculateRevolutionPerDay,
@@ -11,6 +10,7 @@ import {
 } from '@/calc_helper'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -259,27 +259,6 @@ h3 {
   text-align: center;
   font-weight: bold;
 }
-
-// .left-info-block {
-//   position: absolute;
-//   top: 0px;
-//   left: 0;
-//   width: 350px;
-//   height: 100%;
-//   display: flex;
-//   flex-flow: column nowrap;
-//   justify-content: space-between;
-//   align-items: stretch;
-//   background-color: #05050a7c;
-//   color: white;
-//   padding-left: 20px;
-//   padding-right: 20px;
-//   padding-bottom: 10px;
-//   border: 2px solid rgba(255, 255, 255, 0.75);
-//   border-radius: 12px;
-//   padding: 25px;
-//   overflow-y: scroll;
-// }
 
 .name-sat {
   display: flex;
