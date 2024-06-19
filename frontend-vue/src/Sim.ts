@@ -312,7 +312,7 @@ export class ThreeSimulation {
     this.tweeningStatus = 0
   }
 
-  private resetAllMeshes() {
+  private resetMeshes() {
     const matrix = new THREE.Matrix4()
     matrix.compose(
       new THREE.Vector3(0, 0, 0),
@@ -333,7 +333,7 @@ export class ThreeSimulation {
     this.dehover()
     this.deselect()
     this.satellites = {}
-    this.resetAllMeshes()
+    this.resetMeshes()
     this.workerManager.reset()
     this.time.setSpeed(1)
     this.removeAllOrbits();
@@ -360,7 +360,7 @@ export class ThreeSimulation {
 
   addSatellites(sats: Satellite[]) {
     sats.forEach((sat) => this.addSatellite(sat, false))
-    this.workerManager.addSatellites(sats)
+    this.workerManager.addSatellites(Object.values(this.satellites))
   }
 
   resendDataToWorkers() {
@@ -372,7 +372,7 @@ export class ThreeSimulation {
     this.satellites = {}
     this.currentlyHovering = null
     this.currentlySelected = null
-    this.resetAllMeshes()
+    this.resetMeshes()
 
     this.eventListeners['select']?.forEach((cb) => cb(null))
   }
