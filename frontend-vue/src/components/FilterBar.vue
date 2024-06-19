@@ -4,7 +4,7 @@ import { SatManager } from '@/common/sat-manager'
 import FilterItem from './FilterItem.vue'
 import InfoPopup from './InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n() 
+const { t } = useI18n()
 
 import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/default.css';
