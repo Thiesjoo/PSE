@@ -9,7 +9,7 @@ import Gaia from './assets/Gaia.png'
 import NightLights from "./assets/night_lights_modified.png"
 
 import { constructSatelliteMesh, SatelliteMeshes, type Satellite, polar2Cartesian } from './Satellite'
-import { loadTexture, shiftLeft } from './common/utils'
+import { geoCoords, loadTexture, shiftLeft } from './common/utils'
 import {
   EARTH_RADIUS_KM,
   LINE_SIZE,
