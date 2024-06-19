@@ -4,7 +4,7 @@ import { SatManager } from '@/common/sat-manager'
 import FilterItem from './FilterItem.vue'
 import InfoPopup from './InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n() 
+const { t } = useI18n()
 
 import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/default.css';
@@ -65,10 +65,7 @@ updateLaunchYearFilter()
       <button @click="manager.selectAll()">{{t("Select All")}}</button>
       
       <div class="launch-year-filter-block">
-
         <label>{{t("FilteringLaunchYear1") + slider_values[0] + t("FilteringLaunchYear2") + slider_values[1]}}. </label>
-
-
         <vue-slider v-model="slider_values" 
           :min="FIRST_LAUNCH_YEAR" 
           :max="MOST_RECENT_LAUNCH_YEAR"

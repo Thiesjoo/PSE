@@ -6,8 +6,10 @@ import ThreeGlobe from 'three-globe'
 
 import Earth from './assets/earth-blue-marble.jpg'
 import Gaia from './assets/Gaia.png'
-import { constructSatelliteMesh, SatelliteMeshes, type Satellite } from './Satellite'
-import { loadTexture, shiftLeft, geoCoords } from './common/utils'
+import NightLights from "./assets/night_lights_modified.png"
+
+import { constructSatelliteMesh, SatelliteMeshes, type Satellite, polar2Cartesian } from './Satellite'
+import { geoCoords, loadTexture, shiftLeft } from './common/utils'
 import {
   EARTH_RADIUS_KM,
   LINE_SIZE,
@@ -32,6 +34,7 @@ export class ThreeSimulation {
   private tweeningStatus: number = 0
   private escapedFollow = false
 
+  private sun!: THREE.DirectionalLight;
   private renderer!: THREE.WebGLRenderer
   public scene!: THREE.Scene //TODO: private maken
   private camera!: THREE.PerspectiveCamera
@@ -90,6 +93,32 @@ export class ThreeSimulation {
     document.body.appendChild(this.stats.dom)
   }
 
+  private getSunPosition() {
+    // Calculate the position of the sun in our scene
+    // This is used for the night lights on the Earth. solar ephemeris
+    const time = this.time.time;
+    const copy  = new Date(time.getTime());
+    // get time in GMT
+    const hours = copy.getUTCHours();
+    const minutes = copy.getUTCMinutes();
+    const seconds = copy.getUTCSeconds();
+
+    // progress in day
+    const progress = (hours * 60 * 60 + minutes * 60 + seconds) / (24 * 60 * 60);
+
+    // at 0.00 the sun is at lat0, lon0, 4 hours later at lat 
+    const lat = 0;
+    const lng = progress * 360 - 180;
+    const cartesianPosition = polar2Cartesian(
+        lat,
+        lng,
+        EARTH_RADIUS_KM * 3,
+        this.globe.getGlobeRadius()
+      )
+
+    return new THREE.Vector3(cartesianPosition.x, cartesianPosition.y, cartesianPosition.z)
+  }
+
   private async initScene(canvas: HTMLCanvasElement) {
     this.scene = new THREE.Scene()
 
@@ -118,22 +147,47 @@ export class ThreeSimulation {
     }
 
     // Add lights
-    this.scene.add(new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI))
-    this.scene.add(new THREE.AmbientLight(0xcccccc, Math.PI))
+    this.sun = new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI)
+    this.scene.add(this.sun)
+
+    const nightLights = await loadTexture(NightLights)
 
     // Add background
     const envMap = await loadTexture(Gaia)
     envMap.mapping = THREE.EquirectangularReflectionMapping
     this.scene.background = envMap
 
+    const earth = await loadTexture(Earth)
+    earth.colorSpace = THREE.SRGBColorSpace;
+
+    const material = new THREE.MeshPhongMaterial({
+        map: earth,
+        emissiveMap: nightLights,
+        emissive: new THREE.Color(0xffff88),
+    })
+
+
+    // Code from: https://github.com/franky-adl/threejs-earth
+    material.onBeforeCompile = function( shader ) {
+        shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `
+            vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );
+            emissiveColor *= 1.0 - smoothstep(-0.2, 0.2, dot(normal, directionalLights[0].direction));
+            totalEmissiveRadiance *= emissiveColor.rgb;
+        `)
+    }
+
     // Add the Earth
     this.globe = new ThreeGlobe()
-      .globeImageUrl(Earth)
       .objectLat('lat')
       .objectLng('lng')
       .objectAltitude('alt')
       .objectFacesSurface(false)
       .atmosphereAltitude(0)
+      .globeMaterial(material)
+    this.sun.position.copy(this.getSunPosition())
+
+    const axialTiltInRadians = 23.5 * (Math.PI / 180)
+    this.globe.rotation.x = axialTiltInRadians
     
     this.globe.userData = {name: "globe"};
 
@@ -198,10 +252,10 @@ export class ThreeSimulation {
       this.globe.rotation.y += 0.001
     }
 
+    this.sun.position.copy(this.getSunPosition())
     if (this.workerManager.finishPropagate(this.time.time, satellite.gstime(this.time.time))) {
       this.updatePositionsOfMeshes()
     }
-
     this.time.step()
     this.updateOrbits()
     this.satelliteLinks?.render()
@@ -216,7 +270,6 @@ export class ThreeSimulation {
     // Update the picking ray with the camera and pointer position
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
-
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
       this.dehover()
 
@@ -354,7 +407,7 @@ export class ThreeSimulation {
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
-    
+
 
     this.eventListeners = {}
   }
@@ -381,7 +434,7 @@ export class ThreeSimulation {
   }
 
   resendDataToWorkers() {
-    // This should be called when satData is changed 
+    // This should be called when satData is changed
     this.workerManager.addSatellites(Object.values(this.satellites))
   }
 
@@ -512,6 +565,10 @@ export class ThreeSimulation {
     )
   }
 
+  getNameOfSats(): Satellite[]{
+    return Object.values(this.satellites);
+  }
+
   getTime() {
     return this.time
   }
@@ -527,6 +584,7 @@ export class ThreeSimulation {
 
   // Emits:
   // select(sat | undefined )
+
   addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void
   addEventListener(event: 'earthClicked', callback: (sat: geoCoords | undefined) => void): void
   addEventListener(event: 'select' | 'earthClicked', callback: ((sat: Satellite | undefined) => void) | ((sat: geoCoords | undefined) => void)): void {

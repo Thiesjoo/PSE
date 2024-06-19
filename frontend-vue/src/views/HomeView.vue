@@ -29,7 +29,7 @@ props.simulation.moveRight()
       </RouterLink>
       <RouterLink to="/simulation">
         <div class="box">
-          <h2>{{ t("Make your own satellite") }}</h2>
+          <h2>{{ t("Create satellites") }}</h2>
           <br />
           <div class="icon">
             <img src="../assets/simulation.png" alt="Launch" width="100" height="100" />
