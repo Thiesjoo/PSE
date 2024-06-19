@@ -27,8 +27,8 @@ export interface SatPosition {
 }
 
 export type geoCoords = {
-  lat: number,
-  lng: number,
+  lat: number
+  lng: number
   altitude: number
 }
 
@@ -83,4 +83,8 @@ export const loadTexture = async (url: string): Promise<THREE.Texture> => {
       resolve(texture)
     })
   })
+}
+export const rounded = (num: number, digits: number) => {
+  const factor = Math.pow(10, digits)
+  return Math.round(num * factor) / factor
 }
