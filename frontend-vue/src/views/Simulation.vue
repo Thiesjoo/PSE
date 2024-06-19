@@ -280,7 +280,7 @@ props.simulation.addEventListener('select', (satellite) => {
         v-for="satellite in satellites"
         :key="satellite.name"
         :class="{'selected': current_sat === satellite }"
-        @click="change_selected(satellite)"
+        @click="change_selected(satellite as Satellite)"
         class="satellite-item"
       >
         {{ satellite.name }}
