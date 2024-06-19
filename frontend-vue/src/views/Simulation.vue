@@ -85,7 +85,7 @@ function add_new_satellite(alt: number){
     // Update sat-list
     satellites.value = props.simulation.getNameOfSats()
 
-    return sats[0]
+    return new_sat
 }
 
 /**
