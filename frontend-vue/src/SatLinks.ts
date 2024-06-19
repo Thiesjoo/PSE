@@ -1,13 +1,14 @@
 import * as THREE from 'three'
 import { Satellite } from './Satellite'
 import { LINE_SIZE, MAX_LINE_SIZE_LINKS } from './common/constants'
+import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
 
 export class AllSatLinks {
   private line: THREE.Line | null = null
   private lineGeometry: THREE.BufferGeometry | null = null
 
-  private pathLines: THREE.Line | null = null
-  private pathGeometry: THREE.BufferGeometry | null = null
+  private pathLines: MeshLine | null = null
+  private pathGeometry: MeshLineGeometry | null = null
 
   private allSatLinks: SatLinks[] = []
   private scene: THREE.Scene
@@ -47,24 +48,21 @@ export class AllSatLinks {
     this.lineGeometry.setDrawRange(0, MAX_LINE_SIZE_LINKS)
     this.line = new THREE.Line(this.lineGeometry, lineMaterial)
 
-    const pathLineMaterial = new THREE.LineBasicMaterial({
-      //   vertexColors: true,
-      //   transparent: true,
-      linewidth: 2,
-      color: 0xff0000
+    //@ts-ignore
+    const pathLineMaterial = new MeshLineMaterial({
+      color: new THREE.Color(0xff0000),
+      lineWidth: 1,
     })
 
-    this.pathGeometry = new THREE.BufferGeometry()
-    const pathPositions = new Float32Array(LINE_SIZE * 3)
-    this.pathGeometry.setAttribute('position', new THREE.BufferAttribute(pathPositions, 3))
-    this.pathGeometry.setDrawRange(0, LINE_SIZE)
-    this.pathLines = new THREE.Line(this.pathGeometry, pathLineMaterial)
-
-    this.pathLines.renderOrder = 0
-    this.line.renderOrder = 1
-
+    this.pathGeometry = new MeshLineGeometry()
+    this.pathLines = new MeshLine(this.pathGeometry, pathLineMaterial)
+    
     scene.add(this.line)
     scene.add(this.pathLines)
+
+    this.pathLines.renderOrder = -1
+    this.line.renderOrder = 1
+
     this.scene = scene
   }
 
@@ -132,23 +130,7 @@ export class AllSatLinks {
   private renderPath() {
     if (!this.pathLines || !this.pathGeometry) return
 
-    if (this.path.length === 0) {
-      this.pathGeometry.setDrawRange(0, 0)
-      return
-    }
-
-    const positions = this.pathLines.geometry.attributes.position.array
-    if (!positions) return
-
-    let lineCounter = 0
-    for (const sat of this.path) {
-      positions[lineCounter++] = sat.xyzPosition.x
-      positions[lineCounter++] = sat.xyzPosition.y
-      positions[lineCounter++] = sat.xyzPosition.z
-    }
-
-    this.pathGeometry.setDrawRange(0, lineCounter / 3)
-    this.pathLines.geometry.attributes.position.needsUpdate = true
+    this.pathGeometry.setPoints(this.path.map((sat) => new THREE.Vector3(sat.xyzPosition.x, sat.xyzPosition.y, sat.xyzPosition.z)))
   }
 
   destroy() {

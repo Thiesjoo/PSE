@@ -59,6 +59,7 @@ function makeGraph() {
     }
 
     all.setPath(satList)
+    props.simulation.setCurrentlySelected(satList[0])
     console.log(path)
 }
 
