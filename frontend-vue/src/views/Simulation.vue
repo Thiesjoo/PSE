@@ -263,7 +263,7 @@ h3 {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: stretch;
   background-color: #05050a7c;
   color: white;
@@ -324,7 +324,7 @@ h3 {
 
 .orbit-sat {
   width: 100%;
-  border: 2px solid rgb(0, 110, 255);
+  // border: 2px solid rgb(0, 110, 255);
 }
 
 .orbit-info {
@@ -332,7 +332,7 @@ h3 {
   height: 200px;
   width: 100%;
   padding-top: 5%;
-  border: 2px solid rgb(255, 0, 212);
+  // border: 2px solid rgb(255, 0, 212);
 }
 
 .display {
@@ -415,4 +415,3 @@ h3 {
     }
   }
 </i18n>
-
