@@ -79,16 +79,10 @@ const props = defineProps<{
 <i18n>
     {
         "en": {
-            "Satellite Radar": "Satellite Radar",
-            "All satellites": "All satellites",
-            "Make your own satellite": "Make your own satellite",
-            "Communication": "Communication"
+            "About": "About"
         },
         "nl": {
-            "Satellite Radar": "Satelliet Radar",
-            "All satellites": "Alle satellieten",
-            "Make your own satellite": "Maak je eigen satelliet",
-            "Communication": "Communicatie"
+            "About": "Over ons"
         }
     }
 </i18n>
