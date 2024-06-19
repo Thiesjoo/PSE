@@ -55,10 +55,10 @@ watch(idle, (isIdle) => {
       :class="{ active: $i18n.locale === 'nl' }"
     />
     <img
-      src="http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg"
-      alt="English flag"
+      src="http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg"
+      alt="British flag"
       @click="$i18n.locale = 'en'"
-      :class="{ active: $i18n.locale === 'en' }"
+      :class="{ active: $i18n.locale === 'en' || $i18n.locale === 'en-US'}"
     />
   </div>
 
