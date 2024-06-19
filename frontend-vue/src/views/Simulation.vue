@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 let sat: Satellite;
-let selectedSat = ref<Satellite | null>(null)
+// let sat = ref<Satellite | null>(null)
 let sat_number = 1 // Used for naming satellites when creating multiple
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
@@ -42,6 +42,8 @@ function reset_sliders(sat: Satellite){
     raan.value = +(sat.satData.nodeo * 180 / Math.PI).toFixed(0);
     e.value = sat.satData.ecco * 100;
     picked.value = 0;
+
+    showOrbit.value = false; // TODO: I am not 100% sure, maybe it should be true
 
     // Update sat-list
     satellites.value = props.simulation.getNameOfSats()
@@ -145,11 +147,6 @@ watch(remove, (newValue) => {
         sat = add_new_satellite(basic_alt);
       }
     })
-
-// ********* Reactive variable sat *********
-watch(sat, (Value) => {
-  selectedSat.value = Value
-})
 
 // ********* ORBIT shown *********
 
