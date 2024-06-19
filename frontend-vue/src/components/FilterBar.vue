@@ -50,23 +50,32 @@ updateLaunchYearFilter()
 
 <template>
   <div class="left-info-block">
-    <div class="tmp">
-      <button @click="manager.selectNone()">{{t("Unselect All")}}</button>
-      <button @click="manager.selectAll()">{{t("Select All")}}</button>
+    <div class="flex">
+    <h2>Category filter</h2>
+    <i> Some satellites are in multiple categories. They will be shown in all categories they belong to.</i>
+      <div class="filter-block">
       <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
         {{ t(filter.name) }} - {{ manager.count[filter.name] }}
         <InfoPopup>
             {{ t(filter.name + '_description') }}
         </InfoPopup>
       </FilterItem>
+      </div>
+      <button @click="manager.selectNone()">{{t("Unselect All")}}</button>
+      <button @click="manager.selectAll()">{{t("Select All")}}</button>
       
       <div class="launch-year-filter-block">
-        <label>Filtering on launches from {{ slider_values[0] }} to {{ slider_values[1] }}. </label>
+
+        <label>{{t("FilteringLaunchYear1") + slider_values[0] + t("FilteringLaunchYear2") + slider_values[1]}}. </label>
+
+
         <vue-slider v-model="slider_values" 
           :min="FIRST_LAUNCH_YEAR" 
           :max="MOST_RECENT_LAUNCH_YEAR"
           :min-range="1"
           :enable-cross="false"
+          :tooltip="'always'"
+          :tooltip-placement="['bottom', 'bottom']"
           :lazy="true"
           id="launch-year-slider"
           v-on:drag-end="updateLaunchYearFilter"/>
@@ -88,22 +97,54 @@ updateLaunchYearFilter()
   height: 100%;
   background-color: #01023890;
   color: white;
-  padding-left: 25px;
-  padding-right: 25px;
-  padding-top: 10px;
-  padding-bottom: 10px;
   border: 2px solid rgba(255, 255, 255, 0.75);
   border-radius: 12px;
-  padding: 50px;
+  padding: 30px 25px;
+  max-height: 100%;
 }
 
-.tmp {
+.flex {
   display: flex;
   flex-direction: column;
+  max-height: 100%;
+
+  button {
+    margin: 5px 0;
+    background-color: #010238;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+  }
+}
+
+.filter-block {
+    max-height: 60vh;
+    overflow-y: scroll;
+    position: relative;
+    
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #413939;
+        border-radius: 2em;
+    }
+
+
+
+    .more {
+        z-index: 100;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+
+    }
 }
 
 .launch-year-filter-block {
-  margin-top: 20px;
+    margin-bottom: 30px;
 }
 
 #include_without_launch_year {
@@ -165,8 +206,12 @@ updateLaunchYearFilter()
       "Geodetics_description": "Passive satellites with no moving parts. These carried 60 retroreflectors, which reflect back lasers sent by ground stations to pinpoint the orbit of the satellite. The small mass of these satellite’s means that their orbits are influenced by slight changes in Earth’s gravitational fields and these small adjustments to their orbits can be detected. The causes of the slight gravitational changes, oceanic tides and Earth's structure.",
       "Engineering": "Engineering",
       "Engineering_description": "Satellites which are used to test technologies.",
+
       "Unselect All": "Unselect All",
-      "Select All": "Select All"
+      "Select All": "Select All",
+
+      "FilteringLaunchYear1": "Filtering on launches from ",
+      "FilteringLaunchYear2": " to "
   },
   "nl": {
       "Last 30 Days' Launches": "Laatste 30 Dagen Lanceringen",
@@ -219,8 +264,12 @@ updateLaunchYearFilter()
       "Geodetics_description": "Passieve satellieten zonder bewegende onderdelen. Deze droegen 60 retroreflectoren, die lasers die door grondstations worden gestuurd, terugkaatsen om de baan van de satelliet nauwkeurig te bepalen. De kleine massa van deze satellieten betekent dat hun banen worden beïnvloed door kleine veranderingen in de zwaartekrachtvelden van de aarde en deze kleine aanpassingen aan hun banen kunnen worden gedetecteerd. De oorzaken van de lichte zwaartekrachtsveranderingen, oceanische getijden en de structuur van de aarde.",
       "Engineering": "Techniek",
       "Engineering_description": "Satellieten die worden gebruikt om technologieën te testen.",
+
       "Unselect All": "Deselecteer alles",
-      "Select All": "Selecteer alles"
+      "Select All": "Selecteer alles",
+
+      "FilteringLaunchYear1": "Filteren op lanceringen van ",
+      "FilteringLaunchYear2": " tot "
   }
 }
 </i18n>

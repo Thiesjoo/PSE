@@ -22,7 +22,14 @@ const router = createRouter({
     {
       path: '/communication',
       name: 'Communication',
+
       component: () => import('../views/Communication.vue')
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('../views/About.vue')
+
     }
   ]
 })
