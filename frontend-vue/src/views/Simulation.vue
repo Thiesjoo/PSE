@@ -16,11 +16,16 @@ let sat: Satellite;
 let sat_number = 1 // Used for naming satellites when creating multiple
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
-const CURRENT_COLOR = '#FF00FF' // '#F5EEF8';
+const CURRENT_COLOR = '#FF00FF' // '#F5EEF8' (pink);
 
 
 const satellites = ref<Satellite[]>([]);
 
+/**
+ * Compiles a TLE for a new satellite with the given altitude.
+ *
+ * @param alt - The altitude of the satellite.
+ */
 function tle_new_satellite(alt: number) {
   // Set epoch as current time and alt as 160km
   let epoch = epochUpdate()
@@ -37,7 +42,11 @@ function tle_new_satellite(alt: number) {
   return tle
 }
 
-// Set to initial values or the values of a selected satellite
+/**
+ * Set to initial values or the values of a selected satellite
+ *
+ * @param {Satellite} sat - The satellite to reset the sliders to.
+ */
 function reset_sliders(sat: Satellite){
     height.value = calculateHeight(sat.satData.no);
     inclination.value = +(sat.satData.inclo * 180 / Math.PI).toFixed(0);
@@ -51,6 +60,12 @@ function reset_sliders(sat: Satellite){
     satellites.value = props.simulation.getNameOfSats()
 }
 
+/**
+ * Adds a new satellite to the simulation.
+ *
+ * @param {number} alt - The altitude for the new satellite.
+ * @returns {Satellite} The newly created satellite.
+ */
 function add_new_satellite(alt: number){
     let tle = tle_new_satellite(alt);
     const sats = Satellite.fromMultipleTLEs(tle);
@@ -65,7 +80,11 @@ function add_new_satellite(alt: number){
     return sats[0]
 }
 
-// Change selected satellite
+/**
+ * Switch to selected satellite and change color.
+ *
+ * @param {Satellite} satellite - The satellite to select.
+ *  */
 function change_selected(satellite: Satellite){
   if (satellite != sat){
     sat = satellite; // Make satellite current satellite (sat)
