@@ -76,6 +76,7 @@ export class Satellite {
   public name!: string
   public satData!: SatRec
   public country!: string
+  public launch_year!: number
   public categories!: string[]
   public currentPosition: PositionAndVelocity | null = null
   public realPosition = { lat: 0, lng: 0, alt: 0 }
@@ -111,6 +112,7 @@ export class Satellite {
       const sat = new Satellite()
       sat.fromTLEArray([satJSON.name, satJSON.line1, satJSON.line2])
       sat.country = satJSON.country
+      sat.launch_year = satJSON.launch_year
       sat.categories = satJSON.categories
 
       return sat

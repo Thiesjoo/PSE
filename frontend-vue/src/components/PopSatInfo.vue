@@ -2,7 +2,9 @@
 import { Satellite } from '@/Satellite'
 import { computed, getCurrentInstance, onUnmounted, ref, watch } from 'vue'
 import PopFrame from './PopFrame.vue'
-import { countryToNameConversion } from '@/common/countries'
+import InfoPopup from '@/components/InfoPopup.vue'
+import { useI18n } from 'vue-i18n'
+const { t, locale } = useI18n() 
 
 // Aantal getallen achter de komma in satellietinformatie
 const numDigits = 3
@@ -33,7 +35,9 @@ const epoch = computed(() => {
   date.setSeconds(0)
   date.setMilliseconds(0)
 
-  return date.toLocaleTimeString('nl-NL', {
+  const localeCode = locale.value === 'nl' ?  'nl-NL' : 'en-US'
+
+  return date.toLocaleTimeString(localeCode, {
     hour: '2-digit',
     minute: '2-digit',
     weekday: 'short',
@@ -69,7 +73,7 @@ onUnmounted(() => {
 
 <template>
   <PopFrame :open="true" class="popup" >
-    <div class="top" :key="key">
+    <div class="top">
       <h1>{{ currentSelectedSatellite.name }}</h1>
 
       <img
@@ -90,56 +94,81 @@ onUnmounted(() => {
           :alt="`${currentSelectedSatellite.country.split('/')[1]} flag`"
         />
       </div>
-      <p id="SatelliteCountry">{{ countryToNameConversion(currentSelectedSatellite.country) }}</p>
-      <p>
-        <span>NORAD Catalog Number:</span>
+      <p id="SatelliteCountry">{{ t(currentSelectedSatellite.country) }}</p>
+      <p id="norad">
+        <InfoPopup>
+            {{ t("NORAD Catalog Number_description") }}
+        </InfoPopup>
+        <span>{{ t("NORAD Catalog Number") }}:</span>
         <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
       </p>
     </div>
-    <div class="live_info">
+    <div class="live_info"  :key="key">
       <p>
-        Longitude:
+        {{ t("Longitude") }}:
         <span id="SatelliteLongitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, numDigits) }}º</span
         >
+        <InfoPopup>
+            {{ t("Longitude_description") }}
+        </InfoPopup>
       </p>
       <p>
-        Latitude:
+        {{ t("Latitude") }}:
         <span id="SatelliteLatitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, numDigits) }}º
         </span>
+        <InfoPopup>
+            {{ t("Latitude_description") }}
+        </InfoPopup>
       </p>
       <p>
-        Altitude:
+        {{ t("Altitude") }}:
         <span id="SatelliteAltitude"
           >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, numDigits) }}km</span
         >
+        <InfoPopup>
+            {{ t("Altitude_description") }}
+        </InfoPopup>
       </p>
       <p>
-        Speed:
+        {{ t("Speed") }}:
         <span id="SatelliteSpeed">{{ speed }}km/s</span>
+        <InfoPopup>
+            {{ t("Speed_description") }}
+        </InfoPopup>
       </p>
     </div>
-    <div class="epoch">
-      <p>Last epoch:</p>
+    <div class="epoch"  :key="key">
+      <p>{{ t("Last epoch") }}:</p>
       <p id="SatelliteEpoch">{{ epoch }}</p>
+      <InfoPopup>
+            {{ t("Last epoch_description") }}
+        </InfoPopup>
     </div>
   </PopFrame>
 </template>
 
 <style scoped lang="scss">
 .popup {
+    p, .epoch {
+        position: relative
+    }
+
   .top {
-    //  display items in center
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    // margin-bottom: 1em;
-    // margin-top: 0;
 
     #SatelliteCountry {
       margin-bottom: 0.5em;
+    }
+
+    #norad {
+        div {
+                margin-bottom: 1em;
+        }
     }
 
     img {
@@ -158,9 +187,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    // align-items: left;
     margin-top: 2em;
-    // margin-left: 1.3em;
     line-height: 2.5em;
   }
 
@@ -182,3 +209,213 @@ onUnmounted(() => {
   padding: 1em;
 }
 </style>
+<i18n>
+{
+    "en": {
+        "NORAD Catalog Number": "NORAD Catalog Number",
+        "NORAD Catalog Number_description": "This is a nine-digit number assigned by the United States Space Command in the order of launch or discovery to all artificial objects in the orbits of Earth and those that left Earth's orbit.",
+        "Longitude": "Longitude",
+        "Longitude_description": "How much east or west is the satellite.",
+        "Latitude": "Latitude",
+        "Latitude_description": "How much north or south is the satellite.",
+        "Altitude": "Altitude",
+        "Altitude_description": "How high is the satellite.",
+        "Speed": "Speed",
+        "Speed_description": "How fast the satellite is.",
+        "Last epoch": "Last epoch",
+        "Last epoch_description": "Last time the satellite published the orbit it currently is in.",
+
+        "US": "United States",
+        "FR": "France",
+        "DE": "Germany",
+        "GB": "Great Britain",
+        "JP": "Japan",
+        "RU": "Russia",
+        "AR": "Argentina",
+        "IT": "Italy",
+        "BR": "Brazil",
+        "INT": "International",
+        "CN": "China",
+        "LU": "Luxembourg",
+        "IL": "Israel",
+        "EU": "European Union",
+        "CA": "Canada",
+        "SE": "Sweden",
+        "SA": "Saudi Arabia",
+        "GR": "Greece",
+        "AE": "United Arab Emirates",
+        "AU": "Australia",
+        "IN": "India",
+        "ES": "Spain",
+        "TH": "Thailand",
+        "IR": "Iran",
+        "KR": "South Korea",
+        "ID": "Indonesia",
+        "NO": "Norway",
+        "VN": "Vietnam",
+        "DK": "Denmark",
+        "TR": "Turkey",
+        "MY": "Malaysia",
+        "CH": "Switzerland",
+        "DZ": "Algeria",
+        "EG": "Egypt",
+        "SG": "Singapore",
+        "SG/TW": "Singapore/Taiwan",
+        "KZ": "Kazakhstan",
+        "PK": "Pakistan",
+        "NG": "Nigeria",
+        "MX": "Mexico",
+        "CL": "Chile",
+        "BY": "Belarus",
+        "VE": "Venezuela",
+        "AZ": "Azerbaijan",
+        "AT": "Austria",
+        "EC": "Ecuador",
+        "EE": "Estonia",
+        "ZA": "South Africa",
+        "NL": "Netherlands",
+        "BO": "Bolivia",
+        "FR/IT": "France/Italy",
+        "BE": "Belgium",
+        "UA": "Ukraine",
+        "IQ": "Iraq",
+        "PL": "Poland",
+        "CN/BR": "China/Brazil",
+        "TM/MC": "Turkmenistan/Monaco",
+        "LA": "Laos",
+        "PE": "Peru",
+        "FI": "Finland",
+        "BG": "Bulgaria",
+        "TW": "Taiwan",
+        "MA": "Morocco",
+        "BD": "Bangladesh",
+        "PH": "Philippines",
+        "UNK": "Unknown",
+        "JO": "Jordan",
+        "GR/SA": "Greece/Saudi Arabia",
+        "CZ": "Czech Republic",
+        "ET": "Ethiopia",
+        "SI": "Slovenia",
+        "LT": "Lithuania",
+        "TN": "Tunisia",
+        "SK": "Slovakia",
+        "HU": "Hungary",
+        "KW": "Kuwait",
+        "RW": "Rwanda",
+        "AO": "Angola",
+        "CO": "Colombia",
+        "KE": "Kenya",
+        "MC": "Monaco",
+        "VA": "Vatican City",
+        "DJ": "Djibouti",
+        "KP": "North Korea",
+        "AM": "Armenia",
+        "IE": "Ireland",
+        "PT": "Portugal",
+        "NZ": "New Zealand"
+    },
+    "nl": {
+        "NORAD Catalog Number": "NORAD Catalogusnummer",
+        "NORAD Catalog Number_description": "Dit is een negen-cijferig nummer toegewezen door het United States Space Command in de volgorde van lancering of ontdekking aan alle kunstmatige objecten in de banen van de aarde en diegene die de baan van de aarde hebben verlaten.",
+        "Longitude": "Lengtegraad",
+        "Longitude_description": "Hoeveel oost of west is de satelliet.",
+        "Latitude": "Breedtegraad",
+        "Latitude_description": "Hoeveel noord of zuid is de satelliet.",
+        "Altitude": "Hoogte",
+        "Altitude_description": "Hoe hoog is de satelliet.",
+        "Speed": "Snelheid",
+        "Speed_description": "Hoe snel is de satelliet.",
+        "Last epoch": "Laatste epoch",
+        "Last epoch_description": "Laatste keer dat de satelliet de huidige baan publiceerde.",
+
+        "US": "Verenigde Staten",
+        "FR": "Frankrijk",
+        "DE": "Duitsland",
+        "GB": "Groot-Brittannië",
+        "JP": "Japan",
+        "RU": "Rusland",
+        "AR": "Argentinië",
+        "IT": "Italië",
+        "BR": "Brazilië",
+        "INT": "Internationaal",
+        "CN": "China",
+        "LU": "Luxemburg",
+        "IL": "Israël",
+        "EU": "Europese Unie",
+        "CA": "Canada",
+        "SE": "Zweden",
+        "SA": "Saoedi-Arabië",
+        "GR": "Griekenland",
+        "AE": "Verenigde Arabische Emiraten",
+        "AU": "Australië",
+        "IN": "India",
+        "ES": "Spanje",
+        "TH": "Thailand",
+        "IR": "Iran",
+        "KR": "Zuid-Korea",
+        "ID": "Indonesië",
+        "NO": "Noorwegen",
+        "VN": "Vietnam",
+        "DK": "Denemarken",
+        "TR": "Turkije",
+        "MY": "Maleisië",
+        "CH": "Zwitserland",
+        "DZ": "Algerije",
+        "EG": "Egypte",
+        "SG": "Singapore",
+        "SG/TW": "Singapore/Taiwan",
+        "KZ": "Kazachstan",
+        "PK": "Pakistan",
+        "NG": "Nigeria",
+        "MX": "Mexico",
+        "CL": "Chili",
+        "BY": "Wit-Rusland",
+        "VE": "Venezuela",
+        "AZ": "Azerbeidzjan",
+        "AT": "Oostenrijk",
+        "EC": "Ecuador",
+        "EE": "Estland",
+        "ZA": "Zuid-Afrika",
+        "NL": "Nederland",
+        "BO": "Bolivië",
+        "FR/IT": "Frankrijk/Italië",
+        "BE": "België",
+        "UA": "Oekraïne",
+        "IQ": "Irak",
+        "PL": "Polen",
+        "CN/BR": "China/Brazilië",
+        "TM/MC": "Turkmenistan/Monaco",
+        "LA": "Laos",
+        "PE": "Peru",
+        "FI": "Finland",
+        "BG": "Bulgarije",
+        "TW": "Taiwan",
+        "MA": "Marokko",
+        "BD": "Bangladesh",
+        "PH": "Filipijnen",
+        "UNK": "Onbekend",
+        "JO": "Jordanië",
+        "GR/SA": "Griekenland/Saoedi-Arabië",
+        "CZ": "Tsjechië",
+        "ET": "Ethiopië",
+        "SI": "Slovenië",
+        "LT": "Litouwen",
+        "TN": "Tunesië",
+        "SK": "Slowakije",
+        "HU": "Hongarije",
+        "KW": "Koeweit",
+        "RW": "Rwanda",
+        "AO": "Angola",
+        "CO": "Colombia",
+        "KE": "Kenia",
+        "MC": "Monaco",
+        "VA": "Vaticaanstad",
+        "DJ": "Djibouti",
+        "KP": "Noord-Korea",
+        "AM": "Armenië",
+        "IE": "Ierland",
+        "PT": "Portugal",
+        "NZ": "Nieuw-Zeeland"
+    }
+}
+</i18n>

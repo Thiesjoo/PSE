@@ -7,13 +7,24 @@ import { MAX_SATS_TO_RENDER } from './constants'
 export interface Filter {
   name: string
   selected: boolean
+  min_launch_year: number
+  max_launch_year: number
 }
 
 function satFulfillsFilter(sat: Satellite, filter: Filter, ignoreSelected = false) {
   if (ignoreSelected) {
     return sat.categories.includes(filter.name)
   }
-  return sat.categories.includes(filter.name) && filter.selected
+
+  // True if the launch year of the satellite falls within
+  // the range selected by the filter
+  const within_launch_year_range = 
+  sat.launch_year >= filter.min_launch_year &&
+   sat.launch_year <= filter.max_launch_year
+
+  return sat.categories.includes(filter.name) &&
+   within_launch_year_range &&
+    filter.selected
 }
 
 export class SatManager {
@@ -60,7 +71,9 @@ export class SatManager {
     this.allFilters = await getAllCategories()
 
     this.allFilters.forEach((filter) => {
-      this.currentFilters.push({ name: filter, selected: true })
+      this.currentFilters.push({ name: filter, selected: true, 
+        min_launch_year: this.launchYearBounds[0],
+         max_launch_year: this.launchYearBounds[1]})
     })
   }
 
@@ -89,4 +102,15 @@ export class SatManager {
       filter.selected = true
     })
   }
+
+    /**
+   * Retrieves the earliest and latest launch
+   *  years of all the satellites.
+   */
+    public get launchYearBounds(): number[] {
+      this.allSatellites.sort((a, b) => a.launch_year - b.launch_year)
+      this.allSatellites = this.allSatellites.filter((sat) => sat.launch_year !== -1)
+      return [this.allSatellites[0].launch_year,
+       this.allSatellites[this.allSatellites.length-1].launch_year]
+    }
 }

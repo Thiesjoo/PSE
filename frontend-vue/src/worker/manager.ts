@@ -50,6 +50,11 @@ export class WorkerManager {
         this.reset();
 
         this.satellites = satellites;
+
+        if (this.satellites.length === 0) {
+            return;
+        }
+
         const blocks = Math.floor(this.satellites.length / AMT_OF_WORKERS);
         for (let i = 0; i < AMT_OF_WORKERS; i++) {
             const start = i * blocks;
@@ -70,6 +75,10 @@ export class WorkerManager {
 
         if (!this.finished) {
             console.error("We are not finished with the previous calculation");
+            return;
+        }
+
+        if (this.satellites.length === 0) {
             return;
         }
 
@@ -110,7 +119,6 @@ export class WorkerManager {
             case "calculate-res":
                 const {buffer, workerIndex, hash} = event.data;
                 if (hash !== this.currentHash) {
-                    console.error("Hashes do not match, out of sync");
                     return;
                 }
 

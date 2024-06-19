@@ -6,6 +6,18 @@ import App from './App.vue'
 import router from './router'
 import * as Sentry from "@sentry/vue";
 
+import { createI18n } from 'vue-i18n'
+
+// Get the language currently preferred by the
+// browser, or use English if it is not available
+const browserLocale = navigator.language || 'en'
+
+const i18n = createI18n({
+    legacy: false,
+    locale: browserLocale,
+    fallbackLocale: "en"
+})
+
 const app = createApp(App)
 
 Sentry.init({
@@ -24,6 +36,7 @@ Sentry.init({
     replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
   });
 
+app.use(i18n)
 app.use(router)
 app.mount('#app')
 
