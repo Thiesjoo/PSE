@@ -333,6 +333,7 @@ h3 {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.75);
 }
 
 .sliders-sat {
