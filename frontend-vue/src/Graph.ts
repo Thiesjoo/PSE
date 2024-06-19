@@ -49,7 +49,6 @@ export class Graph{
                 }
             }
         }
-
     }
 
     findNode(sat: Satellite){
