@@ -273,6 +273,7 @@ h3 {
   border: 2px solid rgba(255, 255, 255, 0.75);
   border-radius: 12px;
   padding: 25px;
+  overflow-y: scroll;
 }
 
 .name-sat{
