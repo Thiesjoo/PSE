@@ -6,7 +6,6 @@ import ThreeGlobe from 'three-globe'
 
 import Earth from './assets/earth-blue-marble.jpg'
 import Gaia from './assets/Gaia.png'
-import Bump from './assets/Bump.jpg'
 import NightLights from "./assets/night_lights_modified.png"
 
 import { constructSatelliteMesh, SatelliteMeshes, type Satellite, polar2Cartesian } from './Satellite'
