@@ -1,9 +1,0 @@
-numpy
-django
-django-crontab
-TLE-tools
-python-dotenv
-djangorestframework
-django-cors-headers
-gunicorn
-sentry-sdk[django]
