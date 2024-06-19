@@ -97,7 +97,7 @@ export class AllSatLinks {
     colorIndex += 4
 
     for (const arr of this.linePoints) {
-      let start = colorIndex
+      const start = colorIndex
       for (const pos of arr) {
         positions[lineCounter++] = pos.x
         positions[lineCounter++] = pos.y
