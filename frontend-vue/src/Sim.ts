@@ -9,6 +9,9 @@ import Gaia from './assets/Gaia.png'
 import Bump from './assets/Bump.jpg'
 import NightLights from "./assets/night_lights_modified.png"
 
+//@ts-ignore
+import * as SunCalc from "suncalc3"
+
 import { constructSatelliteMesh, SatelliteMeshes, type Satellite } from './Satellite'
 import { loadTexture, shiftLeft } from './common/utils'
 import {
@@ -34,6 +37,7 @@ export class ThreeSimulation {
   private tweeningStatus: number = 0
   private escapedFollow = false
 
+  private sun!: THREE.DirectionalLight;
   private renderer!: THREE.WebGLRenderer
   private scene!: THREE.Scene
   private camera!: THREE.PerspectiveCamera
@@ -91,6 +95,39 @@ export class ThreeSimulation {
     document.body.appendChild(this.stats.dom)
   }
 
+  private getSunPosition() {
+    // Calculate the position of the sun in our scene
+    // This is used for the night lights on the Earth. solar ephemeris
+    const time = this.time.time;
+    const relativeTo = {
+        lat: 0,
+        lng: 0,
+    }
+
+    const data = SunCalc.getPosition(time, relativeTo.lat, relativeTo.lng) as {
+        altitude: number,
+        altitudeDegrees: number,
+        azimuth: number,
+
+        azimuthDegrees: number,
+        declination: number,
+        zenith: number,
+        zenithDegrees: number,
+    }
+
+
+    // Convert the azimuth and altitude to radians
+    const azimuth = data.azimuthDegrees * (Math.PI / 180)
+    const altitude = data.altitudeDegrees * (Math.PI / 180)
+
+    // Calculate the position of the sun
+    const x = Math.cos(azimuth) * Math.cos(altitude)
+    const y = Math.sin(azimuth) * Math.cos(altitude)
+    const z = Math.sin(altitude)
+
+    return new THREE.Vector3(x, y, z)
+  }
+
   private async initScene(canvas: HTMLCanvasElement) {
     this.scene = new THREE.Scene()
 
@@ -119,9 +156,9 @@ export class ThreeSimulation {
     }
 
     // Add lights
-    const dir = new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI)
-    this.scene.add(dir)
-    dir.position.set(-50, 0, 30)
+    this.sun = new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI)
+    this.scene.add(this.sun)
+    this.sun.position.copy(this.getSunPosition())
     // this.scene.add(new THREE.AmbientLight(0xcccccc, Math.PI))
 
     const nightLights = await loadTexture(NightLights)
@@ -234,7 +271,9 @@ export class ThreeSimulation {
     if (this.onRightSide) {
       this.globe.rotation.y += 0.001
     }
-    this.globe.rotation.y += 0.01
+
+    this.sun.position.copy(this.getSunPosition())
+
 
     if (this.workerManager.finishPropagate(this.time.time, satellite.gstime(this.time.time))) {
       this.updatePositionsOfMeshes()
