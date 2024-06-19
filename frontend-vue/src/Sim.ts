@@ -12,7 +12,7 @@ import NightLights from "./assets/night_lights_modified.png"
 //@ts-ignore
 import * as SunCalc from "suncalc3"
 
-import { constructSatelliteMesh, SatelliteMeshes, type Satellite } from './Satellite'
+import { constructSatelliteMesh, SatelliteMeshes, type Satellite, polar2Cartesian } from './Satellite'
 import { loadTexture, shiftLeft } from './common/utils'
 import {
   EARTH_RADIUS_KM,
@@ -99,33 +99,26 @@ export class ThreeSimulation {
     // Calculate the position of the sun in our scene
     // This is used for the night lights on the Earth. solar ephemeris
     const time = this.time.time;
-    const relativeTo = {
-        lat: 0,
-        lng: 0,
-    }
+    const copy  = new Date(time.getTime());
+    // get time in GMT
+    const hours = copy.getUTCHours();
+    const minutes = copy.getUTCMinutes();
+    const seconds = copy.getUTCSeconds();
 
-    const data = SunCalc.getPosition(time, relativeTo.lat, relativeTo.lng) as {
-        altitude: number,
-        altitudeDegrees: number,
-        azimuth: number,
+    // progress in day
+    const progress = (hours * 60 * 60 + minutes * 60 + seconds) / (24 * 60 * 60);
 
-        azimuthDegrees: number,
-        declination: number,
-        zenith: number,
-        zenithDegrees: number,
-    }
+    // at 0.00 the sun is at lat0, lon0, 4 hours later at lat 
+    const lat = 0;
+    const lng = progress * 360 - 180;
+    const cartesianPosition = polar2Cartesian(
+        lat,
+        lng,
+        EARTH_RADIUS_KM * 3,
+        this.globe.getGlobeRadius()
+      )
 
-
-    // Convert the azimuth and altitude to radians
-    const azimuth = data.azimuthDegrees * (Math.PI / 180)
-    const altitude = data.altitudeDegrees * (Math.PI / 180)
-
-    // Calculate the position of the sun
-    const x = Math.cos(azimuth) * Math.cos(altitude)
-    const y = Math.sin(azimuth) * Math.cos(altitude)
-    const z = Math.sin(altitude)
-
-    return new THREE.Vector3(x, y, z)
+    return new THREE.Vector3(cartesianPosition.x, cartesianPosition.y, cartesianPosition.z)
   }
 
   private async initScene(canvas: HTMLCanvasElement) {
@@ -158,8 +151,6 @@ export class ThreeSimulation {
     // Add lights
     this.sun = new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI)
     this.scene.add(this.sun)
-    this.sun.position.copy(this.getSunPosition())
-    // this.scene.add(new THREE.AmbientLight(0xcccccc, Math.PI))
 
     const nightLights = await loadTexture(NightLights)
 
@@ -182,33 +173,22 @@ export class ThreeSimulation {
     material.onBeforeCompile = function( shader ) {
         shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `
             vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );
-            // Methodology of showing night lights only:
-            //
-            // going through the shader calculations in the meshphysical shader chunks (mostly on the vertex side),
-            // we can confirm that geometryNormal is the normalized normal in view space,
-            // for the night side of the earth, the dot product between geometryNormal and the directional light would be negative
-            // since the direction vector actually points from target to position of the DirectionalLight,
-            // for lit side of the earth, the reverse happens thus emissiveColor would be multiplied with 0.
-            // The smoothstep is to smoothen the change between night and day
             emissiveColor *= 1.0 - smoothstep(-0.2, 0.2, dot(normal, directionalLights[0].direction));
             totalEmissiveRadiance *= emissiveColor.rgb;
         `)
-
-        material.userData.shader = shader
     }
 
     // Add the Earth
     this.globe = new ThreeGlobe()
-    //   .globeImageUrl(Earth)
       .objectLat('lat')
       .objectLng('lng')
       .objectAltitude('alt')
       .objectFacesSurface(false)
       .atmosphereAltitude(0)
       .globeMaterial(material)
+      this.sun.position.copy(this.getSunPosition())
 
-      // Compensate for axial tilt: 23.5 degrees
-      const axialTiltInRadians = 23.5 * (Math.PI / 180)
+    const axialTiltInRadians = 23.5 * (Math.PI / 180)
     this.globe.rotation.x = axialTiltInRadians
 
     this.mesh = constructSatelliteMesh(this.globe.getGlobeRadius())
@@ -273,13 +253,9 @@ export class ThreeSimulation {
     }
 
     this.sun.position.copy(this.getSunPosition())
-
-
     if (this.workerManager.finishPropagate(this.time.time, satellite.gstime(this.time.time))) {
       this.updatePositionsOfMeshes()
     }
-
-
     this.time.step()
     this.updateOrbits()
 
@@ -293,7 +269,6 @@ export class ThreeSimulation {
     // Update the picking ray with the camera and pointer position
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
-
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
       this.dehover()
 
@@ -373,7 +348,6 @@ export class ThreeSimulation {
 
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
-    console.log(intersects)
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
       this.deselect()
 
@@ -582,8 +556,7 @@ export class ThreeSimulation {
 
   // Emits:
   // select(sat | undefined )
-
-  addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void) {
+  addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = []
     }

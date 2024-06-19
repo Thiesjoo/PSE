@@ -13,7 +13,7 @@ import {
 } from './common/constants'
 import { Orbit } from './Orbit'
 
-function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
+export function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
   const phi = ((90 - lat) * Math.PI) / 180
   const theta = ((90 - lng) * Math.PI) / 180
   const r = globeRadius * (1 + relAltitude)
