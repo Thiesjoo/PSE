@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { ThreeSimulation } from './Sim'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n() 
+import { useIdle } from '@vueuse/core'
+import { IDLE_TIME } from './common/constants'
+const { t } = useI18n()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
@@ -13,24 +15,35 @@ onMounted(() => {
 })
 
 const route = useRoute()
+const router = useRouter()
 watch(
   () => route.path,
   (path) => {
     simulation.reset()
     if (route.path !== '/') {
       simulation.moveCenter()
+    } else {
+      simulation.moveRight()
     }
   }
 )
+
+const { idle, lastActive, reset } = useIdle(IDLE_TIME) // 5 min
+
+watch(idle, (isIdle) => {
+  if (isIdle && route.path !== '/') {
+    router.push('/')
+  }
+})
 </script>
 
 <template>
   <header v-if="route.path !== '/'">
     <nav>
-      <RouterLink to="/"> {{ t("home") }} </RouterLink>
-      <RouterLink to="/visualization">{{ t("visualization") }}</RouterLink>
-      <RouterLink to="/simulation">{{ t("simulation") }}</RouterLink>
-      <RouterLink to="/communication">{{ t("communication") }}</RouterLink>
+      <RouterLink to="/"> {{ t('home') }} </RouterLink>
+      <RouterLink to="/visualization">{{ t('visualization') }}</RouterLink>
+      <RouterLink to="/simulation">{{ t('simulation') }}</RouterLink>
+      <RouterLink to="/communication">{{ t('communication') }}</RouterLink>
     </nav>
   </header>
 
@@ -45,7 +58,7 @@ watch(
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg"
       alt="English flag"
       @click="$i18n.locale = 'en'"
-    :class="{ active: $i18n.locale === 'en' }"
+      :class="{ active: $i18n.locale === 'en' }"
     />
   </div>
 
@@ -57,7 +70,7 @@ watch(
 
       <template #fallback>
         <div class="loading">
-          <p>{{ t("loading") }}</p>
+          <p>{{ t('loading') }}</p>
         </div>
       </template>
     </Suspense>
@@ -93,21 +106,21 @@ canvas {
 }
 
 .flags {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 100;
-    
-    img {
-        width: 2em;
-        margin: 0.5em;
-        cursor: pointer;
-        border-radius: 0.2em;
-    }
-    
-    .active {
-        border: 2px solid yellow;
-    }
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+
+  img {
+    width: 2em;
+    margin: 0.5em;
+    cursor: pointer;
+    border-radius: 0.2em;
+  }
+
+  .active {
+    border: 2px solid yellow;
+  }
 }
 
 header {
