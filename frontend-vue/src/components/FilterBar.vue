@@ -67,8 +67,9 @@ updateLaunchYearFilter()
           :max="MOST_RECENT_LAUNCH_YEAR"
           :min-range="1"
           :enable-cross="false"
+          :lazy="true"
           id="launch-year-slider"
-          v-on:change="updateLaunchYearFilter"/>
+          v-on:drag-end="updateLaunchYearFilter"/>
           
         <input type="checkbox" id="include_without_launch_year" v-model="include_sats_without_launch_year" hidden>
         <label for="include_without_launch_year" hidden>Include satellites without launch year</label>
