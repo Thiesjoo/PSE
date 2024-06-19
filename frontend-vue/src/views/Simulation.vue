@@ -12,7 +12,7 @@ const props = defineProps<{
 }>()
 
 let sat: Satellite;
-// let sat = ref<Satellite | null>(null)
+let current_sat = ref<Satellite | null>(null)
 let sat_number = 1 // Used for naming satellites when creating multiple
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
@@ -87,13 +87,18 @@ function add_new_satellite(alt: number){
  *  */
 function change_selected(satellite: Satellite){
   if (satellite != sat){
-    sat = satellite; // Make satellite current satellite (sat)
+    set_current_sat(satellite);
     console.log("change_selected:", satellite);
     props.simulation.deselect();
     props.simulation.setCurrentlySelected(satellite);
     props.simulation.changeColor(CURRENT_COLOR, satellite);
     reset_sliders(sat);
   }
+}
+
+function set_current_sat(satellite: Satellite){
+  sat = satellite;
+  current_sat.value = sat;
 }
 
 // ********* SLIDERS *********
@@ -165,12 +170,11 @@ watch(remove, (newValue) => {
         remove.value = 0; // Reset 'add' to 0 (false)
         sat_number = 1; // Resets the naming
 
-        sat = add_new_satellite(basic_alt);
+        set_current_sat(add_new_satellite(basic_alt));
       }
     })
 
 // ********* ORBIT shown *********
-
 watch(showOrbit, (newValue) => {
   if (newValue === true){
     const orbit = props.simulation.addOrbit(sat, true);
@@ -180,7 +184,6 @@ watch(showOrbit, (newValue) => {
     props.simulation.removeOrbit(sat);
   }
 })
-
 
 // ********* Clicked sat can be edited *********
 props.simulation.addEventListener('select', (satellite) => {
@@ -273,7 +276,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div
         v-for="satellite in satellites"
         :key="satellite.name"
-        :class="{'selected': sat === satellite }"
+        :class="{'selected': current_sat === satellite }"
         @click="change_selected(satellite)"
         class="satellite-item"
       >
@@ -415,7 +418,7 @@ h3 {
   top: 50px;
   right: 0; /* Position it to the right side */
   width: 175px;
-  height: 50%;
+  height: 30%;
   background-color: #01023890;
   color: white;
   padding-left: 15px;
