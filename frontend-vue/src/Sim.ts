@@ -486,6 +486,7 @@ export class ThreeSimulation {
   }
 
   getNameOfSats(): Satellite[]{
+    console.log(Object.values(this.satellites));
     return Object.values(this.satellites);
   }
 

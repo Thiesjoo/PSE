@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
-import SatList from '@/components/SatList.vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin, calculateHeight} from '@/calc_helper'
 import { ref, watch } from 'vue'
@@ -15,7 +14,7 @@ let selectedSat = ref<Satellite | null>(null)
 let sat_number = 1 // Used for naming satellites when creating multiple
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
-const CURRENT_COLOR = 'red' // '#F5EEF8';
+const CURRENT_COLOR = '#FF00FF' // '#F5EEF8';
 
 
 const satellites = ref<Satellite[]>([]);
@@ -50,6 +49,7 @@ function add_new_satellite(alt: number){
     const sats = Satellite.fromMultipleTLEs(tle);
     sats.forEach((sat) => props.simulation.addSatellite(sat));
     reset_sliders(sats[0])
+    sats[0].country = 'NL';
     if (showOrbit.value){
       const orbit = props.simulation.addOrbit(sats[0], true);
       sats[0].setOrbit(orbit);
@@ -57,13 +57,14 @@ function add_new_satellite(alt: number){
 
     // Update sat-list
     satellites.value = props.simulation.getNameOfSats()
+    console.log("sats: ", satellites.value);
 
     return sats[0]
 }
 
 // Change selected satellite
 function change_selected(satellite: Satellite){
-  console.log("change_select", satellite.name);
+  console.log("change_selected:", satellite);
   props.simulation.deselect();
   props.simulation.setCurrentlySelected(satellite);
   props.simulation.changeColor(CURRENT_COLOR, satellite);
@@ -73,6 +74,7 @@ function change_selected(satellite: Satellite){
 function selectSatellite(satellite: Satellite){
   if (satellite != sat){
     console.log("here we are");
+    console.log("here: ", satellite)
     sat = satellite;
     change_selected(sat);
   }

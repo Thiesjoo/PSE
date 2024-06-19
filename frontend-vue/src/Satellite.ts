@@ -36,7 +36,6 @@ export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
   )
 
   const satMaterial = new THREE.MeshLambertMaterial({
-    color: SAT_COLOR,
     transparent: true,
     opacity: 0.7
   })
