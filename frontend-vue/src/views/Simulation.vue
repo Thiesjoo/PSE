@@ -42,6 +42,9 @@ function reset_sliders(sat: Satellite){
     raan.value = +(sat.satData.nodeo * 180 / Math.PI).toFixed(0);
     e.value = sat.satData.ecco * 100;
     picked.value = 0;
+
+    // Update sat-list
+    satellites.value = props.simulation.getNameOfSats()
 }
 
 function add_new_satellite(alt: number){
@@ -55,34 +58,20 @@ function add_new_satellite(alt: number){
       sats[0].setOrbit(orbit);
     }
 
-    // Update sat-list
-    satellites.value = props.simulation.getNameOfSats()
-    console.log("sats: ", satellites.value);
-
     return sats[0]
 }
 
 // Change selected satellite
 function change_selected(satellite: Satellite){
-  console.log("change_selected:", satellite);
-  props.simulation.deselect();
-  props.simulation.setCurrentlySelected(satellite);
-  props.simulation.changeColor(CURRENT_COLOR, satellite);
-  reset_sliders(sat);
-}
-
-function selectSatellite(satellite: Satellite){
   if (satellite != sat){
-    console.log("here we are");
-    console.log("here: ", satellite)
-    sat = satellite;
-    change_selected(sat);
+    sat = satellite; // Make satellite current satellite (sat)
+    console.log("change_selected:", satellite);
+    props.simulation.deselect();
+    props.simulation.setCurrentlySelected(satellite);
+    props.simulation.changeColor(CURRENT_COLOR, satellite);
+    reset_sliders(sat);
   }
 }
-
-// const isSelected = (satellite: Satellite) => {
-//   return sat === satellite;
-// };
 
 // ********* SLIDERS *********
 
@@ -135,14 +124,12 @@ watch(e, (Value) => {
 
 
 // ********* first satellite *********
-sat = add_new_satellite(basic_alt);
-change_selected(sat);
+change_selected(add_new_satellite(basic_alt));
 
 // ********* ADD SATELLITE BUTTON *********
 watch(add, (newValue) => {
       if (newValue === 1) {
-        sat = add_new_satellite(basic_alt);
-        change_selected(sat);
+        change_selected(add_new_satellite(basic_alt));
         add.value = 0 // Reset 'add' to 0 (false)
       }
     })
@@ -180,7 +167,6 @@ watch(showOrbit, (newValue) => {
 // ********* Clicked sat can be edited *********
 props.simulation.addEventListener('select', (satellite) => {
   if (satellite){
-    sat = satellite;
     change_selected(satellite);
   }
 })
@@ -271,7 +257,7 @@ props.simulation.addEventListener('select', (satellite) => {
         v-for="satellite in satellites"
         :key="satellite.name"
         :class="{'selected': sat === satellite }"
-        @click="selectSatellite(satellite)"
+        @click="change_selected(satellite)"
         class="satellite-item"
       >
         {{ satellite.name }}
