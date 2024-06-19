@@ -43,7 +43,7 @@ export class ThreeSimulation {
   private orbits: Orbit[] = []
   private satelliteLinks: AllSatLinks | null = null;
 
-  public time: Time = new Time(new Date()) //TODO: private maken
+  private time: Time = new Time(new Date()) //TODO: private maken
 
   private raycaster = new THREE.Raycaster()
   private pointer = new THREE.Vector2()
