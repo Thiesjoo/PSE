@@ -35,6 +35,13 @@ watch(idle, (isIdle) => {
     router.push('/')
   }
 })
+
+const setDutchLanguagePreference = () => {
+  localStorage.setItem('languagePreference', 'nl')
+}
+const setEnglishLanguagePreference = () => {
+  localStorage.setItem('languagePreference', 'en')
+}
 </script>
 
 <template>
@@ -51,13 +58,13 @@ watch(idle, (isIdle) => {
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/NL.svg"
       alt="Dutch flag"
-      @click="$i18n.locale = 'nl'"
+      @click="() => {$i18n.locale = 'nl'; setDutchLanguagePreference()}"
       :class="{ active: $i18n.locale === 'nl' }"
     />
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg"
       alt="British flag"
-      @click="$i18n.locale = 'en'"
+      @click="() => {$i18n.locale = 'en'; setEnglishLanguagePreference()}"
       :class="{ active: $i18n.locale === 'en' || $i18n.locale === 'en-US'}"
     />
   </div>
