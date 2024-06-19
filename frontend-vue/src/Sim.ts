@@ -23,6 +23,7 @@ import * as TWEEN from '@tweenjs/tween.js'
 import * as satellite from 'satellite.js'
 import { Orbit } from './Orbit'
 import { WorkerManager } from './worker/manager'
+import { AllSatLinks } from './SatLinks'
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
@@ -40,6 +41,7 @@ export class ThreeSimulation {
   private stats!: any
 
   private orbits: Orbit[] = []
+  private satelliteLinks: AllSatLinks | null = null;
 
   public time: Time = new Time(new Date()) //TODO: private maken
 
@@ -200,6 +202,7 @@ export class ThreeSimulation {
 
     this.time.step()
     this.updateOrbits()
+    this.satelliteLinks?.render()
 
     if (this.stats) this.stats.update()
     if (this.controls) this.controls.update()
@@ -409,6 +412,16 @@ export class ThreeSimulation {
       orbit.removeLine(this.scene)
     }
     this.orbits = [];
+  }
+
+  
+  addAllSatLinks(link: AllSatLinks) {
+    this.satelliteLinks = link
+  }
+
+  removeSatLink() {
+    this.satelliteLinks?.destroy()
+    this.satelliteLinks = null
   }
 
   addGroundStation() {}

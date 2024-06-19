@@ -18,24 +18,24 @@ export class Graph{
     }
 
     private calculateDistance(sat1: Satellite, sat2: Satellite){
-        // const position1 = sat1.realPosition
-        // const position2 = sat2.realPosition
+        const position1 = sat1.realPosition
+        const position2 = sat2.realPosition
 
-        // const dLat = position1.lat - position2.lat
-        // const dLng = position1.lng - position2.lng
+        const dLat = position1.lat - position2.lat
+        const dLng = position1.lng - position2.lng
 
-        // const distance = Math.sqrt(dLat * dLat + dLng * dLng)
-        // return distance
-
-        const {lat: lat1, lng: lng1} = sat1.realPosition 
-        const {lat: lat2, lng: lng2} = sat2.realPosition 
-    
-        const distance = Math.acos( 
-            Math.sin(lat1) * Math.sin(lat2) + 
-            Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) 
-            ) * EARTH_RADIUS_KM 
-    
+        const distance = Math.sqrt(dLat * dLat + dLng * dLng)
         return distance
+
+        // const {lat: lat1, lng: lng1} = sat1.realPosition 
+        // const {lat: lat2, lng: lng2} = sat2.realPosition 
+    
+        // const distance = Math.acos( 
+        //     Math.sin(lat1) * Math.sin(lat2) + 
+        //     Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) 
+        //     ) * EARTH_RADIUS_KM 
+    
+        // return distance
     }
 
     makeGraph(sats: Satellite[]){
@@ -44,7 +44,7 @@ export class Graph{
             this.adjList.push(satData)
             for (const compareSat of sats){
                 const diff = this.calculateDistance(sat, compareSat);
-                if (diff < 1000){
+                if (diff < 6){
                     satData.connections.push(compareSat);
                 }
             }

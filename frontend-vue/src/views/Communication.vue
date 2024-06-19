@@ -7,6 +7,7 @@ import { ref, watch } from 'vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import { Graph } from '@/Graph'
 import { SatManager, Filter } from '@/common/sat-manager'
+import { AllSatLinks, SatLinks } from '@/SatLinks'
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
@@ -33,23 +34,32 @@ props.simulation.addEventListener('select', (sat) => {
   currentSelectedSatellite.value = sat;
 })
 
-function makeGraph(){
-  const graph = new Graph(props.simulation.globe)
-  const satellites = props.simulation.getSatellites()
-  graph.makeGraph(satellites)
-  
-  const path = graph.findPath(satellites[0], satellites[100]);
-  const satList = []
-  if (path){
-    for (const node of path){
-      satList.push(node.sat)
+function makeGraph() {
+    const graph = new Graph(props.simulation.globe)
+    const all = new AllSatLinks(props.simulation.scene)
+    const satellites = props.simulation.getSatellites()
+    graph.makeGraph(satellites)
+
+    graph.adjList.forEach((values) => {
+        const satLink = new SatLinks(values.sat)
+        satLink.setSatelliteConnections(values.connections)
+
+        all.addSatLink(satLink)
+    })
+    props.simulation.addAllSatLinks(all)
+
+
+    const path = graph.findPath(satellites[0], satellites[100]);
+    const satList = []
+    if (path) {
+        for (const node of path) {
+            satList.push(node.sat)
+        }
+        console.log(path)
     }
+
+    all.setPath(satList)
     console.log(path)
-    // const pathVis = new PathVis(props.simulation.scene, props.simulation.time, props.simulation.globe.getGlobeRadius())
-    // pathVis.addSatelliteConnections(satList.slice(1), props.simulation.globe)
-  }
-  
-  console.log(path)
 }
 
 </script>

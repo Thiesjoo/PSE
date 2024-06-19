@@ -41,7 +41,6 @@ export class SatManager {
   }
 
   private get filteredSatellites(): Satellite[] {
-    console.log(this.allSatellites.length)
     return this.allSatellites
       .filter((sat) => {
         return this.currentFilters.some((filter) => satFulfillsFilter(sat, filter))

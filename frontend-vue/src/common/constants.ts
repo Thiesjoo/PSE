@@ -4,7 +4,8 @@ export const SAT_SIZE_CLICK = 2.5 * SAT_SIZE // km
 export const SAT_COLOR = 'palegreen'
 export const SAT_COLOR_HOVER = '#FFD700'
 export const SAT_COLOR_SELECTED = '#FF4500'
-export const LINE_SIZE = 10000
+export const LINE_SIZE = 12_000
+export const MAX_LINE_SIZE_LINKS = 5_000_000
 export const MAX_CAMERA_DISTANCE = 5000
 export const MIN_CAMERA_DISTANCE = 150
 
