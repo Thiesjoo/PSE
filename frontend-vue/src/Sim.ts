@@ -9,9 +9,6 @@ import Gaia from './assets/Gaia.png'
 import Bump from './assets/Bump.jpg'
 import NightLights from "./assets/night_lights_modified.png"
 
-//@ts-ignore
-import * as SunCalc from "suncalc3"
-
 import { constructSatelliteMesh, SatelliteMeshes, type Satellite, polar2Cartesian } from './Satellite'
 import { loadTexture, shiftLeft } from './common/utils'
 import {
@@ -556,7 +553,7 @@ export class ThreeSimulation {
 
   // Emits:
   // select(sat | undefined )
-  addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void {
+  addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void) {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = []
     }
