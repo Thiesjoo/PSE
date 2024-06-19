@@ -65,8 +65,10 @@ updateLaunchYearFilter()
       <button @click="manager.selectAll()">{{t("Select All")}}</button>
       
       <div class="launch-year-filter-block">
-        <h2> Launch Year Filter</h2>
-        <label>Filtering on launches from {{ slider_values[0] }} to {{ slider_values[1] }}. </label>
+
+        <label>{{t("FilteringLaunchYear1") + slider_values[0] + t("FilteringLaunchYear2") + slider_values[1]}}. </label>
+
+
         <vue-slider v-model="slider_values" 
           :min="FIRST_LAUNCH_YEAR" 
           :max="MOST_RECENT_LAUNCH_YEAR"
@@ -204,8 +206,12 @@ updateLaunchYearFilter()
       "Geodetics_description": "Passive satellites with no moving parts. These carried 60 retroreflectors, which reflect back lasers sent by ground stations to pinpoint the orbit of the satellite. The small mass of these satellite’s means that their orbits are influenced by slight changes in Earth’s gravitational fields and these small adjustments to their orbits can be detected. The causes of the slight gravitational changes, oceanic tides and Earth's structure.",
       "Engineering": "Engineering",
       "Engineering_description": "Satellites which are used to test technologies.",
+
       "Unselect All": "Unselect All",
-      "Select All": "Select All"
+      "Select All": "Select All",
+
+      "FilteringLaunchYear1": "Filtering on launches from ",
+      "FilteringLaunchYear2": " to "
   },
   "nl": {
       "Last 30 Days' Launches": "Laatste 30 Dagen Lanceringen",
@@ -258,8 +264,12 @@ updateLaunchYearFilter()
       "Geodetics_description": "Passieve satellieten zonder bewegende onderdelen. Deze droegen 60 retroreflectoren, die lasers die door grondstations worden gestuurd, terugkaatsen om de baan van de satelliet nauwkeurig te bepalen. De kleine massa van deze satellieten betekent dat hun banen worden beïnvloed door kleine veranderingen in de zwaartekrachtvelden van de aarde en deze kleine aanpassingen aan hun banen kunnen worden gedetecteerd. De oorzaken van de lichte zwaartekrachtsveranderingen, oceanische getijden en de structuur van de aarde.",
       "Engineering": "Techniek",
       "Engineering_description": "Satellieten die worden gebruikt om technologieën te testen.",
+
       "Unselect All": "Deselecteer alles",
-      "Select All": "Selecteer alles"
+      "Select All": "Selecteer alles",
+
+      "FilteringLaunchYear1": "Filteren op lanceringen van ",
+      "FilteringLaunchYear2": " tot "
   }
 }
 </i18n>
