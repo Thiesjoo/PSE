@@ -1,0 +1,35 @@
+name: Lint frontend
+
+on:
+  push:
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./frontend-vue
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      # ESLint and Prettier must be in `package.json`
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Annotate
+        run: npm run lint:report
+        continue-on-error: true
+
+      - name: Annotate Code Linting Results
+        uses: ataylorme/eslint-annotate-action@v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          report-json: "frontend-vue/eslint_report.json"
+
+      - name: Run prettier
+        run: npm run format
+        
