@@ -1,7 +1,7 @@
 export const EARTH_RADIUS_KM = 6371 // km
 export const SAT_SIZE = 75 // km
 export const SAT_SIZE_CLICK = 2.5 * SAT_SIZE // km
-export const SAT_COLOR = 'palegreen'
+export const SAT_COLOR = 'white'
 export const SAT_COLOR_HOVER = '#FFD700'
 export const SAT_COLOR_SELECTED = '#FF4500'
 export const LINE_SIZE = 12_000
