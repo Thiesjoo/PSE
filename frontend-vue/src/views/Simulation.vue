@@ -312,7 +312,6 @@ h3 {
 
 .show-orbit-check{
   display: flex;
-  padding: 5%;
 }
 
 .orbit-sat {
@@ -362,7 +361,8 @@ h3 {
 }
 
 .highlight {
-  background-color: rgba(195, 0, 255, 0.36);
+  background-color: rgba(195, 0, 255, 0.523);
+  padding: 5px;
 }
 
 </style>
