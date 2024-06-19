@@ -86,7 +86,7 @@ export class SatManager {
     )
   }
 
-  private updateSatellites() {
+  public updateSatellites() {
     this.simulation.removeAllSatellites()
     this.simulation.addSatellites(this.filteredSatellites)
   }

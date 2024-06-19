@@ -32,16 +32,16 @@ export class ThreeSimulation {
   private escapedFollow = false
 
   private renderer!: THREE.WebGLRenderer
-  private scene!: THREE.Scene
+  public scene!: THREE.Scene //TODO: private maken
   private camera!: THREE.PerspectiveCamera
 
   private controls!: OrbitControls
-  private globe!: ThreeGlobe
+  public globe!: ThreeGlobe
   private stats!: any
 
   private orbits: Orbit[] = []
 
-  private time: Time = new Time(new Date())
+  public time: Time = new Time(new Date()) //TODO: private maken
 
   private raycaster = new THREE.Raycaster()
   private pointer = new THREE.Vector2()
@@ -361,6 +361,10 @@ export class ThreeSimulation {
   addSatellites(sats: Satellite[]) {
     sats.forEach((sat) => this.addSatellite(sat, false))
     this.workerManager.addSatellites(sats)
+  }
+
+  getSatellites(): Satellite[]{
+    return Object.values(this.satellites)
   }
 
   resendDataToWorkers() {
