@@ -458,6 +458,7 @@ h3 {
   {
     "en": {
       "Simulation Variables": "Simulation Variables",
+      "Satellites Created": "Satellites Created",
       "New satellite": "New Satellite",
       "Height": "Height",
       "Inclination": "Inclination",
@@ -475,6 +476,7 @@ h3 {
     },
     "nl": {
       "Simulation Variables": "Simulatie Variabelen",
+      "Satellites Created": "Gemaakte Satellieten",
       "New satellite": "Nieuwe satelliet",
       "Height": "Hoogte",
       "Inclination": "Inclinatie",

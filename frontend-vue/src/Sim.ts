@@ -478,7 +478,6 @@ export class ThreeSimulation {
   }
 
   changeColor(color: string, sat: Satellite){
-    console.log("Changing color: ", color);
     sat.setColor(
       color,
       this.getMeshIDBySatellite(sat),
@@ -487,7 +486,6 @@ export class ThreeSimulation {
   }
 
   getNameOfSats(): Satellite[]{
-    console.log(Object.values(this.satellites));
     return Object.values(this.satellites);
   }
 
