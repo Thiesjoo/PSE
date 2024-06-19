@@ -360,6 +360,8 @@ h3 {
 
 .show-orbit-check{
   display: flex;
+  appearance: none;
+  align-self: center;
 }
 
 .orbit-sat {
