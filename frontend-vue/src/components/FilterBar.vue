@@ -63,14 +63,14 @@ updateLaunchYearFilter()
       </div>
       <button @click="manager.selectNone()">{{t("Unselect All")}}</button>
       <button @click="manager.selectAll()">{{t("Select All")}}</button>
-      
+
       <div class="launch-year-filter-block">
 
         <label>{{t("FilteringLaunchYear1") + slider_values[0] + t("FilteringLaunchYear2") + slider_values[1]}}. </label>
 
 
-        <vue-slider v-model="slider_values" 
-          :min="FIRST_LAUNCH_YEAR" 
+        <vue-slider v-model="slider_values"
+          :min="FIRST_LAUNCH_YEAR"
           :max="MOST_RECENT_LAUNCH_YEAR"
           :min-range="1"
           :enable-cross="false"

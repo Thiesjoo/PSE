@@ -212,11 +212,12 @@ props.simulation.addEventListener('select', (satellite) => {
     <div class="sliders-sat">
       <br />
       <br />
-      <h4>{{t("Height")}} [km]</h4>
-      <div class="slider">
+      <h4>{{t("Height")}} [km]
         <InfoPopup>
         Some Information
        </InfoPopup>
+      </h4>
+      <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
         <p class="display">Value: {{ height }}</p>
@@ -355,7 +356,7 @@ h3 {
   appearance: none;
   width: 50%;
   padding: 5px;
-  background-color: rgba(195, 0, 255, 0.36);
+  background-color: rgba(45, 155, 156, 0.45);
   border-radius: 200px;
   cursor: pointer;
   color: white;
@@ -363,7 +364,7 @@ h3 {
 
 .del-button{
   appearance: none;
-  background-color: rgba(195, 0, 255, 0.36);
+  background-color: rgba(45, 155, 156, 0.45);
   border-radius: 200px;
   color: white;
 }
@@ -421,7 +422,7 @@ h3 {
 }
 
 .highlight {
-  background-color: rgba(195, 0, 255, 0.523);
+  background-color: rgba(45, 155, 156, 0.45);
   padding: 5px;
 }
 
@@ -454,7 +455,7 @@ h3 {
 }
 
 .satellite-item.selected {
-  background-color: rgba(195, 0, 255, 0.36);
+  background-color: rgba(45, 155, 156, 0.45);
 }
 
 </style>
