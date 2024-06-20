@@ -23,6 +23,7 @@ const i18n = createI18n({
 const app = createApp(App)
 
 Sentry.init({
+    enabled: import.meta.env.PROD,
     app,
     dsn: "https://546d97d526d5375e17160136713489b0@o4507446872834048.ingest.de.sentry.io/4507446875455568",
     integrations: [

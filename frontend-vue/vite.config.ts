@@ -11,7 +11,7 @@ export default defineConfig({
     vue(),
     VueI18nPlugin({}),
     sentryVitePlugin({
-      org: 'none-gty',
+      org: 'satradar',
       project: 'javascript-vue'
     })
   ],
