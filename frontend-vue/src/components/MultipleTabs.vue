@@ -1,28 +1,25 @@
 <script lang="ts"
         setup>
-        import { ref } from 'vue';
-
         const props = defineProps<{
             amount: number;
         }>();
 
+        const currentTab = defineModel({ required: true, type: Number })
+
         const emit = defineEmits(["navigate"])
         const arr = Array.from({ length: props.amount }, (_, i) => i + 1);
 
-        const currentTab = ref(1);
-
         const next = () => {
-            console.log(currentTab.value, props.amount, Math.min(currentTab.value, props.amount))
-            currentTab.value = Math.min(currentTab.value + 1, props.amount);
-            emit("navigate", currentTab.value)
+            const newPage = Math.min(currentTab.value + 1, props.amount)
+            currentTab.value = newPage
+            emit("navigate", newPage)
         };
 
         const back = () => {
-            currentTab.value = Math.max(currentTab.value - 1, 1);
-            emit("navigate", currentTab.value)
+            const newPage = Math.max(currentTab.value - 1, 1)
+            currentTab.value = newPage
+            emit("navigate", newPage)
         };
-
-
 </script>
 
 <template>
@@ -34,8 +31,10 @@
         </div>
 
         <div class="buttons">
-            <button @click="back()" :disabled="currentTab === 1">back</button>
-            <button @click="next()" :disabled="currentTab === amount">next</button>
+            <button @click="back()"
+                    :disabled="currentTab === 1">back</button>
+            <button @click="next()"
+                    :disabled="currentTab === amount">next</button>
         </div>
 
     </div>

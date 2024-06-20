@@ -1,28 +1,27 @@
-<script setup lang="ts">
-import { Satellite, polar2Cartesian } from '@/Satellite'
-import { ThreeSimulation } from '@/Sim'
-import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
-import { Ref, ref, watch } from 'vue'
-import SpeedButtons from '@/components/SpeedButtons.vue'
-import { Graph } from '@/Graph'
-import { SatManager, Filter } from '@/common/sat-manager'
-import { AllSatLinks, SatLinks } from '@/SatLinks'
-import { geoCoords } from '@/common/utils'
-import { useI18n } from 'vue-i18n'
-import { rounded } from '@/common/utils'
-import { NUM_DIGITS } from '@/common/constants'
-import { LocationMarker } from '@/LocationMarker'
-import { LocationLine } from '@/LocationLine'
-import MultipleTabs from '@/components/MultipleTabs.vue'
+<script setup
+        lang="ts">
+        import { Satellite, polar2Cartesian } from '@/Satellite'
+        import { ThreeSimulation } from '@/Sim'
+        import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
+        import { Ref, ref, watch } from 'vue'
+        import SpeedButtons from '@/components/SpeedButtons.vue'
+        import { Graph } from '@/Graph'
+        import { SatManager, Filter } from '@/common/sat-manager'
+        import { AllSatLinks, SatLinks } from '@/SatLinks'
+        import { geoCoords } from '@/common/utils'
+        import { useI18n } from 'vue-i18n'
+        import MultipleTabs from '@/components/MultipleTabs.vue'
 
         const { t } = useI18n()
 
         const props = defineProps<{
             simulation: ThreeSimulation
-        }>()
+        }>();
 
-        let firstCoords: Ref<geoCoords | undefined> = ref(undefined)
-        let secondCoords: Ref<geoCoords | undefined> = ref(undefined)
+
+        const graph = new Graph(props.simulation.globe)
+        const all = new AllSatLinks(props.simulation.scene)
+        props.simulation.addAllSatLinks(all)
 
         const manager = new SatManager(props.simulation)
         await manager.init()
@@ -37,29 +36,79 @@ import MultipleTabs from '@/components/MultipleTabs.vue'
         manager.currentFilters.push(filter)
         manager.updateSatellites()
 
-        const currentSelectedSatellite = ref(undefined as Satellite | undefined)
+        props.simulation.disableSatClicking();
 
-props.simulation.addEventListener('earthClicked', (coords) => {
-  if (coords) {
-    if (!firstCoords.value) {
-      firstCoords.value = coords
-      props.simulation.addMarker(coords)
-    } else if (!secondCoords.value) {
-      secondCoords.value = coords
-      props.simulation.addMarker(coords)
-      makeGraph()
-    }
-  }
-})
+
+
+        const firstCoords: Ref<geoCoords | undefined> = ref(undefined)
+        const secondCoords: Ref<geoCoords | undefined> = ref(undefined);
+        const tabForConnections = 2;
+        const tabForFirstCoords = 3;
+        const tabForSecondCoords = 4;
+        const tabForPath = 5;
+
+
+
+
+        const currentTab = ref(1);
+
+        function tabInfoUpdate(tab: number) {
+            all.hideConnections = true;
+            all.setPath([])
+
+            if (tab === tabForConnections) {
+                makeGraph()
+                all.hideConnections = false;
+            } else if (tab === tabForFirstCoords) {
+                if (firstCoords.value) {
+                    props.simulation.removeMarker(firstCoords.value)
+                }
+                if (secondCoords.value) {
+                    props.simulation.removeMarker(secondCoords.value)
+                }
+                firstCoords.value = undefined
+                secondCoords.value = undefined
+            } else if (tab === tabForSecondCoords) {
+                // TODO: Stop navigating to second page if coords not selected.
+                if(secondCoords.value) {
+                    props.simulation.removeMarker(secondCoords.value)
+                }
+                secondCoords.value = undefined
+            } else if (tab === tabForPath) {
+                findPath()
+            }
+        }
+
+
+
+        props.simulation.addEventListener('earthClicked', (coords) => {
+            if (coords) {
+                if (currentTab.value === tabForFirstCoords) {
+                    if (firstCoords.value) {
+                        props.simulation.removeMarker(firstCoords.value)
+                    }
+                    firstCoords.value = coords
+                    props.simulation.addMarker(coords);
+
+                    currentTab.value++;
+                    // TODO: Dit is cursed, fix it.
+                    tabInfoUpdate(currentTab.value)
+                } else if (currentTab.value === tabForSecondCoords) {
+                    if (secondCoords.value) {
+                        props.simulation.removeMarker(secondCoords.value)
+                    }
+                    secondCoords.value = coords
+                    props.simulation.addMarker(coords)
+                    currentTab.value++;
+                    
+                    // TODO: Dit is cursed, fix it.
+                    tabInfoUpdate(currentTab.value)
+                }
+            }
+        })
 
         function makeGraph() {
-            if (!firstCoords.value || !secondCoords.value) {
-                console.error()
-                return
-            }
-
-            const graph = new Graph(props.simulation.globe)
-            const all = new AllSatLinks(props.simulation.scene)
+            // TODO: Auto update graph when new satellites are added.
             const satellites = props.simulation.getSatellites()
             graph.makeGraph(satellites)
 
@@ -69,7 +118,13 @@ props.simulation.addEventListener('earthClicked', (coords) => {
 
                 all.addSatLink(satLink)
             })
-            props.simulation.addAllSatLinks(all)
+        }
+
+        function findPath() {
+            if (!firstCoords.value || !secondCoords.value) {
+                console.error("No coords selected")
+                return
+            }
 
             const sat1 = graph.findClosestSat({
                 alt: firstCoords.value.altitude,
@@ -85,42 +140,42 @@ props.simulation.addEventListener('earthClicked', (coords) => {
                 return
             }
             const path = graph.findPath(sat1, sat2)
+
+            console.log("Found path: ", path)
             const satList = []
             if (path) {
                 for (const node of path) {
                     satList.push(node.sat)
                 }
-                console.log(path)
             }
 
-  all.setPath([
-    {
-      xyzPosition: polar2Cartesian(
-        secondCoords.value.lat,
-        secondCoords.value.lng,
-        secondCoords.value.altitude,
-        props.simulation.globe.getGlobeRadius()
-      )
-    },
-    ...satList,
-    {
-      xyzPosition: polar2Cartesian(
-        firstCoords.value.lat,
-        firstCoords.value.lng,
-        firstCoords.value.altitude,
-        props.simulation.globe.getGlobeRadius()
-      )
-    }
-  ])
+            all.setPath([
+                {
+                    xyzPosition: polar2Cartesian(
+                        secondCoords.value.lat,
+                        secondCoords.value.lng,
+                        secondCoords.value.altitude,
+                        props.simulation.globe.getGlobeRadius()
+                    )
+                },
+                ...satList,
+                {
+                    xyzPosition: polar2Cartesian(
+                        firstCoords.value.lat,
+                        firstCoords.value.lng,
+                        firstCoords.value.altitude,
+                        props.simulation.globe.getGlobeRadius()
+                    )
+                }
+            ])
 
-  props.simulation.setCurrentlySelected(satList[1])
-  console.log(path)
-}
+            // props.simulation.setCurrentlySelected(satList[1])
+        }
 </script>
 
 <template>
     <LeftInfoBlock :open="true">
-        <MultipleTabs :amount='5'>
+        <MultipleTabs :amount='5' @navigate="tabInfoUpdate" v-model="currentTab">
 
             <template #tab1>
                 <h1>{{ t("This is a communication network in space") }}</h1>
@@ -153,7 +208,7 @@ props.simulation.addEventListener('earthClicked', (coords) => {
         </MultipleTabs>
     </LeftInfoBlock>
 
-    <SpeedButtons :simulation="simulation"></SpeedButtons>
+    <!-- <SpeedButtons :simulation="simulation"></SpeedButtons> -->
 </template>
 
 <style scoped
