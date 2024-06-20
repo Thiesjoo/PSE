@@ -350,19 +350,21 @@ h3 {
   border: none;
   border-radius: 0.5em;
   padding: 0.5em 1em;
+  color: white;
   background-color: rgba(45, 155, 156, 1)
 
 }
 
 .orbit-sat {
   width: 100%;
-  padding-top: 4%;
+  padding-top: 10%;
 }
 
 .orbit-info {
   right: 20%;
   height: 200px;
   width: 100%;
+  padding-top: 2%;
 }
 
 .display {
@@ -402,7 +404,7 @@ h3 {
 }
 
 .highlight {
-  background-color: rgba(45, 155, 156, 0.45);
+  background-color: rgba(45, 155, 156, 0.6);
   padding: 5px;
 }
 
