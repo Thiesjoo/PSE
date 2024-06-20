@@ -1,74 +1,97 @@
-import ThreeGlobe from "three-globe";
 import { Satellite } from "./Satellite";
-import { EARTH_RADIUS_KM } from "./common/constants";
+import { GeoCoords, calculateDistance } from "./common/utils";
 
-type node = {sat: Satellite,
+import AdjListWorker from "@/worker/workerAdjencencyList?worker";
+import { CalculateAdjList, CalculateAdjListResponse } from "./worker/workerAdjencencyList";
+import { AMT_OF_WORKERS } from "./common/constants";
+
+type Node = {sat: Satellite,
             connections: Satellite[],
             fScore: number,
             gScore: number,
             hScore: number,
-            parent: node | null}
-
-type coords = {
-    lat: number,
-    lng: number,
-    alt: number
-}
-
-function toRadians(degrees: number): number {
-    return degrees * (Math.PI / 180);
-}
-
-
-export function calculateDistance(coords1: coords, coords2: coords): number {
-    const lat1Rad = toRadians(coords1.lat);
-    const lon1Rad = toRadians(coords1.lng);
-    const lat2Rad = toRadians(coords2.lat);
-    const lon2Rad = toRadians(coords2.lng);
-
-    // Haversine formula
-    const dLat = lat2Rad - lat1Rad;
-    const dLon = lon2Rad - lon1Rad;
-    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.sin(dLon / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    const distance = EARTH_RADIUS_KM * c;
-
-    return distance;
-}
+            parent: Node | null}
 
 
 export class Graph{
-    private globe!: ThreeGlobe;
-    public adjList: node[] = [];
+    public adjList: Record<number, Node> = {};
+    private tmpAdjList: Record<number, Node> = {};
+    private finished = true;
+    private worker: Worker[];
+    private received = 0;
 
-    constructor(globe: ThreeGlobe){
-        this.globe = globe;
+    constructor(){
+        this.worker = Array.from({length: AMT_OF_WORKERS}, () => new AdjListWorker());
+
+        this.worker.forEach((worker) => {
+            worker.onmessage = (event) => {
+                this.workerResponse(event.data);
+            }
+        });
     }
-
-
+    
     private calculateDistanceSat(sat1: Satellite, sat2: Satellite){
         return calculateDistance(sat1.realPosition, sat2.realPosition);
     }
 
-    makeGraph(sats: Satellite[]){
-        for (const sat of sats){
-            const satData: node = {sat: sat, connections: [], fScore: Infinity, gScore: Infinity, hScore: Infinity, parent: null};
-            this.adjList.push(satData)
-            for (const compareSat of sats){
-                const diff = this.calculateDistanceSat(sat, compareSat);
-                if (diff < 550){
-                    satData.connections.push(compareSat);
-                }
-            }
+    startCreateGraph(satellites: Satellite[]) {
+        if (!this.finished) {
+            console.log('Already creating graph')
+            return;
+        }
+
+        this.finished = false;
+        this.tmpAdjList = satellites.reduce((acc, sat) => {
+            acc[sat.numericalId] = {sat: sat, connections: [], fScore: Infinity, gScore: Infinity, hScore: Infinity, parent: null};
+            return acc;
+        }, {} as Record<number, Node>);
+
+        const data = satellites.reduce((acc, sat) => {
+            acc[sat.numericalId] = sat.realPosition;
+            return acc;
+        }, {} as Record<number, GeoCoords>)
+
+        this.worker.forEach((worker, i) => {
+            const start = Math.floor(i * satellites.length / AMT_OF_WORKERS);
+            const end = Math.floor((i + 1) * satellites.length / AMT_OF_WORKERS);
+            const msg = {
+                event: 'calculate',
+                data,
+                start,end
+            } satisfies CalculateAdjList;
+
+        worker.postMessage(msg);
+        })
+    }
+
+    private workerResponse(event: CalculateAdjListResponse) {
+        const data = event.data;
+        for (const [satId, connections] of Object.entries(data)) {
+            this.tmpAdjList[+satId].connections = connections.map((id) => this.tmpAdjList[id].sat);
+        }
+        this.received++;
+
+        if (this.received === AMT_OF_WORKERS){
+            this.finished = true;
         }
     }
 
-    findNode(sat: Satellite){
-        return this.adjList.find((node) => node.sat === sat)
+    finishCreateGraph(satellites: Satellite[]){
+        if (this.finished) {
+            this.adjList = this.tmpAdjList;
+            this.received = 0;
+            this.startCreateGraph(satellites);
+            return true;
+        }
+
+        return false;
     }
 
-    popLowestScore(nodeList: node[]){
+    findNode(sat: Satellite){
+        return this.adjList[sat.numericalId]
+    }
+
+    popLowestScore(nodeList: Node[]){
         let lowestNum = Infinity
         let lowestNode = null;
         for (const node of nodeList){
@@ -92,7 +115,7 @@ export class Graph{
         }
 
         const openList = [startNode]
-        const closedList: node[] = []
+        const closedList: Node[] = []
 
         startNode.fScore = 0;
         startNode.gScore = 0;
@@ -136,11 +159,11 @@ export class Graph{
         }
     }
 
-    findClosestSat(coords: coords){
+    findClosestSat(coords: GeoCoords){
         let closest = Infinity;
-        let closestNode: node | null = null;
+        let closestNode: Node | null = null;
 
-        for (const node of this.adjList){
+        for (const node of Object.values(this.adjList)){
             const distance = calculateDistance(coords, node.sat.realPosition);
             if (distance < closest){
                 closest = distance;

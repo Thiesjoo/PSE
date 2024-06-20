@@ -2,6 +2,8 @@ import * as THREE from 'three'
 import { Satellite } from './Satellite'
 import { LINE_SIZE, MAX_LINE_SIZE_LINKS } from './common/constants'
 import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
+import { Graph } from './Graph'
+import { ThreeSimulation } from './Sim'
 
 export class AllSatLinks {
   private line: THREE.Line | null = null
@@ -11,9 +13,11 @@ export class AllSatLinks {
   private pathGeometry: MeshLineGeometry | null = null
 
   private allSatLinks: SatLinks[] = []
-  private scene: THREE.Scene;
+  private scene: THREE.Scene
 
-  public hideConnections = false;
+  public hideConnections = true
+  private graph: Graph
+  private sim: ThreeSimulation
 
   private path: {
     xyzPosition: {
@@ -27,7 +31,10 @@ export class AllSatLinks {
     return this.allSatLinks.map((link) => link.linePoints)
   }
 
-  constructor(scene: THREE.Scene) {
+  constructor(scene: THREE.Scene, graph: Graph, simulation: ThreeSimulation) {
+    this.graph = graph
+    this.sim = simulation
+
     const lineMaterial = new THREE.LineBasicMaterial({
       vertexColors: true,
       transparent: true
@@ -66,10 +73,15 @@ export class AllSatLinks {
     this.line.renderOrder = 1
 
     this.scene = scene
+    this.sim.addAllSatLinks(this)
   }
 
-  addSatLink(link: SatLinks) {
+  private addSatLink(link: SatLinks) {
     this.allSatLinks.push(link)
+  }
+
+  private removeAllSatLinks() {
+    this.allSatLinks = []
   }
 
   setPath(path: { xyzPosition: { x: number; y: number; z: number } }[]) {
@@ -86,50 +98,54 @@ export class AllSatLinks {
     if (!this.line || !this.lineGeometry) return
     const colors = this.line.geometry.attributes.color.array
 
+    if (this.graph.finishCreateGraph(this.sim.getSatellites())) {
+      this.removeAllSatLinks()
+      Object.values(this.graph.adjList).forEach((values) => {
+        const satLink = new SatLinks(values.sat)
+        satLink.setSatelliteConnections(values.connections)
+        this.addSatLink(satLink)
+      })
+    }
+
     if (!this.hideConnections) {
-        this.update()
+      this.update()
+      const positions = this.line.geometry.attributes.position.array
+      let lineCounter = 0
+      let colorIndex = 0
 
-        const positions = this.line.geometry.attributes.position.array
-        let lineCounter = 0
-        let colorIndex = 0
+      // Start at the center
+      positions[lineCounter++] = 0
+      positions[lineCounter++] = 0
+      positions[lineCounter++] = 0
+      colorIndex += 4
 
-        // Start at the center
-        positions[lineCounter++] = 0
-        positions[lineCounter++] = 0
-        positions[lineCounter++] = 0
-        colorIndex += 4
-
-        for (const arr of this.linePoints) {
+      for (const arr of this.linePoints) {
         const start = colorIndex
         for (const pos of arr) {
-            positions[lineCounter++] = pos.x
-            positions[lineCounter++] = pos.y
-            positions[lineCounter++] = pos.z
-            colors[colorIndex + 3] = 1
-            colorIndex += 4
+          positions[lineCounter++] = pos.x
+          positions[lineCounter++] = pos.y
+          positions[lineCounter++] = pos.z
+          colors[colorIndex + 3] = 1
+          colorIndex += 4
         }
         //   The line from and to the center must have opacity 0 to not show them.
         colors[colorIndex - 1] = 0
         colors[start + 3] = 0
-        positions[lineCounter++] = 0
-        positions[lineCounter++] = 0
-        positions[lineCounter++] = 0
-        colorIndex += 4
-        }
+      }
 
-        // End at the center
-        positions[lineCounter++] = 0
-        positions[lineCounter++] = 0
-        positions[lineCounter++] = 0
-        colorIndex += 4
+      // End at the center
+      positions[lineCounter++] = 0
+      positions[lineCounter++] = 0
+      positions[lineCounter++] = 0
+      colorIndex += 4
 
-        this.lineGeometry.setDrawRange(0, lineCounter / 3)
-        this.line.geometry.attributes.position.needsUpdate = true
-        this.line.geometry.attributes.color.needsUpdate = true
+      this.lineGeometry.setDrawRange(0, lineCounter / 3)
+      this.line.geometry.attributes.position.needsUpdate = true
+      this.line.geometry.attributes.color.needsUpdate = true
     } else {
-        this.lineGeometry.setDrawRange(0, 0)
+      this.lineGeometry.setDrawRange(0, 0)
     }
-        
+
     this.renderPath()
   }
 

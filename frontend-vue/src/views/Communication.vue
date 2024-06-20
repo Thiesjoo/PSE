@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Graph, calculateDistance } from '@/Graph'
+import { Graph } from '@/Graph'
 import { AllSatLinks, SatLinks } from '@/SatLinks'
 import { Satellite, polar2Cartesian } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
 import { Filter, SatManager } from '@/common/sat-manager'
-import { geoCoords, rounded } from '@/common/utils'
+import { GeoCoords, calculateDistance, rounded } from '@/common/utils'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import MultipleTabs from '@/components/MultipleTabs.vue'
@@ -18,9 +18,8 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-const graph = new Graph(props.simulation.globe)
-const all = new AllSatLinks(props.simulation.scene)
-props.simulation.addAllSatLinks(all)
+const graph = new Graph()
+const all = new AllSatLinks(props.simulation.scene, graph, props.simulation)
 
 const manager = new SatManager(props.simulation)
 await manager.init()
@@ -37,8 +36,8 @@ manager.updateSatellites()
 
 props.simulation.disableSatClicking()
 
-const firstCoords: Ref<geoCoords | undefined> = ref(undefined)
-const secondCoords: Ref<geoCoords | undefined> = ref(undefined)
+const firstCoords: Ref<GeoCoords | undefined> = ref(undefined)
+const secondCoords: Ref<GeoCoords | undefined> = ref(undefined)
 const tabForConnections = 2
 const tabForFirstCoords = 3
 const tabForSecondCoords = 4
@@ -67,7 +66,6 @@ function tabInfoUpdate(tab: number) {
   all.setPath([])
 
   if (tab === tabForConnections) {
-    makeGraph()
     all.hideConnections = false
   } else if (tab === tabForFirstCoords) {
     if (firstCoords.value) {
@@ -115,40 +113,20 @@ props.simulation.addEventListener('earthClicked', (coords) => {
   }
 })
 
-function makeGraph() {
-  // TODO: Auto update graph when new satellites are added.
-  const satellites = props.simulation.getSatellites()
-  graph.makeGraph(satellites)
-
-  graph.adjList.forEach((values) => {
-    const satLink = new SatLinks(values.sat)
-    satLink.setSatelliteConnections(values.connections)
-
-    all.addSatLink(satLink)
-  })
-}
-
 function findPath() {
   if (!firstCoords.value || !secondCoords.value) {
     console.error('No coords selected')
     return
   }
 
-  const sat1 = graph.findClosestSat({
-    alt: firstCoords.value.altitude,
-    lat: firstCoords.value.lat,
-    lng: firstCoords.value.lng
-  })
-  const sat2 = graph.findClosestSat({
-    alt: secondCoords.value.altitude,
-    lat: secondCoords.value.lat,
-    lng: secondCoords.value.lng
-  })
+  const sat1 = graph.findClosestSat({...firstCoords.value})
+  const sat2 = graph.findClosestSat({...secondCoords.value  })
   if (!sat1 || !sat2) {
     return
   }
   const path = graph.findPath(sat1, sat2)
 
+  currentPath.value = []
   console.log('Found path: ', path)
   if (path) {
     for (const node of path) {
@@ -161,7 +139,7 @@ function findPath() {
       xyzPosition: polar2Cartesian(
         secondCoords.value.lat,
         secondCoords.value.lng,
-        secondCoords.value.altitude,
+        secondCoords.value.alt,
         props.simulation.globe.getGlobeRadius()
       )
     },
@@ -170,7 +148,7 @@ function findPath() {
       xyzPosition: polar2Cartesian(
         firstCoords.value.lat,
         firstCoords.value.lng,
-        firstCoords.value.altitude,
+        firstCoords.value.alt,
         props.simulation.globe.getGlobeRadius()
       )
     }

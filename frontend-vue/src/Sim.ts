@@ -14,7 +14,7 @@ import {
   type Satellite,
   polar2Cartesian
 } from './Satellite'
-import { geoCoords, loadTexture, shiftLeft } from './common/utils'
+import { GeoCoords, loadTexture, shiftLeft } from './common/utils'
 import {
   EARTH_RADIUS_KM,
   LINE_SIZE,
@@ -282,7 +282,11 @@ export class ThreeSimulation {
     }
     // Update the picking ray with the camera and pointer position
     this.raycaster.setFromCamera(this.pointer, this.camera)
-    const intersects = this.raycaster.intersectObjects(this.scene.children)
+    const intersects = this.raycaster.intersectObjects([
+        this.globe,
+        this.mesh.sat,
+        this.mesh.satClick
+    ])
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData && this.satClicking) {
       this.dehover()
 
@@ -382,8 +386,8 @@ export class ThreeSimulation {
         intersects[0].object.position.z === 0
       ) {
         this.deselect()
-        const clickedPosition: geoCoords = this.globe.toGeoCoords(intersects[0].point)
-        this.eventListeners['earthClicked']?.forEach((cb) => cb(clickedPosition))
+        const {lat, lng, altitude} = this.globe.toGeoCoords(intersects[0].point)
+        this.eventListeners['earthClicked']?.forEach((cb) => cb({lat, lng, alt: altitude}))
       }
     } else {
       this.deselect()
@@ -392,7 +396,7 @@ export class ThreeSimulation {
   }
 
   private resetMeshes() {
-    if (!this.mesh.sat || !this.mesh.satClick) return
+    if (!this.mesh || !this.mesh.sat || !this.mesh.satClick) return
     
     const matrix = new THREE.Matrix4()
     matrix.compose(
@@ -503,13 +507,13 @@ export class ThreeSimulation {
     this.satelliteLinks = null
   }
 
-  addMarker(coords: geoCoords) {
+  addMarker(coords: GeoCoords) {
     const marker = new LocationMarker(coords, this.scene, this.globe)
     marker.render()
     this.locationMarkers.push(marker)
   }
 
-  removeMarker(coords: geoCoords) {
+  removeMarker(coords: GeoCoords) {
     const marker = this.locationMarkers.find((marker) => {
       return marker.getCoords().lat === coords.lat && marker.getCoords().lng === coords.lng
     })
@@ -576,7 +580,7 @@ export class ThreeSimulation {
       )
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
-    new TWEEN.Tween(this.globe.rotation)
+    new TWEEN.Tween(this.globe?.rotation || new THREE.Vector3())
       .to(
         {
           x: 0,
@@ -617,10 +621,10 @@ export class ThreeSimulation {
   }
 
   addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void
-  addEventListener(event: 'earthClicked', callback: (sat: geoCoords | undefined) => void): void
+  addEventListener(event: 'earthClicked', callback: (sat: GeoCoords | undefined) => void): void
   addEventListener(
     event: 'select' | 'earthClicked',
-    callback: ((sat: Satellite | undefined) => void) | ((sat: geoCoords | undefined) => void)
+    callback: ((sat: Satellite | undefined) => void) | ((sat: GeoCoords | undefined) => void)
   ): void {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = []
