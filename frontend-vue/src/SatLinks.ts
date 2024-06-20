@@ -131,10 +131,6 @@ export class AllSatLinks {
         //   The line from and to the center must have opacity 0 to not show them.
         colors[colorIndex - 1] = 0
         colors[start + 3] = 0
-        positions[lineCounter++] = 0
-        positions[lineCounter++] = 0
-        positions[lineCounter++] = 0
-        colorIndex += 4
       }
 
       // End at the center
