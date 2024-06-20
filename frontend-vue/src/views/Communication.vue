@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Graph, calculateDistance } from '@/Graph'
+import { Graph } from '@/Graph'
 import { AllSatLinks, SatLinks } from '@/SatLinks'
 import { Satellite, polar2Cartesian } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
 import { Filter, SatManager } from '@/common/sat-manager'
-import { GeoCoords, rounded } from '@/common/utils'
+import { GeoCoords, calculateDistance, rounded } from '@/common/utils'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import MultipleTabs from '@/components/MultipleTabs.vue'
@@ -19,8 +19,7 @@ const props = defineProps<{
 }>()
 
 const graph = new Graph()
-const all = new AllSatLinks(props.simulation.scene)
-props.simulation.addAllSatLinks(all)
+const all = new AllSatLinks(props.simulation.scene, graph, props.simulation)
 
 const manager = new SatManager(props.simulation)
 await manager.init()
@@ -67,7 +66,6 @@ function tabInfoUpdate(tab: number) {
   all.setPath([])
 
   if (tab === tabForConnections) {
-    makeGraph()
     all.hideConnections = false
   } else if (tab === tabForFirstCoords) {
     if (firstCoords.value) {
@@ -115,19 +113,6 @@ props.simulation.addEventListener('earthClicked', (coords) => {
   }
 })
 
-function makeGraph() {
-  // TODO: Auto update graph when new satellites are added.
-  const satellites = props.simulation.getSatellites()
-  graph.makeGraph(satellites)
-
-  Object.values(graph.adjList).forEach((values) => {
-    const satLink = new SatLinks(values.sat)
-    satLink.setSatelliteConnections(values.connections)
-
-    all.addSatLink(satLink)
-  })
-}
-
 function findPath() {
   if (!firstCoords.value || !secondCoords.value) {
     console.error('No coords selected')
@@ -141,6 +126,7 @@ function findPath() {
   }
   const path = graph.findPath(sat1, sat2)
 
+  currentPath.value = []
   console.log('Found path: ', path)
   if (path) {
     for (const node of path) {

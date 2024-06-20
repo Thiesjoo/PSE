@@ -388,7 +388,7 @@ export class ThreeSimulation {
   }
 
   private resetMeshes() {
-    if (!this.mesh.sat || !this.mesh.satClick) return
+    if (!this.mesh || !this.mesh.sat || !this.mesh.satClick) return
     
     const matrix = new THREE.Matrix4()
     matrix.compose(
@@ -572,7 +572,7 @@ export class ThreeSimulation {
       )
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
-    new TWEEN.Tween(this.globe.rotation)
+    new TWEEN.Tween(this.globe?.rotation || new THREE.Vector3())
       .to(
         {
           x: 0,
