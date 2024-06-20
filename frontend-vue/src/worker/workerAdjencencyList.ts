@@ -1,3 +1,4 @@
+import { DISTANCE_FOR_SATELLITES } from '@/common/constants'
 import { GeoCoords, calculateDistance } from '@/common/utils'
 
 export interface CalculateAdjList {
@@ -25,7 +26,7 @@ onmessage = (event) => {
       for (const [satId, coords] of data.slice(type.start, type.end)) {
         res.data[+satId] = data
           .filter(([id, otherCoords]) => {
-            return calculateDistance(coords, otherCoords) < 650
+            return calculateDistance(coords, otherCoords) < DISTANCE_FOR_SATELLITES
           })
           .map(([id]) => +id)
       }

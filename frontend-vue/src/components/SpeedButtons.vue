@@ -70,8 +70,8 @@ const intervals = [1, 10, 100, 1000]
       >
         {{ t('Speed') }} x{{ interval }}
       </button>
-    </template>
       <button @click="resetTime()" class="reset">{{ t('Reset to current time') }}</button>
+    </template>
     </div>
   </div>
 </template>
