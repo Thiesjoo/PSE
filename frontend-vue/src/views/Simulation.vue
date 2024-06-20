@@ -14,7 +14,7 @@ const props = defineProps<{
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(false);
-const CURRENT_COLOR = '#FF00FF' // '#F5EEF8' (pink);
+const CURRENT_COLOR = '#34b4b5' //'#FF00FF' // '#F5EEF8' (pink);
 const satellites = ref<Satellite[]>([]);
 
 let sat: Satellite;
