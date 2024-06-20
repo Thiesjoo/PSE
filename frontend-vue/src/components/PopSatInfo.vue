@@ -4,10 +4,10 @@ import { computed, getCurrentInstance, onUnmounted, ref, watch } from 'vue'
 import PopFrame from './PopFrame.vue'
 import InfoPopup from '@/components/InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
-const { t, locale } = useI18n() 
+import { rounded } from '@/common/utils'
+import { NUM_DIGITS } from '@/common/constants'
 
-// Aantal getallen achter de komma in satellietinformatie
-const numDigits = 3
+const { t, locale } = useI18n()
 
 const props = defineProps<{
   currentSelectedSatellite: Satellite
@@ -35,7 +35,7 @@ const epoch = computed(() => {
   date.setSeconds(0)
   date.setMilliseconds(0)
 
-  const localeCode = locale.value === 'nl' ?  'nl-NL' : 'en-US'
+  const localeCode = locale.value === 'nl' ? 'nl-NL' : 'en-US'
 
   return date.toLocaleTimeString(localeCode, {
     hour: '2-digit',
@@ -47,32 +47,25 @@ const epoch = computed(() => {
   })
 })
 
-const rounded = (num: number, digits: number) => {
-  const factor = Math.pow(10, digits)
-  return Math.round(num * factor) / factor
-}
-
-
 const speed = computed(() => {
   if (!props.currentSelectedSatellite) {
     return ''
   }
-  return rounded(props.currentSelectedSatellite.realSpeed.value, numDigits)
+  return rounded(props.currentSelectedSatellite.realSpeed.value, NUM_DIGITS)
 })
 
 const key = ref(0)
 const interval = setInterval(() => {
-    key.value++
+  key.value++
 }, 100)
 
 onUnmounted(() => {
   clearInterval(interval)
 })
-
 </script>
 
 <template>
-  <PopFrame :open="true" class="popup" >
+  <PopFrame :open="true" class="popup">
     <div class="top">
       <h1>{{ currentSelectedSatellite.name }}</h1>
 
@@ -97,63 +90,64 @@ onUnmounted(() => {
       <p id="SatelliteCountry">{{ t(currentSelectedSatellite.country) }}</p>
       <p id="norad">
         <InfoPopup>
-            {{ t("NORAD Catalog Number_description") }}
+          {{ t('NORAD Catalog Number_description') }}
         </InfoPopup>
-        <span>{{ t("NORAD Catalog Number") }}:</span>
+        <span>{{ t('NORAD Catalog Number') }}:</span>
         <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
       </p>
     </div>
-    <div class="live_info"  :key="key">
+    <div class="live_info" :key="key">
       <p>
-        {{ t("Longitude") }}:
+        {{ t('Longitude') }}:
         <span id="SatelliteLongitude"
-          >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, numDigits) }}º</span
+          >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, NUM_DIGITS) }}º</span
         >
         <InfoPopup>
-            {{ t("Longitude_description") }}
+          {{ t('Longitude_description') }}
         </InfoPopup>
       </p>
       <p>
-        {{ t("Latitude") }}:
+        {{ t('Latitude') }}:
         <span id="SatelliteLatitude"
-          >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, numDigits) }}º
+          >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, NUM_DIGITS) }}º
         </span>
         <InfoPopup>
-            {{ t("Latitude_description") }}
+          {{ t('Latitude_description') }}
         </InfoPopup>
       </p>
       <p>
-        {{ t("Altitude") }}:
+        {{ t('Altitude') }}:
         <span id="SatelliteAltitude"
-          >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, numDigits) }}km</span
+          >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, NUM_DIGITS) }}km</span
         >
         <InfoPopup>
-            {{ t("Altitude_description") }}
+          {{ t('Altitude_description') }}
         </InfoPopup>
       </p>
       <p>
-        {{ t("Speed") }}:
+        {{ t('Speed') }}:
         <span id="SatelliteSpeed">{{ speed }}km/s</span>
         <InfoPopup>
-            {{ t("Speed_description") }}
+          {{ t('Speed_description') }}
         </InfoPopup>
       </p>
     </div>
-    <div class="epoch"  :key="key">
-      <p>{{ t("Last epoch") }}:</p>
+    <div class="epoch" :key="key">
+      <p>{{ t('Last epoch') }}:</p>
       <p id="SatelliteEpoch">{{ epoch }}</p>
       <InfoPopup>
-            {{ t("Last epoch_description") }}
-        </InfoPopup>
+        {{ t('Last epoch_description') }}
+      </InfoPopup>
     </div>
   </PopFrame>
 </template>
 
 <style scoped lang="scss">
 .popup {
-    p, .epoch {
-        position: relative
-    }
+  p,
+  .epoch {
+    position: relative;
+  }
 
   .top {
     display: flex;
@@ -166,9 +160,9 @@ onUnmounted(() => {
     }
 
     #norad {
-        div {
-                margin-bottom: 1em;
-        }
+      div {
+        margin-bottom: 1em;
+      }
     }
 
     img {
