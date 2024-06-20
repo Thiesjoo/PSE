@@ -6,9 +6,14 @@ import ThreeGlobe from 'three-globe'
 
 import Earth from './assets/earth-blue-marble.jpg'
 import Gaia from './assets/Gaia.png'
-import NightLights from "./assets/night_lights_modified.png"
+import NightLights from './assets/night_lights_modified.png'
 
-import { constructSatelliteMesh, SatelliteMeshes, type Satellite, polar2Cartesian } from './Satellite'
+import {
+  constructSatelliteMesh,
+  SatelliteMeshes,
+  type Satellite,
+  polar2Cartesian
+} from './Satellite'
 import { geoCoords, loadTexture, shiftLeft } from './common/utils'
 import {
   EARTH_RADIUS_KM,
@@ -26,6 +31,7 @@ import * as satellite from 'satellite.js'
 import { Orbit } from './Orbit'
 import { WorkerManager } from './worker/manager'
 import { AllSatLinks } from './SatLinks'
+import { LocationMarker } from './LocationMarker'
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
@@ -34,7 +40,7 @@ export class ThreeSimulation {
   private tweeningStatus: number = 0
   private escapedFollow = false
 
-  private sun!: THREE.DirectionalLight;
+  private sun!: THREE.DirectionalLight
   private renderer!: THREE.WebGLRenderer
   public scene!: THREE.Scene //TODO: private maken
   private camera!: THREE.PerspectiveCamera
@@ -44,7 +50,8 @@ export class ThreeSimulation {
   private stats!: any
 
   private orbits: Orbit[] = []
-  public satelliteLinks: AllSatLinks | null = null;
+  public satelliteLinks: AllSatLinks | null = null
+  private locationMarkers: LocationMarker[] = []
 
   public time: Time = new Time(new Date()) //TODO: private maken
 
@@ -96,25 +103,25 @@ export class ThreeSimulation {
   private getSunPosition() {
     // Calculate the position of the sun in our scene
     // This is used for the night lights on the Earth. solar ephemeris
-    const time = this.time.time;
-    const copy  = new Date(time.getTime());
+    const time = this.time.time
+    const copy = new Date(time.getTime())
     // get time in GMT
-    const hours = copy.getUTCHours();
-    const minutes = copy.getUTCMinutes();
-    const seconds = copy.getUTCSeconds();
+    const hours = copy.getUTCHours()
+    const minutes = copy.getUTCMinutes()
+    const seconds = copy.getUTCSeconds()
 
     // progress in day
-    const progress = (hours * 60 * 60 + minutes * 60 + seconds) / (24 * 60 * 60);
+    const progress = (hours * 60 * 60 + minutes * 60 + seconds) / (24 * 60 * 60)
 
-    // at 0.00 the sun is at lat0, lon0, 4 hours later at lat 
-    const lat = 0;
-    const lng = progress * 360 - 180;
+    // at 0.00 the sun is at lat0, lon0, 4 hours later at lat
+    const lat = 0
+    const lng = progress * 360 - 180
     const cartesianPosition = polar2Cartesian(
-        lat,
-        lng,
-        EARTH_RADIUS_KM * 3,
-        this.globe.getGlobeRadius()
-      )
+      lat,
+      lng,
+      EARTH_RADIUS_KM * 3,
+      this.globe.getGlobeRadius()
+    )
 
     return new THREE.Vector3(cartesianPosition.x, cartesianPosition.y, cartesianPosition.z)
   }
@@ -158,22 +165,24 @@ export class ThreeSimulation {
     this.scene.background = envMap
 
     const earth = await loadTexture(Earth)
-    earth.colorSpace = THREE.SRGBColorSpace;
+    earth.colorSpace = THREE.SRGBColorSpace
 
     const material = new THREE.MeshPhongMaterial({
-        map: earth,
-        emissiveMap: nightLights,
-        emissive: new THREE.Color(0xffff88),
+      map: earth,
+      emissiveMap: nightLights,
+      emissive: new THREE.Color(0xffff88)
     })
 
-
     // Code from: https://github.com/franky-adl/threejs-earth
-    material.onBeforeCompile = function( shader ) {
-        shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', `
+    material.onBeforeCompile = function (shader) {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <emissivemap_fragment>',
+        `
             vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );
             emissiveColor *= 1.0 - smoothstep(-0.2, 0.2, dot(normal, directionalLights[0].direction));
             totalEmissiveRadiance *= emissiveColor.rgb;
-        `)
+        `
+      )
     }
 
     // Add the Earth
@@ -188,8 +197,8 @@ export class ThreeSimulation {
 
     const axialTiltInRadians = 23.5 * (Math.PI / 180)
     this.globe.rotation.x = axialTiltInRadians
-    
-    this.globe.userData = {name: "globe"};
+
+    this.globe.userData = { name: 'globe' }
 
     this.mesh = constructSatelliteMesh(this.globe.getGlobeRadius())
     this.scene.add(this.mesh.sat)
@@ -349,7 +358,7 @@ export class ThreeSimulation {
 
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
-    
+
     if (intersects.length > 0) {
       if ('satellite' in intersects[0].object.userData) {
         this.deselect()
@@ -363,16 +372,16 @@ export class ThreeSimulation {
 
         this.eventListeners['select']?.forEach((cb) => cb(satData))
         this.escapedFollow = false
-      }
-      else if (intersects[0].object.position.x === 0
-              && intersects[0].object.position.y === 0
-              && intersects[0].object.position.z === 0){
-        this.deselect();
+      } else if (
+        intersects[0].object.position.x === 0 &&
+        intersects[0].object.position.y === 0 &&
+        intersects[0].object.position.z === 0
+      ) {
+        this.deselect()
         const clickedPosition: geoCoords = this.globe.toGeoCoords(intersects[0].point)
         this.eventListeners['earthClicked']?.forEach((cb) => cb(clickedPosition))
       }
-    }
-    else {
+    } else {
       this.deselect()
     }
     this.tweeningStatus = 0
@@ -402,13 +411,13 @@ export class ThreeSimulation {
     this.resetMeshes()
     this.workerManager.reset()
     this.time.setSpeed(1)
-    this.removeAllOrbits();
-    this.satelliteLinks?.destroy();
+    this.removeAllOrbits()
+    this.satelliteLinks?.destroy()
+    this.removeAllMarkers()
 
     this.drawLines = true
     this.currentlyHovering = null
     this.currentlySelected = null
-
 
     this.eventListeners = {}
   }
@@ -421,7 +430,7 @@ export class ThreeSimulation {
 
     this.satellites[sat.id] = sat
     if (updateWorker) {
-        this.workerManager.addSatellites(Object.values(this.satellites))
+      this.workerManager.addSatellites(Object.values(this.satellites))
     }
   }
 
@@ -430,7 +439,7 @@ export class ThreeSimulation {
     this.workerManager.addSatellites(Object.values(this.satellites))
   }
 
-  getSatellites(): Satellite[]{
+  getSatellites(): Satellite[] {
     return Object.values(this.satellites)
   }
 
@@ -461,24 +470,23 @@ export class ThreeSimulation {
       removedOrbit?.removeLine(this.scene)
     }
     this.orbits.push(orbit)
-    return orbit;
+    return orbit
   }
 
   removeOrbit(sat: Satellite) {
     sat.orbit?.removeLine(this.scene)
-    this.orbits = this.orbits.filter(function(obj) {
-      return obj.satellite.id !== sat.id;
-    });
+    this.orbits = this.orbits.filter(function (obj) {
+      return obj.satellite.id !== sat.id
+    })
   }
 
-  removeAllOrbits(){
-    for (const orbit of this.orbits){
+  removeAllOrbits() {
+    for (const orbit of this.orbits) {
       orbit.removeLine(this.scene)
     }
-    this.orbits = [];
+    this.orbits = []
   }
 
-  
   addAllSatLinks(link: AllSatLinks) {
     this.satelliteLinks = link
   }
@@ -486,6 +494,29 @@ export class ThreeSimulation {
   removeSatLink() {
     this.satelliteLinks?.destroy()
     this.satelliteLinks = null
+  }
+
+  addMarker(coords: geoCoords) {
+    const marker = new LocationMarker(coords, this.scene, this.globe)
+    marker.render()
+    this.locationMarkers.push(marker)
+  }
+
+  removeMarker(coords: geoCoords) {
+    const marker = this.locationMarkers.find((marker) => {
+      return marker.getCoords().lat === coords.lat && marker.getCoords().lng === coords.lng
+    })
+    if (marker) {
+      marker.remove()
+      this.locationMarkers = this.locationMarkers.filter((m) => m !== marker)
+    }
+  }
+
+  removeAllMarkers() {
+    for (const marker of this.locationMarkers) {
+      marker.remove()
+    }
+    this.locationMarkers = []
   }
 
   addGroundStation() {}
@@ -554,20 +585,16 @@ export class ThreeSimulation {
     this.onRightSide = false
   }
 
-  setCurrentlySelected(sat: Satellite){
-    this.currentlySelected = sat;
+  setCurrentlySelected(sat: Satellite) {
+    this.currentlySelected = sat
   }
 
-  changeColor(color: string, sat: Satellite){
-    sat.setColor(
-      color,
-      this.getMeshIDBySatellite(sat),
-      this.mesh
-    )
+  changeColor(color: string, sat: Satellite) {
+    sat.setColor(color, this.getMeshIDBySatellite(sat), this.mesh)
   }
 
-  getNameOfSats(): Satellite[]{
-    return Object.values(this.satellites);
+  getNameOfSats(): Satellite[] {
+    return Object.values(this.satellites)
   }
 
   getTime() {
@@ -588,7 +615,10 @@ export class ThreeSimulation {
 
   addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void
   addEventListener(event: 'earthClicked', callback: (sat: geoCoords | undefined) => void): void
-  addEventListener(event: 'select' | 'earthClicked', callback: ((sat: Satellite | undefined) => void) | ((sat: geoCoords | undefined) => void)): void {
+  addEventListener(
+    event: 'select' | 'earthClicked',
+    callback: ((sat: Satellite | undefined) => void) | ((sat: geoCoords | undefined) => void)
+  ): void {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = []
     }

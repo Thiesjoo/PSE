@@ -1,16 +1,19 @@
-<script setup
-        lang="ts">
-        import { Satellite } from '@/Satellite'
-        import { ThreeSimulation } from '@/Sim'
-        import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
-        import { Ref, ref, watch } from 'vue'
-        import SpeedButtons from '@/components/SpeedButtons.vue'
-        import { Graph } from '@/Graph'
-        import { SatManager, Filter } from '@/common/sat-manager'
-        import { AllSatLinks, SatLinks } from '@/SatLinks'
-        import { geoCoords } from '@/common/utils'
-        import { useI18n } from 'vue-i18n'
-        import MultipleTabs from '@/components/MultipleTabs.vue'
+<script setup lang="ts">
+import { Satellite, polar2Cartesian } from '@/Satellite'
+import { ThreeSimulation } from '@/Sim'
+import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
+import { Ref, ref, watch } from 'vue'
+import SpeedButtons from '@/components/SpeedButtons.vue'
+import { Graph } from '@/Graph'
+import { SatManager, Filter } from '@/common/sat-manager'
+import { AllSatLinks, SatLinks } from '@/SatLinks'
+import { geoCoords } from '@/common/utils'
+import { useI18n } from 'vue-i18n'
+import { rounded } from '@/common/utils'
+import { NUM_DIGITS } from '@/common/constants'
+import { LocationMarker } from '@/LocationMarker'
+import { LocationLine } from '@/LocationLine'
+import MultipleTabs from '@/components/MultipleTabs.vue'
 
         const { t } = useI18n()
 
@@ -36,16 +39,18 @@
 
         const currentSelectedSatellite = ref(undefined as Satellite | undefined)
 
-        props.simulation.addEventListener('earthClicked', (coords) => {
-            if (coords) {
-                if (!firstCoords.value) {
-                    firstCoords.value = coords
-                } else if (!secondCoords.value) {
-                    secondCoords.value = coords
-                    makeGraph()
-                }
-            }
-        })
+props.simulation.addEventListener('earthClicked', (coords) => {
+  if (coords) {
+    if (!firstCoords.value) {
+      firstCoords.value = coords
+      props.simulation.addMarker(coords)
+    } else if (!secondCoords.value) {
+      secondCoords.value = coords
+      props.simulation.addMarker(coords)
+      makeGraph()
+    }
+  }
+})
 
         function makeGraph() {
             if (!firstCoords.value || !secondCoords.value) {
@@ -88,10 +93,29 @@
                 console.log(path)
             }
 
-            all.setPath(satList)
-            props.simulation.setCurrentlySelected(satList[0])
-            console.log(path)
-        }
+  all.setPath([
+    {
+      xyzPosition: polar2Cartesian(
+        secondCoords.value.lat,
+        secondCoords.value.lng,
+        secondCoords.value.altitude,
+        props.simulation.globe.getGlobeRadius()
+      )
+    },
+    ...satList,
+    {
+      xyzPosition: polar2Cartesian(
+        firstCoords.value.lat,
+        firstCoords.value.lng,
+        firstCoords.value.altitude,
+        props.simulation.globe.getGlobeRadius()
+      )
+    }
+  ])
+
+  props.simulation.setCurrentlySelected(satList[1])
+  console.log(path)
+}
 </script>
 
 <template>
