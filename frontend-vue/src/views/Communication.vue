@@ -6,6 +6,7 @@ import { ThreeSimulation } from '@/Sim'
 import { Filter, SatManager } from '@/common/sat-manager'
 import { geoCoords } from '@/common/utils'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
+import SpeedButtons from '@/components/SpeedButtons.vue'
 import MultipleTabs from '@/components/MultipleTabs.vue'
 import { Ref, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -199,7 +200,7 @@ function findPath() {
     </MultipleTabs>
   </LeftInfoBlock>
 
-  <!-- <SpeedButtons :simulation="simulation"></SpeedButtons> -->
+  <SpeedButtons :simulation="simulation" :showOnlyTime="true"></SpeedButtons>
 </template>
 
 <style scoped lang="scss">

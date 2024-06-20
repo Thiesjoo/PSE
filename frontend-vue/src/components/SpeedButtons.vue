@@ -6,6 +6,7 @@ const { t, locale } = useI18n()
 
 const props = defineProps<{
   simulation: ThreeSimulation
+  showOnlyTime?: boolean
 }>()
 
 const time = props.simulation.getTime()
@@ -60,6 +61,7 @@ const intervals = [1, 10, 100, 1000]
     <div class="speed">
       <button
         v-for="interval in intervals"
+        v-if="props.showOnlyTime === undefined || !props.showOnlyTime"
         :key="interval"
         @click="time.setSpeed(interval)"
         :class="{
