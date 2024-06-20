@@ -2,10 +2,20 @@
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
 import SpeedButtons from '@/components/SpeedButtons.vue'
+<<<<<<< HEAD
 import InfoPopup from '@/components/InfoPopup.vue'
 import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin, calculateHeight} from '@/calc_helper'
+=======
+import {
+  epochUpdate,
+  calculateRevolutionPerDay,
+  calculateMeanMotionRadPerMin,
+  calculateHeight
+} from '@/calc_helper'
+>>>>>>> main
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -13,11 +23,17 @@ const props = defineProps<{
 }>()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
+<<<<<<< HEAD
 const showOrbit = ref(false);
 const CURRENT_COLOR = '#34b4b5' //'#FF00FF' // '#F5EEF8' (pink);
 const satellites = ref<Satellite[]>([]);
+=======
+const showOrbit = ref(false)
+const CURRENT_COLOR = '#FF00FF' // '#F5EEF8' (pink);
+const satellites = ref<Satellite[]>([])
+>>>>>>> main
 
-let sat: Satellite;
+let sat: Satellite
 let current_sat = ref<Satellite | null>(null)
 let sat_number = 1 // Used for naming satellites when creating multiple
 
@@ -47,17 +63,17 @@ function tle_new_satellite(alt: number) {
  *
  * @param {Satellite} sat - The satellite to reset the sliders to.
  */
-function update_display(sat: Satellite){
-    height.value = calculateHeight(sat.satData.no);
-    inclination.value = +(sat.satData.inclo * 180 / Math.PI).toFixed(0);
-    raan.value = +(sat.satData.nodeo * 180 / Math.PI).toFixed(0);
-    e.value = sat.satData.ecco * 100;
-    picked.value = 0;
+function update_display(sat: Satellite) {
+  height.value = calculateHeight(sat.satData.no)
+  inclination.value = +((sat.satData.inclo * 180) / Math.PI).toFixed(0)
+  raan.value = +((sat.satData.nodeo * 180) / Math.PI).toFixed(0)
+  e.value = sat.satData.ecco * 100
+  picked.value = 0
 
-    showOrbit.value = false; // TODO: I am not 100% sure, maybe it should be true
+  showOrbit.value = false // TODO: I am not 100% sure, maybe it should be true
 
-    // Update sat-list
-    satellites.value = props.simulation.getNameOfSats()
+  // Update sat-list
+  satellites.value = props.simulation.getNameOfSats()
 }
 
 /**
@@ -66,27 +82,27 @@ function update_display(sat: Satellite){
  * @param {number} alt - The altitude for the new satellite.
  * @returns {Satellite} The newly created satellite.
  */
-function add_new_satellite(alt: number){
-    // Creating Satellite object and adding it to simulation
-    let tle = tle_new_satellite(alt);
-    const sats = Satellite.fromMultipleTLEs(tle);
-    sats.forEach((sat) => props.simulation.addSatellite(sat));
-    let new_sat = sats[0]
+function add_new_satellite(alt: number) {
+  // Creating Satellite object and adding it to simulation
+  let tle = tle_new_satellite(alt)
+  const sats = Satellite.fromMultipleTLEs(tle)
+  sats.forEach((sat) => props.simulation.addSatellite(sat))
+  let new_sat = sats[0]
 
-    //  Some settings
-    update_display(new_sat)
-    new_sat.country = 'NL';
+  //  Some settings
+  update_display(new_sat)
+  new_sat.country = 'NL'
 
-    // Orbit
-    if (showOrbit.value){
-      const orbit = props.simulation.addOrbit(new_sat, true);
-      new_sat.setOrbit(orbit);
-    }
+  // Orbit
+  if (showOrbit.value) {
+    const orbit = props.simulation.addOrbit(new_sat, true)
+    new_sat.setOrbit(orbit)
+  }
 
-    // Update sat-list
-    satellites.value = props.simulation.getNameOfSats()
+  // Update sat-list
+  satellites.value = props.simulation.getNameOfSats()
 
-    return new_sat
+  return new_sat
 }
 
 /**
@@ -94,19 +110,19 @@ function add_new_satellite(alt: number){
  *
  * @param {Satellite} satellite - The satellite to select.
  *  */
-function change_selected(satellite: Satellite){
-  if (satellite != sat){
-    set_current_sat(satellite);
-    props.simulation.deselect();
-    props.simulation.setCurrentlySelected(satellite);
-    props.simulation.changeColor(CURRENT_COLOR, satellite);
-    update_display(sat);
+function change_selected(satellite: Satellite) {
+  if (satellite != sat) {
+    set_current_sat(satellite)
+    props.simulation.deselect()
+    props.simulation.setCurrentlySelected(satellite)
+    props.simulation.changeColor(CURRENT_COLOR, satellite)
+    update_display(sat)
   }
 }
 
-function set_current_sat(satellite: Satellite){
-  sat = satellite;
-  current_sat.value = sat;
+function set_current_sat(satellite: Satellite) {
+  sat = satellite
+  current_sat.value = sat
 }
 
 // ********* SLIDERS *********
@@ -117,14 +133,14 @@ const inclination = ref(0)
 const raan = ref(0)
 const e = ref(0)
 const picked = ref(0) // Orbit type is 0 = LEO
-let add = ref(0); // Used for adding new satellites (0==false)
-let remove = ref(0); // Used for removing all current satellites (0==false)
+let add = ref(0) // Used for adding new satellites (0==false)
+let remove = ref(0) // Used for removing all current satellites (0==false)
 
 // Height slider live changes and update radio buttons
 watch(height, (Value) => {
   let alt = Value * 1000 + 6371 * 1000 // Convert to meters and add Earth's radius
   sat.satData.no = calculateMeanMotionRadPerMin(alt) // mean motion [rad/min]
-  sat.orbit?.recalculate();
+  sat.orbit?.recalculate()
 
   // Changing image with LEO, MEO orbit
   if (Value >= 160 && Value < 2000) {
@@ -140,71 +156,68 @@ watch(height, (Value) => {
 // Inclination slider live changes
 watch(inclination, (Value) => {
   sat.satData.inclo = (Value * Math.PI) / 180 // [rad]
-  sat.orbit?.recalculate();
+  sat.orbit?.recalculate()
   props.simulation.resendDataToWorkers()
 })
 
 // RAAN slider live changes
 watch(raan, (Value) => {
   sat.satData.nodeo = (Value * Math.PI) / 180 // [rad]
-  sat.orbit?.recalculate();
+  sat.orbit?.recalculate()
   props.simulation.resendDataToWorkers()
 })
 
 // Eccentricity slider live changes
 watch(e, (Value) => {
   sat.satData.ecco = Value / 100
-  sat.orbit?.recalculate();
+  sat.orbit?.recalculate()
   props.simulation.resendDataToWorkers()
 })
 
 // ********* first satellite *********
-change_selected(add_new_satellite(basic_alt));
+change_selected(add_new_satellite(basic_alt))
 
 // ********* ADD SATELLITE BUTTON *********
 watch(add, (newValue) => {
-      if (newValue === 1) {
-        change_selected(add_new_satellite(basic_alt));
-        add.value = 0 // Reset 'add' to 0 (false)
-      }
-    })
+  if (newValue === 1) {
+    change_selected(add_new_satellite(basic_alt))
+    add.value = 0 // Reset 'add' to 0 (false)
+  }
+})
 
 // ********* REMOVE SAT BUTTON *********
 watch(remove, (newValue) => {
-      if (newValue === 1) {
+  if (newValue === 1) {
+    props.simulation.reset()
+    remove.value = 0 // Reset 'add' to 0 (false)
+    sat_number = 1 // Resets the naming
 
-        props.simulation.reset();
-        remove.value = 0; // Reset 'add' to 0 (false)
-        sat_number = 1; // Resets the naming
-
-        set_current_sat(add_new_satellite(basic_alt));
-      }
-    })
+    set_current_sat(add_new_satellite(basic_alt))
+  }
+})
 
 // ********* ORBIT shown *********
 watch(showOrbit, (newValue) => {
-  if (newValue === true){
-    const orbit = props.simulation.addOrbit(sat, true);
+  if (newValue === true) {
+    const orbit = props.simulation.addOrbit(sat, true)
     sat.setOrbit(orbit)
-  }
-  else{
-    props.simulation.removeOrbit(sat);
+  } else {
+    props.simulation.removeOrbit(sat)
   }
 })
 
 // ********* Clicked sat can be edited *********
 props.simulation.addEventListener('select', (satellite) => {
-  if (satellite){
-    change_selected(satellite);
+  if (satellite) {
+    change_selected(satellite)
   }
 })
-
 </script>
 
 <template>
-  <div class="left-info-block">
+  <LeftInfoBlock :open="true">
     <br />
-    <h2>{{t('Simulation Variables')}}</h2>
+    <h2>{{ t('Simulation Variables') }}</h2>
     <br />
     <div class="name-sat">
       <h4 class="display">{{ sat.name }}</h4>
@@ -212,32 +225,40 @@ props.simulation.addEventListener('select', (satellite) => {
     <div class="sliders-sat">
       <br />
       <br />
+<<<<<<< HEAD
       <h4>{{t("Height")}} [km]
         <InfoPopup>
         Some Information
        </InfoPopup>
       </h4>
+=======
+      <h4>{{ t('Height') }} [km]</h4>
+>>>>>>> main
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
         <p class="display">Value: {{ height }}</p>
       </div>
       <br />
+<<<<<<< HEAD
       <h4>{{t("Inclination")}} [deg] </h4>
+=======
+      <h4>{{ t('Inclination') }} [deg]</h4>
+>>>>>>> main
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
         <p class="display">Value: {{ inclination }}</p>
       </div>
       <br />
-      <h4>{{t("RAAN")}} [deg]</h4>
+      <h4>{{ t('RAAN') }} [deg]</h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
         <br />
         <p class="display">Value: {{ raan }}</p>
       </div>
       <br />
-      <h4>{{t("Eccentricity")}}</h4>
+      <h4>{{ t('Eccentricity') }}</h4>
       <div class="slider">
         <input type="range" min="0" max="99" v-model="e" class="slider" />
         <br />
@@ -246,15 +267,19 @@ props.simulation.addEventListener('select', (satellite) => {
     </div>
     <br />
     <div class="button-box">
-      <button class="add-button" @click="add = 1" style="text-align: center">{{t("Add another satellite")}}</button>
-      <button class="del-button" @click="remove = 1" style="text-align: center">{{t("Delete satellites")}}</button>
+      <button class="add-button" @click="add = 1" style="text-align: center">
+        {{ t('Add another satellite') }}
+      </button>
+      <button class="del-button" @click="remove = 1" style="text-align: center">
+        {{ t('Delete satellites') }}
+      </button>
     </div>
     <div class="show-orbit-check">
       <input type="checkbox" id="show-orbit" v-model="showOrbit" />
-      <label for="show-orbit">{{t("Show orbit")}} {{ t(showOrbit.toString()) }}</label>
+      <label for="show-orbit">{{ t('Show orbit') }} {{ t(showOrbit.toString()) }}</label>
     </div>
     <div class="orbit-sat">
-      <h2>{{t("Orbit Category")}}</h2>
+      <h2>{{ t('Orbit Category') }}</h2>
       <br />
       <div id="categories" style="text-align: center">
         <span :class="{ category: true, highlight: picked === 0 }" id="LEO"> LEO</span>
@@ -262,22 +287,22 @@ props.simulation.addEventListener('select', (satellite) => {
         <span :class="{ category: true, highlight: picked == 2 }" id="Other">Other</span>
       </div>
       <div class="orbit-info" v-show="picked === 0">
-        <h3>{{t("Low Earth Orbit")}}</h3>
-        <p>{{t("Height")}}: 160-2000 km</p>
+        <h3>{{ t('Low Earth Orbit') }}</h3>
+        <p>{{ t('Height') }}: 160-2000 km</p>
         <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 1">
-        <h3>{{t("Medium Earth Orbit")}}</h3>
-        <p>{{t("Height")}}: 2000-36000 km</p>
+        <h3>{{ t('Medium Earth Orbit') }}</h3>
+        <p>{{ t('Height') }}: 2000-36000 km</p>
         <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 2">
-        <h3>{{t("Other")}}</h3>
-        <p>{{t("Height")}}: >36000 km</p>
+        <h3>{{ t('Other') }}</h3>
+        <p>{{ t('Height') }}: >36000 km</p>
         <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
-  </div>
+  </LeftInfoBlock>
 
   <SpeedButtons :simulation="props.simulation" />
 
@@ -287,7 +312,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div
         v-for="satellite in satellites"
         :key="satellite.name"
-        :class="{'selected': current_sat === satellite }"
+        :class="{ selected: current_sat === satellite }"
         @click="change_selected(satellite as Satellite)"
         class="satellite-item"
       >
@@ -295,7 +320,6 @@ props.simulation.addEventListener('select', (satellite) => {
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped lang="scss">
@@ -313,28 +337,7 @@ h3 {
   font-weight: bold;
 }
 
-.left-info-block {
-  position: absolute;
-  top: 0px;
-  left: 0;
-  width: 350px;
-  height: 100%;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: space-between;
-  align-items: stretch;
-  background-color: #05050a7c;
-  color: white;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.75);
-  border-radius: 12px;
-  padding: 25px;
-  overflow-y: scroll;
-}
-
-.name-sat{
+.name-sat {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -346,7 +349,7 @@ h3 {
   top: 10px;
 }
 
-.button-box{
+.button-box {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -362,14 +365,14 @@ h3 {
   color: white;
 }
 
-.del-button{
+.del-button {
   appearance: none;
   background-color: rgba(45, 155, 156, 0.45);
   border-radius: 200px;
   color: white;
 }
 
-.show-orbit-check{
+.show-orbit-check {
   display: flex;
   appearance: none;
   align-self: center;
@@ -457,7 +460,6 @@ h3 {
 .satellite-item.selected {
   background-color: rgba(45, 155, 156, 0.45);
 }
-
 </style>
 <i18n>
   {

@@ -12,16 +12,29 @@ const time = props.simulation.getTime()
 
 const currentTimeString = ref('')
 
+const dateFormatEN = new Intl.DateTimeFormat('en', {
+  hour: '2-digit',
+  minute: '2-digit',
+  weekday: 'short',
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+  timeZone: "Europe/Amsterdam"
+})
+
+const dateFormatNL = new Intl.DateTimeFormat('nl', {
+  hour: '2-digit',
+  minute: '2-digit',
+  weekday: 'short',
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+  timeZone: "Europe/Amsterdam"
+})
+
+
 const updateCurrentTimeString = () => {
-  const localeCode = locale.value === 'nl' ? 'nl-NL' : 'en-US'
-  currentTimeString.value = time.time.toLocaleTimeString(localeCode, {
-    hour: '2-digit',
-    minute: '2-digit',
-    weekday: 'short',
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  })
+  currentTimeString.value = locale.value === 'en' ? dateFormatEN.format(time.time) : dateFormatNL.format(time.time)
 }
 
 onMounted(() => {
@@ -36,7 +49,7 @@ const resetTime = () => {
   time.setSpeed(1)
 }
 
-const intervals = [1, 10, 100, 1000]
+const intervals = [1, 10, 100, 1000, 10000]
 </script>
 
 <template>
