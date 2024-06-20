@@ -96,7 +96,7 @@ onUnmounted(() => {
         <span id="SatelliteId">{{ currentSelectedSatellite.id }}</span>
       </p>
     </div>
-    <div class="live_info" :key="key">
+    <div class="live_info">
       <p>
         {{ t('Longitude') }}:
         <span id="SatelliteLongitude"
@@ -132,7 +132,7 @@ onUnmounted(() => {
         </InfoPopup>
       </p>
     </div>
-    <div class="epoch" :key="key">
+    <div class="epoch">
       <p>{{ t('Last epoch') }}:</p>
       <p id="SatelliteEpoch">{{ epoch }}</p>
       <InfoPopup>
