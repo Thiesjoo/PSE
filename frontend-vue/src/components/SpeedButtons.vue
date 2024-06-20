@@ -59,9 +59,9 @@ const intervals = [1, 10, 100, 1000]
       {{ currentTimeString }}
     </h1>
     <div class="speed">
+    <template v-if="props.showOnlyTime === undefined || !props.showOnlyTime">
       <button
         v-for="interval in intervals"
-        v-if="props.showOnlyTime === undefined || !props.showOnlyTime"
         :key="interval"
         @click="time.setSpeed(interval)"
         :class="{
@@ -70,6 +70,7 @@ const intervals = [1, 10, 100, 1000]
       >
         {{ t('Speed') }} x{{ interval }}
       </button>
+    </template>
       <button @click="resetTime()" class="reset">{{ t('Reset to current time') }}</button>
     </div>
   </div>

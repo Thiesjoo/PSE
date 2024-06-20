@@ -25,7 +25,7 @@
 <template>
     <div class="wrapper">
 
-        <div v-for="slot in arr">
+        <div v-for="slot in arr" :key="slot">
             <slot :name="`tab${slot}`"
                   v-if="slot == currentTab"></slot>
         </div>
