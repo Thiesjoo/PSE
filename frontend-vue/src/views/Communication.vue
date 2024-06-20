@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { Graph, calculateDistance } from '@/Graph'
+import { AllSatLinks, SatLinks } from '@/SatLinks'
 import { Satellite, polar2Cartesian } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
+import { Filter, SatManager } from '@/common/sat-manager'
+import { geoCoords, rounded } from '@/common/utils'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
-import { Ref, ref, watch } from 'vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
-import { Graph } from '@/Graph'
-import { SatManager, Filter } from '@/common/sat-manager'
-import { AllSatLinks, SatLinks } from '@/SatLinks'
-import { geoCoords } from '@/common/utils'
+import MultipleTabs from '@/components/MultipleTabs.vue'
+import { Ref, computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { rounded } from '@/common/utils'
 import { NUM_DIGITS } from '@/common/constants'
 
 const { t } = useI18n()
@@ -18,8 +18,9 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-let firstCoords: Ref<geoCoords | undefined> = ref(undefined)
-let secondCoords: Ref<geoCoords | undefined> = ref(undefined)
+const graph = new Graph(props.simulation.globe)
+const all = new AllSatLinks(props.simulation.scene)
+props.simulation.addAllSatLinks(all)
 
 const manager = new SatManager(props.simulation)
 await manager.init()
@@ -34,29 +35,88 @@ manager.selectNone()
 manager.currentFilters.push(filter)
 manager.updateSatellites()
 
-const currentSelectedSatellite = ref(undefined as Satellite | undefined)
+props.simulation.disableSatClicking()
+
+const firstCoords: Ref<geoCoords | undefined> = ref(undefined)
+const secondCoords: Ref<geoCoords | undefined> = ref(undefined)
+const tabForConnections = 2
+const tabForFirstCoords = 3
+const tabForSecondCoords = 4
+const tabForPath = 5
+
+const currentTab = ref(1);
+const currentPath = ref<Satellite[]>([])
+
+const distance = computed(() => {
+  if (currentPath.value.length === 0) {
+    return 0
+  }
+
+  let dist = 0
+  for (let i = 0; i < currentPath.value.length - 1; i++) {
+    const sat1 = currentPath.value[i]
+    const sat2 = currentPath.value[i + 1]
+    dist += calculateDistance(sat1.realPosition, sat2.realPosition)
+  }
+
+  return rounded(dist, NUM_DIGITS)
+})
+
+function tabInfoUpdate(tab: number) {
+  all.hideConnections = true
+  all.setPath([])
+
+  if (tab === tabForConnections) {
+    makeGraph()
+    all.hideConnections = false
+  } else if (tab === tabForFirstCoords) {
+    if (firstCoords.value) {
+      props.simulation.removeMarker(firstCoords.value)
+    }
+    if (secondCoords.value) {
+      props.simulation.removeMarker(secondCoords.value)
+    }
+    firstCoords.value = undefined
+    secondCoords.value = undefined
+  } else if (tab === tabForSecondCoords) {
+    // TODO: Stop navigating to second page if coords not selected.
+    if (secondCoords.value) {
+      props.simulation.removeMarker(secondCoords.value)
+    }
+    secondCoords.value = undefined
+  } else if (tab === tabForPath) {
+    findPath()
+  }
+}
 
 props.simulation.addEventListener('earthClicked', (coords) => {
   if (coords) {
-    if (!firstCoords.value) {
+    if (currentTab.value === tabForFirstCoords) {
+      if (firstCoords.value) {
+        props.simulation.removeMarker(firstCoords.value)
+      }
       firstCoords.value = coords
       props.simulation.addMarker(coords)
-    } else if (!secondCoords.value) {
+
+      currentTab.value++
+      // TODO: Dit is cursed, fix it.
+      tabInfoUpdate(currentTab.value)
+    } else if (currentTab.value === tabForSecondCoords) {
+      if (secondCoords.value) {
+        props.simulation.removeMarker(secondCoords.value)
+      }
       secondCoords.value = coords
       props.simulation.addMarker(coords)
-      makeGraph()
+      currentTab.value++
+
+      // TODO: Dit is cursed, fix it.
+      tabInfoUpdate(currentTab.value)
     }
   }
 })
 
 function makeGraph() {
-  if (!firstCoords.value || !secondCoords.value) {
-    console.error()
-    return
-  }
-
-  const graph = new Graph(props.simulation.globe)
-  const all = new AllSatLinks(props.simulation.scene)
+  // TODO: Auto update graph when new satellites are added.
   const satellites = props.simulation.getSatellites()
   graph.makeGraph(satellites)
 
@@ -66,7 +126,13 @@ function makeGraph() {
 
     all.addSatLink(satLink)
   })
-  props.simulation.addAllSatLinks(all)
+}
+
+function findPath() {
+  if (!firstCoords.value || !secondCoords.value) {
+    console.error('No coords selected')
+    return
+  }
 
   const sat1 = graph.findClosestSat({
     alt: firstCoords.value.altitude,
@@ -82,12 +148,12 @@ function makeGraph() {
     return
   }
   const path = graph.findPath(sat1, sat2)
-  const satList = []
+
+  console.log('Found path: ', path)
   if (path) {
     for (const node of path) {
-      satList.push(node.sat)
+      currentPath.value.push(node.sat)
     }
-    console.log(path)
   }
 
   all.setPath([
@@ -99,7 +165,7 @@ function makeGraph() {
         props.simulation.globe.getGlobeRadius()
       )
     },
-    ...satList,
+    ...currentPath.value,
     {
       xyzPosition: polar2Cartesian(
         firstCoords.value.lat,
@@ -109,64 +175,48 @@ function makeGraph() {
       )
     }
   ])
-
-  props.simulation.setCurrentlySelected(satList[1])
-  console.log(path)
 }
 </script>
 
 <template>
   <LeftInfoBlock :open="true">
-    <div class="container">
-      <h1>{{ t('Communication') }}</h1>
-      <p>
-        {{
-          t(
-            'Click on the globe to select two points and find the shortest path between two satellites'
-          )
-        }}
-      </p>
-      <div v-if="firstCoords">
-        <p>{{ t('First point') }}:</p>
-        <p>
-          <span>{{ t('Longitude') }}: </span>
-          <span>{{ rounded(firstCoords.lng, NUM_DIGITS) }}º</span>
-        </p>
-        <p>
-          <span>{{ t('Latitude') }}: </span>
-          <span>{{ rounded(firstCoords.lat, NUM_DIGITS) }}º</span>
-        </p>
-      </div>
-      <div v-if="secondCoords">
-        <p>{{ t('Second point') }}:</p>
-        <p>
-          <span>{{ t('Longitude') }}: </span>
-          <span>{{ rounded(secondCoords.lng, NUM_DIGITS) }}º</span>
-        </p>
-        <p>
-          <span>{{ t('Latitude') }}: </span>
-          <span>{{ rounded(secondCoords.lat, NUM_DIGITS) }}º</span>
-        </p>
-      </div>
+    <MultipleTabs :amount="5" @navigate="tabInfoUpdate" v-model="currentTab">
+      <template #tab1>
+        <h1>{{ t('This is a communication network in space') }}</h1>
+        <p>{{ t('Click next to see the connections between them ') }}</p>
+      </template>
 
-      <!-- <div class="info">
-        <p>
-          <span>{{ t('Amount of hops') }}</span>
-          <span>{{ 0 }}</span>
-        </p>
-        <p>
-          <span>{{ t('Distance') }}</span>
-          <span>{{ 0 }}</span>
-        </p>
-      </div> -->
+      <template #tab2>
+        <h1>{{ t('Satellites are connected in this way!') }}</h1>
+      </template>
 
-      <button>
-        {{ t('Reset route') }}
-      </button>
-    </div>
+      <template #tab3>
+        <h1>{{ t('Click on the first point you would like to communicate from') }}</h1>
+        <p v-if="firstCoords">
+          {{ t('First point') }}: {{ firstCoords.lat }}, {{ firstCoords.lng }}
+        </p>
+        <p v-if="firstCoords">{{ t('Click next to select your destination') }}</p>
+      </template>
+
+      <template #tab4>
+        <h1>{{ t('And click where you would like to send your message to') }}</h1>
+        <p v-if="secondCoords">
+          {{ t('Second point') }}: {{ secondCoords.lat }}, {{ secondCoords.lng }}
+        </p>
+        <p v-if="secondCoords">
+          {{ t('Click next to see the shortest path between the two points') }}
+        </p>
+      </template>
+
+      <template #tab5>
+        <h1>{{ t('Your message took this route!') }}</h1>
+        <p> Your message took {{ currentPath.length - 1 }} hops!</p>
+        <p> And your message flew {{ distance }} kilometers. </p>
+      </template>
+    </MultipleTabs>
   </LeftInfoBlock>
 
-  <SpeedButtons :simulation="simulation"></SpeedButtons>
+  <SpeedButtons :simulation="simulation" :showOnlyTime="true"></SpeedButtons>
 </template>
 
 <style scoped lang="scss">

@@ -6,6 +6,7 @@ const { t, locale } = useI18n()
 
 const props = defineProps<{
   simulation: ThreeSimulation
+  showOnlyTime?: boolean
 }>()
 
 const time = props.simulation.getTime()
@@ -49,7 +50,7 @@ const resetTime = () => {
   time.setSpeed(1)
 }
 
-const intervals = [1, 10, 100, 1000, 10000]
+const intervals = [1, 10, 100, 1000]
 </script>
 
 <template>
@@ -58,6 +59,7 @@ const intervals = [1, 10, 100, 1000, 10000]
       {{ currentTimeString }}
     </h1>
     <div class="speed">
+    <template v-if="props.showOnlyTime === undefined || !props.showOnlyTime">
       <button
         v-for="interval in intervals"
         :key="interval"
@@ -68,6 +70,7 @@ const intervals = [1, 10, 100, 1000, 10000]
       >
         {{ t('Speed') }} x{{ interval }}
       </button>
+    </template>
       <button @click="resetTime()" class="reset">{{ t('Reset to current time') }}</button>
     </div>
   </div>

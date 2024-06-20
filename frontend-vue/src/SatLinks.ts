@@ -11,7 +11,9 @@ export class AllSatLinks {
   private pathGeometry: MeshLineGeometry | null = null
 
   private allSatLinks: SatLinks[] = []
-  private scene: THREE.Scene
+  private scene: THREE.Scene;
+
+  public hideConnections = false;
 
   private path: {
     xyzPosition: {
@@ -82,48 +84,52 @@ export class AllSatLinks {
 
   render() {
     if (!this.line || !this.lineGeometry) return
-    this.update()
+    const colors = this.line.geometry.attributes.color.array
 
-    const positions = this.line?.geometry.attributes.position.array
-    const colors = this.line?.geometry.attributes.color.array
-    if (!positions || !this.line || !colors) return
-    let lineCounter = 0
-    let colorIndex = 0
+    if (!this.hideConnections) {
+        this.update()
 
-    // Start at the center
-    positions[lineCounter++] = 0
-    positions[lineCounter++] = 0
-    positions[lineCounter++] = 0
-    colorIndex += 4
+        const positions = this.line.geometry.attributes.position.array
+        let lineCounter = 0
+        let colorIndex = 0
 
-    for (const arr of this.linePoints) {
-      const start = colorIndex
-      for (const pos of arr) {
-        positions[lineCounter++] = pos.x
-        positions[lineCounter++] = pos.y
-        positions[lineCounter++] = pos.z
-        colors[colorIndex + 3] = 1
+        // Start at the center
+        positions[lineCounter++] = 0
+        positions[lineCounter++] = 0
+        positions[lineCounter++] = 0
         colorIndex += 4
-      }
-      //   The line from and to the center must have opacity 0 to not show them.
-      colors[colorIndex - 1] = 0
-      colors[start + 3] = 0
-      positions[lineCounter++] = 0
-      positions[lineCounter++] = 0
-      positions[lineCounter++] = 0
-      colorIndex += 4
+
+        for (const arr of this.linePoints) {
+        const start = colorIndex
+        for (const pos of arr) {
+            positions[lineCounter++] = pos.x
+            positions[lineCounter++] = pos.y
+            positions[lineCounter++] = pos.z
+            colors[colorIndex + 3] = 1
+            colorIndex += 4
+        }
+        //   The line from and to the center must have opacity 0 to not show them.
+        colors[colorIndex - 1] = 0
+        colors[start + 3] = 0
+        positions[lineCounter++] = 0
+        positions[lineCounter++] = 0
+        positions[lineCounter++] = 0
+        colorIndex += 4
+        }
+
+        // End at the center
+        positions[lineCounter++] = 0
+        positions[lineCounter++] = 0
+        positions[lineCounter++] = 0
+        colorIndex += 4
+
+        this.lineGeometry.setDrawRange(0, lineCounter / 3)
+        this.line.geometry.attributes.position.needsUpdate = true
+        this.line.geometry.attributes.color.needsUpdate = true
+    } else {
+        this.lineGeometry.setDrawRange(0, 0)
     }
-
-    // End at the center
-    positions[lineCounter++] = 0
-    positions[lineCounter++] = 0
-    positions[lineCounter++] = 0
-    colorIndex += 4
-
-    this.lineGeometry.setDrawRange(0, lineCounter / 3)
-    this.line.geometry.attributes.position.needsUpdate = true
-    this.line.geometry.attributes.color.needsUpdate = true
-
+        
     this.renderPath()
   }
 
@@ -135,6 +141,7 @@ export class AllSatLinks {
         (sat) => new THREE.Vector3(sat.xyzPosition.x, sat.xyzPosition.y, sat.xyzPosition.z)
       )
     )
+    this.pathGeometry.setDrawRange(0, this.path.length * 10)
   }
 
   destroy() {

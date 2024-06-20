@@ -35,10 +35,10 @@ import { LocationMarker } from './LocationMarker'
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
-  private drawLines = true
   private followSelected = true
   private tweeningStatus: number = 0
   private escapedFollow = false
+  private satClicking = true;
 
   private sun!: THREE.DirectionalLight
   private renderer!: THREE.WebGLRenderer
@@ -279,7 +279,7 @@ export class ThreeSimulation {
     // Update the picking ray with the camera and pointer position
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(this.scene.children)
-    if (intersects.length > 0 && 'satellite' in intersects[0].object.userData) {
+    if (intersects.length > 0 && 'satellite' in intersects[0].object.userData && this.satClicking) {
       this.dehover()
 
       const meshID = intersects[0].instanceId
@@ -357,10 +357,10 @@ export class ThreeSimulation {
     if (xDif > 0.00001 || yDif > 0.00001) return
 
     this.raycaster.setFromCamera(this.pointer, this.camera)
-    const intersects = this.raycaster.intersectObjects(this.scene.children)
+    const intersects = this.raycaster.intersectObjects([this.globe, this.mesh.sat, this.mesh.satClick]);
 
     if (intersects.length > 0) {
-      if ('satellite' in intersects[0].object.userData) {
+      if ('satellite' in intersects[0].object.userData && this.satClicking) {
         this.deselect()
         const meshID = intersects[0].instanceId
         if (meshID === undefined) return
@@ -388,6 +388,8 @@ export class ThreeSimulation {
   }
 
   private resetMeshes() {
+    if (!this.mesh.sat || !this.mesh.satClick) return
+    
     const matrix = new THREE.Matrix4()
     matrix.compose(
       new THREE.Vector3(0, 0, 0),
@@ -414,8 +416,9 @@ export class ThreeSimulation {
     this.removeAllOrbits()
     this.satelliteLinks?.destroy()
     this.removeAllMarkers()
+    this.removeSatLink()
 
-    this.drawLines = true
+    this.satClicking = true
     this.currentlyHovering = null
     this.currentlySelected = null
 
@@ -519,8 +522,6 @@ export class ThreeSimulation {
     this.locationMarkers = []
   }
 
-  addGroundStation() {}
-
   moveRight() {
     this.controls.mouseButtons = {
       LEFT: null,
@@ -601,17 +602,15 @@ export class ThreeSimulation {
     return this.time
   }
 
-  enableLineDrawing() {
-    this.drawLines = true
-  }
-  disableLineDrawing() {
-    this.drawLines = false
+  enableSatClicking() {
+    this.satClicking = true
   }
 
-  changeCameraLocation() {}
-
-  // Emits:
-  // select(sat | undefined )
+  disableSatClicking() {
+    this.satClicking = false
+    this.deselect()
+    this.dehover()
+  }
 
   addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void
   addEventListener(event: 'earthClicked', callback: (sat: geoCoords | undefined) => void): void
