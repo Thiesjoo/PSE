@@ -6,9 +6,10 @@ import InfoPopup from './InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
-import VueSlider from 'vue-slider-component';
-import 'vue-slider-component/theme/default.css';
-import { ref } from 'vue';
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/default.css'
+import { ref } from 'vue'
+import LeftInfoBlock from './LeftInfoBlock.vue'
 
 const props = defineProps<{
   simulation: ThreeSimulation
@@ -30,43 +31,52 @@ const FIRST_LAUNCH_YEAR = LAUNCH_YEAR_BOUNDS[0]
 const MOST_RECENT_LAUNCH_YEAR = LAUNCH_YEAR_BOUNDS[1]
 
 // Stores the slider values
-const slider_values = ref([
-  FIRST_LAUNCH_YEAR,
-  MOST_RECENT_LAUNCH_YEAR
-]);
+const slider_values = ref([FIRST_LAUNCH_YEAR, MOST_RECENT_LAUNCH_YEAR])
 
 // Iteratively updates the launch year
 // range on every filter.
 const updateLaunchYearFilter = () => {
-  filters.forEach(filter => {
-  filter.min_launch_year = slider_values.value[0]
-  filter.max_launch_year = slider_values.value[1]
+  filters.forEach((filter) => {
+    filter.min_launch_year = slider_values.value[0]
+    filter.max_launch_year = slider_values.value[1]
   })
 }
 
 updateLaunchYearFilter()
-
 </script>
 
 <template>
-  <div class="left-info-block">
+  <LeftInfoBlock :open="true">
     <div class="flex">
-    <h2>Category filter</h2>
-    <i> Some satellites are in multiple categories. They will be shown in all categories they belong to.</i>
+      <h2>Category filter</h2>
+      <i>
+        Some satellites are in multiple categories. They will be shown in all categories they belong
+        to.</i
+      >
       <div class="filter-block">
-      <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
-        {{ t(filter.name) }} - {{ manager.count[filter.name] }}
-        <InfoPopup>
+        <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
+          {{ t(filter.name) }} - {{ manager.count[filter.name] }}
+          <InfoPopup>
             {{ t(filter.name + '_description') }}
-        </InfoPopup>
-      </FilterItem>
+          </InfoPopup>
+        </FilterItem>
       </div>
-      <button @click="manager.selectNone()">{{t("Unselect All")}}</button>
-      <button @click="manager.selectAll()">{{t("Select All")}}</button>
+      
+      <button @click="manager.selectNone()">{{ t('Unselect All') }}</button>
+      <button @click="manager.selectAll()">{{ t('Select All') }}</button>
 
       <div class="launch-year-filter-block">
-        <label>{{t("FilteringLaunchYear1") + slider_values[0] + t("FilteringLaunchYear2") + slider_values[1]}}. </label>
-        <vue-slider v-model="slider_values"
+        <label
+          >{{
+            t('FilteringLaunchYear1') +
+            slider_values[0] +
+            t('FilteringLaunchYear2') +
+            slider_values[1]
+          }}.
+        </label>
+        <vue-slider
+          v-model="slider_values"
+
           :min="FIRST_LAUNCH_YEAR"
           :max="MOST_RECENT_LAUNCH_YEAR"
           :min-range="1"
@@ -75,31 +85,24 @@ updateLaunchYearFilter()
           :tooltip-placement="['bottom', 'bottom']"
           :lazy="true"
           id="launch-year-slider"
-          v-on:drag-end="updateLaunchYearFilter"/>
-          
-        <input type="checkbox" id="include_without_launch_year" v-model="include_sats_without_launch_year" hidden>
-        <label for="include_without_launch_year" hidden>Include satellites without launch year</label>
-      </div>
+          v-on:drag-end="updateLaunchYearFilter"
+        />
 
+        <input
+          type="checkbox"
+          id="include_without_launch_year"
+          v-model="include_sats_without_launch_year"
+          hidden
+        />
+        <label for="include_without_launch_year" hidden
+          >Include satellites without launch year</label
+        >
+      </div>
     </div>
-  </div>
+  </LeftInfoBlock>
 </template>
 
 <style scoped lang="scss">
-.left-info-block {
-  position: absolute;
-  top: 0px;
-  left: 0;
-  width: 350px;
-  height: 100%;
-  background-color: #01023890;
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.75);
-  border-radius: 12px;
-  padding: 30px 25px;
-  max-height: 100%;
-}
-
 .flex {
   display: flex;
   flex-direction: column;
@@ -117,38 +120,34 @@ updateLaunchYearFilter()
 }
 
 .filter-block {
-    max-height: 60vh;
-    overflow-y: scroll;
-    position: relative;
-    
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: #413939;
-        border-radius: 2em;
-    }
+  max-height: 60vh;
+  overflow-y: scroll;
+  position: relative;
 
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #413939;
+    border-radius: 2em;
+  }
 
-
-    .more {
-        z-index: 100;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-
-    }
+  .more {
+    z-index: 100;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
 }
 
 .launch-year-filter-block {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 #include_without_launch_year {
   margin-top: 5px;
   margin-right: 5px;
 }
-
 </style>
 <i18n>
 {
@@ -270,4 +269,3 @@ updateLaunchYearFilter()
   }
 }
 </i18n>
-  
