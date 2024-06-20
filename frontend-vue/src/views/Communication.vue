@@ -11,8 +11,6 @@ import { geoCoords } from '@/common/utils'
 import { useI18n } from 'vue-i18n'
 import { rounded } from '@/common/utils'
 import { NUM_DIGITS } from '@/common/constants'
-import { LocationMarker } from '@/LocationMarker'
-import { LocationLine } from '@/LocationLine'
 
 const { t } = useI18n()
 
