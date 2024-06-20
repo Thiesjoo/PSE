@@ -5,7 +5,6 @@ const props = defineProps<{
 </script>
 
 <template>
-  <!-- Leave the pop-up id, it is used to prevent click through's -->
   <div class="left-info-block" id="left-info-block" v-if="open">
     <slot></slot>
   </div>

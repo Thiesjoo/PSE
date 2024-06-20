@@ -51,7 +51,7 @@ const speed = computed(() => {
   if (!props.currentSelectedSatellite) {
     return ''
   }
-  return rounded(props.currentSelectedSatellite.realSpeed.value, numDigits)
+  return rounded(props.currentSelectedSatellite.realSpeed.value, NUM_DIGITS)
 })
 
 const key = ref(0)
@@ -100,7 +100,7 @@ onUnmounted(() => {
       <p>
         {{ t('Longitude') }}:
         <span id="SatelliteLongitude"
-          >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, numDigits) }}º</span
+          >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, NUM_DIGITS) }}º</span
         >
         <InfoPopup>
           {{ t('Longitude_description') }}
@@ -109,7 +109,7 @@ onUnmounted(() => {
       <p>
         {{ t('Latitude') }}:
         <span id="SatelliteLatitude"
-          >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, numDigits) }}º
+          >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, NUM_DIGITS) }}º
         </span>
         <InfoPopup>
           {{ t('Latitude_description') }}
@@ -118,7 +118,7 @@ onUnmounted(() => {
       <p>
         {{ t('Altitude') }}:
         <span id="SatelliteAltitude"
-          >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, numDigits) }}km</span
+          >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, NUM_DIGITS) }}km</span
         >
         <InfoPopup>
           {{ t('Altitude_description') }}

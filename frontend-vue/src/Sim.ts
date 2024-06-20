@@ -44,7 +44,7 @@ export class ThreeSimulation {
   private stats!: any
 
   private orbits: Orbit[] = []
-  private satelliteLinks: AllSatLinks | null = null;
+  public satelliteLinks: AllSatLinks | null = null;
 
   public time: Time = new Time(new Date()) //TODO: private maken
 
@@ -403,6 +403,7 @@ export class ThreeSimulation {
     this.workerManager.reset()
     this.time.setSpeed(1)
     this.removeAllOrbits();
+    this.satelliteLinks?.destroy();
 
     this.drawLines = true
     this.currentlyHovering = null
