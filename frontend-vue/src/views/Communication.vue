@@ -11,8 +11,6 @@
         import { geoCoords } from '@/common/utils'
         import { useI18n } from 'vue-i18n'
         import MultipleTabs from '@/components/MultipleTabs.vue'
-        import { rounded } from '@/common/utils'
-        import { NUM_DIGITS } from '@/common/constants'
 
         const { t } = useI18n()
 
@@ -101,29 +99,32 @@
         <MultipleTabs :amount='5'>
 
             <template #tab1>
-                Welkom!!
+                <h1>{{ t("This is a communication network in space") }}</h1>
+                <p>{{ t("Click next to see the connections between them ") }}</p>
+
             </template>
 
             <template #tab2>
-
-                zo verbonden
-
+                <h1> {{ t("Satellits are connected in this way") }}</h1>
             </template>
 
             <template #tab3>
-                <h1>{{ t('First point') }}</h1>
-                <!-- <p>{{ t('Longitude') }}: {{ firstCoords.value?.lng }}</p>
-      <p>{{ t('Latitude') }}: {{ firstCoords.value?.lat }}</p> -->
+
+                <h1>{{ t('Click on the first point you would like to communicate from') }}</h1>
+                <p v-if="firstCoords">{{ t('First point') }}: {{ firstCoords.lat }}, {{ firstCoords.lng }}</p>
+                <p v-if="firstCoords"> {{ t("Click next to select your destination") }} </p>
             </template>
 
             <template #tab4>
-                <h1>{{ t('Second point') }}</h1>
-                <!-- <p>{{ t('Longitude') }}: {{ secondCoords.value?.lng }}</p>
-      <p>{{ t('Latitude') }}: {{ secondCoords.value?.lat }}</p> -->
+                <h1>{{ t('And click where you would like to send your message to') }}</h1>
+                <p v-if="secondCoords">{{ t('Second point') }}: {{ secondCoords.lat }}, {{ secondCoords.lng }}</p>
+                <p v-if="secondCoords"> {{ t("Click next to see the shortest path between the two points") }} </p>
             </template>
 
             <template #tab5>
-                <h1>dit is de route</h1>
+                <h1>{{ t("Your message took this route!") }}</h1>
+                <p>{{ t("The message had ... hops") }}</p>
+                <p>{{ t("And your messgae flew ... kilometers") }}</p>
             </template>
         </MultipleTabs>
     </LeftInfoBlock>

@@ -49,7 +49,7 @@ const resetTime = () => {
   time.setSpeed(1)
 }
 
-const intervals = [1, 10, 100, 1000, 10000]
+const intervals = [1, 10, 100, 1000]
 </script>
 
 <template>

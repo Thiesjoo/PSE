@@ -32,8 +32,11 @@
             <slot :name="`tab${slot}`"
                   v-if="slot == currentTab"></slot>
         </div>
-        <button @click="back()">back</button>
-        <button @click="next()">next</button>
+
+        <div class="buttons">
+            <button @click="back()" :disabled="currentTab === 1">back</button>
+            <button @click="next()" :disabled="currentTab === amount">next</button>
+        </div>
 
     </div>
 </template>
@@ -46,5 +49,19 @@
     justify-content: center;
     align-items: center;
     flex-direction: column
+}
+
+.buttons {
+    display: flex;
+    /* justify-content: space-between; */
+    justify-content: center;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+
+    /* pin at button */
+    position: fixed;
+    bottom: 0;
+
 }
 </style>
