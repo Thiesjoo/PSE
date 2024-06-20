@@ -8,7 +8,9 @@ on:
       - ".github/workflows/docker-image-backend.yml"
   pull_request:
     branches: [ "main" ]
-
+    paths:
+      - "pse_backend/**"
+      - ".github/workflows/docker-image-backend.yml"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}-backend
