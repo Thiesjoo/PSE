@@ -14,7 +14,7 @@ import {
   type Satellite,
   polar2Cartesian
 } from './Satellite'
-import { geoCoords, loadTexture, shiftLeft } from './common/utils'
+import { GeoCoords, loadTexture, shiftLeft } from './common/utils'
 import {
   EARTH_RADIUS_KM,
   LINE_SIZE,
@@ -378,8 +378,8 @@ export class ThreeSimulation {
         intersects[0].object.position.z === 0
       ) {
         this.deselect()
-        const clickedPosition: geoCoords = this.globe.toGeoCoords(intersects[0].point)
-        this.eventListeners['earthClicked']?.forEach((cb) => cb(clickedPosition))
+        const {lat, lng, altitude} = this.globe.toGeoCoords(intersects[0].point)
+        this.eventListeners['earthClicked']?.forEach((cb) => cb({lat, lng, alt: altitude}))
       }
     } else {
       this.deselect()
@@ -499,13 +499,13 @@ export class ThreeSimulation {
     this.satelliteLinks = null
   }
 
-  addMarker(coords: geoCoords) {
+  addMarker(coords: GeoCoords) {
     const marker = new LocationMarker(coords, this.scene, this.globe)
     marker.render()
     this.locationMarkers.push(marker)
   }
 
-  removeMarker(coords: geoCoords) {
+  removeMarker(coords: GeoCoords) {
     const marker = this.locationMarkers.find((marker) => {
       return marker.getCoords().lat === coords.lat && marker.getCoords().lng === coords.lng
     })
@@ -613,10 +613,10 @@ export class ThreeSimulation {
   }
 
   addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void
-  addEventListener(event: 'earthClicked', callback: (sat: geoCoords | undefined) => void): void
+  addEventListener(event: 'earthClicked', callback: (sat: GeoCoords | undefined) => void): void
   addEventListener(
     event: 'select' | 'earthClicked',
-    callback: ((sat: Satellite | undefined) => void) | ((sat: geoCoords | undefined) => void)
+    callback: ((sat: Satellite | undefined) => void) | ((sat: GeoCoords | undefined) => void)
   ): void {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = []

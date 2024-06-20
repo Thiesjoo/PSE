@@ -4,7 +4,7 @@ import { AllSatLinks, SatLinks } from '@/SatLinks'
 import { Satellite, polar2Cartesian } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
 import { Filter, SatManager } from '@/common/sat-manager'
-import { geoCoords, rounded } from '@/common/utils'
+import { GeoCoords, rounded } from '@/common/utils'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import MultipleTabs from '@/components/MultipleTabs.vue'
@@ -18,7 +18,7 @@ const props = defineProps<{
   simulation: ThreeSimulation
 }>()
 
-const graph = new Graph(props.simulation.globe)
+const graph = new Graph()
 const all = new AllSatLinks(props.simulation.scene)
 props.simulation.addAllSatLinks(all)
 
@@ -37,8 +37,8 @@ manager.updateSatellites()
 
 props.simulation.disableSatClicking()
 
-const firstCoords: Ref<geoCoords | undefined> = ref(undefined)
-const secondCoords: Ref<geoCoords | undefined> = ref(undefined)
+const firstCoords: Ref<GeoCoords | undefined> = ref(undefined)
+const secondCoords: Ref<GeoCoords | undefined> = ref(undefined)
 const tabForConnections = 2
 const tabForFirstCoords = 3
 const tabForSecondCoords = 4
@@ -120,7 +120,7 @@ function makeGraph() {
   const satellites = props.simulation.getSatellites()
   graph.makeGraph(satellites)
 
-  graph.adjList.forEach((values) => {
+  Object.values(graph.adjList).forEach((values) => {
     const satLink = new SatLinks(values.sat)
     satLink.setSatelliteConnections(values.connections)
 
@@ -134,16 +134,8 @@ function findPath() {
     return
   }
 
-  const sat1 = graph.findClosestSat({
-    alt: firstCoords.value.altitude,
-    lat: firstCoords.value.lat,
-    lng: firstCoords.value.lng
-  })
-  const sat2 = graph.findClosestSat({
-    alt: secondCoords.value.altitude,
-    lat: secondCoords.value.lat,
-    lng: secondCoords.value.lng
-  })
+  const sat1 = graph.findClosestSat({...firstCoords.value})
+  const sat2 = graph.findClosestSat({...secondCoords.value  })
   if (!sat1 || !sat2) {
     return
   }
@@ -161,7 +153,7 @@ function findPath() {
       xyzPosition: polar2Cartesian(
         secondCoords.value.lat,
         secondCoords.value.lng,
-        secondCoords.value.altitude,
+        secondCoords.value.alt,
         props.simulation.globe.getGlobeRadius()
       )
     },
@@ -170,7 +162,7 @@ function findPath() {
       xyzPosition: polar2Cartesian(
         firstCoords.value.lat,
         firstCoords.value.lng,
-        firstCoords.value.altitude,
+        firstCoords.value.alt,
         props.simulation.globe.getGlobeRadius()
       )
     }

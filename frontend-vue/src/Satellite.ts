@@ -12,6 +12,7 @@ import {
   MAX_SATS_TO_RENDER
 } from './common/constants'
 import { Orbit } from './Orbit'
+import { GeoCoords } from './common/utils'
 
 export function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
   const phi = ((90 - lat) * Math.PI) / 180
@@ -78,7 +79,7 @@ export class Satellite {
   public country!: string  
   public launch_year!: number
   public categories!: string[]
-  public realPosition = { lat: 0, lng: 0, alt: 0 }
+  public realPosition: GeoCoords = { lat: 0, lng: 0, alt: 0 }
   public realSpeed = { value: 0 }
   public xyzPosition = { x: 0, y: 0, z: 0 }
 

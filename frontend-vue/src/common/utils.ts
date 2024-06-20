@@ -26,10 +26,10 @@ export interface SatPosition {
   id: string
 }
 
-export type geoCoords = {
+export type GeoCoords = {
   lat: number
   lng: number
-  altitude: number
+  alt: number
 }
 
 /**

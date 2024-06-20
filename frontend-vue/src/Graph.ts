@@ -1,26 +1,21 @@
 import ThreeGlobe from "three-globe";
 import { Satellite } from "./Satellite";
 import { EARTH_RADIUS_KM } from "./common/constants";
+import { GeoCoords } from "./common/utils";
 
-type node = {sat: Satellite,
+type Node = {sat: Satellite,
             connections: Satellite[],
             fScore: number,
             gScore: number,
             hScore: number,
-            parent: node | null}
-
-type coords = {
-    lat: number,
-    lng: number,
-    alt: number
-}
+            parent: Node | null}
 
 function toRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
 }
 
 
-export function calculateDistance(coords1: coords, coords2: coords): number {
+export function calculateDistance(coords1: GeoCoords, coords2: GeoCoords): number {
     const lat1Rad = toRadians(coords1.lat);
     const lon1Rad = toRadians(coords1.lng);
     const lat2Rad = toRadians(coords2.lat);
@@ -39,22 +34,18 @@ export function calculateDistance(coords1: coords, coords2: coords): number {
 
 
 export class Graph{
-    private globe!: ThreeGlobe;
-    public adjList: node[] = [];
+    public adjList: Record<string, Node> = {};
 
-    constructor(globe: ThreeGlobe){
-        this.globe = globe;
-    }
-
-
+    constructor(){}
+    
     private calculateDistanceSat(sat1: Satellite, sat2: Satellite){
         return calculateDistance(sat1.realPosition, sat2.realPosition);
     }
 
     makeGraph(sats: Satellite[]){
         for (const sat of sats){
-            const satData: node = {sat: sat, connections: [], fScore: Infinity, gScore: Infinity, hScore: Infinity, parent: null};
-            this.adjList.push(satData)
+            const satData: Node = {sat: sat, connections: [], fScore: Infinity, gScore: Infinity, hScore: Infinity, parent: null};
+            this.adjList[sat.id] = satData;
             for (const compareSat of sats){
                 const diff = this.calculateDistanceSat(sat, compareSat);
                 if (diff < 550){
@@ -65,10 +56,10 @@ export class Graph{
     }
 
     findNode(sat: Satellite){
-        return this.adjList.find((node) => node.sat === sat)
+        return this.adjList[sat.id]
     }
 
-    popLowestScore(nodeList: node[]){
+    popLowestScore(nodeList: Node[]){
         let lowestNum = Infinity
         let lowestNode = null;
         for (const node of nodeList){
@@ -92,7 +83,7 @@ export class Graph{
         }
 
         const openList = [startNode]
-        const closedList: node[] = []
+        const closedList: Node[] = []
 
         startNode.fScore = 0;
         startNode.gScore = 0;
@@ -136,11 +127,11 @@ export class Graph{
         }
     }
 
-    findClosestSat(coords: coords){
+    findClosestSat(coords: GeoCoords){
         let closest = Infinity;
-        let closestNode: node | null = null;
+        let closestNode: Node | null = null;
 
-        for (const node of this.adjList){
+        for (const node of Object.values(this.adjList)){
             const distance = calculateDistance(coords, node.sat.realPosition);
             if (distance < closest){
                 closest = distance;
