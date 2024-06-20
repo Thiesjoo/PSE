@@ -75,6 +75,7 @@ props.simulation.moveRight()
   }
 }
 
+
 .container {
   display: flex;
   flex-direction: column;
@@ -103,6 +104,7 @@ props.simulation.moveRight()
     h2 {
       font-size: 3em;
       color: white;
+      font-family: 'Tomorrow';
     }
   }
 }
@@ -115,6 +117,7 @@ props.simulation.moveRight()
   border-radius: 10pt;
   padding: 10pt;
   background-color: rgba(45, 155, 156, 0.45);
+  font-family: 'Tomorrow';
 
   a {
     color: white;
