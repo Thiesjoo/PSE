@@ -99,7 +99,7 @@ onUnmounted(() => {
     <div class="live_info">
       <p>
         {{ t('Longitude') }}:
-        <span id="SatelliteLongitude"
+        <span id="SatelliteLongitude" :key="key"
           >{{ rounded(currentSelectedSatellite.realPosition?.lng || 0, NUM_DIGITS) }}º</span
         >
         <InfoPopup>
@@ -108,7 +108,7 @@ onUnmounted(() => {
       </p>
       <p>
         {{ t('Latitude') }}:
-        <span id="SatelliteLatitude"
+        <span id="SatelliteLatitude" :key="key"
           >{{ rounded(currentSelectedSatellite.realPosition?.lat || 0, NUM_DIGITS) }}º
         </span>
         <InfoPopup>
@@ -117,7 +117,7 @@ onUnmounted(() => {
       </p>
       <p>
         {{ t('Altitude') }}:
-        <span id="SatelliteAltitude"
+        <span id="SatelliteAltitude" :key="key"
           >{{ rounded(currentSelectedSatellite.realPosition?.alt || 0, NUM_DIGITS) }}km</span
         >
         <InfoPopup>
@@ -126,7 +126,7 @@ onUnmounted(() => {
       </p>
       <p>
         {{ t('Speed') }}:
-        <span id="SatelliteSpeed">{{ speed }}km/s</span>
+        <span id="SatelliteSpeed" :key="key">{{ speed }}km/s</span>
         <InfoPopup>
           {{ t('Speed_description') }}
         </InfoPopup>
@@ -134,7 +134,7 @@ onUnmounted(() => {
     </div>
     <div class="epoch">
       <p>{{ t('Last epoch') }}:</p>
-      <p id="SatelliteEpoch">{{ epoch }}</p>
+      <span id="SatelliteEpoch" :key="key">{{ epoch }}</span>
       <InfoPopup>
         {{ t('Last epoch_description') }}
       </InfoPopup>
