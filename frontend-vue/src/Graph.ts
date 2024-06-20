@@ -3,6 +3,7 @@ import { GeoCoords, calculateDistance } from "./common/utils";
 
 import AdjListWorker from "@/worker/workerAdjencencyList?worker";
 import { CalculateAdjList, CalculateAdjListResponse } from "./worker/workerAdjencencyList";
+import { AMT_OF_WORKERS } from "./common/constants";
 
 type Node = {sat: Satellite,
             connections: Satellite[],
@@ -20,7 +21,7 @@ export class Graph{
     private received = 0;
 
     constructor(){
-        this.worker = Array.from({length: 4}, () => new AdjListWorker());
+        this.worker = Array.from({length: AMT_OF_WORKERS}, () => new AdjListWorker());
 
         this.worker.forEach((worker) => {
             worker.onmessage = (event) => {
@@ -51,18 +52,16 @@ export class Graph{
         }, {} as Record<number, GeoCoords>)
 
         this.worker.forEach((worker, i) => {
-            let start = Math.floor(i * satellites.length / 4);
-            let end = Math.floor((i + 1) * satellites.length / 4);
-            
+            const start = Math.floor(i * satellites.length / AMT_OF_WORKERS);
+            const end = Math.floor((i + 1) * satellites.length / AMT_OF_WORKERS);
+            const msg = {
+                event: 'calculate',
+                data,
+                start,end
+            } satisfies CalculateAdjList;
 
-        const msg = {
-            event: 'calculate',
-            data,
-            start,end
-        } satisfies CalculateAdjList;
-
-       worker.postMessage(msg);
-    })
+        worker.postMessage(msg);
+        })
     }
 
     private workerResponse(event: CalculateAdjListResponse) {
@@ -72,7 +71,7 @@ export class Graph{
         }
         this.received++;
 
-        if (this.received === 4){
+        if (this.received === AMT_OF_WORKERS){
             this.finished = true;
         }
     }

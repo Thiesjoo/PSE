@@ -109,7 +109,6 @@ export class AllSatLinks {
 
     if (!this.hideConnections) {
       this.update()
-    console.log("Updating links", this.linePoints.reduce((acc, val) => acc + val.length, 0))
       const positions = this.line.geometry.attributes.position.array
       let lineCounter = 0
       let colorIndex = 0

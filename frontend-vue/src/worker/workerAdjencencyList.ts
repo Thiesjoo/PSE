@@ -20,10 +20,6 @@ onmessage = (event) => {
         event: 'calculate-res',
         data: {} as Record<number, number[]>
       } satisfies CalculateAdjListResponse
-
-      console.log('Calculating adj list')
-      console.time("adjlist")
-
       const data= Object.entries(type.data);
 
       for (const [satId, coords] of data.slice(type.start, type.end)) {
@@ -33,8 +29,6 @@ onmessage = (event) => {
           })
           .map(([id]) => +id)
       }
-      console.timeEnd("adjlist")
-      
       postMessage(res)
       break
   }
