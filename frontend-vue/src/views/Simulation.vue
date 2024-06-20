@@ -225,26 +225,18 @@ props.simulation.addEventListener('select', (satellite) => {
     <div class="sliders-sat">
       <br />
       <br />
-<<<<<<< HEAD
       <h4>{{t("Height")}} [km]
         <InfoPopup>
         Some Information
        </InfoPopup>
       </h4>
-=======
-      <h4>{{ t('Height') }} [km]</h4>
->>>>>>> main
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
         <p class="display">Value: {{ height }}</p>
       </div>
       <br />
-<<<<<<< HEAD
       <h4>{{t("Inclination")}} [deg] </h4>
-=======
-      <h4>{{ t('Inclination') }} [deg]</h4>
->>>>>>> main
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
