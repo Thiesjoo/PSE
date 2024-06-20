@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { Graph } from '@/Graph'
+import { Graph, calculateDistance } from '@/Graph'
 import { AllSatLinks, SatLinks } from '@/SatLinks'
 import { Satellite, polar2Cartesian } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
 import { Filter, SatManager } from '@/common/sat-manager'
-import { geoCoords } from '@/common/utils'
+import { geoCoords, rounded } from '@/common/utils'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import MultipleTabs from '@/components/MultipleTabs.vue'
-import { Ref, ref } from 'vue'
+import { Ref, computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { NUM_DIGITS } from '@/common/constants'
 
 const { t } = useI18n()
 
@@ -45,6 +46,21 @@ const tabForPath = 5
 
 const currentTab = ref(1);
 const currentPath = ref<Satellite[]>([])
+
+const distance = computed(() => {
+  if (currentPath.value.length === 0) {
+    return 0
+  }
+
+  let dist = 0
+  for (let i = 0; i < currentPath.value.length - 1; i++) {
+    const sat1 = currentPath.value[i]
+    const sat2 = currentPath.value[i + 1]
+    dist += calculateDistance(sat1.realPosition, sat2.realPosition)
+  }
+
+  return rounded(dist, NUM_DIGITS)
+})
 
 function tabInfoUpdate(tab: number) {
   all.hideConnections = true
@@ -194,8 +210,8 @@ function findPath() {
 
       <template #tab5>
         <h1>{{ t('Your message took this route!') }}</h1>
-        <p>{{ t('The message had ... hops') }}</p>
-        <p>{{ t('And your messgae flew ... kilometers') }}</p>
+        <p> Your message took {{ currentPath.length - 1 }} hops!</p>
+        <p> And your message flew {{ distance }} kilometers. </p>
       </template>
     </MultipleTabs>
   </LeftInfoBlock>
