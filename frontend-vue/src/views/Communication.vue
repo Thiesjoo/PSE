@@ -11,6 +11,7 @@ import { geoCoords } from '@/common/utils'
 import { useI18n } from 'vue-i18n'
 import { rounded } from '@/common/utils'
 import { NUM_DIGITS } from '@/common/constants'
+import { LocationMarker } from '@/LocationMarker';
 
 const { t } = useI18n()
 
@@ -40,8 +41,10 @@ props.simulation.addEventListener('earthClicked', (coords) => {
   if (coords) {
     if (!firstCoords.value) {
       firstCoords.value = coords
+      props.simulation.addMarker(coords);
     } else if (!secondCoords.value) {
       secondCoords.value = coords
+      props.simulation.addMarker(coords);
       makeGraph()
     }
   }
