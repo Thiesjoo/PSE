@@ -40,8 +40,6 @@ def determine_request_source(category):
             request_source = API_URL + 'GROUP=stations&FORMAT=tle'
         case SATCAT.ACTIVE:
             request_source = API_URL + 'GROUP=active&FORMAT=tle'
-        case SATCAT.ANALYST_SATELLITES:
-            request_source = API_URL + 'GROUP=analyst&FORMAT=tle'
 
         # Weather and earth
         case SATCAT.WEATHER:
@@ -94,8 +92,7 @@ def determine_request_source(category):
             request_source = API_URL + 'GROUP=geodetic&FORMAT=tle'
         case SATCAT.ENGINEERING:
             request_source = API_URL + 'GROUP=engineering&FORMAT=tle'
-        case SATCAT.EDUCATION:
-            request_source = API_URL + 'GROUP=education&FORMAT=tle'
+
     return request_source
 
 
@@ -238,10 +235,6 @@ def pull_special_interest_satellites():
     mincat = MinorCategory.objects.get(minor_category=SATCAT.ACTIVE)
     pull_satellites(SATCAT.ACTIVE, mincat)
 
-    mincat = MinorCategory.objects.get(
-        minor_category=SATCAT.ANALYST_SATELLITES)
-    pull_satellites(SATCAT.ANALYST_SATELLITES, mincat)
-
     cron_logger.info("Succesfully pulled 'Special Interest' satellites.")
 
 
@@ -353,9 +346,6 @@ def pull_scientific_satellites():
 
     mincat = MinorCategory.objects.get(minor_category=SATCAT.ENGINEERING)
     pull_satellites(SATCAT.ENGINEERING, mincat)
-
-    mincat = MinorCategory.objects.get(minor_category=SATCAT.EDUCATION)
-    pull_satellites(SATCAT.EDUCATION, mincat)
 
     cron_logger.info("Succesfully pulled 'Scientific' satellites.")
 

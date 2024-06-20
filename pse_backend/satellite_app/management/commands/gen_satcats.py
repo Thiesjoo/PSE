@@ -19,8 +19,7 @@ class Command(BaseCommand):
         # Special Interest
         self._save_minor_categories([SATAFF.LAST_30_DAYS,
                                      SATAFF.SPACE_STATIONS,
-                                     SATAFF.ACTIVE,
-                                     SATAFF.ANALYST_SATELLITES])
+                                     SATAFF.ACTIVE])
 
         # Weather and Earth
         self._save_minor_categories([
@@ -57,8 +56,7 @@ class Command(BaseCommand):
         self._save_minor_categories([
             SATAFF.SPACE_AND_EARTH,
             SATAFF.GEODETICS,
-            SATAFF.ENGINEERING,
-            SATAFF.EDUCATION
+            SATAFF.ENGINEERING
         ])
 
         self.stdout.write(self.style.SUCCESS(

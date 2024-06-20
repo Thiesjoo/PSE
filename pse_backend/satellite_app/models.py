@@ -17,7 +17,6 @@ class MinorCategory(models.Model):
         LAST_30_DAYS = "Last 30 Days' Launches"
         SPACE_STATIONS = "Space Stations"
         ACTIVE = "Active Satellites"
-        ANALYST_SATELLITES = "Analyst Satellites"
 
         # Weather and earth types:
         WEATHER = "Weather"
@@ -49,7 +48,6 @@ class MinorCategory(models.Model):
         SPACE_AND_EARTH = "Space and Earth Science"
         GEODETICS = "Geodetics"
         ENGINEERING = "Engineering"
-        EDUCATION = "Education"
 
     minor_category = models.CharField(
         max_length=45,
