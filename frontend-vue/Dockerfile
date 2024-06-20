@@ -1,5 +1,7 @@
 FROM node:18-alpine as build
 WORKDIR /app
+ARG SENTRY_AUTH_TOKEN
+ENV SENTRY_AUTH_TOKEN ${SENTRY_AUTH_TOKEN}
 COPY package.json .
 COPY package-lock.json .
 RUN npm ci
