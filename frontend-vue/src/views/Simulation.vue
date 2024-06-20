@@ -19,8 +19,8 @@ const props = defineProps<{
 }>()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
-const showOrbit = ref(false);
-const CURRENT_COLOR = '#34b4b5' //'#FF00FF' // '#F5EEF8' (pink);
+const showOrbit = ref(true);
+const CURRENT_COLOR = '#34b4b5' //Blue
 const satellites = ref<Satellite[]>([]);
 
 let sat: Satellite
@@ -60,8 +60,6 @@ function update_display(sat: Satellite) {
   e.value = sat.satData.ecco * 100
   picked.value = 0
 
-  showOrbit.value = false // TODO: I am not 100% sure, maybe it should be true
-
   // Update sat-list
   satellites.value = props.simulation.getNameOfSats()
 }
@@ -83,11 +81,8 @@ function add_new_satellite(alt: number) {
   update_display(new_sat)
   new_sat.country = 'NL'
 
-  // Orbit
-  if (showOrbit.value) {
-    const orbit = props.simulation.addOrbit(new_sat, true)
-    new_sat.setOrbit(orbit)
-  }
+  // Add orbit
+  create_orbit(new_sat)
 
   // Update sat-list
   satellites.value = props.simulation.getNameOfSats()
@@ -102,17 +97,30 @@ function add_new_satellite(alt: number) {
  *  */
 function change_selected(satellite: Satellite) {
   if (satellite != sat) {
+    // Remove prev orbit display
+    if (sat){
+      props.simulation.removeOrbit(sat)
+    }
     set_current_sat(satellite)
     props.simulation.deselect()
     props.simulation.setCurrentlySelected(satellite)
     props.simulation.changeColor(CURRENT_COLOR, satellite)
     update_display(sat)
+    // Show orbit
+    create_orbit(satellite)
   }
 }
 
 function set_current_sat(satellite: Satellite) {
   sat = satellite
   current_sat.value = sat
+}
+
+function create_orbit(satellite: Satellite){
+  // Add orbit
+  props.simulation.removeOrbit(satellite)
+  const orbit = props.simulation.addOrbit(satellite, true)
+  satellite.setOrbit(orbit)
 }
 
 // ********* SLIDERS *********
@@ -186,16 +194,6 @@ watch(remove, (newValue) => {
   }
 })
 
-// ********* ORBIT shown *********
-watch(showOrbit, (newValue) => {
-  if (newValue === true) {
-    const orbit = props.simulation.addOrbit(sat, true)
-    sat.setOrbit(orbit)
-  } else {
-    props.simulation.removeOrbit(sat)
-  }
-})
-
 // ********* Clicked sat can be edited *********
 props.simulation.addEventListener('select', (satellite) => {
   if (satellite) {
@@ -249,16 +247,12 @@ props.simulation.addEventListener('select', (satellite) => {
     </div>
     <br />
     <div class="button-box">
-      <button class="add-button" @click="add = 1" style="text-align: center">
-        {{ t('Add another satellite') }}
+      <button class="add-del-button" @click="add = 1" style="text-align: center">
+        {{ t('Add satellite') }}
       </button>
-      <button class="del-button" @click="remove = 1" style="text-align: center">
+      <button class="add-del-button" @click="remove = 1" style="text-align: center">
         {{ t('Delete satellites') }}
       </button>
-    </div>
-    <div class="show-orbit-check">
-      <input type="checkbox" id="show-orbit" v-model="showOrbit" />
-      <label for="show-orbit">{{ t('Show orbit') }} {{ t(showOrbit.toString()) }}</label>
     </div>
     <div class="orbit-sat">
       <h2>{{ t('Orbit Category') }}</h2>
@@ -268,6 +262,7 @@ props.simulation.addEventListener('select', (satellite) => {
         <span :class="{ category: true, highlight: picked === 1 }" id="MEO">MEO</span>
         <span :class="{ category: true, highlight: picked == 2 }" id="Other">Other</span>
       </div>
+
       <div class="orbit-info" v-show="picked === 0">
         <h3>{{ t('Low Earth Orbit') }}</h3>
         <p>{{ t('Height') }}: 160-2000 km</p>
@@ -289,7 +284,7 @@ props.simulation.addEventListener('select', (satellite) => {
   <SpeedButtons :simulation="props.simulation" />
 
   <div class="right-info-block">
-    <h2>Satellites Created</h2>
+    <h2>{{t("Satellites Created")}}</h2>
     <div class="satellite-list">
       <div
         v-for="satellite in satellites"
@@ -337,37 +332,34 @@ h3 {
   justify-content: space-between;
 }
 
-.add-button {
-  appearance: none;
-  width: 50%;
-  padding: 5px;
-  background-color: rgba(45, 155, 156, 0.45);
-  border-radius: 200px;
-  cursor: pointer;
-  color: white;
-}
+.add-del-button {
+  // appearance: none;
+  // width: 50%;
+  // padding: 5px;
+  // background-color: rgba(45, 155, 156, 0.45);
+  // border-radius: 200px;
+  // cursor: pointer;
+  // color: white;
 
-.del-button {
-  appearance: none;
-  background-color: rgba(45, 155, 156, 0.45);
-  border-radius: 200px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 0.5em;
+  padding: 0.5em 1em;
   color: white;
-}
+  background-color: rgba(45, 155, 156, 1)
 
-.show-orbit-check {
-  display: flex;
-  appearance: none;
-  align-self: center;
 }
 
 .orbit-sat {
   width: 100%;
+  padding-top: 10%;
 }
 
 .orbit-info {
   right: 20%;
   height: 200px;
   width: 100%;
+  padding-top: 2%;
 }
 
 .display {
@@ -384,8 +376,8 @@ h3 {
   appearance: none;
   width: 100%;
   height: 5px;
-  background: #e8f8e5;
-  outline: #e8f8e5;
+  background: #f8faf8;
+  outline: #f9fdf9;
   opacity: 1;
   -webkit-transition: 0.2s;
   transition: opacity 0.2s;
@@ -407,7 +399,7 @@ h3 {
 }
 
 .highlight {
-  background-color: rgba(45, 155, 156, 0.45);
+  background-color: rgba(45, 155, 156, 0.6);
   padding: 5px;
 }
 
@@ -447,12 +439,13 @@ h3 {
   {
     "en": {
       "Simulation Variables": "Simulation Variables",
+      "Satellites Created": "Satellites Created",
       "New satellite": "New Satellite",
       "Height": "Height",
       "Inclination": "Inclination",
       "RAAN": "RAAN",
       "Eccentricity": "Eccentricity",
-      "Add another satellite": "Add another satellite",
+      "Add satellite": "Add satellite",
       "Delete satellites": "Delete satellites",
       "Show orbit": "Show orbit",
       "Orbit Category": "Orbit Category",
@@ -464,12 +457,13 @@ h3 {
     },
     "nl": {
       "Simulation Variables": "Simulatie Variabelen",
+      "Satellites Created": "Satellieten gemaakt",
       "New satellite": "Nieuwe satelliet",
       "Height": "Hoogte",
       "Inclination": "Inclinatie",
       "RAAN": "RAAN",
       "Eccentricity": "Excentriciteit",
-      "Add another satellite": "Voeg een andere satelliet toe",
+      "Add satellite": "Voeg een satelliet toe",
       "Delete satellites": "Verwijder satellieten",
       "Show orbit": "Toon baan",
       "Orbit Category": "Baancategorie",

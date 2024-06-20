@@ -3,6 +3,10 @@ import { ThreeSimulation } from '@/Sim'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
+// rgb(54, 5, 104, 0.40) // Dark purple
+// rgb(212, 203, 229, 0.40) // Light purple
+// rgba(45, 155, 156, 0.45) // Blue
+
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
@@ -76,6 +80,7 @@ props.simulation.moveRight()
   }
 }
 
+
 .container {
   display: flex;
   flex-direction: column;
@@ -91,8 +96,8 @@ props.simulation.moveRight()
     min-height: 10vh;
     padding-left: 1%;
 
-    border-radius: 2pt;
-    background-color: #090929;
+    border-radius: 20pt;
+    background-color: rgba(51, 75, 75, 0.278);
 
     display: flex;
     align-items: center;
@@ -104,6 +109,7 @@ props.simulation.moveRight()
     h2 {
       font-size: 3em;
       color: white;
+      font-family: 'Tomorrow';
     }
   }
 }
@@ -113,8 +119,10 @@ props.simulation.moveRight()
   bottom: 0;
   right: 0;
   margin: 1em;
-  background-color: blueviolet;
-  width: 5vw;
+  border-radius: 10pt;
+  padding: 10pt;
+  background-color: rgba(45, 155, 156, 0.45);
+  font-family: 'Tomorrow';
 
   a {
     color: white;

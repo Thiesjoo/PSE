@@ -124,7 +124,6 @@ export class Orbit {
   }
 
   removeLine(scene: THREE.Scene) {
-    console.log("TEST REMOVELINE")
     if (this.line && this.lineGeometry) {
       scene.remove(this.line)
       this.lineGeometry.setDrawRange(0, 0)
