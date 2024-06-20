@@ -194,16 +194,6 @@ watch(remove, (newValue) => {
   }
 })
 
-// // ********* ORBIT shown *********
-// watch(showOrbit, (newValue) => {
-//   if (newValue === true) {
-//     const orbit = props.simulation.addOrbit(sat, true)
-//     sat.setOrbit(orbit)
-//   } else {
-//     props.simulation.removeOrbit(sat)
-//   }
-// })
-
 // ********* Clicked sat can be edited *********
 props.simulation.addEventListener('select', (satellite) => {
   if (satellite) {
@@ -264,10 +254,6 @@ props.simulation.addEventListener('select', (satellite) => {
         {{ t('Delete satellites') }}
       </button>
     </div>
-    <!-- <div class="show-orbit-check">
-      <input type="checkbox" id="show-orbit" v-model="showOrbit" />
-      <label for="show-orbit">{{ t('Show orbit') }} {{ t(showOrbit.toString()) }}</label>
-    </div> -->
     <div class="orbit-sat">
       <h2>{{ t('Orbit Category') }}</h2>
       <br />
