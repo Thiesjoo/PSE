@@ -51,8 +51,6 @@ By default, all types of satellites are fetched. To filter on specific satellite
 | Last 30 Days' Launches   |
 | Space Stations           |
 | Active Satellites        |
-| Analyst Satellites       |
-
 
 | Weather and Earth            |
 |------------------------------|
@@ -90,7 +88,6 @@ By default, all types of satellites are fetched. To filter on specific satellite
 | Space and Earth Science |
 | Geodetics |
 | Engineering |
-| Education |
 
 * Note that you can only filter on *minor* categories (e.g. you can't filter on 'Communications').
 
