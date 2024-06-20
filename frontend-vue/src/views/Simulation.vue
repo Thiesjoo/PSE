@@ -283,7 +283,7 @@ props.simulation.addEventListener('select', (satellite) => {
   <SpeedButtons :simulation="props.simulation" />
 
   <div class="right-info-block">
-    <h2>Satellites Created</h2>
+    <h2>{{t("Satellites Created")}}</h2>
     <div class="satellite-list">
       <div
         v-for="satellite in satellites"
@@ -438,6 +438,7 @@ h3 {
   {
     "en": {
       "Simulation Variables": "Simulation Variables",
+      "Satellites Created": "Satellites Created",
       "New satellite": "New Satellite",
       "Height": "Height",
       "Inclination": "Inclination",
@@ -455,6 +456,7 @@ h3 {
     },
     "nl": {
       "Simulation Variables": "Simulatie Variabelen",
+      "Satellites Created": "Satellieten gemaakt",
       "New satellite": "Nieuwe satelliet",
       "Height": "Hoogte",
       "Inclination": "Inclinatie",
