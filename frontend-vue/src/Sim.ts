@@ -26,6 +26,7 @@ import * as satellite from 'satellite.js'
 import { Orbit } from './Orbit'
 import { WorkerManager } from './worker/manager'
 import { AllSatLinks } from './SatLinks'
+import { LocationMarker } from './LocationMarker';
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
@@ -45,6 +46,7 @@ export class ThreeSimulation {
 
   private orbits: Orbit[] = []
   public satelliteLinks: AllSatLinks | null = null;
+  private locationMarkers: LocationMarker[] = [];
 
   public time: Time = new Time(new Date()) //TODO: private maken
 
@@ -404,6 +406,7 @@ export class ThreeSimulation {
     this.time.setSpeed(1)
     this.removeAllOrbits();
     this.satelliteLinks?.destroy();
+    this.removeAllMarkers();
 
     this.drawLines = true
     this.currentlyHovering = null
@@ -486,6 +489,29 @@ export class ThreeSimulation {
   removeSatLink() {
     this.satelliteLinks?.destroy()
     this.satelliteLinks = null
+  }
+
+  addMarker(coords: geoCoords) {
+    const marker = new LocationMarker(coords, this.scene, this.globe)
+    marker.render()
+    this.locationMarkers.push(marker);
+  }
+
+  removeMarker(coords: geoCoords) {
+    const marker = this.locationMarkers.find((marker) => {
+      return marker.getCoords().lat === coords.lat && marker.getCoords().lng === coords.lng
+    })
+    if (marker) {
+      marker.remove()
+      this.locationMarkers = this.locationMarkers.filter((m) => m !== marker)
+    }
+  }
+
+  removeAllMarkers() {
+    for (const marker of this.locationMarkers) {
+      marker.remove()
+    }
+    this.locationMarkers = []
   }
 
   addGroundStation() {}
