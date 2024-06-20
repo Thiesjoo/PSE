@@ -217,7 +217,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <br />
       <h4>{{t("Height")}} [km]
-        <InfoPopup>
+        <InfoPopup class="icon">
         Some Information
        </InfoPopup>
       </h4>
@@ -228,7 +228,7 @@ props.simulation.addEventListener('select', (satellite) => {
       </div>
       <br />
       <h4>{{t("Inclination")}} [deg]
-        <InfoPopup>
+        <InfoPopup class="icon">
         Some Information
        </InfoPopup>
       </h4>
@@ -239,7 +239,7 @@ props.simulation.addEventListener('select', (satellite) => {
       </div>
       <br />
       <h4>{{ t('RAAN') }} [deg]
-        <InfoPopup>
+        <InfoPopup class="icon">
         Some Information
        </InfoPopup>
       </h4>
@@ -250,7 +250,7 @@ props.simulation.addEventListener('select', (satellite) => {
       </div>
       <br />
       <h4>{{ t('Eccentricity') }}
-        <InfoPopup>
+        <InfoPopup class="icon">
         Some Information
        </InfoPopup>
       </h4>
@@ -332,6 +332,14 @@ h3 {
   font-weight: bold;
 }
 
+.icon{
+  // override the infopopup style
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
 .name-sat {
   display: flex;
   flex-direction: row;
@@ -395,7 +403,7 @@ h3 {
 
 .slider input[type='range'] {
   appearance: none;
-  width: 100%;
+  width: 90%;
   height: 5px;
   background: #e8f8e5;
   outline: #e8f8e5;

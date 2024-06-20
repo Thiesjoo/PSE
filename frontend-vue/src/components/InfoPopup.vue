@@ -28,9 +28,7 @@
 
         font-family: 'ComputerSaysNo';
 
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
+
 
         button {
             background-color: transparent;
@@ -39,9 +37,9 @@
 
             width: 30px;
             height: 30px;
-            /* position: absolute;
+            position: absolute;
             top: 0;
-            right: 0; */
+            right: 0;
 
             img {
                 width: 100%;
