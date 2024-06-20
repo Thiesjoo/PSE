@@ -99,16 +99,16 @@ props.simulation.addEventListener('earthClicked', (coords) => {
       firstCoords.value = coords
       props.simulation.addMarker(coords)
 
-      // currentTab.value++
+      currentTab.value++
       // TODO: Dit is cursed, fix it.
-      // tabInfoUpdate(currentTab.value)
+      tabInfoUpdate(currentTab.value)
     } else if (currentTab.value === tabForSecondCoords) {
       if (secondCoords.value) {
         props.simulation.removeMarker(secondCoords.value)
       }
       secondCoords.value = coords
       props.simulation.addMarker(coords)
-      // currentTab.value++
+      currentTab.value++
 
       // TODO: Dit is cursed, fix it.
       tabInfoUpdate(currentTab.value)
@@ -161,24 +161,26 @@ function findPath() {
 
 <template>
   <LeftInfoBlock :open="true">
-    <MultipleTabs :amount="5" @navigate="tabInfoUpdate" v-model="currentTab" class="container">
+    <MultipleTabs :amount="5" @navigate="tabInfoUpdate" v-model="currentTab">
       <template #tab1>
         <div class="tab">
-          <h1 class="titel">{{ t('This is a communication network in space') }}</h1>
+          <h1 class="titel">{{ t('Send your message through satellites!') }}</h1>
           <h2 class="subtitel">
             {{
               t(
-                'All these satellites can communicate with eachother to send messages around the world.'
+                'This is a communication network of satellites in space. All these satellites can communicate with eachother to send messages around the world.'
               )
             }}
           </h2>
-          <p class="description">{{ t('Click next to see the connections between them. ') }}</p>
+          <p class="description">
+            {{ t('Click next to see all the connections the satellites can make!') }}
+          </p>
         </div>
       </template>
 
       <template #tab2>
         <div class="tab">
-          <h1 class="titel">{{ t('Satellites are connected in this way!') }}</h1>
+          <h1 class="titel">{{ t('Satellites are connected like this!') }}</h1>
           <h2 class="subtitel">
             {{
               t(
@@ -195,7 +197,7 @@ function findPath() {
       <template #tab3>
         <div class="tab">
           <h1 class="titel">
-            {{ t('Click on the first point you would like to communicate from') }}
+            {{ t('Click on the first point you would like to communicate from.') }}
           </h1>
           <h2 class="subtitel">
             {{
@@ -204,14 +206,8 @@ function findPath() {
               )
             }}
           </h2>
-          <p v-if="firstCoords">
-            {{ t('First point') }}: {{ firstCoords.lat }}, {{ firstCoords.lng }}
-          </p>
-          <p v-if="firstCoords" class="description">
-            {{ t('Click next to select your destination') }}
-          </p>
-        </div>
-      </template>
+        </div> </template
+      >text-align: center;
 
       <template #tab4>
         <div class="tab">
@@ -223,9 +219,6 @@ function findPath() {
               )
             }}
           </h2>
-          <p v-if="secondCoords">
-            {{ t('Second point') }}: {{ secondCoords.lat }}, {{ secondCoords.lng }}
-          </p>
           <p v-if="secondCoords" class="description">
             {{ t('Click next to see the shortest path between the two points') }}
           </p>
@@ -242,8 +235,16 @@ function findPath() {
               )
             }}
           </h2>
-          <p>Your message took {{ currentPath.length - 1 }} hops!</p>
-          <p>And your message flew {{ distance }} kilometers.</p>
+          <div class="coords">
+            <p v-if="firstCoords">
+              {{ t('First point') }}: {{ firstCoords.lat }}, {{ firstCoords.lng }}
+            </p>
+            <p v-if="secondCoords">
+              {{ t('Second point') }}: {{ secondCoords.lat }}, {{ secondCoords.lng }}
+            </p>
+            <p>{{ t('Your message took') }} {{ currentPath.length - 1 }} {{ t('hops!') }}</p>
+            <p>{{ t('And your message flew') }} {{ distance }} {{ t('kilometers.') }}</p>
+          </div>
         </div>
       </template>
     </MultipleTabs>
@@ -253,37 +254,51 @@ function findPath() {
 </template>
 
 <style scoped lang="scss">
-.container {
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   margin: 0.5em;
-  .tab {
+
+  .titel {
+    font-size: 2.3em;
+    margin: 0.5em;
+    margin-top: 1.5em;
+    font-weight: 500;
+
+    font-family: 'Tomorrow';
+    // text-align: center;
+    position: fixed;
+    top: 0;
+  }
+
+  .subtitel {
+    font-size: 1.5em;
+    margin: 0.5em;
+    position: fixed;
+  }
+
+  .description {
+    font-size: 1.4em;
+    margin: 0.5em;
+    margin-bottom: 3em;
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+  }
+
+  .coords {
+    margin: 0.5em;
+    font-size: 1.4em;
+    position: fixed;
+    top: 0;
+    margin-top: 10em;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    .titel {
-      font-size: 2.4em;
-      margin: 0.5em;
-      margin-top: 1.5em;
-      font-weight: 500;
-
-      font-family: 'Tomorrow';
-      position: fixed;
-      top: 0;
-    }
-
-    .subtitel {
-      font-size: 1.5em;
-      margin-bottom: 10px;
-    }
-
-    .description {
-      font-size: 1.4em;
-      margin: 0.5em;
-      margin-bottom: 4em;
-      position: fixed;
-      bottom: 0;
-    }
   }
 }
 </style>
