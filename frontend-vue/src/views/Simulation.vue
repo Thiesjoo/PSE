@@ -2,6 +2,7 @@
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
 import SpeedButtons from '@/components/SpeedButtons.vue'
+import InfoPopup from '@/components/InfoPopup.vue'
 import {
   epochUpdate,
   calculateRevolutionPerDay,
@@ -18,9 +19,9 @@ const props = defineProps<{
 }>()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
-const showOrbit = ref(false)
-const CURRENT_COLOR = '#FF00FF' // '#F5EEF8' (pink);
-const satellites = ref<Satellite[]>([])
+const showOrbit = ref(false);
+const CURRENT_COLOR = '#34b4b5' //'#FF00FF' // '#F5EEF8' (pink);
+const satellites = ref<Satellite[]>([]);
 
 let sat: Satellite
 let current_sat = ref<Satellite | null>(null)
@@ -214,14 +215,18 @@ props.simulation.addEventListener('select', (satellite) => {
     <div class="sliders-sat">
       <br />
       <br />
-      <h4>{{ t('Height') }} [km]</h4>
+      <h4>{{t("Height")}} [km]
+        <InfoPopup>
+        Some Information
+       </InfoPopup>
+      </h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
         <p class="display">Value: {{ height }}</p>
       </div>
       <br />
-      <h4>{{ t('Inclination') }} [deg]</h4>
+      <h4>{{t("Inclination")}} [deg] </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
@@ -336,7 +341,7 @@ h3 {
   appearance: none;
   width: 50%;
   padding: 5px;
-  background-color: rgba(195, 0, 255, 0.36);
+  background-color: rgba(45, 155, 156, 0.45);
   border-radius: 200px;
   cursor: pointer;
   color: white;
@@ -344,7 +349,7 @@ h3 {
 
 .del-button {
   appearance: none;
-  background-color: rgba(195, 0, 255, 0.36);
+  background-color: rgba(45, 155, 156, 0.45);
   border-radius: 200px;
   color: white;
 }
@@ -402,7 +407,7 @@ h3 {
 }
 
 .highlight {
-  background-color: rgba(195, 0, 255, 0.523);
+  background-color: rgba(45, 155, 156, 0.45);
   padding: 5px;
 }
 
@@ -435,7 +440,7 @@ h3 {
 }
 
 .satellite-item.selected {
-  background-color: rgba(195, 0, 255, 0.36);
+  background-color: rgba(45, 155, 156, 0.45);
 }
 </style>
 <i18n>

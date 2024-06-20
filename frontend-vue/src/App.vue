@@ -126,7 +126,7 @@ canvas {
   }
 
   .active {
-    border: 2px solid yellow;
+    border: 2px solid rgb(45, 155, 156, 0.45);
   }
 }
 
@@ -148,7 +148,7 @@ header {
     gap: 1rem;
 
     .router-link-exact-active {
-      background-color: yellow;
+      background-color: rgb(45, 155, 156, 0.45);
     }
 
     a {

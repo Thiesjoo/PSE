@@ -39,7 +39,7 @@ input {
     cursor: pointer;
 
     &:checked + label {
-        background-color: #317133;
+        background-color: rgba(45, 155, 156, 0.45);
     }
 
     & + label {

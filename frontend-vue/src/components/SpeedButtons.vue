@@ -100,12 +100,12 @@ const intervals = [1, 10, 100, 1000]
       padding: 0.5em 1em;
     }
     .active {
-      background-color: #4caf50;
+      background-color: rgba(45, 155, 156, 1);
     }
   }
 
   .reset {
-    background-color: #4c56af;
+    background-color: #d8c474;
     font-weight: 550;
   }
 }
