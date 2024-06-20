@@ -28,6 +28,8 @@
 
         font-family: 'ComputerSaysNo';
 
+
+
         button {
             background-color: transparent;
             border: none;
@@ -46,21 +48,21 @@
             }
         }
         .popup {
-            position: absolute;
+            position: relative;
             top: 0;
             right: 0;
-    
+
             width: 300px;
             display: flex;
             background-color: rgba(255, 255, 255);
             color: black;
             font-size: 4vh;
-    
+
             border: 1px solid black;
             padding: 10px;
             z-index: 1000;
         }
-    
+
     }
 
 

@@ -210,11 +210,12 @@ props.simulation.addEventListener('select', (satellite) => {
     <div class="name-sat">
       <h4 class="display">{{ sat.name }}</h4>
     </div>
+    <br />
     <div class="sliders-sat">
       <br />
       <br />
       <h4>{{t("Height")}} [km]
-        <InfoPopup>
+        <InfoPopup class="icon">
         Some Information
        </InfoPopup>
       </h4>
@@ -224,21 +225,33 @@ props.simulation.addEventListener('select', (satellite) => {
         <p class="display">Value: {{ height }}</p>
       </div>
       <br />
-      <h4>{{t("Inclination")}} [deg] </h4>
+      <h4>{{t("Inclination")}} [deg]
+        <InfoPopup class="icon">
+        Some Information
+       </InfoPopup>
+      </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
         <p class="display">Value: {{ inclination }}</p>
       </div>
       <br />
-      <h4>{{ t('RAAN') }} [deg]</h4>
+      <h4>{{ t('RAAN') }} [deg]
+        <InfoPopup class="icon">
+        Some Information
+       </InfoPopup>
+      </h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
         <br />
         <p class="display">Value: {{ raan }}</p>
       </div>
       <br />
-      <h4>{{ t('Eccentricity') }}</h4>
+      <h4>{{ t('Eccentricity') }}
+        <InfoPopup class="icon">
+        Some Information
+       </InfoPopup>
+      </h4>
       <div class="slider">
         <input type="range" min="0" max="99" v-model="e" class="slider" />
         <br />
@@ -314,6 +327,14 @@ h3 {
   font-weight: bold;
 }
 
+.icon{
+  // override the infopopup style
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
 .name-sat {
   display: flex;
   flex-direction: row;
@@ -374,7 +395,7 @@ h3 {
 
 .slider input[type='range'] {
   appearance: none;
-  width: 100%;
+  width: 90%;
   height: 5px;
   background: #f8faf8;
   outline: #f9fdf9;
