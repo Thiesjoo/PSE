@@ -41,7 +41,7 @@ export class ThreeSimulation {
   private stats!: any
 
   private orbits: Orbit[] = []
-  private satelliteLinks: AllSatLinks | null = null;
+  public satelliteLinks: AllSatLinks | null = null;
 
   public time: Time = new Time(new Date()) //TODO: private maken
 

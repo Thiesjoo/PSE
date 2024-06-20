@@ -36,11 +36,13 @@ props.simulation.addEventListener('earthClicked', (coords) => {
     else if (!secondCoords){
       secondCoords = coords;
       makeGraph();
+      setInterval((makeGraph), 5000)
     }
   }
 })
 
 function makeGraph() {
+    props.simulation.satelliteLinks?.destroy()
     const graph = new Graph(props.simulation.globe)
     const all = new AllSatLinks(props.simulation.scene)
     const satellites = props.simulation.getSatellites()
@@ -48,7 +50,7 @@ function makeGraph() {
 
     graph.adjList.forEach((values) => {
         const satLink = new SatLinks(values.sat)
-        satLink.setSatelliteConnections(values.connections)
+        // satLink.setSatelliteConnections(values.connections)
 
         all.addSatLink(satLink)
     })
