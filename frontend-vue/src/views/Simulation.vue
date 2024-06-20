@@ -2,17 +2,13 @@
 import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
 import SpeedButtons from '@/components/SpeedButtons.vue'
-<<<<<<< HEAD
 import InfoPopup from '@/components/InfoPopup.vue'
-import { epochUpdate, calculateRevolutionPerDay, calculateMeanMotionRadPerMin, calculateHeight} from '@/calc_helper'
-=======
 import {
   epochUpdate,
   calculateRevolutionPerDay,
   calculateMeanMotionRadPerMin,
   calculateHeight
 } from '@/calc_helper'
->>>>>>> main
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
@@ -23,15 +19,9 @@ const props = defineProps<{
 }>()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
-<<<<<<< HEAD
 const showOrbit = ref(false);
 const CURRENT_COLOR = '#34b4b5' //'#FF00FF' // '#F5EEF8' (pink);
 const satellites = ref<Satellite[]>([]);
-=======
-const showOrbit = ref(false)
-const CURRENT_COLOR = '#FF00FF' // '#F5EEF8' (pink);
-const satellites = ref<Satellite[]>([])
->>>>>>> main
 
 let sat: Satellite
 let current_sat = ref<Satellite | null>(null)
