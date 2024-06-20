@@ -60,8 +60,6 @@ function update_display(sat: Satellite) {
   e.value = sat.satData.ecco * 100
   picked.value = 0
 
-  showOrbit.value = true;
-
   // Update sat-list
   satellites.value = props.simulation.getNameOfSats()
 }
@@ -83,11 +81,8 @@ function add_new_satellite(alt: number) {
   update_display(new_sat)
   new_sat.country = 'NL'
 
-  // Orbit
-  if (showOrbit.value) {
-    const orbit = props.simulation.addOrbit(new_sat, true)
-    new_sat.setOrbit(orbit)
-  }
+  // Add orbit
+  create_orbit(new_sat)
 
   // Update sat-list
   satellites.value = props.simulation.getNameOfSats()
@@ -102,17 +97,30 @@ function add_new_satellite(alt: number) {
  *  */
 function change_selected(satellite: Satellite) {
   if (satellite != sat) {
+    // Remove prev orbit display
+    if (sat){
+      props.simulation.removeOrbit(sat)
+    }
     set_current_sat(satellite)
     props.simulation.deselect()
     props.simulation.setCurrentlySelected(satellite)
     props.simulation.changeColor(CURRENT_COLOR, satellite)
     update_display(sat)
+    // Show orbit
+    create_orbit(satellite)
   }
 }
 
 function set_current_sat(satellite: Satellite) {
   sat = satellite
   current_sat.value = sat
+}
+
+function create_orbit(satellite: Satellite){
+  // Add orbit
+  props.simulation.removeOrbit(satellite)
+  const orbit = props.simulation.addOrbit(satellite, true)
+  satellite.setOrbit(orbit)
 }
 
 // ********* SLIDERS *********
@@ -186,15 +194,15 @@ watch(remove, (newValue) => {
   }
 })
 
-// ********* ORBIT shown *********
-watch(showOrbit, (newValue) => {
-  if (newValue === true) {
-    const orbit = props.simulation.addOrbit(sat, true)
-    sat.setOrbit(orbit)
-  } else {
-    props.simulation.removeOrbit(sat)
-  }
-})
+// // ********* ORBIT shown *********
+// watch(showOrbit, (newValue) => {
+//   if (newValue === true) {
+//     const orbit = props.simulation.addOrbit(sat, true)
+//     sat.setOrbit(orbit)
+//   } else {
+//     props.simulation.removeOrbit(sat)
+//   }
+// })
 
 // ********* Clicked sat can be edited *********
 props.simulation.addEventListener('select', (satellite) => {
