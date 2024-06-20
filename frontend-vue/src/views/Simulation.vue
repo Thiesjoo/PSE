@@ -19,7 +19,7 @@ const props = defineProps<{
 }>()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
-const showOrbit = ref(false);
+const showOrbit = ref(true);
 const CURRENT_COLOR = '#34b4b5' //Blue
 const satellites = ref<Satellite[]>([]);
 
@@ -60,7 +60,7 @@ function update_display(sat: Satellite) {
   e.value = sat.satData.ecco * 100
   picked.value = 0
 
-  showOrbit.value = false // TODO: I am not 100% sure, maybe it should be true
+  showOrbit.value = true;
 
   // Update sat-list
   satellites.value = props.simulation.getNameOfSats()
@@ -249,17 +249,17 @@ props.simulation.addEventListener('select', (satellite) => {
     </div>
     <br />
     <div class="button-box">
-      <button class="add-button" @click="add = 1" style="text-align: center">
-        {{ t('Add another satellite') }}
+      <button class="add-del-button" @click="add = 1" style="text-align: center">
+        {{ t('Add satellite') }}
       </button>
-      <button class="del-button" @click="remove = 1" style="text-align: center">
+      <button class="add-del-button" @click="remove = 1" style="text-align: center">
         {{ t('Delete satellites') }}
       </button>
     </div>
-    <div class="show-orbit-check">
+    <!-- <div class="show-orbit-check">
       <input type="checkbox" id="show-orbit" v-model="showOrbit" />
       <label for="show-orbit">{{ t('Show orbit') }} {{ t(showOrbit.toString()) }}</label>
-    </div>
+    </div> -->
     <div class="orbit-sat">
       <h2>{{ t('Orbit Category') }}</h2>
       <br />
@@ -337,31 +337,26 @@ h3 {
   justify-content: space-between;
 }
 
-.add-button {
-  appearance: none;
-  width: 50%;
-  padding: 5px;
-  background-color: rgba(45, 155, 156, 0.45);
-  border-radius: 200px;
-  cursor: pointer;
-  color: white;
-}
+.add-del-button {
+  // appearance: none;
+  // width: 50%;
+  // padding: 5px;
+  // background-color: rgba(45, 155, 156, 0.45);
+  // border-radius: 200px;
+  // cursor: pointer;
+  // color: white;
 
-.del-button {
-  appearance: none;
-  background-color: rgba(45, 155, 156, 0.45);
-  border-radius: 200px;
-  color: white;
-}
+  margin: 0 5px;
+  border: none;
+  border-radius: 0.5em;
+  padding: 0.5em 1em;
+  background-color: rgba(45, 155, 156, 1)
 
-.show-orbit-check {
-  display: flex;
-  appearance: none;
-  align-self: center;
 }
 
 .orbit-sat {
   width: 100%;
+  padding-top: 4%;
 }
 
 .orbit-info {
@@ -384,8 +379,8 @@ h3 {
   appearance: none;
   width: 100%;
   height: 5px;
-  background: #e8f8e5;
-  outline: #e8f8e5;
+  background: #f8faf8;
+  outline: #f9fdf9;
   opacity: 1;
   -webkit-transition: 0.2s;
   transition: opacity 0.2s;
@@ -452,7 +447,7 @@ h3 {
       "Inclination": "Inclination",
       "RAAN": "RAAN",
       "Eccentricity": "Eccentricity",
-      "Add another satellite": "Add another satellite",
+      "Add satellite": "Add satellite",
       "Delete satellites": "Delete satellites",
       "Show orbit": "Show orbit",
       "Orbit Category": "Orbit Category",
@@ -469,7 +464,7 @@ h3 {
       "Inclination": "Inclinatie",
       "RAAN": "RAAN",
       "Eccentricity": "Excentriciteit",
-      "Add another satellite": "Voeg een andere satelliet toe",
+      "Add satellite": "Voeg een satelliet toe",
       "Delete satellites": "Verwijder satellieten",
       "Show orbit": "Toon baan",
       "Orbit Category": "Baancategorie",
