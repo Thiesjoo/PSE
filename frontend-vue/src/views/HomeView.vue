@@ -47,6 +47,11 @@ props.simulation.moveRight()
     </div>
   </div>
 
+  <div class="scale-disclaimer-container">
+    <img class="disclaimer-icon" src="/warning-symbol.svg" width="30px" height="30px">
+    <p class="scale-disclaimer">The scale visualizations in this app are not an accurate reflection of reality.</p>
+  </div>
+
   <div class="about">
     <RouterLink to="/about">
       <h2>About</h2>
@@ -120,6 +125,20 @@ props.simulation.moveRight()
 .icon {
   min-height: 100px;
   min-width: 100px;
+}
+
+.scale-disclaimer-container {
+  position: fixed;
+  max-width: 25em;
+  bottom: 1em;
+  left: 1em;
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.scale-disclaimer {
+  font-family: 'Tomorrow';
 }
 
 </style>
