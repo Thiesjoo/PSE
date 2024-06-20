@@ -90,7 +90,7 @@ const intervals = [1, 10, 100, 1000]
   }
 
   .reset {
-    background-color: #4c56af;
+    background-color: #d8c474;
     font-weight: 550;
   }
 }
