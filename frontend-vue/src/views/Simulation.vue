@@ -262,6 +262,7 @@ props.simulation.addEventListener('select', (satellite) => {
         <span :class="{ category: true, highlight: picked === 1 }" id="MEO">MEO</span>
         <span :class="{ category: true, highlight: picked == 2 }" id="Other">Other</span>
       </div>
+
       <div class="orbit-info" v-show="picked === 0">
         <h3>{{ t('Low Earth Orbit') }}</h3>
         <p>{{ t('Height') }}: 160-2000 km</p>
