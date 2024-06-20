@@ -50,13 +50,13 @@ export class AllSatLinks {
 
     //@ts-ignore
     const pathLineMaterial = new MeshLineMaterial({
-      color: new THREE.Color("blue"),
-      lineWidth: 1,
+      color: new THREE.Color('blue'),
+      lineWidth: 1
     })
 
     this.pathGeometry = new MeshLineGeometry()
     this.pathLines = new MeshLine(this.pathGeometry, pathLineMaterial)
-    
+
     scene.add(this.line)
     scene.add(this.pathLines)
 
@@ -70,8 +70,8 @@ export class AllSatLinks {
     this.allSatLinks.push(link)
   }
 
-  setPath(sat: { xyzPosition: { x: number; y: number; z: number } }[]) {
-    this.path = sat
+  setPath(path: { xyzPosition: { x: number; y: number; z: number } }[]) {
+    this.path = path
   }
 
   private update() {
@@ -130,7 +130,11 @@ export class AllSatLinks {
   private renderPath() {
     if (!this.pathLines || !this.pathGeometry) return
 
-    this.pathGeometry.setPoints(this.path.map((sat) => new THREE.Vector3(sat.xyzPosition.x, sat.xyzPosition.y, sat.xyzPosition.z)))
+    this.pathGeometry.setPoints(
+      this.path.map(
+        (sat) => new THREE.Vector3(sat.xyzPosition.x, sat.xyzPosition.y, sat.xyzPosition.z)
+      )
+    )
   }
 
   destroy() {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Satellite } from '@/Satellite'
+import { Satellite, polar2Cartesian } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import { Ref, ref, watch } from 'vue'
@@ -11,7 +11,6 @@ import { geoCoords } from '@/common/utils'
 import { useI18n } from 'vue-i18n'
 import { rounded } from '@/common/utils'
 import { NUM_DIGITS } from '@/common/constants'
-import { LocationMarker } from '@/LocationMarker';
 
 const { t } = useI18n()
 
@@ -41,10 +40,10 @@ props.simulation.addEventListener('earthClicked', (coords) => {
   if (coords) {
     if (!firstCoords.value) {
       firstCoords.value = coords
-      props.simulation.addMarker(coords);
+      props.simulation.addMarker(coords)
     } else if (!secondCoords.value) {
       secondCoords.value = coords
-      props.simulation.addMarker(coords);
+      props.simulation.addMarker(coords)
       makeGraph()
     }
   }
@@ -91,8 +90,27 @@ function makeGraph() {
     console.log(path)
   }
 
-  all.setPath(satList)
-  props.simulation.setCurrentlySelected(satList[0])
+  all.setPath([
+    {
+      xyzPosition: polar2Cartesian(
+        secondCoords.value.lat,
+        secondCoords.value.lng,
+        secondCoords.value.altitude,
+        props.simulation.globe.getGlobeRadius()
+      )
+    },
+    ...satList,
+    {
+      xyzPosition: polar2Cartesian(
+        firstCoords.value.lat,
+        firstCoords.value.lng,
+        firstCoords.value.altitude,
+        props.simulation.globe.getGlobeRadius()
+      )
+    }
+  ])
+
+  props.simulation.setCurrentlySelected(satList[1])
   console.log(path)
 }
 </script>
