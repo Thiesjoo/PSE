@@ -43,7 +43,7 @@ const tabForFirstCoords = 3
 const tabForSecondCoords = 4
 const tabForPath = 5
 
-const currentTab = ref(1);
+const currentTab = ref(1)
 const currentPath = ref<Satellite[]>([])
 
 let intervalID: number;
@@ -99,16 +99,16 @@ props.simulation.addEventListener('earthClicked', (coords) => {
       firstCoords.value = coords
       props.simulation.addMarker(coords)
 
-      currentTab.value++
+      // currentTab.value++
       // TODO: Dit is cursed, fix it.
-      tabInfoUpdate(currentTab.value)
+      // tabInfoUpdate(currentTab.value)
     } else if (currentTab.value === tabForSecondCoords) {
       if (secondCoords.value) {
         props.simulation.removeMarker(secondCoords.value)
       }
       secondCoords.value = coords
       props.simulation.addMarker(coords)
-      currentTab.value++
+      // currentTab.value++
 
       // TODO: Dit is cursed, fix it.
       tabInfoUpdate(currentTab.value)
@@ -161,38 +161,90 @@ function findPath() {
 
 <template>
   <LeftInfoBlock :open="true">
-    <MultipleTabs :amount="5" @navigate="tabInfoUpdate" v-model="currentTab">
+    <MultipleTabs :amount="5" @navigate="tabInfoUpdate" v-model="currentTab" class="container">
       <template #tab1>
-        <h1>{{ t('This is a communication network in space') }}</h1>
-        <p>{{ t('Click next to see the connections between them ') }}</p>
+        <div class="tab">
+          <h1 class="titel">{{ t('This is a communication network in space') }}</h1>
+          <h2 class="subtitel">
+            {{
+              t(
+                'All these satellites can communicate with eachother to send messages around the world.'
+              )
+            }}
+          </h2>
+          <p class="description">{{ t('Click next to see the connections between them. ') }}</p>
+        </div>
       </template>
 
       <template #tab2>
-        <h1>{{ t('Satellites are connected in this way!') }}</h1>
+        <div class="tab">
+          <h1 class="titel">{{ t('Satellites are connected in this way!') }}</h1>
+          <h2 class="subtitel">
+            {{
+              t(
+                'The line that you see between the satellites is the connection that they have with eachother. This means that they can send messages to eachother.'
+              )
+            }}
+          </h2>
+          <p class="description">
+            {{ t('Click next to choose where you want to send your message from.') }}
+          </p>
+        </div>
       </template>
 
       <template #tab3>
-        <h1>{{ t('Click on the first point you would like to communicate from') }}</h1>
-        <p v-if="firstCoords">
-          {{ t('First point') }}: {{ firstCoords.lat }}, {{ firstCoords.lng }}
-        </p>
-        <p v-if="firstCoords">{{ t('Click next to select your destination') }}</p>
+        <div class="tab">
+          <h1 class="titel">
+            {{ t('Click on the first point you would like to communicate from') }}
+          </h1>
+          <h2 class="subtitel">
+            {{
+              t(
+                'Click somewhere on the globe to select the first point where you would like to send your message from.'
+              )
+            }}
+          </h2>
+          <p v-if="firstCoords">
+            {{ t('First point') }}: {{ firstCoords.lat }}, {{ firstCoords.lng }}
+          </p>
+          <p v-if="firstCoords" class="description">
+            {{ t('Click next to select your destination') }}
+          </p>
+        </div>
       </template>
 
       <template #tab4>
-        <h1>{{ t('And click where you would like to send your message to') }}</h1>
-        <p v-if="secondCoords">
-          {{ t('Second point') }}: {{ secondCoords.lat }}, {{ secondCoords.lng }}
-        </p>
-        <p v-if="secondCoords">
-          {{ t('Click next to see the shortest path between the two points') }}
-        </p>
+        <div class="tab">
+          <h1 class="titel">{{ t('And click where you would like to send your message to') }}</h1>
+          <h2 class="subtitel">
+            {{
+              t(
+                'All these satellites can communicate with eachother to send messages around the world.'
+              )
+            }}
+          </h2>
+          <p v-if="secondCoords">
+            {{ t('Second point') }}: {{ secondCoords.lat }}, {{ secondCoords.lng }}
+          </p>
+          <p v-if="secondCoords" class="description">
+            {{ t('Click next to see the shortest path between the two points') }}
+          </p>
+        </div>
       </template>
 
       <template #tab5>
-        <h1>{{ t('Your message took this route!') }}</h1>
-        <p> Your message took {{ currentPath.length - 1 }} hops!</p>
-        <p> And your message flew {{ distance }} kilometers. </p>
+        <div class="tab">
+          <h1 class="titel">{{ t('Your message took this route!') }}</h1>
+          <h2 class="subtitel">
+            {{
+              t(
+                'All these satellites can communicate with eachother to send messages around the world.'
+              )
+            }}
+          </h2>
+          <p>Your message took {{ currentPath.length - 1 }} hops!</p>
+          <p>And your message flew {{ distance }} kilometers.</p>
+        </div>
       </template>
     </MultipleTabs>
   </LeftInfoBlock>
@@ -202,16 +254,36 @@ function findPath() {
 
 <style scoped lang="scss">
 .container {
-  padding: 10px;
+  margin: 0.5em;
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-  h1 {
-    font-size: 2em;
-    margin-bottom: 10px;
-  }
+    .titel {
+      font-size: 2.4em;
+      margin: 0.5em;
+      margin-top: 1.5em;
+      font-weight: 500;
 
-  p {
-    font-size: 1.2em;
-    margin-bottom: 10px;
+      font-family: 'Tomorrow';
+      position: fixed;
+      top: 0;
+    }
+
+    .subtitel {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      font-size: 1.4em;
+      margin: 0.5em;
+      margin-bottom: 4em;
+      position: fixed;
+      bottom: 0;
+    }
   }
 }
 </style>
