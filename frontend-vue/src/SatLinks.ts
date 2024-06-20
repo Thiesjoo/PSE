@@ -15,7 +15,7 @@ export class AllSatLinks {
   private allSatLinks: SatLinks[] = []
   private scene: THREE.Scene
 
-  public hideConnections = false
+  public hideConnections = true
   private graph: Graph
   private sim: ThreeSimulation
 

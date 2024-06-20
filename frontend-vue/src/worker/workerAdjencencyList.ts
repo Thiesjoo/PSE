@@ -2,12 +2,14 @@ import { GeoCoords, calculateDistance } from '@/common/utils'
 
 export interface CalculateAdjList {
   event: 'calculate'
-  data: Record<string, GeoCoords>
+  data: Record<number, GeoCoords>,
+  start: number,
+  end: number
 }
 
 export interface CalculateAdjListResponse {
   event: 'calculate-res'
-  data: Record<string, string[]>
+  data: Record<number, number[]>
 }
 
 onmessage = (event) => {
@@ -16,18 +18,20 @@ onmessage = (event) => {
     case 'calculate':
       const res = {
         event: 'calculate-res',
-        data: {} as Record<string, string[]>
+        data: {} as Record<number, number[]>
       } satisfies CalculateAdjListResponse
 
       console.log('Calculating adj list')
       console.time("adjlist")
 
-      for (const [satId, coords] of Object.entries(type.data)) {
-        res.data[satId] = Object.entries(type.data)
+      const data= Object.entries(type.data);
+
+      for (const [satId, coords] of data.slice(type.start, type.end)) {
+        res.data[+satId] = data
           .filter(([id, otherCoords]) => {
             return calculateDistance(coords, otherCoords) < 650
           })
-          .map(([id]) => id)
+          .map(([id]) => +id)
       }
       console.timeEnd("adjlist")
       

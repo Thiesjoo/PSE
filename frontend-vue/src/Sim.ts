@@ -278,7 +278,11 @@ export class ThreeSimulation {
     }
     // Update the picking ray with the camera and pointer position
     this.raycaster.setFromCamera(this.pointer, this.camera)
-    const intersects = this.raycaster.intersectObjects(this.scene.children)
+    const intersects = this.raycaster.intersectObjects([
+        this.globe,
+        this.mesh.sat,
+        this.mesh.satClick
+    ])
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData && this.satClicking) {
       this.dehover()
 

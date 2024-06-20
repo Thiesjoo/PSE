@@ -13,17 +13,20 @@ type Node = {sat: Satellite,
 
 
 export class Graph{
-    public adjList: Record<string, Node> = {};
-    private tmpAdjList: Record<string, Node> = {};
+    public adjList: Record<number, Node> = {};
+    private tmpAdjList: Record<number, Node> = {};
     private finished = true;
-    private worker: Worker;
+    private worker: Worker[];
+    private received = 0;
 
     constructor(){
-        this.worker = new AdjListWorker();
+        this.worker = Array.from({length: 4}, () => new AdjListWorker());
 
-        this.worker.onmessage = (event) => {
-            this.workerResponse(event.data);
-        }
+        this.worker.forEach((worker) => {
+            worker.onmessage = (event) => {
+                this.workerResponse(event.data);
+            }
+        });
     }
     
     private calculateDistanceSat(sat1: Satellite, sat2: Satellite){
@@ -38,32 +41,46 @@ export class Graph{
 
         this.finished = false;
         this.tmpAdjList = satellites.reduce((acc, sat) => {
-            acc[sat.id] = {sat: sat, connections: [], fScore: Infinity, gScore: Infinity, hScore: Infinity, parent: null};
+            acc[sat.numericalId] = {sat: sat, connections: [], fScore: Infinity, gScore: Infinity, hScore: Infinity, parent: null};
             return acc;
-        }, {} as Record<string, Node>);
+        }, {} as Record<number, Node>);
+
+        const data = satellites.reduce((acc, sat) => {
+            acc[sat.numericalId] = sat.realPosition;
+            return acc;
+        }, {} as Record<number, GeoCoords>)
+
+        this.worker.forEach((worker, i) => {
+            let start = Math.floor(i * satellites.length / 4);
+            let end = Math.floor((i + 1) * satellites.length / 4);
+            
 
         const msg = {
             event: 'calculate',
-            data: satellites.reduce((acc, sat) => {
-                acc[sat.id] = sat.realPosition;
-                return acc;
-            }, {} as Record<string, GeoCoords>)
+            data,
+            start,end
         } satisfies CalculateAdjList;
 
-        this.worker.postMessage(msg);
+       worker.postMessage(msg);
+    })
     }
 
     private workerResponse(event: CalculateAdjListResponse) {
         const data = event.data;
         for (const [satId, connections] of Object.entries(data)) {
-            this.tmpAdjList[satId].connections = connections.map((id) => this.tmpAdjList[id].sat);
+            this.tmpAdjList[+satId].connections = connections.map((id) => this.tmpAdjList[id].sat);
         }
-        this.finished = true;
+        this.received++;
+
+        if (this.received === 4){
+            this.finished = true;
+        }
     }
 
     finishCreateGraph(satellites: Satellite[]){
         if (this.finished) {
             this.adjList = this.tmpAdjList;
+            this.received = 0;
             this.startCreateGraph(satellites);
             return true;
         }
@@ -72,7 +89,7 @@ export class Graph{
     }
 
     findNode(sat: Satellite){
-        return this.adjList[sat.id]
+        return this.adjList[sat.numericalId]
     }
 
     popLowestScore(nodeList: Node[]){

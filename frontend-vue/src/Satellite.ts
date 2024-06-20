@@ -73,6 +73,8 @@ export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
   }
 }
 
+let numericalId = 0
+
 export class Satellite {
   public name!: string
   public satData!: SatRec
@@ -94,6 +96,8 @@ export class Satellite {
   get id(): string {
     return this.satData.satnum
   }
+
+  public numericalId = numericalId++;
 
   public static fromMultipleTLEs(data: string): Satellite[] {
     const tles = data.replace(/\r/g, '').split(/\n(?=[^12])/)
