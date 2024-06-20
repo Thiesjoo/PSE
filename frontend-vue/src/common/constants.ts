@@ -9,6 +9,7 @@ export const MAX_LINE_SIZE_LINKS = 600_000
 export const MAX_CAMERA_DISTANCE = 5000
 export const MIN_CAMERA_DISTANCE = 150
 export const IDLE_TIME = 5 * 60 * 1000 // 5 minutes
+export const NUM_DIGITS = 3 // Number of digits after the decimal point in the satellite popup
 
 // TODO: Dit is het maximale aantal satellieten dat uberhaup gerenderd kan worden. Misschien hoger maken?
 // API returned er nu 10329.
