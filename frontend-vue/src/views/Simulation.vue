@@ -19,9 +19,9 @@ const props = defineProps<{
 }>()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
-const showOrbit = ref(true);
+const showOrbit = ref(true)
 const CURRENT_COLOR = '#34b4b5' //Blue
-const satellites = ref<Satellite[]>([]);
+const satellites = ref<Satellite[]>([])
 
 let sat: Satellite
 let current_sat = ref<Satellite | null>(null)
@@ -98,7 +98,7 @@ function add_new_satellite(alt: number) {
 function change_selected(satellite: Satellite) {
   if (satellite != sat) {
     // Remove prev orbit display
-    if (sat){
+    if (sat) {
       props.simulation.removeOrbit(sat)
     }
     set_current_sat(satellite)
@@ -116,7 +116,7 @@ function set_current_sat(satellite: Satellite) {
   current_sat.value = sat
 }
 
-function create_orbit(satellite: Satellite){
+function create_orbit(satellite: Satellite) {
   // Add orbit
   props.simulation.removeOrbit(satellite)
   const orbit = props.simulation.addOrbit(satellite, true)
@@ -214,10 +214,9 @@ props.simulation.addEventListener('select', (satellite) => {
     <div class="sliders-sat">
       <br />
       <br />
-      <h4>{{t("Height")}} [km]
-        <InfoPopup class="icon">
-        Some Information
-       </InfoPopup>
+      <h4>
+        {{ t('Height') }} [km]
+        <InfoPopup class="icon"> Some Information </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
@@ -225,10 +224,9 @@ props.simulation.addEventListener('select', (satellite) => {
         <p class="display">Value: {{ height }}</p>
       </div>
       <br />
-      <h4>{{t("Inclination")}} [deg]
-        <InfoPopup class="icon">
-        Some Information
-       </InfoPopup>
+      <h4>
+        {{ t('Inclination') }} [deg]
+        <InfoPopup class="icon"> Some Information </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
@@ -236,10 +234,9 @@ props.simulation.addEventListener('select', (satellite) => {
         <p class="display">Value: {{ inclination }}</p>
       </div>
       <br />
-      <h4>{{ t('RAAN') }} [deg]
-        <InfoPopup class="icon">
-        Some Information
-       </InfoPopup>
+      <h4>
+        {{ t('RAAN') }} [deg]
+        <InfoPopup class="icon"> Some Information </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
@@ -247,10 +244,9 @@ props.simulation.addEventListener('select', (satellite) => {
         <p class="display">Value: {{ raan }}</p>
       </div>
       <br />
-      <h4>{{ t('Eccentricity') }}
-        <InfoPopup class="icon">
-        Some Information
-       </InfoPopup>
+      <h4>
+        {{ t('Eccentricity') }}
+        <InfoPopup class="icon"> Some Information </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="99" v-model="e" class="slider" />
@@ -297,7 +293,7 @@ props.simulation.addEventListener('select', (satellite) => {
   <SpeedButtons :simulation="props.simulation" />
 
   <div class="right-info-block">
-    <h2>{{t("Satellites Created")}}</h2>
+    <h2>{{ t('Satellites Created') }}</h2>
     <div class="satellite-list">
       <div
         v-for="satellite in satellites"
@@ -327,7 +323,7 @@ h3 {
   font-weight: bold;
 }
 
-.icon{
+.icon {
   // override the infopopup style
   position: relative;
   display: flex;
@@ -367,8 +363,7 @@ h3 {
   border-radius: 0.5em;
   padding: 0.5em 1em;
   color: white;
-  background-color: rgba(45, 155, 156, 1)
-
+  background-color: rgba(45, 155, 156, 1);
 }
 
 .orbit-sat {

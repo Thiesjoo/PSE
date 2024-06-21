@@ -22,7 +22,6 @@ const props = defineProps<{
   border-radius: 10pt;
   background-color: #010238;
 
-
   position: absolute;
   top: 50%;
   transform: translateY(-50%);

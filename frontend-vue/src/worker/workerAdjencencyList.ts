@@ -3,8 +3,8 @@ import { GeoCoords, calculateDistance } from '@/common/utils'
 
 export interface CalculateAdjList {
   event: 'calculate'
-  data: Record<number, GeoCoords>,
-  start: number,
+  data: Record<number, GeoCoords>
+  start: number
   end: number
 }
 
@@ -21,7 +21,7 @@ onmessage = (event) => {
         event: 'calculate-res',
         data: {} as Record<number, number[]>
       } satisfies CalculateAdjListResponse
-      const data= Object.entries(type.data);
+      const data = Object.entries(type.data)
 
       for (const [satId, coords] of data.slice(type.start, type.end)) {
         res.data[+satId] = data

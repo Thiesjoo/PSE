@@ -61,7 +61,7 @@ updateLaunchYearFilter()
           </InfoPopup>
         </FilterItem>
       </div>
-      
+
       <button @click="manager.selectNone()">{{ t('Unselect All') }}</button>
       <button @click="manager.selectAll()">{{ t('Select All') }}</button>
 
@@ -76,7 +76,6 @@ updateLaunchYearFilter()
         </label>
         <vue-slider
           v-model="slider_values"
-
           :min="FIRST_LAUNCH_YEAR"
           :max="MOST_RECENT_LAUNCH_YEAR"
           :min-range="1"
