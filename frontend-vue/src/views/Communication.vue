@@ -231,20 +231,13 @@ function findPath() {
           <h2 class="subtitel">
             {{
               t(
-                'All these satellites can communicate with eachother to send messages around the world.'
+                'This is the shortest path between the two points that you selected. The satellites will send your message through this path.'
               )
             }}
           </h2>
-          <div class="coords">
-            <p v-if="firstCoords">
-              {{ t('First point') }}: {{ firstCoords.lat }}, {{ firstCoords.lng }}
-            </p>
-            <p v-if="secondCoords">
-              {{ t('Second point') }}: {{ secondCoords.lat }}, {{ secondCoords.lng }}
-            </p>
-            <p>{{ t('Your message took') }} {{ currentPath.length - 1 }} {{ t('hops!') }}</p>
-            <p>{{ t('And your message flew') }} {{ distance }} {{ t('kilometers.') }}</p>
-          </div>
+          <p class="description">{{ t('Your message took') }} {{ currentPath.length - 1 }} {{ t('hops!') }}
+            <br>
+          {{ t('And your message flew') }} {{ distance }} {{ t('kilometers.') }}</p>
         </div>
       </template>
     </MultipleTabs>
