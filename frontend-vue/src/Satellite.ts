@@ -145,6 +145,14 @@ export class Satellite {
     this.threeData.scale.set(mapped, mapped, mapped)
   }
 
+  scale_sim() {
+    // We want to make the satellites that are further away bigger to increase visibility
+    const distanceToEarth = this.realPosition.alt
+    const mapped = (distanceToEarth / 500) * 0.2 + 1
+
+    this.threeData.scale.set(mapped * 5, mapped * 5, mapped * 5)
+  }
+
   public propagateNoUpdate(time: Date, globeRadius: number): Object {
     const eci = propagate(this.satData, time)
 
@@ -188,7 +196,12 @@ export class Satellite {
   }
 
   public updatePositionOfMesh(mesh: SatelliteMeshes, index: number, globeRadius: number) {
-    this.scale()
+    if (this.name.startsWith('New')){
+      this.scale_sim()
+    }
+    else{
+      this.scale()
+    }
 
     this.xyzPosition = polar2Cartesian(
       this.realPosition.lat,
