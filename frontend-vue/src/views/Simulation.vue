@@ -203,7 +203,7 @@ props.simulation.addEventListener('select', (satellite) => {
 </script>
 
 <template>
-  <LeftInfoBlock :open="true">
+  <LeftInfoBlock :open="true" class="container">
     <br />
     <h2>{{ t('Simulation Variables') }}</h2>
     <br />
@@ -309,6 +309,11 @@ props.simulation.addEventListener('select', (satellite) => {
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
+.container {
+  color: $main_text;
+}
+
 h2 {
   text-align: center;
 }
@@ -362,8 +367,9 @@ h3 {
   border: none;
   border-radius: 0.5em;
   padding: 0.5em 1em;
-  color: white;
-  background-color: rgba(45, 155, 156, 1);
+  color: $main_text;
+  background-color: $button_background_box;
+  border: 1px solid $button_border_box;
 }
 
 .orbit-sat {
@@ -379,8 +385,8 @@ h3 {
 }
 
 .display {
-  background: #00000000;
-  color: #ffffff;
+  // background: #db090900;
+  color: $main_text;
 }
 
 .slider {
@@ -392,8 +398,8 @@ h3 {
   appearance: none;
   width: 90%;
   height: 5px;
-  background: #f8faf8;
-  outline: #f9fdf9;
+  background: $slider_bar;
+  // outline: #f9fdf9;
   opacity: 1;
   -webkit-transition: 0.2s;
   transition: opacity 0.2s;
@@ -402,7 +408,7 @@ h3 {
 .slider::-moz-range-thumb {
   width: var(--thumbRadius);
   height: var(--thumbRadius);
-  background: #fefefe;
+  // background: #fefefe;
   cursor: pointer;
 }
 
@@ -415,7 +421,7 @@ h3 {
 }
 
 .highlight {
-  background-color: rgba(45, 155, 156, 0.6);
+  background-color: $orbit_highlight;
   padding: 5px;
 }
 
@@ -425,13 +431,13 @@ h3 {
   right: 0; /* Position it to the right side */
   width: 175px;
   height: 30%;
-  background-color: #01023890;
-  color: white;
+  background-color: $pop_up_background;
+  color: $main_text;
   padding-left: 15px;
   padding-right: 15px;
   padding-top: 10px;
   padding-bottom: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.75);
+  border: 2px solid $pop_up_border;
   border-radius: 12px;
   padding: 15px;
 }
@@ -448,7 +454,7 @@ h3 {
 }
 
 .satellite-item.selected {
-  background-color: rgba(45, 155, 156, 0.45);
+  background-color: $list_background;
 }
 </style>
 <i18n>

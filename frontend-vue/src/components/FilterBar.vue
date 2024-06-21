@@ -102,16 +102,18 @@ updateLaunchYearFilter()
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
 .flex {
   display: flex;
   flex-direction: column;
   max-height: 100%;
+  color: $main_text;
 
   button {
     margin: 5px 0;
-    background-color: #010238;
-    color: white;
-    border: 1px solid white;
+    background-color: $button_background_box;
+    color: $main_text;
+    border: 1px solid $button_border_box;
     border-radius: 5px;
     padding: 5px;
     cursor: pointer;
@@ -127,7 +129,7 @@ updateLaunchYearFilter()
     width: 5px;
   }
   &::-webkit-scrollbar-thumb {
-    background: #413939;
+    background: $scroll_bar;
     border-radius: 2em;
   }
 

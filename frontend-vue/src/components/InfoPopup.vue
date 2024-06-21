@@ -17,6 +17,7 @@ const showPopup = ref(false)
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
 .wrapper {
   z-index: 100;
 
@@ -46,11 +47,11 @@ const showPopup = ref(false)
 
     width: 300px;
     display: flex;
-    background-color: rgba(255, 255, 255);
-    color: black;
+    background-color: $info_popup_background;
+    color: $info_popup_text;
     font-size: 4vh;
 
-    border: 1px solid black;
+    border: 1px solid $info_popup_border;
     padding: 10px;
     z-index: 1000;
   }

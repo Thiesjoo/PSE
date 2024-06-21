@@ -77,6 +77,7 @@ const intervals = [1, 10, 100, 1000]
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
 .wrapper {
   display: flex;
   justify-content: center;
@@ -89,6 +90,7 @@ const intervals = [1, 10, 100, 1000]
   margin-bottom: 2em;
 
   transform: translateX(-50%);
+  color: $main_text;
 
   h1 {
     margin-bottom: 0.3em;
@@ -99,15 +101,18 @@ const intervals = [1, 10, 100, 1000]
       border: none;
       border-radius: 0.5em;
       padding: 0.5em 1em;
+      background-color: $button_background;
+      color: $button_text;
     }
     .active {
-      background-color: rgba(45, 155, 156, 1);
+      background-color: $button_selected;
     }
   }
 
   .reset {
-    background-color: #d8c474;
     font-weight: 550;
+    color: $button_text;
+    background-color: $button_background;
   }
 }
 </style>
