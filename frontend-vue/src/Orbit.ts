@@ -118,9 +118,9 @@ export class Orbit {
     }
   }
 
-  recalculate(){
-    this.lineCounter = 0;
-    this.generateLinePoints();
+  recalculate() {
+    this.lineCounter = 0
+    this.generateLinePoints()
   }
 
   removeLine(scene: THREE.Scene) {

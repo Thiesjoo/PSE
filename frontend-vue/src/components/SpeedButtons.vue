@@ -20,7 +20,7 @@ const dateFormatEN = new Intl.DateTimeFormat('en', {
   day: '2-digit',
   month: 'short',
   year: 'numeric',
-  timeZone: "Europe/Amsterdam"
+  timeZone: 'Europe/Amsterdam'
 })
 
 const dateFormatNL = new Intl.DateTimeFormat('nl', {
@@ -30,12 +30,12 @@ const dateFormatNL = new Intl.DateTimeFormat('nl', {
   day: '2-digit',
   month: 'short',
   year: 'numeric',
-  timeZone: "Europe/Amsterdam"
+  timeZone: 'Europe/Amsterdam'
 })
 
-
 const updateCurrentTimeString = () => {
-  currentTimeString.value = locale.value === 'en' ? dateFormatEN.format(time.time) : dateFormatNL.format(time.time)
+  currentTimeString.value =
+    locale.value === 'en' ? dateFormatEN.format(time.time) : dateFormatNL.format(time.time)
 }
 
 onMounted(() => {
@@ -59,19 +59,19 @@ const intervals = [1, 10, 100, 1000]
       {{ currentTimeString }}
     </h1>
     <div class="speed">
-    <template v-if="props.showOnlyTime === undefined || !props.showOnlyTime">
-      <button
-        v-for="interval in intervals"
-        :key="interval"
-        @click="time.setSpeed(interval)"
-        :class="{
-          active: interval === time.multiplier.value
-        }"
-      >
-        {{ t('Speed') }} x{{ interval }}
-      </button>
-      <button @click="resetTime()" class="reset">{{ t('Reset to current time') }}</button>
-    </template>
+      <template v-if="props.showOnlyTime === undefined || !props.showOnlyTime">
+        <button
+          v-for="interval in intervals"
+          :key="interval"
+          @click="time.setSpeed(interval)"
+          :class="{
+            active: interval === time.multiplier.value
+          }"
+        >
+          {{ t('Speed') }} x{{ interval }}
+        </button>
+        <button @click="resetTime()" class="reset">{{ t('Reset to current time') }}</button>
+      </template>
     </div>
   </div>
 </template>

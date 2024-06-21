@@ -31,5 +31,5 @@ jobs:
           report-json: "frontend-vue/eslint_report.json"
 
       - name: Run prettier
-        run: npm run format
+        run: npm run format:check
         

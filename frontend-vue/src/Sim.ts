@@ -38,7 +38,7 @@ export class ThreeSimulation {
   private followSelected = true
   private tweeningStatus: number = 0
   private escapedFollow = false
-  private satClicking = true;
+  private satClicking = true
 
   private sun!: THREE.DirectionalLight
   private renderer!: THREE.WebGLRenderer
@@ -74,7 +74,7 @@ export class ThreeSimulation {
     this.initScene(canvas).then(() => {
       console.log(import.meta.env)
 
-      if(import.meta.env.DEV){
+      if (import.meta.env.DEV) {
         this.initStats()
       }
       this.initListeners()
@@ -283,9 +283,9 @@ export class ThreeSimulation {
     // Update the picking ray with the camera and pointer position
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects([
-        this.globe,
-        this.mesh.sat,
-        this.mesh.satClick
+      this.globe,
+      this.mesh.sat,
+      this.mesh.satClick
     ])
     if (intersects.length > 0 && 'satellite' in intersects[0].object.userData && this.satClicking) {
       this.dehover()
@@ -365,7 +365,11 @@ export class ThreeSimulation {
     if (xDif > 0.00001 || yDif > 0.00001) return
 
     this.raycaster.setFromCamera(this.pointer, this.camera)
-    const intersects = this.raycaster.intersectObjects([this.globe, this.mesh.sat, this.mesh.satClick]);
+    const intersects = this.raycaster.intersectObjects([
+      this.globe,
+      this.mesh.sat,
+      this.mesh.satClick
+    ])
 
     if (intersects.length > 0) {
       if ('satellite' in intersects[0].object.userData && this.satClicking) {
@@ -386,8 +390,8 @@ export class ThreeSimulation {
         intersects[0].object.position.z === 0
       ) {
         this.deselect()
-        const {lat, lng, altitude} = this.globe.toGeoCoords(intersects[0].point)
-        this.eventListeners['earthClicked']?.forEach((cb) => cb({lat, lng, alt: altitude}))
+        const { lat, lng, altitude } = this.globe.toGeoCoords(intersects[0].point)
+        this.eventListeners['earthClicked']?.forEach((cb) => cb({ lat, lng, alt: altitude }))
       }
     } else {
       this.deselect()
@@ -397,7 +401,7 @@ export class ThreeSimulation {
 
   private resetMeshes() {
     if (!this.mesh || !this.mesh.sat || !this.mesh.satClick) return
-    
+
     const matrix = new THREE.Matrix4()
     matrix.compose(
       new THREE.Vector3(0, 0, 0),

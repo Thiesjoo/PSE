@@ -46,7 +46,7 @@ const tabForPath = 5
 const currentTab = ref(1)
 const currentPath = ref<Satellite[]>([])
 
-let intervalID: number;
+let intervalID: number
 
 const distance = computed(() => {
   if (currentPath.value.length === 0) {
@@ -66,7 +66,7 @@ const distance = computed(() => {
 function tabInfoUpdate(tab: number) {
   all.hideConnections = true
   all.setPath([])
-  clearInterval(intervalID);
+  clearInterval(intervalID)
 
   if (tab === tabForConnections) {
     all.hideConnections = false
@@ -87,7 +87,7 @@ function tabInfoUpdate(tab: number) {
     secondCoords.value = undefined
   } else if (tab === tabForPath) {
     findPath()
-    intervalID = setInterval(findPath, 1000);
+    intervalID = setInterval(findPath, 1000)
   }
 }
 
@@ -123,8 +123,8 @@ function findPath() {
     return
   }
 
-  const sat1 = graph.findClosestSat({...firstCoords.value})
-  const sat2 = graph.findClosestSat({...secondCoords.value  })
+  const sat1 = graph.findClosestSat({ ...firstCoords.value })
+  const sat2 = graph.findClosestSat({ ...secondCoords.value })
   if (!sat1 || !sat2) {
     return
   }
@@ -236,9 +236,11 @@ function findPath() {
               )
             }}
           </h2>
-          <p class="description">{{ t('Your message took') }} {{ currentPath.length - 1 }} {{ t('hops!') }}
-            <br>
-          {{ t('And your message flew') }} {{ distance }} {{ t('kilometers.') }}</p>
+          <p class="description">
+            {{ t('Your message took') }} {{ currentPath.length - 1 }} {{ t('hops!') }}
+            <br />
+            {{ t('And your message flew') }} {{ distance }} {{ t('kilometers.') }}
+          </p>
         </div>
       </template>
     </MultipleTabs>

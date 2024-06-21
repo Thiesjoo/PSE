@@ -15,17 +15,16 @@ props.simulation.moveRight()
 </script>
 
 <template>
-
   <div class="home">
     <div class="header">
-      <h1>{{ t("Satellite Radar") }}</h1>
+      <h1>{{ t('Satellite Radar') }}</h1>
       <img src="../assets/satellite_logo.png" alt="Satellite" width="200" height="200" />
     </div>
 
     <div class="container">
       <RouterLink to="/visualization">
         <div class="box">
-          <h2>{{ t("All satellites") }}</h2>
+          <h2>{{ t('All satellites') }}</h2>
           <div class="icon">
             <img src="../assets/visualisation1.png" alt="Satellites" width="100" height="100" />
           </div>
@@ -33,7 +32,7 @@ props.simulation.moveRight()
       </RouterLink>
       <RouterLink to="/simulation">
         <div class="box">
-          <h2>{{ t("Create satellites") }}</h2>
+          <h2>{{ t('Create satellites') }}</h2>
           <br />
           <div class="icon">
             <img src="../assets/simulation.png" alt="Launch" width="100" height="100" />
@@ -42,7 +41,7 @@ props.simulation.moveRight()
       </RouterLink>
       <RouterLink to="/communication">
         <div class="box">
-          <h2>{{ t("Communication") }}</h2>
+          <h2>{{ t('Communication') }}</h2>
           <div class="icon">
             <img src="../assets/communication.png" alt="Communication" width="100" height="100" />
           </div>
@@ -52,8 +51,10 @@ props.simulation.moveRight()
   </div>
 
   <div class="scale-disclaimer-container">
-    <img class="disclaimer-icon" src="/warning-symbol.svg" width="30px" height="30px">
-    <p class="scale-disclaimer">The scale visualizations in this app are not an accurate reflection of reality.</p>
+    <img class="disclaimer-icon" src="/warning-symbol.svg" width="30px" height="30px" />
+    <p class="scale-disclaimer">
+      The scale visualizations in this app are not an accurate reflection of reality.
+    </p>
   </div>
 
   <div class="about">
@@ -64,7 +65,7 @@ props.simulation.moveRight()
 </template>
 
 <style scoped>
-.home{
+.home {
   display: flex;
   flex-direction: column;
   align-items: left;
@@ -80,7 +81,6 @@ props.simulation.moveRight()
   }
 }
 
-
 .container {
   display: flex;
   flex-direction: column;
@@ -89,7 +89,6 @@ props.simulation.moveRight()
   a {
     text-decoration: none;
   }
-
 
   .box {
     min-width: 30vw;
@@ -148,7 +147,6 @@ props.simulation.moveRight()
 .scale-disclaimer {
   font-family: 'Tomorrow';
 }
-
 </style>
 <i18n>
     {

@@ -14,7 +14,12 @@ import {
 import { Orbit } from './Orbit'
 import { GeoCoords } from './common/utils'
 
-export function polar2Cartesian(lat: number, lng: number, relAltitude: number, globeRadius: number) {
+export function polar2Cartesian(
+  lat: number,
+  lng: number,
+  relAltitude: number,
+  globeRadius: number
+) {
   const phi = ((90 - lat) * Math.PI) / 180
   const theta = ((90 - lng) * Math.PI) / 180
   const r = globeRadius * (1 + relAltitude)
@@ -38,7 +43,7 @@ export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
 
   const satMaterial = new THREE.MeshBasicMaterial({
     transparent: true,
-    opacity: 0.7,
+    opacity: 0.7
   })
 
   const satClickMaterial = new THREE.MeshBasicMaterial({
@@ -78,7 +83,7 @@ let numericalId = 0
 export class Satellite {
   public name!: string
   public satData!: SatRec
-  public country!: string  
+  public country!: string
   public launch_year!: number
   public categories!: string[]
   public realPosition: GeoCoords = { lat: 0, lng: 0, alt: 0 }
@@ -97,7 +102,7 @@ export class Satellite {
     return this.satData.satnum
   }
 
-  public numericalId = numericalId++;
+  public numericalId = numericalId++
 
   public static fromMultipleTLEs(data: string): Satellite[] {
     const tles = data.replace(/\r/g, '').split(/\n(?=[^12])/)
