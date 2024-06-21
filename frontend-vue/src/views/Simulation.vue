@@ -38,7 +38,7 @@ function tle_new_satellite(alt: number) {
   let mean_motion = calculateRevolutionPerDay(alt)
 
   // Initializing own satelite
-  let name = 'New Satellite' + sat_number.toString() + '\n'
+  let name = t('New Satellite') + sat_number.toString() + '\n'
   let cat_n = sat_number.toString().padStart(5, '0')
   let part1 = '1 ' + cat_n + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1'
   let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
@@ -216,7 +216,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Height') }} [km]
-        <InfoPopup class="icon"> Some Information </InfoPopup>
+        <InfoPopup class="icon"> {{ t('info H') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
@@ -226,7 +226,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Inclination') }} [deg]
-        <InfoPopup class="icon"> Some Information </InfoPopup>
+        <InfoPopup class="icon"> {{ t('info Incl') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
@@ -236,7 +236,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('RAAN') }} [deg]
-        <InfoPopup class="icon"> Some Information </InfoPopup>
+        <InfoPopup class="icon"> {{ t('info R') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
@@ -246,7 +246,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Eccentricity') }}
-        <InfoPopup class="icon"> Some Information </InfoPopup>
+        <InfoPopup class="icon"> {{ t('info E') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="99" v-model="e" class="slider" />
@@ -350,14 +350,6 @@ h3 {
 }
 
 .add-del-button {
-  // appearance: none;
-  // width: 50%;
-  // padding: 5px;
-  // background-color: rgba(45, 155, 156, 0.45);
-  // border-radius: 200px;
-  // cursor: pointer;
-  // color: white;
-
   margin: 0 5px;
   border: none;
   border-radius: 0.5em;
@@ -469,11 +461,16 @@ h3 {
       "Medium Earth Orbit": "Medium Earth Orbit",
       "Other": "Other",
       "true": "true",
-      "false": "false"
+      "false": "false",
+      "info H": "The height of the satellite above the Earth's surface.",
+      "info Incl": "The angle of the orbit of the satellite.",
+      "info R": "The longitude on which the satellite crosses the equator from south to north.",
+      "info E": "The eccentricity of the orbit."
+
     },
     "nl": {
       "Simulation Variables": "Simulatie Variabelen",
-      "Satellites Created": "Satellieten gemaakt",
+      "Satellites Created": "Gemaakte Satellieten",
       "New satellite": "Nieuwe satelliet",
       "Height": "Hoogte",
       "Inclination": "Inclinatie",
@@ -487,7 +484,11 @@ h3 {
       "Medium Earth Orbit": "Middelhoge Omloopbaan",
       "Other": "Andere",
       "true": "waar",
-      "false": "onwaar"
+      "false": "onwaar",
+      "info H": "De hoogte van de satelliet boven het aardoppervlak.",
+      "info Incl": "De hoek van de baan van de satelliet.",
+      "info R": "De lengtegraad waarop de satelliet de evenaar van zuid naar noord kruist.",
+      "info E": "De excentriciteit van de baan."
     }
   }
 </i18n>
