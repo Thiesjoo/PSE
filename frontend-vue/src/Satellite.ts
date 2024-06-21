@@ -196,10 +196,9 @@ export class Satellite {
   }
 
   public updatePositionOfMesh(mesh: SatelliteMeshes, index: number, globeRadius: number) {
-    if (this.name.startsWith('New')){
+    if (this.name.startsWith('New')) {
       this.scale_sim()
-    }
-    else{
+    } else {
       this.scale()
     }
 
