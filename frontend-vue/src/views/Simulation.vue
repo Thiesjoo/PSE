@@ -352,6 +352,7 @@ h3 {
 .add-del-button {
   margin: 0 5px;
   border: none;
+  font-size: medium;
   border-radius: 0.5em;
   padding: 0.5em 1em;
   color: white;
