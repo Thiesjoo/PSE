@@ -46,6 +46,8 @@ const tabForPath = 5
 const currentTab = ref(1);
 const currentPath = ref<Satellite[]>([])
 
+let intervalID: number;
+
 const distance = computed(() => {
   if (currentPath.value.length === 0) {
     return 0
@@ -64,6 +66,7 @@ const distance = computed(() => {
 function tabInfoUpdate(tab: number) {
   all.hideConnections = true
   all.setPath([])
+  clearInterval(intervalID);
 
   if (tab === tabForConnections) {
     all.hideConnections = false
@@ -83,7 +86,7 @@ function tabInfoUpdate(tab: number) {
     }
     secondCoords.value = undefined
   } else if (tab === tabForPath) {
-    findPath()
+    intervalID = setInterval(findPath, 1000);
   }
 }
 
