@@ -86,6 +86,7 @@ function tabInfoUpdate(tab: number) {
     }
     secondCoords.value = undefined
   } else if (tab === tabForPath) {
+    findPath()
     intervalID = setInterval(findPath, 1000);
   }
 }
