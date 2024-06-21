@@ -146,7 +146,7 @@ export class Satellite {
   }
 
   scale_sim() {
-    // We want to make the satellites that are further away bigger to increase visibility
+    // We want to satellites in Simulation be more visible as its less busy
     const distanceToEarth = this.realPosition.alt
     const mapped = (distanceToEarth / 500) * 0.2 + 1
 
