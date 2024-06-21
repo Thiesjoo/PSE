@@ -350,16 +350,9 @@ h3 {
 }
 
 .add-del-button {
-  // appearance: none;
-  // width: 50%;
-  // padding: 5px;
-  // background-color: rgba(45, 155, 156, 0.45);
-  // border-radius: 200px;
-  // cursor: pointer;
-  // color: white;
-
   margin: 0 5px;
   border: none;
+  font-size: medium;
   border-radius: 0.5em;
   padding: 0.5em 1em;
   color: white;
