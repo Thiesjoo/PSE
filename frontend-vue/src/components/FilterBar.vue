@@ -117,7 +117,7 @@ const generics = ref([
       <button @click="manager.selectAll()">{{ t('Select All') }}</button>
     </div>
 
-    <div v-else>
+    <div v-else class="flex">
       <div class="filter-block">
         <GenericItem v-for="generic in generics" :key="generic.name" v-model="generic.filters">
           {{generic.name }} - {{ generic.filters.reduce((sum, filter) => sum + manager.count[filter.name], 0) }}
@@ -127,6 +127,9 @@ const generics = ref([
           </InfoPopup>  -->
         </GenericItem>
       </div>
+
+      <button @click="manager.selectNone()">{{ t('Unselect All') }}</button>
+      <button @click="manager.selectAll()">{{ t('Select All') }}</button>
     </div>
 
     <input class="advanced-filtering-checkbox" type="checkbox" @click="advancedFilters = !advancedFilters" :checked="advancedFilters">
