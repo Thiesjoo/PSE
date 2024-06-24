@@ -87,7 +87,6 @@ props.simulation.moveLeft()
       /* margin: 0.5em; */
     }
   }
-  
 }
 </style>
 <i18n>
