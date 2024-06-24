@@ -100,7 +100,6 @@ onUnmounted(() => {
           width="100"
           :alt="`${currentSelectedSatellite.country} flag`"
         />
-
       </div>
       <p id="SatelliteCountry">{{ t(currentSelectedSatellite.country) }}</p>
       <p id="norad">
