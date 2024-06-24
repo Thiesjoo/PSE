@@ -5,6 +5,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useIdle } from '@vueuse/core'
 import { IDLE_TIME } from './common/constants'
+
 const { t } = useI18n()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -96,6 +97,8 @@ const setEnglishLanguagePreference = () => {
 </template>
 
 <style scoped lang="scss">
+@import './common/colors.scss';
+
 canvas {
   width: 100vw;
   height: 100vh;
@@ -136,7 +139,7 @@ canvas {
   }
 
   .active {
-    border: 2px solid rgb(45, 155, 156, 0.45);
+    border: 2px solid $flag_border;
   }
 }
 
@@ -146,7 +149,7 @@ header {
   left: 50%;
   transform: translateX(-50%);
 
-  background-color: white;
+  background-color: $button_background;
   z-index: 100;
   border-radius: 0.2em;
   padding: 0.5em;
@@ -158,17 +161,17 @@ header {
     gap: 1rem;
 
     .router-link-exact-active {
-      background-color: rgb(45, 155, 156, 0.45);
+      background-color: $button_selected;
     }
 
     a {
       border-radius: 1em;
       padding: 0.2em 0.5em;
       text-decoration: none;
-      color: black;
+      color: $button_text;
 
       &:hover {
-        color: blue;
+        color: $button_hover_text;
       }
     }
   }

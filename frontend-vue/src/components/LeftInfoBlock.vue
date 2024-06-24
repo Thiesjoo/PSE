@@ -11,15 +11,16 @@ const props = defineProps<{
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
 .left-info-block {
   position: absolute;
   top: 0px;
   left: 0;
   width: 350px;
   height: 100%;
-  background-color: #01023890;
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.75);
+  background-color: $pop_up_background;
+  // color: white;
+  border: 2px solid $pop_up_border;
   border-radius: 12px;
   padding: 30px 25px;
   max-height: 100%;

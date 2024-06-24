@@ -72,8 +72,6 @@ export class ThreeSimulation {
   // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
   initAll(canvas: HTMLCanvasElement) {
     this.initScene(canvas).then(() => {
-      console.log(import.meta.env)
-
       if (import.meta.env.DEV) {
         this.initStats()
       }

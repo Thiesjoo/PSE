@@ -69,7 +69,8 @@ props.simulation.moveRight()
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/common/colors.scss';
 .home {
   display: flex;
   flex-direction: column;
@@ -81,7 +82,7 @@ props.simulation.moveRight()
 
   h1 {
     font-size: 10em;
-    color: white;
+    color: $main_text;
     font-family: 'Tomorrow';
   }
 }
@@ -101,7 +102,7 @@ props.simulation.moveRight()
     padding-left: 1%;
 
     border-radius: 20pt;
-    background-color: rgba(51, 75, 75, 0.278);
+    background-color: $menu_button_background;
 
     display: flex;
     align-items: center;
@@ -112,7 +113,7 @@ props.simulation.moveRight()
 
     h2 {
       font-size: 3em;
-      color: white;
+      color: $main_text;
       font-family: 'Tomorrow';
     }
   }
@@ -125,11 +126,11 @@ props.simulation.moveRight()
   margin: 1em;
   border-radius: 10pt;
   padding: 10pt;
-  background-color: rgba(45, 155, 156, 0.45);
+  background-color: $menu_button_background;
   font-family: 'Tomorrow';
 
   a {
-    color: white;
+    color: $main_text;
     text-decoration: none;
   }
 }
@@ -147,6 +148,7 @@ props.simulation.moveRight()
   display: flex;
   gap: 0.5em;
   align-items: center;
+  color: $main_text;
 }
 
 .scale-disclaimer {
