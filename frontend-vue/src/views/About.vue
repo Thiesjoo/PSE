@@ -17,7 +17,7 @@ props.simulation.moveLeft()
 
   <div class="container">
     Dit is gemaakt voor het vak Project software engineering aan de Universiteit van Amsterdam.
-    <h2>{{ t('Team') }}</h2> 
+    <h2>{{ t('Team') }}</h2>
     <div class="lists">
       <ul>
         <li>Thies Nieborg</li>
@@ -32,7 +32,7 @@ props.simulation.moveLeft()
         <li>Wike Duivenvoorden</li>
       </ul>
     </div>
-    <img src="../assets/uvalogo_white.png" alt="UvA logo" width="500"/>
+    <img src="../assets/uvalogo_white.png" alt="UvA logo" width="500" />
   </div>
   <!-- Logo -->
 </template>
