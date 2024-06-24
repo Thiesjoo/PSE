@@ -5,23 +5,22 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="left-info-block" id="left-info-block" v-if="open">
+  <div class="right-info-block" id="right-info-block" v-if="open">
     <slot></slot>
   </div>
 </template>
 
 <style scoped lang="scss">
 @import '@/common/colors.scss';
-.left-info-block {
+.right-info-block {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   top: 0px;
-  left: 0;
+  right: 0px;
   width: 350px;
   height: 100%;
-  background-color: $pop_up_background;
-  // color: white;
-  border: 2px solid $pop_up_border;
-  border-radius: 12px;
   padding: 30px 25px;
   max-height: 100%;
 }

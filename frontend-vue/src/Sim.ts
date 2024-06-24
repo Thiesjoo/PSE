@@ -69,15 +69,27 @@ export class ThreeSimulation {
 
   private workerManager = new WorkerManager()
 
-  // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
-  initAll(canvas: HTMLCanvasElement) {
-    this.initScene(canvas).then(() => {
-      console.log(import.meta.env)
+  private finishedLoading = false
 
+  // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
+  initAll(canvas: HTMLCanvasElement): Promise<void> {
+    return this.initScene(canvas).then(() => {
       if (import.meta.env.DEV) {
         this.initStats()
       }
       this.initListeners()
+      this.finishedLoading = true
+    })
+  }
+
+  public waitUntilFinishedLoading() {
+    return new Promise<void>((resolve) => {
+      const interval = setInterval(() => {
+        if (this.finishedLoading) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 100)
     })
   }
 
@@ -564,6 +576,39 @@ export class ThreeSimulation {
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
     this.controls.target.set(-200, 0, 0)
+    this.onRightSide = true
+  }
+
+  moveLeft() {
+    this.controls.mouseButtons = {
+      LEFT: null,
+      MIDDLE: null,
+      RIGHT: null
+    }
+    new TWEEN.Tween(this.camera.position)
+      .to(
+        {
+          x: 0,
+          y: 0,
+          z: 500
+        },
+        500
+      )
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .start()
+    // this.camera.position.set(0, 0, 500);
+    new TWEEN.Tween(this.controls.target)
+      .to(
+        {
+          x: 200,
+          y: 0,
+          z: 0
+        },
+        500
+      )
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .start()
+    this.controls.target.set(200, 0, 0)
     this.onRightSide = true
   }
 

@@ -2,13 +2,16 @@
 import { Satellite } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
 import FilterBar from '@/components/FilterBar.vue'
+import LoadingComponent from '@/components/LoadingComponent.vue'
 import PopSatInfo from '@/components/PopSatInfo.vue'
-import { ref, watch } from 'vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
+import { ref } from 'vue'
 
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
+
+await props.simulation.waitUntilFinishedLoading()
 
 const currentSelectedSatellite = ref(undefined as Satellite | undefined)
 
@@ -24,7 +27,12 @@ props.simulation.addEventListener('select', (sat) => {
 </script>
 
 <template>
-  <FilterBar :simulation="simulation"></FilterBar>
+  <Suspense>
+    <FilterBar :simulation="simulation"></FilterBar>
+    <template #fallback>
+      <LoadingComponent></LoadingComponent>
+    </template>
+  </Suspense>
   <PopSatInfo
     :currentSelectedSatellite="currentSelectedSatellite as Satellite"
     v-if="currentSelectedSatellite"

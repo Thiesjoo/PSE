@@ -68,14 +68,7 @@ onUnmounted(() => {
   <PopFrame :open="true" class="popup">
     <div class="top">
       <h1>{{ currentSelectedSatellite.name }}</h1>
-
-      <img
-        :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
-        width="100"
-        :alt="`${currentSelectedSatellite.country} flag`"
-        v-if="!currentSelectedSatellite.country.includes('/')"
-      />
-      <div v-else>
+      <div v-if="currentSelectedSatellite.country.includes('/')">
         <img
           :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[0]}.svg`"
           width="100"
@@ -85,6 +78,27 @@ onUnmounted(() => {
           :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[1]}.svg`"
           width="100"
           :alt="`${currentSelectedSatellite.country.split('/')[1]} flag`"
+        />
+      </div>
+      <div v-else-if="currentSelectedSatellite.country === 'UNK'">
+        <img
+          :src="`https://upload.wikimedia.org/wikipedia/commons/2/2a/Flag_of_None.svg`"
+          width="100"
+          :alt="`Unknown flag`"
+        />
+      </div>
+      <div v-else-if="currentSelectedSatellite.country === 'INT'">
+        <img
+          :src="`https://upload.wikimedia.org/wikipedia/commons/e/ef/International_Flag_of_Planet_Earth.svg`"
+          width="100"
+          :alt="`International flag`"
+        />
+      </div>
+      <div v-else>
+        <img
+          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
+          width="100"
+          :alt="`${currentSelectedSatellite.country} flag`"
         />
       </div>
       <p id="SatelliteCountry">{{ t(currentSelectedSatellite.country) }}</p>
@@ -216,7 +230,7 @@ onUnmounted(() => {
         "Altitude_description": "How high is the satellite.",
         "Speed": "Speed",
         "Speed_description": "How fast the satellite is.",
-        "Last epoch": "Last epoch",
+        "Last epoch": "Last updated",
         "Last epoch_description": "Last time the satellite published the orbit it currently is in.",
 
         "US": "United States",
@@ -319,7 +333,7 @@ onUnmounted(() => {
         "Altitude_description": "Hoe hoog is de satelliet.",
         "Speed": "Snelheid",
         "Speed_description": "Hoe snel is de satelliet.",
-        "Last epoch": "Laatste epoch",
+        "Last epoch": "Laatste update",
         "Last epoch_description": "Laatste keer dat de satelliet de huidige baan publiceerde.",
 
         "US": "Verenigde Staten",

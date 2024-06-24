@@ -12,15 +12,16 @@ const props = defineProps<{
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
 .pop-up {
   display: flex;
   flex-flow: column nowrap;
 
   min-width: 25vw;
-  border: 8px solid #858385;
+  border: 8px solid $pop_up_border;
 
   border-radius: 10pt;
-  background-color: #010238;
+  background-color: $pop_up_background;
 
   position: absolute;
   top: 50%;

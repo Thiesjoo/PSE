@@ -8,7 +8,6 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 import VueSlider from 'vue-slider-component'
-import 'vue-slider-component/theme/default.css'
 import { ref } from 'vue'
 import LeftInfoBlock from './LeftInfoBlock.vue'
 
@@ -166,17 +165,199 @@ const generics = ref([
   </LeftInfoBlock>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
+@import '@/common/colors.scss';
+
+$disabledOpacity: 0.5 !default;
+
+$bgColor: $slider_bar !default;
+$railBorderRadius: 15px !default;
+
+$dotShadow: 0.5px 0.5px 2px 1px rgba(0, 0, 0, 0.32) !default;
+$dotShadowFocus: 0px 0px 1px 2px rgba($slider_button, 0.36) !default;
+$dotBgColor: $slider_button !default;
+$dotBgColorDisable: #ccc !default;
+$dotBorderRadius: 50% !default;
+
+$tooltipBgColor: $slider_text_background !default;
+$tooltipColor: $slider_text !default;
+$tooltipBorderRadius: 5px !default;
+$tooltipPadding: 2px 5px !default;
+$tooltipMinWidth: 20px !default;
+$tooltipArrow: 5px !default;
+$tooltipFontSize: 14px !default;
+
+$stepBorderRadius: 50% !default;
+$stepBgColor: rgba(0, 0, 0, 0.16) !default;
+
+$labelFontSize: 14px !default;
+
+@mixin triangle($size, $color, $direction) {
+  height: 0;
+  width: 0;
+  @if ($direction==top) or ($direction==bottom) or ($direction==right) or ($direction==left) {
+    border-color: transparent;
+    border-style: solid;
+    border-width: $size;
+    @if $direction==top {
+      border-bottom-color: $color;
+    } @else if $direction==right {
+      border-left-color: $color;
+    } @else if $direction==bottom {
+      border-top-color: $color;
+    } @else if $direction==left {
+      border-right-color: $color;
+    }
+  }
+}
+
+@mixin arrow($size, $color) {
+  &::after {
+    content: '';
+    position: absolute;
+  }
+
+  &-top {
+    &::after {
+      top: 100%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      @include triangle($size, $color, bottom);
+    }
+  }
+
+  &-bottom {
+    &::after {
+      bottom: 100%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      @include triangle($size, $color, top);
+    }
+  }
+
+  &-left {
+    &::after {
+      left: 100%;
+      top: 50%;
+      transform: translate(0, -50%);
+      @include triangle($size, $color, right);
+    }
+  }
+
+  &-right {
+    &::after {
+      right: 100%;
+      top: 50%;
+      transform: translate(0, -50%);
+      @include triangle($size, $color, left);
+    }
+  }
+}
+
+/* component style */
+.vue-slider-disabled {
+  opacity: $disabledOpacity;
+  cursor: not-allowed;
+}
+
+/* rail style */
+.vue-slider-rail {
+  background-color: $bgColor;
+  border-radius: $railBorderRadius;
+}
+
+/* process style */
+.vue-slider-process {
+  background-color: $slider_bar;
+  border-radius: $railBorderRadius;
+}
+
+/* mark style */
+.vue-slider-mark {
+  z-index: 4;
+
+  &:first-child,
+  &:last-child {
+    .vue-slider-mark-step {
+      display: none;
+    }
+  }
+
+  @at-root &-step {
+    width: 100%;
+    height: 100%;
+    border-radius: $stepBorderRadius;
+    background-color: $stepBgColor;
+
+    &-active {
+    }
+  }
+
+  @at-root &-label {
+    font-size: $labelFontSize;
+    white-space: nowrap;
+
+    &-active {
+    }
+  }
+}
+
+/* dot style */
+.vue-slider-dot {
+  @at-root &-handle {
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    border-radius: $dotBorderRadius;
+    background-color: $dotBgColor;
+    box-sizing: border-box;
+    box-shadow: $dotShadow;
+
+    @at-root &-focus {
+      box-shadow: $dotShadowFocus;
+    }
+    @at-root &-disabled {
+      cursor: not-allowed;
+      background-color: $dotBgColorDisable;
+    }
+  }
+
+  @at-root &-tooltip {
+    @at-root &-inner {
+      font-size: $tooltipFontSize;
+      white-space: nowrap;
+      padding: $tooltipPadding;
+      min-width: $tooltipMinWidth;
+      text-align: center;
+      color: $tooltipColor;
+      border-radius: $tooltipBorderRadius;
+      border-color: $tooltipBgColor;
+      background-color: $tooltipBgColor;
+      box-sizing: content-box;
+      @include arrow($tooltipArrow, inherit);
+    }
+  }
+
+  @at-root &-tooltip-wrapper {
+    opacity: 0;
+    transition: all 0.3s;
+    @at-root &-show {
+      opacity: 1;
+    }
+  }
+}
+
 .flex {
   display: flex;
   flex-direction: column;
   max-height: 100%;
+  color: $main_text;
 
   button {
     margin: 5px 0;
-    background-color: #010238;
-    color: white;
-    border: 1px solid white;
+    background-color: $button_background_box;
+    color: $main_text;
+    border: 1px solid $button_border_box;
     border-radius: 5px;
     padding: 5px;
     cursor: pointer;
@@ -192,7 +373,7 @@ const generics = ref([
     width: 5px;
   }
   &::-webkit-scrollbar-thumb {
-    background: #413939;
+    background: $scroll_bar;
     border-radius: 2em;
   }
 

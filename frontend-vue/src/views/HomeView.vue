@@ -26,7 +26,7 @@ props.simulation.moveRight()
         <div class="box">
           <h2>{{ t('All satellites') }}</h2>
           <div class="icon">
-            <img src="../assets/visualisation1.png" alt="Satellites" width="100" height="100" />
+            <img src="../assets/visualisation_icon.png" alt="Satellites" width="100" height="100" />
           </div>
         </div>
       </RouterLink>
@@ -35,7 +35,7 @@ props.simulation.moveRight()
           <h2>{{ t('Create satellites') }}</h2>
           <br />
           <div class="icon">
-            <img src="../assets/simulation.png" alt="Launch" width="100" height="100" />
+            <img src="../assets/simulation_sharp.png" alt="Launch" width="100" height="100" />
           </div>
         </div>
       </RouterLink>
@@ -43,7 +43,12 @@ props.simulation.moveRight()
         <div class="box">
           <h2>{{ t('Communication') }}</h2>
           <div class="icon">
-            <img src="../assets/communication.png" alt="Communication" width="100" height="100" />
+            <img
+              src="../assets/communication_icon.png"
+              alt="Communication"
+              width="100"
+              height="100"
+            />
           </div>
         </div>
       </RouterLink>
@@ -64,7 +69,8 @@ props.simulation.moveRight()
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/common/colors.scss';
 .home {
   display: flex;
   flex-direction: column;
@@ -76,7 +82,7 @@ props.simulation.moveRight()
 
   h1 {
     font-size: 10em;
-    color: white;
+    color: $main_text;
     font-family: 'Tomorrow';
   }
 }
@@ -96,7 +102,7 @@ props.simulation.moveRight()
     padding-left: 1%;
 
     border-radius: 20pt;
-    background-color: rgba(51, 75, 75, 0.278);
+    background-color: $menu_button_background;
 
     display: flex;
     align-items: center;
@@ -107,8 +113,12 @@ props.simulation.moveRight()
 
     h2 {
       font-size: 3em;
-      color: white;
+      color: $main_text;
       font-family: 'Tomorrow';
+    }
+
+    .icon {
+      margin: 0.1em;
     }
   }
 }
@@ -120,11 +130,11 @@ props.simulation.moveRight()
   margin: 1em;
   border-radius: 10pt;
   padding: 10pt;
-  background-color: rgba(45, 155, 156, 0.45);
+  background-color: $menu_button_background;
   font-family: 'Tomorrow';
 
   a {
-    color: white;
+    color: $main_text;
     text-decoration: none;
   }
 }
@@ -142,6 +152,7 @@ props.simulation.moveRight()
   display: flex;
   gap: 0.5em;
   align-items: center;
+  color: $main_text;
 }
 
 .scale-disclaimer {

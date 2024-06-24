@@ -17,6 +17,7 @@ const { t } = useI18n()
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
+await props.simulation.waitUntilFinishedLoading()
 
 const graph = new Graph()
 const all = new AllSatLinks(props.simulation.scene, graph, props.simulation)
@@ -250,6 +251,7 @@ function findPath() {
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
 .tab {
   display: flex;
   flex-direction: column;
@@ -257,6 +259,7 @@ function findPath() {
   justify-content: center;
 
   margin: 0.5em;
+  color: $main_text;
 
   .titel {
     font-size: 2.3em;

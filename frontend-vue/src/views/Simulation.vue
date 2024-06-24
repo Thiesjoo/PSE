@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
-import SpeedButtons from '@/components/SpeedButtons.vue'
-import InfoPopup from '@/components/InfoPopup.vue'
+import { ThreeSimulation } from '@/Sim'
 import {
-  epochUpdate,
-  calculateRevolutionPerDay,
+  calculateHeight,
   calculateMeanMotionRadPerMin,
-  calculateHeight
+  calculateRevolutionPerDay,
+  epochUpdate
 } from '@/calc_helper'
+import InfoPopup from '@/components/InfoPopup.vue'
+import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
+import SpeedButtons from '@/components/SpeedButtons.vue'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
+import RightInfoBlock from '@/components/RightInfoBlock.vue'
 const { t } = useI18n()
 
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
+await props.simulation.waitUntilFinishedLoading()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(true)
@@ -38,7 +40,7 @@ function tle_new_satellite(alt: number) {
   let mean_motion = calculateRevolutionPerDay(alt)
 
   // Initializing own satelite
-  let name = 'New Satellite' + sat_number.toString() + '\n'
+  let name = t('New Satellite') + sat_number.toString() + '\n'
   let cat_n = sat_number.toString().padStart(5, '0')
   let part1 = '1 ' + cat_n + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1'
   let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
@@ -203,7 +205,16 @@ props.simulation.addEventListener('select', (satellite) => {
 </script>
 
 <template>
-  <LeftInfoBlock :open="true">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <LeftInfoBlock :open="true" class="container">
     <br />
     <h2>{{ t('Simulation Variables') }}</h2>
     <br />
@@ -216,7 +227,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Height') }} [km]
-        <InfoPopup class="icon"> Some Information </InfoPopup>
+        <InfoPopup class="icon"> {{ t('info H') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
@@ -226,7 +237,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Inclination') }} [deg]
-        <InfoPopup class="icon"> Some Information </InfoPopup>
+        <InfoPopup class="icon"> {{ t('info Incl') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
@@ -236,7 +247,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('RAAN') }} [deg]
-        <InfoPopup class="icon"> Some Information </InfoPopup>
+        <InfoPopup class="icon"> {{ t('info R') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
@@ -246,7 +257,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Eccentricity') }}
-        <InfoPopup class="icon"> Some Information </InfoPopup>
+        <InfoPopup class="icon"> {{ t('info E') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="99" v-model="e" class="slider" />
@@ -257,21 +268,18 @@ props.simulation.addEventListener('select', (satellite) => {
     <br />
     <div class="button-box">
       <button class="add-del-button" @click="add = 1" style="text-align: center">
-        {{ t('Add satellite') }}
+        <i class="fa-solid fa-plus"></i>
+        <!-- {{ t('Add satellite') }} -->
       </button>
       <button class="add-del-button" @click="remove = 1" style="text-align: center">
-        {{ t('Delete satellites') }}
+        <i class="fa-regular fa-trash-can"></i>
+        <!-- {{ t('Delete satellites') }} -->
       </button>
     </div>
-    <div class="orbit-sat">
+  </LeftInfoBlock>
+  <RightInfoBlock :open="true">
+    <div class="orbit-info-box">
       <h2>{{ t('Orbit Category') }}</h2>
-      <br />
-      <div id="categories" style="text-align: center">
-        <span :class="{ category: true, highlight: picked === 0 }" id="LEO"> LEO</span>
-        <span :class="{ category: true, highlight: picked === 1 }" id="MEO">MEO</span>
-        <span :class="{ category: true, highlight: picked == 2 }" id="Other">Other</span>
-      </div>
-
       <div class="orbit-info" v-show="picked === 0">
         <h3>{{ t('Low Earth Orbit') }}</h3>
         <p>{{ t('Height') }}: 160-2000 km</p>
@@ -288,27 +296,30 @@ props.simulation.addEventListener('select', (satellite) => {
         <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
-  </LeftInfoBlock>
-
-  <SpeedButtons :simulation="props.simulation" />
-
-  <div class="right-info-block">
-    <h2>{{ t('Satellites Created') }}</h2>
-    <div class="satellite-list">
-      <div
-        v-for="satellite in satellites"
-        :key="satellite.name"
-        :class="{ selected: current_sat === satellite }"
-        @click="change_selected(satellite as Satellite)"
-        class="satellite-item"
-      >
-        {{ satellite.name }}
+    <div class="right-info-box">
+      <h2>{{ t('Satellites Created') }}</h2>
+      <div class="satellite-list">
+        <div
+          v-for="satellite in satellites"
+          :key="satellite.name"
+          :class="{ selected: current_sat === satellite }"
+          @click="change_selected(satellite as Satellite)"
+          class="satellite-item"
+        >
+          {{ satellite.name }}
+        </div>
       </div>
     </div>
-  </div>
+  </RightInfoBlock>
+  <SpeedButtons :simulation="props.simulation" />
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
+.container {
+  color: $main_text;
+}
+
 h2 {
   text-align: center;
 }
@@ -352,16 +363,12 @@ h3 {
 .add-del-button {
   margin: 0 5px;
   border: none;
-  font-size: medium;
+  font-size: 35px;
   border-radius: 0.5em;
   padding: 0.5em 1em;
-  color: white;
-  background-color: rgba(45, 155, 156, 1);
-}
-
-.orbit-sat {
-  width: 100%;
-  padding-top: 10%;
+  color: $main_text;
+  background-color: $button_background_box;
+  border: 1px solid $button_border_box;
 }
 
 .orbit-info {
@@ -371,9 +378,18 @@ h3 {
   padding-top: 2%;
 }
 
+.orbit-info-box {
+  order: 2;
+  align-self: start;
+  background-color: $pop_up_background;
+  border: 2px solid $pop_up_border;
+  border-radius: 12px;
+  padding-top: 15px;
+  padding-left: 10px;
+}
+
 .display {
-  background: #00000000;
-  color: #ffffff;
+  color: $main_text;
 }
 
 .slider {
@@ -385,8 +401,8 @@ h3 {
   appearance: none;
   width: 90%;
   height: 5px;
-  background: #f8faf8;
-  outline: #f9fdf9;
+  background: $slider_bar;
+  accent-color: $slider_button;
   opacity: 1;
   -webkit-transition: 0.2s;
   transition: opacity 0.2s;
@@ -395,7 +411,6 @@ h3 {
 .slider::-moz-range-thumb {
   width: var(--thumbRadius);
   height: var(--thumbRadius);
-  background: #fefefe;
   cursor: pointer;
 }
 
@@ -408,23 +423,25 @@ h3 {
 }
 
 .highlight {
-  background-color: rgba(45, 155, 156, 0.6);
+  background-color: $orbit_highlight;
   padding: 5px;
 }
 
-.right-info-block {
-  position: absolute;
-  top: 50px;
-  right: 0; /* Position it to the right side */
+.right-info-box {
+  order: 1;
+  align-self: end;
+  // position: absolute;
+  // top: 50px;
+  // right: 0; /* Position it to the right side */
   width: 175px;
   height: 30%;
-  background-color: #01023890;
-  color: white;
+  background-color: $pop_up_background;
+  color: $main_text;
   padding-left: 15px;
   padding-right: 15px;
   padding-top: 10px;
   padding-bottom: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.75);
+  border: 2px solid $pop_up_border;
   border-radius: 12px;
   padding: 15px;
 }
@@ -441,7 +458,7 @@ h3 {
 }
 
 .satellite-item.selected {
-  background-color: rgba(45, 155, 156, 0.45);
+  background-color: $list_background;
 }
 </style>
 <i18n>
@@ -462,11 +479,16 @@ h3 {
       "Medium Earth Orbit": "Medium Earth Orbit",
       "Other": "Other",
       "true": "true",
-      "false": "false"
+      "false": "false",
+      "info H": "The height of the satellite above the Earth's surface.",
+      "info Incl": "The angle of the orbit of the satellite.",
+      "info R": "The longitude on which the satellite crosses the equator from south to north.",
+      "info E": "The eccentricity of the orbit."
+
     },
     "nl": {
       "Simulation Variables": "Simulatie Variabelen",
-      "Satellites Created": "Satellieten gemaakt",
+      "Satellites Created": "Gemaakte Satellieten",
       "New satellite": "Nieuwe satelliet",
       "Height": "Hoogte",
       "Inclination": "Inclinatie",
@@ -480,7 +502,11 @@ h3 {
       "Medium Earth Orbit": "Middelhoge Omloopbaan",
       "Other": "Andere",
       "true": "waar",
-      "false": "onwaar"
+      "false": "onwaar",
+      "info H": "De hoogte van de satelliet boven het aardoppervlak.",
+      "info Incl": "De hoek van de baan van de satelliet.",
+      "info R": "De lengtegraad waarop de satelliet de evenaar van zuid naar noord kruist.",
+      "info E": "De excentriciteit van de baan."
     }
   }
 </i18n>

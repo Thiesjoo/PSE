@@ -5,13 +5,17 @@ import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useIdle } from '@vueuse/core'
 import { IDLE_TIME } from './common/constants'
+import LoadingComponent from '@/components/LoadingComponent.vue'
+
 const { t } = useI18n()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
 
-onMounted(() => {
-  simulation.initAll(canvas.value!)
+const loading = ref(true)
+onMounted(async () => {
+  await simulation.initAll(canvas.value!)
+  loading.value = false
 })
 
 const route = useRoute()
@@ -47,10 +51,33 @@ const setEnglishLanguagePreference = () => {
 <template>
   <header v-if="route.path !== '/'">
     <nav>
-      <RouterLink to="/"> {{ t('home') }} </RouterLink>
-      <RouterLink to="/visualization">{{ t('visualization') }}</RouterLink>
-      <RouterLink to="/simulation">{{ t('simulation') }}</RouterLink>
-      <RouterLink to="/communication">{{ t('communication') }}</RouterLink>
+      <RouterLink to="/"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 0 24 24"
+          width="50px"
+          height="50px"
+        >
+          <g id="Rounded">
+            <circle cx="12" cy="3" r="1" />
+            <circle cx="22.5" cy="11.5" r="0.5" />
+            <circle cx="1.5" cy="11.5" r="0.5" />
+            <path
+              d="M12.71,2.296L12,3.1l-0.71-0.804L1.203,11.098L1.5,12H4v8c0,0.552,0.448,1,1,1h4c0.552,0,1-0.448,1-1v-6h4v6c0,0.552,0.448,1,1,1h4c0.552,0,1-0.448,1-1v-8h2.5l0.297-0.902L12.71,2.296z"
+            />
+          </g>
+        </svg>
+      </RouterLink>
+      <RouterLink to="/visualization"
+        ><img src="@/assets/visualisation_icon.png" alt="Satellites" width="50" height="50"
+      /></RouterLink>
+      <RouterLink to="/simulation"
+        ><img src="@/assets/simulation_sharp.png" alt="Launch" width="50" height="50"
+      /></RouterLink>
+      <RouterLink to="/communication">
+        <img src="@/assets/communication_icon.png" alt="Communication" width="50" height="50"
+      /></RouterLink>
     </nav>
   </header>
 
@@ -86,16 +113,17 @@ const setEnglishLanguagePreference = () => {
       </RouterView>
 
       <template #fallback>
-        <div class="loading">
-          <p>{{ t('loading') }}</p>
-        </div>
+        <LoadingComponent></LoadingComponent>
       </template>
     </Suspense>
+    <LoadingComponent v-if="loading" />
   </div>
   <canvas ref="canvas" id="canvas"></canvas>
 </template>
 
 <style scoped lang="scss">
+@import './common/colors.scss';
+
 canvas {
   width: 100vw;
   height: 100vh;
@@ -136,7 +164,7 @@ canvas {
   }
 
   .active {
-    border: 2px solid rgb(45, 155, 156, 0.45);
+    border: 2px solid $flag_border;
   }
 }
 
@@ -146,7 +174,7 @@ header {
   left: 50%;
   transform: translateX(-50%);
 
-  background-color: white;
+  background-color: $button_background;
   z-index: 100;
   border-radius: 0.2em;
   padding: 0.5em;
@@ -158,17 +186,23 @@ header {
     gap: 1rem;
 
     .router-link-exact-active {
-      background-color: rgb(45, 155, 156, 0.45);
+      background-color: $button_selected;
     }
 
     a {
       border-radius: 1em;
       padding: 0.2em 0.5em;
       text-decoration: none;
-      color: black;
+      color: $button_text;
 
       &:hover {
-        color: blue;
+        color: $button_hover_text;
+      }
+    }
+
+    svg {
+      path {
+        fill: white;
       }
     }
   }
@@ -181,14 +215,12 @@ header {
             "visualization": "Visualization",
             "simulation": "Simulation",
             "communication": "Communication",
-            "loading": "Loading..."
         },
         "nl": {
             "home": "Home",
             "visualization": "Visualisatie",
             "simulation": "Simulatie",
             "communication": "Communicatie",
-            "loading": "Bezig met laden..."
         },
     }
 </i18n>
