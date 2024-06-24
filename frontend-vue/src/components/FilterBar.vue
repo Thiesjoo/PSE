@@ -103,7 +103,6 @@ updateLaunchYearFilter()
 <style lang="scss">
 @import '@/common/colors.scss';
 
-
 $disabledOpacity: 0.5 !default;
 
 $bgColor: $slider_bar !default;
@@ -189,7 +188,6 @@ $labelFontSize: 14px !default;
     }
   }
 }
-
 
 /* component style */
 .vue-slider-disabled {
