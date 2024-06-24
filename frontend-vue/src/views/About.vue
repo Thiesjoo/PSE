@@ -17,7 +17,6 @@ props.simulation.moveLeft()
 
   <div class="container">
     {{ t('Info') }}
-    Dit is gemaakt voor het vak "Project software engineering" aan de Universiteit van Amsterdam. Tijdens het project hebben we begeleiding van Wouter Loeve van het NLR. Het doel van het project is om kinderen kennis te laten maken met satellieten. Dit willen we bereiken door verschillende eigenschappen van de satellieten te visualiseren.
     <br />
     <h2>{{ t('Team') }}</h2>
     <div class="lists">
@@ -64,7 +63,7 @@ props.simulation.moveLeft()
 
   color: white;
   font-family: 'Tomorrow';
-  
+
   text-align: center;
 
   font-size: 1.3em;
