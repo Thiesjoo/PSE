@@ -293,7 +293,7 @@ props.simulation.addEventListener('select', (satellite) => {
           :class="{ selected: current_sat === satellite }"
           @click="change_selected(satellite as Satellite)"
           class="satellite-item"
-          >
+        >
           {{ satellite.name }}
         </div>
       </div>
@@ -366,7 +366,7 @@ h3 {
   padding-top: 2%;
 }
 
-.orbit-info-box{
+.orbit-info-box {
   order: 2;
   align-self: start;
   background-color: $pop_up_background;
