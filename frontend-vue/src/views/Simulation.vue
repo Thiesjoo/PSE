@@ -268,13 +268,6 @@ props.simulation.addEventListener('select', (satellite) => {
   <RightInfoBlock :open="true">
     <div class="orbit-info-box">
       <h2>{{ t('Orbit Category') }}</h2>
-      <br />
-      <div id="categories" style="text-align: center">
-        <span :class="{ category: true, highlight: picked === 0 }" id="LEO"> LEO</span>
-        <span :class="{ category: true, highlight: picked === 1 }" id="MEO">MEO</span>
-        <span :class="{ category: true, highlight: picked == 2 }" id="Other">Other</span>
-      </div>
-
       <div class="orbit-info" v-show="picked === 0">
         <h3>{{ t('Low Earth Orbit') }}</h3>
         <p>{{ t('Height') }}: 160-2000 km</p>
@@ -376,10 +369,13 @@ h3 {
 .orbit-info-box{
   order: 2;
   align-self: start;
-  background-color: #01023890;
-  border: 2px solid rgba(255, 255, 255, 0.75);
+  background-color: $pop_up_background;
+  border: 2px solid $pop_up_border;
   border-radius: 12px;
+  padding-top: 15px;
+  padding-left: 10px;
 }
+
 .display {
   color: $main_text;
 }
