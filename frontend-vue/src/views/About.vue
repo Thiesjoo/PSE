@@ -51,7 +51,7 @@ props.simulation.moveLeft()
 .container {
   /* Move to left of screen */
   position: fixed;
-  left: 2vw;
+  right: 2vw;
   top: 30vh;
 
   display: flex;
