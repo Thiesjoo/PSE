@@ -124,17 +124,16 @@ export class Orbit {
 
   // Checks if orbit is too low in atmosphere or hits the ground
   private earthCrushCheck(){
-    console.log("Checking")
-    // itererate through all orbit points
+    // console.log("Checking")
     for (const point of this.linePoints){
       const distance = Math.sqrt((point.x)**2 + (point.y)**2 + (point.z)**2) * EARTH_RADIUS_KM
       if (distance < EARTH_RADIUS_KM) {
         this.burning = true;
-        console.log("coordinates x, y ,z: ", point.x, point.y, point.z)
-        console.log("BURNING distance: ", distance)
+        // console.log("coordinates x, y ,z: ", point.x, point.y, point.z)
+        // console.log("BURNING distance: ", distance)
         if (point.y < EARTH_RADIUS_KM){
           this.earth_crushing = true;
-          console.log("EARTH CRUSHING distance: ", distance * EARTH_RADIUS_KM)
+          // console.log("EARTH CRUSHING distance: ", distance)
           break;
         }
       }
