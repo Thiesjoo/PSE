@@ -116,6 +116,11 @@ props.simulation.moveRight()
       color: $main_text;
       font-family: 'Tomorrow';
     }
+
+    .icon {
+      // add margin to the icon
+      margin: 0.1em;
+    }
   }
 }
 
