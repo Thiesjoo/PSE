@@ -16,7 +16,9 @@ props.simulation.moveLeft()
   </div>
 
   <div class="container">
-    Dit is gemaakt voor het vak Project software engineering aan de Universiteit van Amsterdam.
+    {{ t('Info') }}
+    Dit is gemaakt voor het vak "Project software engineering" aan de Universiteit van Amsterdam. Tijdens het project hebben we begeleiding van Wouter Loeve van het NLR. Het doel van het project is om kinderen kennis te laten maken met satellieten. Dit willen we bereiken door verschillende eigenschappen van de satellieten te visualiseren.
+    <br />
     <h2>{{ t('Team') }}</h2>
     <div class="lists">
       <ul>
@@ -37,7 +39,8 @@ props.simulation.moveLeft()
   <!-- Logo -->
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/common/colors.scss';
 .header {
   display: flex;
 
@@ -54,18 +57,27 @@ props.simulation.moveLeft()
   right: 2vw;
   top: 30vh;
 
+  max-width: 40%;
+
   display: flex;
   flex-direction: column;
 
   color: white;
   font-family: 'Tomorrow';
+  
+  text-align: center;
+
+  font-size: 1.3em;
+  font-weight: 500;
 
   .lists {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     border-radius: 20pt;
-    background-color: rgba(51, 75, 75, 0.278);
+    padding: 10pt;
+    background-color: $menu_button_background;
+    text-align: left;
   }
 
   img {
@@ -86,8 +98,8 @@ props.simulation.moveLeft()
     margin: 0;
 
     li {
-      font-size: 2em;
-      /* margin: 0.5em; */
+      font-size: 1.7em;
+      margin: 0.2em;
     }
   }
 }
@@ -95,10 +107,14 @@ props.simulation.moveLeft()
 <i18n>
     {
         "en": {
-            "About": "About"
+            "About": "About",
+            "Team": "Team",
+            "Info": "This is made for the course 'Project software engineering' at the University of Amsterdam. During the project we have guidance from Wouter Loeve from the NLR. The goal of the project is to introduce children to satellites. We want to achieve this by visualizing different properties of the satellites."
         },
         "nl": {
-            "About": "Over ons"
+            "About": "Over ons",
+            "Team": "Team",
+            "Info": "Dit is gemaakt voor het vak 'Project software engineering' aan de Universiteit van Amsterdam. Tijdens het project hebben we begeleiding van Wouter Loeve van het NLR. Het doel van het project is om kinderen kennis te laten maken met satellieten. Dit willen we bereiken door verschillende eigenschappen van de satellieten te visualiseren."
         }
     }
 </i18n>
