@@ -1,22 +1,34 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, computed } from 'vue'
 
 const props = defineProps<{
-  modelValue: boolean
+  modelValue: boolean | { selected: boolean }[]
 }>()
 
 const emits = defineEmits(['update:modelValue'])
 
+const isBooleanValue = computed(() => {
+  return typeof props.modelValue === 'boolean'
+})
+
 const toggle = () => {
-  emits('update:modelValue', !props.modelValue)
+  if (isBooleanValue.value) {
+    emits('update:modelValue', !props.modelValue)
+  } else {
+    const updatedFilters = props.modelValue.map(filter => ({
+      ...filter,
+      selected: !filter.selected
+    }))
+    emits('update:modelValue', updatedFilters)
+  }
 }
 </script>
 
 <template>
   <div class="wrapper">
-    <input type="checkbox" :checked="props.modelValue" @change="toggle" />
+    <input type="checkbox" :checked="isBooleanValue ? props.modelValue : props.modelValue.every(filter => filter.selected)" @change="toggle" />
     <label>
-      <slot> </slot>
+      <slot></slot>
     </label>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
-import { SatManager } from '@/common/sat-manager'
+import { Filter, SatManager } from '@/common/sat-manager'
 import FilterItem from './FilterItem.vue'
 import InfoPopup from './InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
@@ -43,16 +43,62 @@ const updateLaunchYearFilter = () => {
 }
 
 updateLaunchYearFilter()
+
+
+// A 'generic' is a bundle of filters. There 
+// are six generics currently.
+interface Generic {
+  name: string,
+  filters: Filter[]
+}
+
+
+const advancedFilters = ref(true);
+
+const generics = [
+  {
+    name: 'weather',
+    filters: []
+  },
+  {
+    name: 'GPS',
+    filters: []
+  },
+  {
+    name: 'Starlink',
+    filters: []
+  },
+  {
+    name: 'Space Stations',
+    filters: []
+  },
+  {
+    name: 'Science',
+    filters: []
+  },
+  {
+    name: 'Other',
+    filters: []
+  }
+]
+
+// Toggle a generic
+const toggleGeneric = (generic : Generic) => {
+  generic.filters.forEach(filter => {
+    filter.selected = !filter.selected
+  })
+}
+
 </script>
 
 <template>
   <LeftInfoBlock :open="true">
-    <div class="flex">
-      <h2>Category filter</h2>
+    <h2>Category filter</h2>
       <i>
         Some satellites are in multiple categories. They will be shown in all categories they belong
-        to.</i
-      >
+        to.</i>
+
+    <div class="flex" v-if="advancedFilters">
       <div class="filter-block">
         <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
           {{ t(filter.name) }} - {{ manager.count[filter.name] }}
@@ -64,8 +110,24 @@ updateLaunchYearFilter()
 
       <button @click="manager.selectNone()">{{ t('Unselect All') }}</button>
       <button @click="manager.selectAll()">{{ t('Select All') }}</button>
+    </div>
 
-      <div class="launch-year-filter-block">
+    <div v-else>
+      <div class="filter-block">
+        <FilterItem v-for="generic in generics" :key="generic.name" v-model="generic.filters">
+          {{generic.name }}
+          <!-- {{ t(filter.name) }} - {{ manager.count[filter.name] }}
+          <InfoPopup>
+            {{ t(filter.name + '_description') }}
+          </InfoPopup> -->
+        </FilterItem>
+      </div>
+    </div>
+
+    <input type="checkbox" @click="advancedFilters = !advancedFilters" :checked="advancedFilters">
+    <label>Advanced filters</label>
+
+    <div class="launch-year-filter-block">
         <label
           >{{
             t('FilteringLaunchYear1') +
@@ -74,7 +136,15 @@ updateLaunchYearFilter()
             slider_values[1]
           }}.
         </label>
-        <vue-slider
+        <input
+          type="checkbox"
+          id="include_without_launch_year"
+          v-model="include_sats_without_launch_year"
+          hidden/>
+        <label for="include_without_launch_year" hidden
+          >Include satellites without launch year</label>
+      </div>
+    <vue-slider
           v-model="slider_values"
           :min="FIRST_LAUNCH_YEAR"
           :max="MOST_RECENT_LAUNCH_YEAR"
@@ -84,20 +154,7 @@ updateLaunchYearFilter()
           :tooltip-placement="['bottom', 'bottom']"
           :lazy="true"
           id="launch-year-slider"
-          v-on:drag-end="updateLaunchYearFilter"
-        />
-
-        <input
-          type="checkbox"
-          id="include_without_launch_year"
-          v-model="include_sats_without_launch_year"
-          hidden
-        />
-        <label for="include_without_launch_year" hidden
-          >Include satellites without launch year</label
-        >
-      </div>
-    </div>
+          v-on:drag-end="updateLaunchYearFilter"/>
   </LeftInfoBlock>
 </template>
 
