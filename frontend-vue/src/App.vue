@@ -5,14 +5,17 @@ import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useIdle } from '@vueuse/core'
 import { IDLE_TIME } from './common/constants'
+import LoadingComponent from '@/components/LoadingComponent.vue'
 
 const { t } = useI18n()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
 
-onMounted(() => {
-  simulation.initAll(canvas.value!)
+const loading = ref(true)
+onMounted(async () => {
+  await simulation.initAll(canvas.value!)
+  loading.value = false
 })
 
 const route = useRoute()
@@ -110,11 +113,10 @@ const setEnglishLanguagePreference = () => {
       </RouterView>
 
       <template #fallback>
-        <div class="loading">
-          <p>{{ t('loading') }}</p>
-        </div>
+        <LoadingComponent></LoadingComponent>
       </template>
     </Suspense>
+    <LoadingComponent v-if="loading" />
   </div>
   <canvas ref="canvas" id="canvas"></canvas>
 </template>
@@ -213,14 +215,12 @@ header {
             "visualization": "Visualization",
             "simulation": "Simulation",
             "communication": "Communication",
-            "loading": "Loading..."
         },
         "nl": {
             "home": "Home",
             "visualization": "Visualisatie",
             "simulation": "Simulatie",
             "communication": "Communicatie",
-            "loading": "Bezig met laden..."
         },
     }
 </i18n>

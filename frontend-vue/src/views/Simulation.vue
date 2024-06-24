@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
-import SpeedButtons from '@/components/SpeedButtons.vue'
-import InfoPopup from '@/components/InfoPopup.vue'
+import { ThreeSimulation } from '@/Sim'
 import {
-  epochUpdate,
-  calculateRevolutionPerDay,
+  calculateHeight,
   calculateMeanMotionRadPerMin,
-  calculateHeight
+  calculateRevolutionPerDay,
+  epochUpdate
 } from '@/calc_helper'
+import InfoPopup from '@/components/InfoPopup.vue'
+import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
+import SpeedButtons from '@/components/SpeedButtons.vue'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import RightInfoBlock from '@/components/RightInfoBlock.vue'
 const { t } = useI18n()
 
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
+await props.simulation.waitUntilFinishedLoading()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(true)
