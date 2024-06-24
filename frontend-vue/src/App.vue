@@ -195,7 +195,9 @@ header {
 
       &:hover {
         color: $button_hover_text;
-        
+      }
+    }
+
     svg {
       path {
         fill: white;
