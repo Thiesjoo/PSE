@@ -12,6 +12,7 @@ import {
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
+import RightInfoBlock from '@/components/RightInfoBlock.vue'
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -263,7 +264,9 @@ props.simulation.addEventListener('select', (satellite) => {
         {{ t('Delete satellites') }}
       </button>
     </div>
-    <div class="orbit-sat">
+  </LeftInfoBlock>
+  <RightInfoBlock :open="true">
+    <div class="orbit-info-box">
       <h2>{{ t('Orbit Category') }}</h2>
       <br />
       <div id="categories" style="text-align: center">
@@ -288,24 +291,22 @@ props.simulation.addEventListener('select', (satellite) => {
         <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
-  </LeftInfoBlock>
-
-  <SpeedButtons :simulation="props.simulation" />
-
-  <div class="right-info-block">
-    <h2>{{ t('Satellites Created') }}</h2>
-    <div class="satellite-list">
-      <div
-        v-for="satellite in satellites"
-        :key="satellite.name"
-        :class="{ selected: current_sat === satellite }"
-        @click="change_selected(satellite as Satellite)"
-        class="satellite-item"
-      >
-        {{ satellite.name }}
+    <div class="right-info-box">
+      <h2>{{ t('Satellites Created') }}</h2>
+      <div class="satellite-list">
+        <div
+          v-for="satellite in satellites"
+          :key="satellite.name"
+          :class="{ selected: current_sat === satellite }"
+          @click="change_selected(satellite as Satellite)"
+          class="satellite-item"
+          >
+          {{ satellite.name }}
+        </div>
       </div>
     </div>
-  </div>
+  </RightInfoBlock>
+  <SpeedButtons :simulation="props.simulation" />
 </template>
 
 <style scoped lang="scss">
@@ -359,11 +360,6 @@ h3 {
   background-color: rgba(45, 155, 156, 1);
 }
 
-.orbit-sat {
-  width: 100%;
-  padding-top: 10%;
-}
-
 .orbit-info {
   right: 20%;
   height: 200px;
@@ -371,6 +367,13 @@ h3 {
   padding-top: 2%;
 }
 
+.orbit-info-box{
+  order: 2;
+  align-self: start;
+  background-color: #01023890;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 12px;
+}
 .display {
   background: #00000000;
   color: #ffffff;
@@ -412,10 +415,12 @@ h3 {
   padding: 5px;
 }
 
-.right-info-block {
-  position: absolute;
-  top: 50px;
-  right: 0; /* Position it to the right side */
+.right-info-box {
+  order: 1;
+  align-self: end;
+  // position: absolute;
+  // top: 50px;
+  // right: 0; /* Position it to the right side */
   width: 175px;
   height: 30%;
   background-color: #01023890;
