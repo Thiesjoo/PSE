@@ -43,8 +43,8 @@ const updateLaunchYearFilter = () => {
   })
 }
 
+// Initial update of the launch year filter
 updateLaunchYearFilter()
-
 
 // A 'generic' is a bundle of filters. There 
 // are six generics currently.
@@ -53,10 +53,8 @@ interface Generic {
   filters: Filter[]
 }
 
-
-const advancedFilters = ref(true);
-
-console.log('Filters: ', filters)
+// Keeps track of whether or not to keep advanced filters on
+const advancedFilters = ref(false);
 
 //NOTE: Yes this is hardcoded ugly but I'm too lazy atm
 const generics = ref([
@@ -67,7 +65,8 @@ const generics = ref([
   {
     name: 'Navigational',
     // Just everything navigation related
-    filters: [filters[17], filters[18], filters[19], filters[20], filters[21]]
+    filters: [filters[17], filters[18], 
+    filters[19], filters[20], filters[21]]
   },
   {
     name: 'Starlink',
@@ -79,23 +78,21 @@ const generics = ref([
   },
   {
     name: 'Science',
-    // In order: geodetics, engineering, NOAA, Earth Resources, ARGOSS, Planet
-    filters: [filters[23], filters[24], filters[4], filters[5], filters[8], filters[9]]
+    // In order: geodetics, engineering, NOAA,
+    // Earth Resources, ARGOSS, Planet
+    filters: [filters[23], filters[24], 
+    filters[4], filters[5], filters[8], 
+    filters[9]]
   },
   {
     name: 'Other',
     // Literally everything
-    // filters: filters
-    filters: [filters[0], filters[2], filters[6], filters[7], filters[10], filters[11], filters[13], filters[14], filters[15], filters[16], filters[22]]
+    filters: [filters[0], filters[2], filters[6],
+     filters[7], filters[10], filters[11], 
+     filters[13], filters[14], filters[15],
+      filters[16], filters[22]]
   }
 ])
-
-// Toggle a generic
-const toggleGeneric = (generic : Generic) => {
-  generic.filters.forEach(filter => {
-    filter.selected = !filter.selected
-  })
-}
 
 </script>
 
@@ -123,17 +120,17 @@ const toggleGeneric = (generic : Generic) => {
     <div v-else>
       <div class="filter-block">
         <GenericItem v-for="generic in generics" :key="generic.name" v-model="generic.filters">
-          {{generic.name }}
-          <!-- {{ t(filter.name) }} - {{ manager.count[filter.name] }}
-          <InfoPopup>
+          {{generic.name }} - {{ generic.filters.reduce((sum, filter) => sum + manager.count[filter.name], 0) }}
+          <!-- TODO: Add infoboxes like below! -->
+          <!-- <InfoPopup>
             {{ t(filter.name + '_description') }}
-          </InfoPopup> -->
+          </InfoPopup>  -->
         </GenericItem>
       </div>
     </div>
 
-    <input type="checkbox" @click="advancedFilters = !advancedFilters" :checked="advancedFilters">
-    <label>Advanced filters</label>
+    <input class="advanced-filtering-checkbox" type="checkbox" @click="advancedFilters = !advancedFilters" :checked="advancedFilters">
+    <label>Advanced filtering</label>
 
     <div class="launch-year-filter-block">
         <label
@@ -204,8 +201,13 @@ const toggleGeneric = (generic : Generic) => {
   }
 }
 
+.advanced-filtering-checkbox {
+  margin-right: 5px;
+}
+
 .launch-year-filter-block {
-  margin-bottom: 30px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 #include_without_launch_year {
