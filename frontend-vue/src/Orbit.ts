@@ -17,6 +17,8 @@ export class Orbit {
   private lastUpdate = new Date()
   private numOfUpdates = 0
   private upcoming: boolean
+  private burning = false;
+  private earth_crushing = false;
 
   constructor(
     sat: Satellite,
@@ -63,6 +65,7 @@ export class Orbit {
     this.line.geometry.attributes.position.needsUpdate = true
     console.log(this.linePoints)
     this.lastUpdate = new Date(+this.time.time)
+    this.earthCrushCheck()
   }
 
   updateLine(globe: ThreeGlobe) {
@@ -91,6 +94,7 @@ export class Orbit {
         this.line.geometry.attributes.position.needsUpdate = true
         this.numOfUpdates++
       }
+
     } else {
       const satPositions = this.satellite.realPosition
       if (!satPositions) return
@@ -115,6 +119,25 @@ export class Orbit {
 
       this.lineGeometry.setDrawRange(0, this.lineCounter / 3)
       this.line.geometry.attributes.position.needsUpdate = true
+    }
+  }
+
+  // Checks if orbit is too low in atmosphere or hits the ground
+  private earthCrushCheck(){
+    console.log("Checking")
+    // itererate through all orbit points
+    for (const point of this.linePoints){
+      const distance = Math.sqrt((point.x)**2 + (point.y)**2 + (point.z)**2) * EARTH_RADIUS_KM
+      if (distance < EARTH_RADIUS_KM) {
+        this.burning = true;
+        console.log("coordinates x, y ,z: ", point.x, point.y, point.z)
+        console.log("BURNING distance: ", distance)
+        if (point.y < EARTH_RADIUS_KM){
+          this.earth_crushing = true;
+          console.log("EARTH CRUSHING distance: ", distance * EARTH_RADIUS_KM)
+          break;
+        }
+      }
     }
   }
 
