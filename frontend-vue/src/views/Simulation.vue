@@ -204,6 +204,15 @@ props.simulation.addEventListener('select', (satellite) => {
 </script>
 
 <template>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
   <LeftInfoBlock :open="true" class="container">
     <br />
     <h2>{{ t('Simulation Variables') }}</h2>
@@ -258,10 +267,12 @@ props.simulation.addEventListener('select', (satellite) => {
     <br />
     <div class="button-box">
       <button class="add-del-button" @click="add = 1" style="text-align: center">
-        {{ t('Add satellite') }}
+        <i class="fa-solid fa-plus"></i>
+        <!-- {{ t('Add satellite') }} -->
       </button>
       <button class="add-del-button" @click="remove = 1" style="text-align: center">
-        {{ t('Delete satellites') }}
+        <i class="fa-regular fa-trash-can"></i>
+        <!-- {{ t('Delete satellites') }} -->
       </button>
     </div>
   </LeftInfoBlock>
@@ -351,7 +362,7 @@ h3 {
 .add-del-button {
   margin: 0 5px;
   border: none;
-  font-size: medium;
+  font-size: 35px;
   border-radius: 0.5em;
   padding: 0.5em 1em;
   color: $main_text;
