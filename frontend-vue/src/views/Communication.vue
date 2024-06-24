@@ -266,23 +266,26 @@ function findPath() {
 
     font-family: 'Tomorrow';
     // text-align: center;
-    position: fixed;
+    position: absolute;
+    width: 90%;
     top: 0;
   }
 
   .subtitel {
     font-size: 1.5em;
     margin: 0.5em;
-    position: fixed;
+    position: absolute;
+    width: 90%;
   }
 
   .description {
     font-size: 1.4em;
     margin: 0.5em;
     margin-bottom: 3em;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     text-align: center;
+    width: 90%;
   }
 
   .coords {
