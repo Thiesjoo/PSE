@@ -53,8 +53,8 @@ const setEnglishLanguagePreference = () => {
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           viewBox="0 0 24 24"
-          width="24px"
-          height="24px"
+          width="50px"
+          height="50px"
         >
           <g id="Rounded">
             <circle cx="12" cy="3" r="1" />
