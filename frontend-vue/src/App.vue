@@ -12,8 +12,10 @@ const { t } = useI18n()
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
 
-onMounted(() => {
-  simulation.initAll(canvas.value!)
+const loading = ref(true)
+onMounted(async () => {
+  await simulation.initAll(canvas.value!)
+  loading.value = false
 })
 
 const route = useRoute()
@@ -91,6 +93,7 @@ const setEnglishLanguagePreference = () => {
         <LoadingComponent></LoadingComponent>
       </template>
     </Suspense>
+    <LoadingComponent v-if="loading" />
   </div>
   <canvas ref="canvas" id="canvas"></canvas>
 </template>
