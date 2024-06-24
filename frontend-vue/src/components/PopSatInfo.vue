@@ -216,7 +216,7 @@ onUnmounted(() => {
         "Altitude_description": "How high is the satellite.",
         "Speed": "Speed",
         "Speed_description": "How fast the satellite is.",
-        "Last epoch": "Last epoch",
+        "Last epoch": "Last updated",
         "Last epoch_description": "Last time the satellite published the orbit it currently is in.",
 
         "US": "United States",
@@ -319,7 +319,7 @@ onUnmounted(() => {
         "Altitude_description": "Hoe hoog is de satelliet.",
         "Speed": "Snelheid",
         "Speed_description": "Hoe snel is de satelliet.",
-        "Last epoch": "Laatste epoch",
+        "Last epoch": "Laatste update",
         "Last epoch_description": "Laatste keer dat de satelliet de huidige baan publiceerde.",
 
         "US": "Verenigde Staten",
