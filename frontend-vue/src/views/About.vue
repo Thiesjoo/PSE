@@ -6,6 +6,7 @@ const { t } = useI18n()
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
+props.simulation.moveRight()
 </script>
 
 <template>
@@ -15,21 +16,25 @@ const props = defineProps<{
   </div>
 
   <div class="container">
-    <!-- Logo -->
-    <img src="../assets/university-of-amsterdam.png" alt="UvA logo" width="350" height="200" />
+    Dit is gemaakt voor het vak Project software engineering aan de Universiteit van Amsterdam.
     <h2>{{ t('Team') }}</h2>
-    <!-- List -->
-    <ul>
-      <li>Gosia Gniadek</li>
-      <li>Mabel Traube</li>
-      <li>Mike Schouten</li>
-      <li>Sasha van der Linden</li>
-      <li>Thies Nieborg</li>
-      <li>Thomas Linssen</li>
-      <li>Thomas van Lieshout</li>
-      <li>Wike Duivenvoorden</li>
-    </ul>
+    <div class="lists">
+      <ul>
+        <li>Thies Nieborg</li>
+        <li>Thomas Linssen</li>
+        <li>Thomas van Lieshout</li>
+        <li>Mike Schouten</li>
+      </ul>
+      <ul>
+        <li>Gosia Gniadek</li>
+        <li>Mabel Traube</li>
+        <li>Sasha van der Linden</li>
+        <li>Wike Duivenvoorden</li>
+      </ul>
+    </div>
   </div>
+  <!-- Logo -->
+  <img src="../assets/university-of-amsterdam.png" alt="UvA logo" width="350" height="200" />
 </template>
 
 <style scoped>
@@ -47,13 +52,21 @@ const props = defineProps<{
   /* Move to left of screen */
   position: fixed;
   left: 2vw;
-  top: 20vh;
+  top: 30vh;
 
   display: flex;
   flex-direction: column;
 
   color: white;
   font-family: 'Tomorrow';
+
+  .lists {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-radius: 20pt;
+    background-color: rgba(51, 75, 75, 0.278);
+  }
 
   img {
     margin: 0;
@@ -74,6 +87,7 @@ const props = defineProps<{
       /* margin: 0.5em; */
     }
   }
+  
 }
 </style>
 <i18n>
