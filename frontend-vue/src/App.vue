@@ -67,13 +67,13 @@ const setEnglishLanguagePreference = () => {
         </svg>
       </RouterLink>
       <RouterLink to="/visualization"
-        ><img src="@/assets/visualisation_icon.png" alt="Satellites" width="40" height="40"
+        ><img src="@/assets/visualisation_icon.png" alt="Satellites" width="50" height="50"
       /></RouterLink>
       <RouterLink to="/simulation"
-        ><img src="@/assets/simulation_sharp.png" alt="Launch" width="40" height="40"
+        ><img src="@/assets/simulation_sharp.png" alt="Launch" width="50" height="50"
       /></RouterLink>
       <RouterLink to="/communication">
-        <img src="@/assets/communication_icon.png" alt="Communication" width="40" height="40"
+        <img src="@/assets/communication_icon.png" alt="Communication" width="50" height="50"
       /></RouterLink>
     </nav>
   </header>
