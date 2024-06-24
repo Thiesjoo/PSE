@@ -26,7 +26,7 @@ props.simulation.moveRight()
         <div class="box">
           <h2>{{ t('All satellites') }}</h2>
           <div class="icon">
-            <img src="../assets/visualisation1.png" alt="Satellites" width="100" height="100" />
+            <img src="../assets/visualisation_icon.PNG" alt="Satellites" width="100" height="100" />
           </div>
         </div>
       </RouterLink>
@@ -43,7 +43,12 @@ props.simulation.moveRight()
         <div class="box">
           <h2>{{ t('Communication') }}</h2>
           <div class="icon">
-            <img src="../assets/communication.png" alt="Communication" width="100" height="100" />
+            <img
+              src="../assets/communication_icon.PNG"
+              alt="Communication"
+              width="100"
+              height="100"
+            />
           </div>
         </div>
       </RouterLink>
