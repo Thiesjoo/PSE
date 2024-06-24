@@ -68,14 +68,7 @@ onUnmounted(() => {
   <PopFrame :open="true" class="popup">
     <div class="top">
       <h1>{{ currentSelectedSatellite.name }}</h1>
-
-      <img
-        :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
-        width="100"
-        :alt="`${currentSelectedSatellite.country} flag`"
-        v-if="!currentSelectedSatellite.country.includes('/')"
-      />
-      <div v-else>
+      <div v-if="currentSelectedSatellite.country.includes('/')">
         <img
           :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[0]}.svg`"
           width="100"
@@ -86,6 +79,28 @@ onUnmounted(() => {
           width="100"
           :alt="`${currentSelectedSatellite.country.split('/')[1]} flag`"
         />
+      </div>
+      <div v-else-if="currentSelectedSatellite.country === 'UNK'">
+        <img
+          :src="`https://upload.wikimedia.org/wikipedia/commons/2/2a/Flag_of_None.svg`"
+          width="100"
+          :alt="`Unknown flag`"
+        />
+      </div>
+      <div v-else-if="currentSelectedSatellite.country === 'INT'">
+        <img
+          :src="`https://upload.wikimedia.org/wikipedia/commons/e/ef/International_Flag_of_Planet_Earth.svg`"
+          width="100"
+          :alt="`International flag`"
+        />
+      </div>
+      <div v-else>
+        <img
+          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
+          width="100"
+          :alt="`${currentSelectedSatellite.country} flag`"
+        />
+
       </div>
       <p id="SatelliteCountry">{{ t(currentSelectedSatellite.country) }}</p>
       <p id="norad">
