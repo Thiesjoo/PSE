@@ -67,6 +67,7 @@ const distance = computed(() => {
 function tabInfoUpdate(tab: number) {
   all.hideConnections = true
   all.setPath([])
+  graph.calculatePath = false;
   clearInterval(intervalID)
 
   if (tab === tabForConnections) {
@@ -88,7 +89,11 @@ function tabInfoUpdate(tab: number) {
     secondCoords.value = undefined
   } else if (tab === tabForPath) {
     findPath()
-    // intervalID = setInterval(findPath, 1000);
+    if (firstCoords.value && secondCoords.value) {
+      graph.setStartPos(firstCoords.value);
+      graph.setGoalPos(secondCoords.value);
+      graph.calculatePath = true;
+    }
   }
 }
 

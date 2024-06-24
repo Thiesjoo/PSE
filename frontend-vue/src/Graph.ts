@@ -20,6 +20,10 @@ export class Graph {
   private finished = true
   private worker: Worker[]
   private received = 0
+  public goalPos: GeoCoords | null = null;
+  public startPos: GeoCoords | null = null;
+  public calculatePath: boolean = false;
+  public path: Node[] = [];
 
   constructor() {
     this.worker = Array.from({ length: AMT_OF_WORKERS }, () => new AdjListWorker())
@@ -95,6 +99,13 @@ export class Graph {
     if (this.finished) {
       this.adjList = this.tmpAdjList
       this.received = 0
+      if (this.calculatePath && this.goalPos && this.startPos) {
+        const firstSat = this.findClosestSat(this.startPos)
+        const secondSat = this.findClosestSat(this.goalPos)
+        if (firstSat && secondSat) {
+          this.findPath(firstSat, secondSat)
+        }
+      }
       this.startCreateGraph(satellites)
       return true
     }
@@ -149,6 +160,7 @@ export class Graph {
           path.push(current)
           current = current.parent
         }
+        this.path = path;
         return path
       }
 
@@ -189,5 +201,13 @@ export class Graph {
     if (closestNode) {
       return closestNode.sat
     }
+  }
+
+  setGoalPos(coords: GeoCoords) {
+    this.goalPos = coords
+  }
+
+  setStartPos(coords: GeoCoords) {
+    this.startPos = coords
   }
 }
