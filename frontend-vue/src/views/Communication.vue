@@ -250,6 +250,7 @@ function findPath() {
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
 .tab {
   display: flex;
   flex-direction: column;
@@ -257,6 +258,7 @@ function findPath() {
   justify-content: center;
 
   margin: 0.5em;
+  color: $main_text;
 
   .titel {
     font-size: 2.3em;

@@ -22,6 +22,7 @@ const toggle = () => {
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
 .wrapper {
   position: relative;
 }
@@ -36,14 +37,14 @@ input {
   cursor: pointer;
 
   &:checked + label {
-    background-color: rgba(45, 155, 156, 0.45);
+    background-color: $list_background;
   }
 
   & + label {
     display: block;
     padding: 0.2em;
     margin: 0.2em 0;
-    border: 1px solid #ccc;
+    border: 1px solid $list_border;
     border-radius: 0.25em;
     cursor: pointer;
   }
