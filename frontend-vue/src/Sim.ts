@@ -579,6 +579,39 @@ export class ThreeSimulation {
     this.onRightSide = true
   }
 
+  moveLeft() {
+    this.controls.mouseButtons = {
+      LEFT: null,
+      MIDDLE: null,
+      RIGHT: null
+    }
+    new TWEEN.Tween(this.camera.position)
+      .to(
+        {
+          x: 0,
+          y: 0,
+          z: 500
+        },
+        500
+      )
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .start()
+    // this.camera.position.set(0, 0, 500);
+    new TWEEN.Tween(this.controls.target)
+      .to(
+        {
+          x: 200,
+          y: 0,
+          z: 0
+        },
+        500
+      )
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .start()
+    this.controls.target.set(200, 0, 0)
+    this.onRightSide = true
+  }
+
   moveCenter() {
     this.controls.mouseButtons = {
       LEFT: THREE.MOUSE.ROTATE,
