@@ -45,7 +45,7 @@ props.simulation.moveLeft()
 
   h1 {
     font-size: 10em;
-    color: white;
+    color: $main_text;
     font-family: 'Tomorrow';
   }
 }
