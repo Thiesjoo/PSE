@@ -355,14 +355,6 @@ h3 {
 }
 
 .add-del-button {
-  // appearance: none;
-  // width: 50%;
-  // padding: 5px;
-  // background-color: rgba(45, 155, 156, 0.45);
-  // border-radius: 200px;
-  // cursor: pointer;
-  // color: white;
-
   margin: 0 5px;
   border: none;
   border-radius: 0.5em;
@@ -385,7 +377,6 @@ h3 {
 }
 
 .display {
-  // background: #db090900;
   color: $main_text;
 }
 
@@ -399,7 +390,7 @@ h3 {
   width: 90%;
   height: 5px;
   background: $slider_bar;
-  // outline: #f9fdf9;
+  accent-color: $slider_button;
   opacity: 1;
   -webkit-transition: 0.2s;
   transition: opacity 0.2s;
@@ -408,7 +399,6 @@ h3 {
 .slider::-moz-range-thumb {
   width: var(--thumbRadius);
   height: var(--thumbRadius);
-  // background: #fefefe;
   cursor: pointer;
 }
 
