@@ -107,12 +107,11 @@ const intervals = [1, 10, 100, 1000]
     .active {
       background-color: $button_selected;
     }
-  }
-
-  .reset {
-    font-weight: 550;
-    color: $button_text;
-    background-color: $button_background;
+    .reset {
+      font-weight: 550;
+      color: $button_text;
+      background-color: $reset_button_background;
+    }
   }
 }
 </style>
