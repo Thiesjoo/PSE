@@ -17,6 +17,7 @@ const { t } = useI18n()
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
+await props.simulation.waitUntilFinishedLoading()
 
 const graph = new Graph()
 const all = new AllSatLinks(props.simulation.scene, graph, props.simulation)

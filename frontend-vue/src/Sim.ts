@@ -69,6 +69,8 @@ export class ThreeSimulation {
 
   private workerManager = new WorkerManager()
 
+  private finishedLoading = false
+
   // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
   initAll(canvas: HTMLCanvasElement) {
     this.initScene(canvas).then(() => {
@@ -76,6 +78,18 @@ export class ThreeSimulation {
         this.initStats()
       }
       this.initListeners()
+      this.finishedLoading = true
+    })
+  }
+
+  public waitUntilFinishedLoading() {
+    return new Promise<void>((resolve) => {
+      const interval = setInterval(() => {
+        if (this.finishedLoading) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 100)
     })
   }
 
