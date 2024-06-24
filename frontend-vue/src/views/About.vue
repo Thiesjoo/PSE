@@ -6,7 +6,7 @@ const { t } = useI18n()
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
-props.simulation.moveRight()
+props.simulation.moveLeft()
 </script>
 
 <template>
