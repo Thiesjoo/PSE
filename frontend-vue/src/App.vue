@@ -48,10 +48,33 @@ const setEnglishLanguagePreference = () => {
 <template>
   <header v-if="route.path !== '/'">
     <nav>
-      <RouterLink to="/"> {{ t('home') }} </RouterLink>
-      <RouterLink to="/visualization">{{ t('visualization') }}</RouterLink>
-      <RouterLink to="/simulation">{{ t('simulation') }}</RouterLink>
-      <RouterLink to="/communication">{{ t('communication') }}</RouterLink>
+      <RouterLink to="/"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 0 24 24"
+          width="50px"
+          height="50px"
+        >
+          <g id="Rounded">
+            <circle cx="12" cy="3" r="1" />
+            <circle cx="22.5" cy="11.5" r="0.5" />
+            <circle cx="1.5" cy="11.5" r="0.5" />
+            <path
+              d="M12.71,2.296L12,3.1l-0.71-0.804L1.203,11.098L1.5,12H4v8c0,0.552,0.448,1,1,1h4c0.552,0,1-0.448,1-1v-6h4v6c0,0.552,0.448,1,1,1h4c0.552,0,1-0.448,1-1v-8h2.5l0.297-0.902L12.71,2.296z"
+            />
+          </g>
+        </svg>
+      </RouterLink>
+      <RouterLink to="/visualization"
+        ><img src="@/assets/visualisation_icon.png" alt="Satellites" width="50" height="50"
+      /></RouterLink>
+      <RouterLink to="/simulation"
+        ><img src="@/assets/simulation_sharp.png" alt="Launch" width="50" height="50"
+      /></RouterLink>
+      <RouterLink to="/communication">
+        <img src="@/assets/communication_icon.png" alt="Communication" width="50" height="50"
+      /></RouterLink>
     </nav>
   </header>
 
@@ -172,6 +195,10 @@ header {
 
       &:hover {
         color: $button_hover_text;
+        
+    svg {
+      path {
+        fill: white;
       }
     }
   }
