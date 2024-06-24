@@ -11,6 +11,7 @@ import MultipleTabs from '@/components/MultipleTabs.vue'
 import { Ref, computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NUM_DIGITS } from '@/common/constants'
+import { watch } from 'vue'
 
 const { t } = useI18n()
 
@@ -88,7 +89,7 @@ function tabInfoUpdate(tab: number) {
     }
     secondCoords.value = undefined
   } else if (tab === tabForPath) {
-    findPath()
+    // findPath()
     if (firstCoords.value && secondCoords.value) {
       graph.setStartPos(firstCoords.value);
       graph.setGoalPos(secondCoords.value);
@@ -243,7 +244,7 @@ function findPath() {
             }}
           </h2>
           <p class="description">
-            {{ t('Your message took') }} {{ currentPath.length - 1 }} {{ t('hops!') }}
+            {{ t('Your message took') }} {{ graph.path.length }} {{ t('hops!') }}
             <br />
             {{ t('And your message flew') }} {{ distance }} {{ t('kilometers.') }}
           </p>
