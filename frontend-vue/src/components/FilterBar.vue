@@ -58,14 +58,16 @@ const advancedFilters = ref(true);
 
 console.log('Filters: ', filters)
 
+//NOTE: Yes this is hardcoded ugly but I'm too lazy atm
 const generics = ref([
   {
     name: 'weather',
-    filters: filters
+    filters: [filters[3]]
   },
   {
-    name: 'GPS',
-    filters: []
+    name: 'Navigational',
+    // Just everything navigation related
+    filters: [filters[17], filters[18], filters[19], filters[20], filters[21]]
   },
   {
     name: 'Starlink',
@@ -73,15 +75,18 @@ const generics = ref([
   },
   {
     name: 'Space Stations',
-    filters: []
+    filters: [filters[1]]
   },
   {
     name: 'Science',
-    filters: []
+    // In order: geodetics, engineering, NOAA, Earth Resources, ARGOSS, Planet
+    filters: [filters[23], filters[24], filters[4], filters[5], filters[8], filters[9]]
   },
   {
     name: 'Other',
-    filters: []
+    // Literally everything
+    // filters: filters
+    filters: [filters[0], filters[2], filters[6], filters[7], filters[10], filters[11], filters[13], filters[14], filters[15], filters[16], filters[22]]
   }
 ])
 
@@ -90,10 +95,6 @@ const toggleGeneric = (generic : Generic) => {
   generic.filters.forEach(filter => {
     filter.selected = !filter.selected
   })
-}
-
-const printFilters = () => {
-  console.log(filters)
 }
 
 </script>
@@ -130,7 +131,6 @@ const printFilters = () => {
         </GenericItem>
       </div>
     </div>
-    <button @click="printFilters">Print filters</button>
 
     <input type="checkbox" @click="advancedFilters = !advancedFilters" :checked="advancedFilters">
     <label>Advanced filters</label>
