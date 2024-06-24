@@ -2,6 +2,7 @@
 import { ThreeSimulation } from '@/Sim'
 import { Filter, SatManager } from '@/common/sat-manager'
 import FilterItem from './FilterItem.vue'
+import GenericItem from './GenericItem.vue'
 import InfoPopup from './InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
@@ -55,10 +56,12 @@ interface Generic {
 
 const advancedFilters = ref(true);
 
-const generics = [
+console.log('Filters: ', filters)
+
+const generics = ref([
   {
     name: 'weather',
-    filters: []
+    filters: filters
   },
   {
     name: 'GPS',
@@ -66,7 +69,7 @@ const generics = [
   },
   {
     name: 'Starlink',
-    filters: []
+    filters: [filters[12]]
   },
   {
     name: 'Space Stations',
@@ -80,13 +83,17 @@ const generics = [
     name: 'Other',
     filters: []
   }
-]
+])
 
 // Toggle a generic
 const toggleGeneric = (generic : Generic) => {
   generic.filters.forEach(filter => {
     filter.selected = !filter.selected
   })
+}
+
+const printFilters = () => {
+  console.log(filters)
 }
 
 </script>
@@ -114,15 +121,16 @@ const toggleGeneric = (generic : Generic) => {
 
     <div v-else>
       <div class="filter-block">
-        <FilterItem v-for="generic in generics" :key="generic.name" v-model="generic.filters">
+        <GenericItem v-for="generic in generics" :key="generic.name" v-model="generic.filters">
           {{generic.name }}
           <!-- {{ t(filter.name) }} - {{ manager.count[filter.name] }}
           <InfoPopup>
             {{ t(filter.name + '_description') }}
           </InfoPopup> -->
-        </FilterItem>
+        </GenericItem>
       </div>
     </div>
+    <button @click="printFilters">Print filters</button>
 
     <input type="checkbox" @click="advancedFilters = !advancedFilters" :checked="advancedFilters">
     <label>Advanced filters</label>

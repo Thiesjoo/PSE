@@ -1,22 +1,29 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, computed } from 'vue'
+import { Filter } from '@/common/sat-manager'
 
-const props = defineProps<{
-  modelValue: boolean
-}>()
+const props = defineProps<{modelValue: Filter[]}>()
 
 const emits = defineEmits(['update:modelValue'])
 
 const toggle = () => {
-  emits('update:modelValue', !props.modelValue)
+  console.log('UPDATING FILTERS')
+    // const updatedFilters = props.modelValue.map(filter => ({
+    //   ...filter,
+    //   selected: !filter.selected
+    // }))
+    props.modelValue.forEach(filter => {
+      filter.selected = !filter.selected
+    })
+    emits('update:modelValue', props.modelValue)
 }
 </script>
 
 <template>
   <div class="wrapper">
-    <input type="checkbox" :checked="props.modelValue" @change="toggle" />
+    <input type="checkbox" :checked="props.modelValue.every(filter => filter.selected)" @change="toggle" />
     <label>
-      <slot> </slot>
+      <slot></slot>
     </label>
   </div>
 </template>
