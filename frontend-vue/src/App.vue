@@ -7,7 +7,7 @@ import { useIdle } from '@vueuse/core'
 import { IDLE_TIME } from './common/constants'
 import LoadingComponent from '@/components/LoadingComponent.vue'
 
-const { t } = useI18n()
+const { locale } = useI18n()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
@@ -70,7 +70,12 @@ const setEnglishLanguagePreference = () => {
     </nav>
   </header>
 
-  <div class="flags">
+  <div
+    class="flags"
+    :class="{
+      bigger: route.path === '/'
+    }"
+  >
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/NL.svg"
       alt="Dutch flag"
@@ -80,7 +85,7 @@ const setEnglishLanguagePreference = () => {
           setDutchLanguagePreference()
         }
       "
-      :class="{ active: $i18n.locale === 'nl' }"
+      :class="{ active: locale === 'nl' }"
     />
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg"
@@ -91,7 +96,7 @@ const setEnglishLanguagePreference = () => {
           setEnglishLanguagePreference()
         }
       "
-      :class="{ active: $i18n.locale === 'en' || $i18n.locale === 'en-US' }"
+      :class="{ active: locale === 'en' || locale === 'en-US' }"
     />
   </div>
 
@@ -137,6 +142,13 @@ canvas {
 .content {
   z-index: 101;
   margin-top: 3em;
+}
+
+.bigger {
+  img {
+    width: 5em !important;
+    margin: 0.5em !important;
+  }
 }
 
 .flags {
