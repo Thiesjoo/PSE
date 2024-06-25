@@ -35,7 +35,7 @@ props.simulation.moveRight()
           <h2>{{ t('Create satellites') }}</h2>
           <br />
           <div class="icon">
-            <img src="../assets/simulation_sharp.png" alt="Launch" width="100" height="100" />
+            <img src="../assets/simulation_icon.png" alt="Launch" width="100" height="100" />
           </div>
         </div>
       </RouterLink>
