@@ -328,6 +328,11 @@ export class ThreeSimulation {
     document
       .getElementById('canvas')!
       .addEventListener('mousedown', this.onMouseDown.bind(this), false)
+
+    document.getElementById('canvas')!.addEventListener('touchend', this.onTouchEnd.bind(this), false)
+    document
+      .getElementById('canvas')!
+      .addEventListener('touchstart', this.onTouchStart.bind(this), false)
   }
 
   private onWindowResize() {
@@ -375,9 +380,56 @@ export class ThreeSimulation {
     }
   }
 
-  private onClick(event: MouseEvent) {
-    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
-    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+  private onTouchStart(event: TouchEvent) {
+    this.lastPointer.x = this.pointer.x
+    this.lastPointer.y = this.pointer.y
+    this.escapedFollow = true
+  }
+
+  private onTouchEnd(event: TouchEvent) {
+    this.pointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
+    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
+    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
+    if (xDif > 0.00001 || yDif > 0.00001) return
+
+    this.raycaster.setFromCamera(this.pointer, this.camera)
+    const intersects = this.raycaster.intersectObjects([
+      this.globe,
+      this.mesh.sat,
+      this.mesh.satClick
+    ])
+
+    if (intersects.length > 0) {
+      if ('satellite' in intersects[0].object.userData && this.satClicking) {
+        this.deselect()
+        const meshID = intersects[0].instanceId
+        if (meshID === undefined) return
+        const satData = this.getSatelliteByMeshID(meshID)
+        if (!satData) return
+        this.currentlySelected = satData
+
+        satData.setColor(SAT_COLOR_SELECTED, meshID, this.mesh)
+
+        this.eventListeners['select']?.forEach((cb) => cb(satData))
+        this.escapedFollow = false
+      } else if (
+        intersects[0].object.position.x === 0 &&
+        intersects[0].object.position.y === 0 &&
+        intersects[0].object.position.z === 0
+      ) {
+        this.deselect()
+        const { lat, lng, altitude } = this.globe.toGeoCoords(intersects[0].point)
+        this.eventListeners['earthClicked']?.forEach((cb) => cb({ lat, lng, alt: altitude }))
+      }
+    } else {
+      this.deselect()
+    }
+    this.tweeningStatus = 0
+  }
+
+
+  private onClick() {
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
     const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
     if (xDif > 0.00001 || yDif > 0.00001) return
