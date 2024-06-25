@@ -83,7 +83,7 @@ export class AllSatLinks {
     this.allSatLinks = []
   }
 
-  setPath(path: { xyzPosition: { x: number; y: number; z: number } }[]) {    
+  setPath(path: { xyzPosition: { x: number; y: number; z: number } }[]) {
     this.path = path
   }
 
@@ -124,10 +124,8 @@ export class AllSatLinks {
                 this.sim.globe.getGlobeRadius()
               )
             }
-          ]);
+          ])
         }
-
-        
       })
     }
 

@@ -20,10 +20,10 @@ export class Graph {
   private finished = true
   private worker: Worker[]
   private received = 0
-  public goalPos: GeoCoords | null = null;
-  public startPos: GeoCoords | null = null;
-  public calculatePath: boolean = false;
-  public path: Reactive<Node[]> = reactive([]);
+  public goalPos: GeoCoords | null = null
+  public startPos: GeoCoords | null = null
+  public calculatePath: boolean = false
+  public path: Reactive<Node[]> = reactive([])
 
   constructor() {
     this.worker = Array.from({ length: AMT_OF_WORKERS }, () => new AdjListWorker())
@@ -159,9 +159,9 @@ export class Graph {
           path.push(current)
           current = current.parent
         }
-        this.path.length = 0;
+        this.path.length = 0
         this.path.push(...path.reverse())
-        
+
         return path
       }
 
