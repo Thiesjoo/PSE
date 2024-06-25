@@ -17,7 +17,7 @@ const props = defineProps<{
   display: flex;
   flex-flow: column nowrap;
 
-  min-width: 25vw;
+  min-width: 20vw;
   border: 8px solid $pop_up_border;
 
   border-radius: 10pt;
