@@ -130,7 +130,7 @@ const generics = ref([
 
     <div v-else class="flex">
       <div class="filter-block">
-        <GenericItem v-for="(generic, index) in generics" :key="generic.name" v-model="generic.filters" :align-left="index % 2 != 0" :index="index" :icon="generic.icon">
+        <GenericItem v-for="(generic, index) in generics" :key="generic.name" v-model="generic.filters" :align-left="index % 2 != 0" :index="index" :icon="generic.icon" :name="generic.name">
           <!-- {{ generic.name }} -
           {{ generic.filters.reduce((sum, filter) => sum + manager.count[filter.name], 0) }} -->
           <!-- TODO: Add infoboxes like below! -->

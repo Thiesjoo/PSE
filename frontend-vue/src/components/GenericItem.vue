@@ -2,7 +2,7 @@
 import { defineProps, defineEmits, computed } from 'vue'
 import { Filter } from '@/common/sat-manager'
 
-const props = defineProps<{ alignLeft: boolean, modelValue: Filter[], index: number, icon: string}>()
+const props = defineProps<{ alignLeft: boolean, modelValue: Filter[], index: number, icon: string, name: string}>()
 
 const emits = defineEmits(['update:modelValue'])
 
@@ -17,7 +17,7 @@ const toggle = () => {
 
 <template>
   <div class="wrapper" :style="alignLeft ? {justifyContent: 'left'} : {justifyContent: 'right'}">
-    <p v-if="!alignLeft">Category name</p>
+    <p v-if="!alignLeft" class="cat-name">{{ name }}</p>
     <input
         type="checkbox"
         :checked="props.modelValue.every((filter) => filter.selected)"
@@ -25,9 +25,9 @@ const toggle = () => {
         :id="'label' + index"
         />
     <label :for="'label' + index">
-      <img src="/kiddo-button.png" width="80" height="80">
+      <img src="/kiddo-button.png" width="65" height="65">
     </label>
-    <p v-if="alignLeft">Category name</p>
+    <p v-if="alignLeft" class="cat-name">{{ name }}</p>
   </div>
 </template>
 
@@ -35,11 +35,9 @@ const toggle = () => {
 
 .wrapper {
   display: flex;
-  border: 1px solid purple;
   align-items: center;
 
   label {
-    border: 1px solid red;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -61,6 +59,13 @@ input {
   &:checked + label img {
       opacity: 100%; // Show the image when the checkbox is checked
     }
+}
+
+.cat-name {
+  font-size: large;
+  font-family: 'Tomorrow';
+  margin-left: 10px;
+  margin-right: 7px;
 }
 
 // .wrapper {
