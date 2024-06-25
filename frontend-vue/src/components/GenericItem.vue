@@ -2,7 +2,13 @@
 import { defineProps, defineEmits, computed } from 'vue'
 import { Filter } from '@/common/sat-manager'
 
-const props = defineProps<{ alignLeft: boolean, modelValue: Filter[], index: number, icon: string, name: string}>()
+const props = defineProps<{
+  alignLeft: boolean
+  modelValue: Filter[]
+  index: number
+  icon: string
+  name: string
+}>()
 
 const emits = defineEmits(['update:modelValue'])
 
@@ -12,27 +18,28 @@ const toggle = () => {
   })
   emits('update:modelValue', props.modelValue)
 }
-
 </script>
 
 <template>
-  <div class="wrapper" :style="alignLeft ? {justifyContent: 'left'} : {justifyContent: 'right'}">
+  <div
+    class="wrapper"
+    :style="alignLeft ? { justifyContent: 'left' } : { justifyContent: 'right' }"
+  >
     <p v-if="!alignLeft" class="cat-name">{{ name }}</p>
     <input
-        type="checkbox"
-        :checked="props.modelValue.every((filter) => filter.selected)"
-        @change="toggle"
-        :id="'label' + index"
-        />
+      type="checkbox"
+      :checked="props.modelValue.every((filter) => filter.selected)"
+      @change="toggle"
+      :id="'label' + index"
+    />
     <label :for="'label' + index">
-      <img src="/kiddo-button.png" width="65" height="65">
+      <img src="/kiddo-button.png" width="65" height="65" />
     </label>
     <p v-if="alignLeft" class="cat-name">{{ name }}</p>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .wrapper {
   display: flex;
   align-items: center;
@@ -54,11 +61,11 @@ input {
   padding: 0;
   width: 0;
   height: 0;
-  opacity: 0;  
+  opacity: 0;
 
   &:checked + label img {
-      opacity: 100%; // Show the image when the checkbox is checked
-    }
+    opacity: 100%; // Show the image when the checkbox is checked
+  }
 }
 
 .cat-name {
