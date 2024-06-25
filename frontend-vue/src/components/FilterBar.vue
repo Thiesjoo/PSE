@@ -159,7 +159,7 @@ const generics = ref([
       :checked="advancedFilters"
       id="advanced-filter-checkbox"
     />
-    <label for="advanced-filter-checkbox">Advanced filtering</label>
+    <label for="advanced-filter-checkbox" id="advanced-filtering-label">Advanced filtering</label>
 
     <div class="launch-year-filter-block">
       <label
@@ -416,6 +416,10 @@ $labelFontSize: 14px !default;
 .advanced-filtering-checkbox {
   margin-top: 20px;
   margin-right: 5px;
+}
+
+.advanced-filtering-label {
+  font-family: 'Tomorrow';
 }
 
 .launch-year-filter-block {
