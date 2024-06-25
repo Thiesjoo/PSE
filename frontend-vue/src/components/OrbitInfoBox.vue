@@ -62,23 +62,23 @@ const props = defineProps<{
         <h4>RAAN determines at what longitude satellite crosses the equator.</h4>
         <div class="orbit-info" v-show="picked === 'RAAN0'">
           <h4>{{ t('RAAN') }}: 0 &deg</h4>
-          <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
+          <img src="/raan0.png" alt="LEO Image" width="300" />
         </div>
         <div class="orbit-info" v-show="picked === 'RAAN90'">
           <h4>{{ t('RAAN') }}: &lt 90 &deg</h4>
-          <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
+          <img src="/raan90.png" alt="MEO Image" width="300" />
         </div>
         <div class="orbit-info" v-show="picked === 'RAAN180'">
           <h4>{{ t('RAAN') }}: 90-180 &deg</h4>
-          <img src="/Other-highlight.png" alt="Other Image" width="300" />
+          <img src="/raan180.png" alt="Other Image" width="300" />
         </div>
         <div class="orbit-info" v-show="picked === 'RAAN270'">
           <h4>{{ t('RAAN') }}: 180-270 &deg</h4>
-          <img src="/Other-highlight.png" alt="Other Image" width="300" />
+          <img src="/raan270.png" alt="Other Image" width="300" />
         </div>
         <div class="orbit-info" v-show="picked === 'RAAN360'">
           <h4>{{ t('RAAN') }}: 270-360 &deg</h4>
-          <img src="/Other-highlight.png" alt="Other Image" width="300" />
+          <img src="/raan360.png" alt="Other Image" width="300" />
         </div>
       </div>
       <!-- Information box ECCENTRICITY -->
