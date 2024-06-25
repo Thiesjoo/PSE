@@ -316,6 +316,7 @@ props.simulation.addEventListener('select', (satellite) => {
 
 <style scoped lang="scss">
 @import '@/common/colors.scss';
+@import '@/common/scrollbar.scss';
 .container {
   color: $main_text;
 }
@@ -448,7 +449,7 @@ h3 {
 
 .satellite-list {
   overflow-y: auto; /* Enable vertical scroll if needed */
-  max-height: 78%; /* Limit max height to parent height */
+  max-height: 65%; /* Limit max height to parent height */
 }
 
 .satellite-item {
