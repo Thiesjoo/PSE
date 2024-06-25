@@ -371,7 +371,6 @@ export class ThreeSimulation {
     this.renderer.setSize(window.innerWidth, window.innerHeight)
   }
 
-
   private onPointerMove(event: PointerEvent) {
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
