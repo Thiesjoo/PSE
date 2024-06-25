@@ -53,28 +53,29 @@ props.simulation.moveRight()
         </div>
       </RouterLink>
     </div>
-  </div>
 
-  <div class="scale-disclaimer-container">
-    <img class="disclaimer-icon" src="/warning-symbol.svg" width="30px" height="30px" />
-    <p class="scale-disclaimer">
-      The scale visualizations in this app are not an accurate reflection of reality.
-    </p>
-  </div>
-
-  <div class="about">
+    <div class="scale-disclaimer-container">
+      <img class="disclaimer-icon" src="/warning-symbol.svg" width="30px" height="30px" />
+      <p class="scale-disclaimer">
+        The scale visualizations in this app are not an accurate reflection of reality.
+      </p>
+    </div>
     <RouterLink to="/about">
-      <h2>About</h2>
+      <div class="about">
+        <h2>{{ t('About') }}</h2>
+      </div>
     </RouterLink>
   </div>
 </template>
 
 <style scoped lang="scss">
 @import '@/common/colors.scss';
+
 .home {
   display: flex;
   flex-direction: column;
   align-items: left;
+  user-select: none;
 }
 
 .header {
@@ -94,6 +95,8 @@ props.simulation.moveRight()
 
   a {
     text-decoration: none;
+    margin-top: 1em;
+    margin-bottom: 1em;
   }
 
   .box {
@@ -106,10 +109,8 @@ props.simulation.moveRight()
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
-    margin-top: 1em;
-    margin-bottom: 1em;
+    justify-content: space-around;
+    margin: 0;
 
     h2 {
       font-size: 3em;
@@ -119,11 +120,13 @@ props.simulation.moveRight()
 
     .icon {
       margin: 0.1em;
+      margin-left: auto;
     }
   }
 }
 
 .about {
+  color: $main_text;
   position: fixed;
   bottom: 0;
   right: 0;
@@ -162,12 +165,14 @@ props.simulation.moveRight()
 <i18n>
     {
         "en": {
+            "About": "About",
             "Satellite Radar": "Satellite Radar",
             "All satellites": "All satellites",
             "Make your own satellite": "Make your own satellite",
             "Communication": "Communication"
         },
         "nl": {
+            "About": "Over ons",
             "Satellite Radar": "Satelliet Radar",
             "All satellites": "Alle satellieten",
             "Make your own satellite": "Maak je eigen satelliet",
