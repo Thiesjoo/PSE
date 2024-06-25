@@ -294,43 +294,43 @@ props.simulation.addEventListener('select', (satellite) => {
       <h2>{{ t('Orbit Category') }}</h2>
       <div class="orbit-info" v-show="picked === 'LEO' ">
         <h3>{{ t('Low Earth Orbit') }}</h3>
-        <p>{{ t('Height') }}: 160-2000 km</p>
+        <h4>{{ t('Height') }}: 160-2000 km</h4>
         <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'MEO' ">
         <h3>{{ t('Medium Earth Orbit') }}</h3>
-        <p>{{ t('Height') }}: 2000-36000 km</p>
+        <h4>{{ t('Height') }}: 2000-36000 km</h4>
         <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'GEO'">
         <h3>{{ t('Other') }}</h3>
-        <p>{{ t('Height') }}: >36000 km</p>
+        <h4>{{ t('Height') }}: >36000 km</h4>
         <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
     <!-- Information box Eccentricity -->
     <div class="orbit-info-box" v-show="picked === 'E0' || picked === 'E30' || picked === 'E60' || picked === 'E90'">
       <h2>{{ t('Orbit Eccentricity') }}</h2>
-      <p> Orbit eccentricity is how much an orbit looks like an oval <i class="fa-solid fa-egg"></i> instead of a perfect circle <i class="fa-regular fa-circle"></i>. </p>
+      <h4> Orbit eccentricity is how much an orbit looks like an oval instead of a perfect circle <i class="fa-regular fa-circle"></i>. </h4>
       <div class="orbit-info" v-show="picked === 'E0' ">
         <h3>{{ t('Circular Orbit') }}</h3>
-        <p>{{ t('Eccentricity') }}: 0 </p>
-        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
+        <h4>{{ t('Eccentricity') }}: 0 </h4>
+        <img src="/eccentricity-0.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'E30' ">
         <h3>{{ t('Slight Elliptical shape') }}</h3>
-        <p>{{ t('Eccentricity') }}: < 0.3 </p>
-        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
+        <h4>{{ t('Eccentricity') }}: < 0.3 </h4>
+        <img src="/eccentricity-4.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'E60' ">
         <h3>{{ t('More Elliptical shape') }}</h3>
-        <p>{{ t('Eccentricity') }}: 0.3 - 0.6 </p>
-        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
+        <h4>{{ t('Eccentricity') }}: 0.3 - 0.6 </h4>
+        <img src="/eccentricity-75.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'E90'">
         <h3>{{ t('Ellipse') }}</h3>
-        <p>{{ t('Eccentricity') }}: >0.60 </p>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
+        <h4>{{ t('Eccentricity') }}: >0.60 </h4>
+        <img src="/eccentricity-95.png" alt="Other Image" width="300" />
       </div>
     </div>
     <div class="right-info-box">
