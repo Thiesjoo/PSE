@@ -1,6 +1,6 @@
 import { Satellite } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
-import { API_TLE_DATA, fetchTLEInformation, getAllCategories } from '@/api/ourApi'
+import { fetchTLEInformation, getAllCategories } from '@/api/ourApi'
 import { reactive, watch } from 'vue'
 import { MAX_SATS_TO_RENDER } from './constants'
 

@@ -1,6 +1,6 @@
 import { Satellite } from '@/Satellite'
 import MyWorkerImplementation from './worker?worker'
-import { SatRecDump, WorkerMessage, WorkerResponse } from './worker'
+import { WorkerMessage, WorkerResponse } from './worker'
 import { AMT_OF_WORKERS } from '@/common/constants'
 import { GMSTime } from 'satellite.js'
 

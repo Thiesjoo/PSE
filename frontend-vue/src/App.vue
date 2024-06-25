@@ -2,10 +2,10 @@
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { ThreeSimulation } from './Sim'
 import { onMounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useIdle } from '@vueuse/core'
 import { IDLE_TIME } from './common/constants'
 import LoadingComponent from '@/components/LoadingComponent.vue'
+import { useI18n } from 'vue-i18n'
 
 const { locale } = useI18n()
 
@@ -22,7 +22,7 @@ const route = useRoute()
 const router = useRouter()
 watch(
   () => route.path,
-  (path) => {
+  () => {
     simulation.reset()
     if (route.path !== '/') {
       simulation.moveCenter()
@@ -32,7 +32,7 @@ watch(
   }
 )
 
-const { idle, lastActive, reset } = useIdle(IDLE_TIME) // 5 min
+const { idle } = useIdle(IDLE_TIME) // 5 min
 
 watch(idle, (isIdle) => {
   if (isIdle && route.path !== '/') {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Graph } from '@/Graph'
-import { AllSatLinks, SatLinks } from '@/SatLinks'
-import { Satellite, polar2Cartesian } from '@/Satellite'
+import { AllSatLinks } from '@/SatLinks'
 import { ThreeSimulation } from '@/Sim'
 import { Filter, SatManager } from '@/common/sat-manager'
 import { GeoCoords, calculateDistance, rounded } from '@/common/utils'
@@ -11,8 +10,6 @@ import MultipleTabs from '@/components/MultipleTabs.vue'
 import { Ref, computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NUM_DIGITS } from '@/common/constants'
-import { watch } from 'vue'
-import { reactive } from 'vue'
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -46,7 +43,6 @@ const tabForSecondCoords = 4
 const tabForPath = 5
 
 const currentTab = ref(1)
-const currentPath = ref<Satellite[]>([])
 
 let intervalID: number
 
@@ -124,48 +120,6 @@ props.simulation.addEventListener('earthClicked', (coords) => {
     }
   }
 })
-
-function findPath() {
-  if (!firstCoords.value || !secondCoords.value) {
-    console.error('No coords selected')
-    return
-  }
-
-  const sat1 = graph.findClosestSat({ ...firstCoords.value })
-  const sat2 = graph.findClosestSat({ ...secondCoords.value })
-  if (!sat1 || !sat2) {
-    return
-  }
-  const path = graph.findPath(sat1, sat2)
-
-  currentPath.value = []
-  console.log('Found path: ', path)
-  if (path) {
-    for (const node of path) {
-      currentPath.value.push(node.sat)
-    }
-  }
-
-  all.setPath([
-    {
-      xyzPosition: polar2Cartesian(
-        secondCoords.value.lat,
-        secondCoords.value.lng,
-        secondCoords.value.alt,
-        props.simulation.globe.getGlobeRadius()
-      )
-    },
-    ...currentPath.value,
-    {
-      xyzPosition: polar2Cartesian(
-        firstCoords.value.lat,
-        firstCoords.value.lng,
-        firstCoords.value.alt,
-        props.simulation.globe.getGlobeRadius()
-      )
-    }
-  ])
-}
 </script>
 
 <template>
