@@ -177,16 +177,17 @@ function findPath() {
           <h2 class="subtitel">
             {{
               t(
-                'This is a communication network of satellites in space. All these satellites can communicate with eachother to send messages around the world.'
+                'Look at all these communication satellites! They can connect with eachother to send messages around the world. '
               )
             }}
           </h2>
+          <img src="../assets/communication_icon.png" alt="communication" />
           <p class="description">
             {{ t('Click next to see all the connections the satellites can make!') }}
           </p>
         </div>
       </template>
-
+      icon
       <template #tab2>
         <div class="tab">
           <h1 class="titel">{{ t('Satellites are connected like this!') }}</h1>
@@ -197,6 +198,7 @@ function findPath() {
               )
             }}
           </h2>
+          <img src="../assets/communication_connect.png" alt="communication" />
           <p class="description">
             {{ t('Click next to choose where you want to send your message from.') }}
           </p>
@@ -205,9 +207,12 @@ function findPath() {
 
       <template #tab3>
         <div class="tab">
-          <h1 class="titel">
-            {{ t('Click on the first point you would like to communicate from.') }}
-          </h1>
+          <div>
+            <h1 class="titel">{{ t('Step 1') }}:</h1>
+            <h1 class="titel">
+              {{ t('Click on the first point you would like to communicate from.') }}
+            </h1>
+          </div>
           <h2 class="subtitel">
             {{
               t(
@@ -215,40 +220,69 @@ function findPath() {
               )
             }}
           </h2>
-        </div> </template
-      >text-align: center;
+          <img src="../assets/location_marker1.png" alt="communication" />
+          <!-- <p class="description">
+            {{ t('Click next to choose where you want to send your message from.') }}
+          </p> -->
+        </div>
+      </template>
 
       <template #tab4>
         <div class="tab">
-          <h1 class="titel">{{ t('And click where you would like to send your message to') }}</h1>
+          <h1 class="titel">
+            {{ t('Step 2') }}: <br />
+            {{ t('And click where you would like to send your message to') }}
+          </h1>
           <h2 class="subtitel">
             {{
               t(
-                'All these satellites can communicate with eachother to send messages around the world.'
+                'The satellites are now going to calculate the shortest path between the two points that you selected.'
               )
             }}
           </h2>
-          <p v-if="secondCoords" class="description">
-            {{ t('Click next to see the shortest path between the two points') }}
-          </p>
+          <img src="../assets/location_marker2.png" alt="communication" />
         </div>
       </template>
 
       <template #tab5>
         <div class="tab">
-          <h1 class="titel">{{ t('Your message took this route!') }}</h1>
+          <h1 class="titel">
+            {{ t('Step 3') }}: <br />
+            {{ t('Look at the route your message took!') }}
+          </h1>
           <h2 class="subtitel">
-            {{
-              t(
-                'This is the shortest path between the two points that you selected. The satellites will send your message through this path.'
-              )
-            }}
+            {{ t('This is the shortest path between the two points that you selected.') }}
           </h2>
-          <p class="description">
-            {{ t('Your message took') }} {{ graph.path.length }} {{ t('hops!') }}
-            <br />
-            {{ t('And your message flew') }} {{ distance }} {{ t('kilometers.') }}
-          </p>
+          <div class="route-info">
+            <p v-if="graph.path.length > 0">
+              {{ t('Your message took') }} {{ graph.path.length }} {{ t('hops!') }}
+            </p>
+            <p v-if="graph.path.length > 0">
+              {{ t('And your message flew') }} {{ distance }} {{ t('kilometers.') }}
+            </p>
+            <p v-else>
+              {{ t('No path found!') }}
+            </p>
+          </div>
+          <div class="again">
+            <p>
+              {{ t('Click here to try again!') }}
+            </p>
+            <button @click="currentTab = 3">
+              <svg
+                fill="#000000"
+                width="800px"
+                height="800px"
+                viewBox="0 0 1920 1920"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M960 0v213.333c411.627 0 746.667 334.934 746.667 746.667S1371.627 1706.667 960 1706.667 213.333 1371.733 213.333 960c0-197.013 78.4-382.507 213.334-520.747v254.08H640V106.667H53.333V320h191.04C88.64 494.08 0 720.96 0 960c0 529.28 430.613 960 960 960s960-430.72 960-960S1489.387 0 960 0"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </template>
     </MultipleTabs>
@@ -262,52 +296,72 @@ function findPath() {
 .tab {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 
-  margin: 0.5em;
+  height: 100%;
+
+  text-align: center;
   color: $main_text;
+  font-family: 'Tomorrow';
 
   .titel {
     font-size: 2.3em;
-    margin: 0.5em;
-    margin-top: 1.5em;
-    font-weight: 500;
+    font-weight: 600;
+  }
 
-    font-family: 'Tomorrow';
-    // text-align: center;
-    position: absolute;
-    width: 90%;
-    top: 0;
+  img {
+    width: 100%;
+    object-fit: contain;
   }
 
   .subtitel {
     font-size: 1.5em;
-    margin: 0.5em;
-    position: absolute;
-    width: 90%;
   }
 
   .description {
     font-size: 1.4em;
-    margin: 0.5em;
-    margin-bottom: 3em;
-    position: absolute;
-    bottom: 0;
-    text-align: center;
-    width: 90%;
+    font-style: italic;
   }
 
-  .coords {
-    margin: 0.5em;
+  .route-info {
     font-size: 1.4em;
-    position: fixed;
-    top: 0;
-    margin-top: 10em;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  }
+
+  .again {
+    p {
+      font-size: 1.4em;
+      font-style: italic;
+      margin-bottom: 1em;
+    }
+
+    button {
+      background: none;
+      border: none;
+
+      svg {
+        fill: $main_text;
+        width: 100px;
+        height: 100px;
+        transform: rotate(100deg);
+      }
+    }
+
+    button:hover {
+      svg {
+        fill: $button_hover;
+      }
+    }
+
+    // button {
+    //   border: none;
+    //   background: none;
+    // }
+
+    // button:hover {
+    //   svg {
+    //     fill: $button_hover;
+    //   }
+    // }
   }
 }
 </style>
