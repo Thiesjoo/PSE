@@ -91,7 +91,6 @@ function tabInfoUpdate(tab: number) {
   } else if (tab === tabForPath) {
     // findPath()
     if (firstCoords.value && secondCoords.value) {
-      console.log('Coords selected: ', firstCoords.value, secondCoords.value)
       graph.setStartPos(firstCoords.value)
       graph.setGoalPos(secondCoords.value)
       graph.calculatePath = true
@@ -139,7 +138,6 @@ function findPath() {
   const path = graph.findPath(sat1, sat2)
 
   currentPath.value = []
-  console.log('Found path: ', path)
   if (path) {
     for (const node of path) {
       currentPath.value.push(node.sat)

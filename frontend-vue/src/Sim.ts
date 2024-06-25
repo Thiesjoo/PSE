@@ -409,7 +409,6 @@ export class ThreeSimulation {
   }
 
   private onClick(event: MouseEvent) {
-    console.log('click')
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
@@ -419,20 +418,17 @@ export class ThreeSimulation {
   }
 
   private onPointerMove(event: MouseEvent) {
-    console.log('pointer move')
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
   }
 
   private onMouseDown(event: Event) {
-    console.log('mouse down')
     this.lastPointer.x = this.pointer.x
     this.lastPointer.y = this.pointer.y
     this.escapedFollow = true
   }
 
   private onTouchStart(event: TouchEvent) {
-    console.log('Touch start')
     this.lastPointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
     this.lastPointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
     this.pointer.x = this.lastPointer.x
@@ -442,7 +438,6 @@ export class ThreeSimulation {
   }
 
   private onTouchEnd(event: TouchEvent) {
-    console.log('Touch end')
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
     const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
     if (xDif > 0.00001 || yDif > 0.00001) return
@@ -455,7 +450,6 @@ export class ThreeSimulation {
     this.pointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
     this.pointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
     event.preventDefault()
-    console.log('Touch move')
   }
 
   private resetMeshes() {
