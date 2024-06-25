@@ -1,7 +1,6 @@
-import type { EciVec3, GMSTime, Kilometer, PositionAndVelocity, SatRec } from 'satellite.js'
+import type { EciVec3, Kilometer, SatRec } from 'satellite.js'
 import { degreesLat, degreesLong, eciToGeodetic, propagate, twoline2satrec } from 'satellite.js'
 import * as THREE from 'three'
-import { reactive, ref } from 'vue'
 import * as satellite from 'satellite.js'
 import { API_TLE_DATA } from './api/ourApi'
 import {
@@ -229,7 +228,7 @@ export class Satellite {
     this.orbit = orbit
   }
 
-  public removeOrbit(orbit: Orbit) {
+  public removeOrbit() {
     this.orbit = null
   }
 }

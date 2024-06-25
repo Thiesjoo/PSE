@@ -21,7 +21,6 @@ const props = defineProps<{
 await props.simulation.waitUntilFinishedLoading()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
-const showOrbit = ref(true)
 const CURRENT_COLOR = '#34b4b5' //Blue
 const satellites = ref<Satellite[]>([])
 

@@ -14,10 +14,9 @@ import {
   type Satellite,
   polar2Cartesian
 } from './Satellite'
-import { GeoCoords, loadTexture, shiftLeft } from './common/utils'
+import { GeoCoords, loadTexture } from './common/utils'
 import {
   EARTH_RADIUS_KM,
-  LINE_SIZE,
   MAX_CAMERA_DISTANCE,
   MAX_SATS_TO_RENDER,
   MIN_CAMERA_DISTANCE,
@@ -369,7 +368,7 @@ export class ThreeSimulation {
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
   }
 
-  private onMouseDown(event: Event) {
+  private onMouseDown() {
     this.lastPointer.x = this.pointer.x
     this.lastPointer.y = this.pointer.y
     this.escapedFollow = true
