@@ -169,7 +169,7 @@ export class Satellite {
       const cartesianPosition = polar2Cartesian(
         realPosition.lat,
         realPosition.lng,
-        (realPosition.alt / EARTH_RADIUS_KM),
+        realPosition.alt / EARTH_RADIUS_KM,
         globeRadius
       )
       return cartesianPosition
@@ -208,7 +208,7 @@ export class Satellite {
     this.xyzPosition = polar2Cartesian(
       this.realPosition.lat,
       this.realPosition.lng,
-      (this.realPosition.alt / EARTH_RADIUS_KM),
+      this.realPosition.alt / EARTH_RADIUS_KM,
       globeRadius
     )
 

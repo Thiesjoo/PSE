@@ -105,7 +105,7 @@ export class Orbit {
       const lineCoords = globe.getCoords(
         satPositions.lat,
         satPositions.lng,
-        (satPositions.alt / EARTH_RADIUS_KM)
+        satPositions.alt / EARTH_RADIUS_KM
       )
 
       let positions = this.line.geometry.attributes.position.array
