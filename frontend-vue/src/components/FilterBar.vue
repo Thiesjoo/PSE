@@ -45,15 +45,15 @@ const updateLaunchYearFilter = () => {
 // Initial update of the launch year filter
 updateLaunchYearFilter()
 
-// A 'generic' is a bundle of filters. There 
+// A 'generic' is a bundle of filters. There
 // are six generics currently.
 interface Generic {
-  name: string,
+  name: string
   filters: Filter[]
 }
 
 // Keeps track of whether or not to keep advanced filters on
-const advancedFilters = ref(false);
+const advancedFilters = ref(false)
 
 //NOTE: Yes this is hardcoded ugly but I'm too lazy atm
 const generics = ref([
@@ -64,8 +64,7 @@ const generics = ref([
   {
     name: 'Navigational',
     // Just everything navigation related
-    filters: [filters[17], filters[18], 
-    filters[19], filters[20], filters[21]]
+    filters: [filters[17], filters[18], filters[19], filters[20], filters[21]]
   },
   {
     name: 'Starlink',
@@ -79,28 +78,35 @@ const generics = ref([
     name: 'Science',
     // In order: geodetics, engineering, NOAA,
     // Earth Resources, ARGOSS, Planet
-    filters: [filters[23], filters[24], 
-    filters[4], filters[5], filters[8], 
-    filters[9]]
+    filters: [filters[23], filters[24], filters[4], filters[5], filters[8], filters[9]]
   },
   {
     name: 'Other',
     // Literally everything
-    filters: [filters[0], filters[2], filters[6],
-     filters[7], filters[10], filters[11], 
-     filters[13], filters[14], filters[15],
-      filters[16], filters[22]]
+    filters: [
+      filters[0],
+      filters[2],
+      filters[6],
+      filters[7],
+      filters[10],
+      filters[11],
+      filters[13],
+      filters[14],
+      filters[15],
+      filters[16],
+      filters[22]
+    ]
   }
 ])
-
 </script>
 
 <template>
   <LeftInfoBlock :open="true">
     <h2>Category filter</h2>
-      <i>
-        Some satellites are in multiple categories. They will be shown in all categories they belong
-        to.</i>
+    <i>
+      Some satellites are in multiple categories. They will be shown in all categories they belong
+      to.</i
+    >
 
     <div class="flex" v-if="advancedFilters">
       <div class="filter-block">
@@ -119,7 +125,8 @@ const generics = ref([
     <div v-else class="flex">
       <div class="filter-block">
         <GenericItem v-for="generic in generics" :key="generic.name" v-model="generic.filters">
-          {{generic.name }} - {{ generic.filters.reduce((sum, filter) => sum + manager.count[filter.name], 0) }}
+          {{ generic.name }} -
+          {{ generic.filters.reduce((sum, filter) => sum + manager.count[filter.name], 0) }}
           <!-- TODO: Add infoboxes like below! -->
           <!-- <InfoPopup>
             {{ t(filter.name + '_description') }}
@@ -131,37 +138,43 @@ const generics = ref([
       <button @click="manager.selectAll()">{{ t('Select All') }}</button>
     </div>
 
-    <input class="advanced-filtering-checkbox" type="checkbox" @click="advancedFilters = !advancedFilters" :checked="advancedFilters">
+    <input
+      class="advanced-filtering-checkbox"
+      type="checkbox"
+      @click="advancedFilters = !advancedFilters"
+      :checked="advancedFilters"
+    />
     <label>Advanced filtering</label>
 
     <div class="launch-year-filter-block">
-        <label
-          >{{
-            t('FilteringLaunchYear1') +
-            slider_values[0] +
-            t('FilteringLaunchYear2') +
-            slider_values[1]
-          }}.
-        </label>
-        <input
-          type="checkbox"
-          id="include_without_launch_year"
-          v-model="include_sats_without_launch_year"
-          hidden/>
-        <label for="include_without_launch_year" hidden
-          >Include satellites without launch year</label>
-      </div>
+      <label
+        >{{
+          t('FilteringLaunchYear1') +
+          slider_values[0] +
+          t('FilteringLaunchYear2') +
+          slider_values[1]
+        }}.
+      </label>
+      <input
+        type="checkbox"
+        id="include_without_launch_year"
+        v-model="include_sats_without_launch_year"
+        hidden
+      />
+      <label for="include_without_launch_year" hidden>Include satellites without launch year</label>
+    </div>
     <vue-slider
-          v-model="slider_values"
-          :min="FIRST_LAUNCH_YEAR"
-          :max="MOST_RECENT_LAUNCH_YEAR"
-          :min-range="1"
-          :enable-cross="false"
-          :tooltip="'always'"
-          :tooltip-placement="['bottom', 'bottom']"
-          :lazy="true"
-          id="launch-year-slider"
-          v-on:drag-end="updateLaunchYearFilter"/>
+      v-model="slider_values"
+      :min="FIRST_LAUNCH_YEAR"
+      :max="MOST_RECENT_LAUNCH_YEAR"
+      :min-range="1"
+      :enable-cross="false"
+      :tooltip="'always'"
+      :tooltip-placement="['bottom', 'bottom']"
+      :lazy="true"
+      id="launch-year-slider"
+      v-on:drag-end="updateLaunchYearFilter"
+    />
   </LeftInfoBlock>
 </template>
 
