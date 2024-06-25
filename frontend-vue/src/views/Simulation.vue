@@ -105,11 +105,8 @@ function change_selected(satellite: Satellite) {
     }
     set_current_sat(satellite)
     props.simulation.deselect()
-    props.simulation.setCurrentlySelected(satellite)
+    props.simulation.setCurrentlySelected(satellite, true)
     props.simulation.changeColor(CURRENT_COLOR, satellite)
-    props.simulation.tweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
-    props.simulation.followSelected = true;
-    props.simulation.escapedFollow = false;
 
     update_display(currentlySelectedSatellite)
     // Show orbit

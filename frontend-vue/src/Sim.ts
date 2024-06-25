@@ -35,11 +35,10 @@ import { AllSatLinks } from './SatLinks'
 import { LocationMarker } from './LocationMarker'
 
 export enum TweeningStatus {
-    NOOP,
-    START_TO_TWEEN_TO_SAT,
-    FOLLOW_CAMERA
+  NOOP,
+  START_TO_TWEEN_TO_SAT,
+  FOLLOW_CAMERA
 }
-
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
@@ -73,7 +72,7 @@ export class ThreeSimulation {
   private eventListeners: Record<string, ((...args: any[]) => void)[]> = {}
   private mesh!: SatelliteMeshes
 
-    // If the earth is on the side, it will rotate
+  // If the earth is on the side, it will rotate
   private onTheSide = false
 
   private workerManager = new WorkerManager()
@@ -244,15 +243,19 @@ export class ThreeSimulation {
     if (!this.currentlySelected) return
 
     let satPosition = this.currentlySelected.realPosition as {
-        lat: number
-        lng: number
+      lat: number
+      lng: number
     }
     if (this.tweeningStatus !== TweeningStatus.FOLLOW_CAMERA) {
-        const time = new Date(+this.time.time + (TWEEN_DURATION * 0.9) * this.time.multiplier.value)
-        satPosition = this.currentlySelected.propagateNoUpdate(time, this.globe.getGlobeRadius(), true) as {
-            lat: number
-            lng: number
-        }
+      const time = new Date(+this.time.time + TWEEN_DURATION * 0.9 * this.time.multiplier.value)
+      satPosition = this.currentlySelected.propagateNoUpdate(
+        time,
+        this.globe.getGlobeRadius(),
+        true
+      ) as {
+        lat: number
+        lng: number
+      }
     }
     const lat = satPosition.lat
     const lng = satPosition.lng
@@ -263,15 +266,21 @@ export class ThreeSimulation {
     const newCameraPosition = this.globe.getCoords(lat, lng, alt)
 
     switch (this.tweeningStatus) {
-        case TweeningStatus.NOOP:
-            break;
-        case TweeningStatus.START_TO_TWEEN_TO_SAT:
-            this.tweeningStatus = TweeningStatus.NOOP
-            this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, TWEEN_DURATION, TweeningStatus.FOLLOW_CAMERA)
-            break
-        case TweeningStatus.FOLLOW_CAMERA:
-            this.camera.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z)
-            break
+      case TweeningStatus.NOOP:
+        break
+      case TweeningStatus.START_TO_TWEEN_TO_SAT:
+        this.tweeningStatus = TweeningStatus.NOOP
+        this.tweenCamera(
+          newCameraPosition.x,
+          newCameraPosition.y,
+          newCameraPosition.z,
+          TWEEN_DURATION,
+          TweeningStatus.FOLLOW_CAMERA
+        )
+        break
+      case TweeningStatus.FOLLOW_CAMERA:
+        this.camera.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z)
+        break
     }
   }
 
@@ -419,7 +428,7 @@ export class ThreeSimulation {
 
         this.eventListeners['select']?.forEach((cb) => cb(satData))
         this.escapedFollow = false
-    } else if (
+      } else if (
         intersects[0].object.position.x === 0 &&
         intersects[0].object.position.y === 0 &&
         intersects[0].object.position.z === 0
@@ -678,8 +687,14 @@ export class ThreeSimulation {
     this.onTheSide = false
   }
 
-  setCurrentlySelected(sat: Satellite) {
+  setCurrentlySelected(sat: Satellite, resetTweening = false) {
     this.currentlySelected = sat
+
+    if (resetTweening) {
+      this.tweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
+      this.followSelected = true
+      this.escapedFollow = false
+    }
   }
 
   changeColor(color: string, sat: Satellite) {

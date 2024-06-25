@@ -70,9 +70,10 @@ const setEnglishLanguagePreference = () => {
     </nav>
   </header>
 
-  <div class="flags"
+  <div
+    class="flags"
     :class="{
-        'bigger': route.path === '/',
+      bigger: route.path === '/'
     }"
   >
     <img
@@ -144,10 +145,10 @@ canvas {
 }
 
 .bigger {
-    img {
-        width: 5em !important;
-        margin: 0.5em !important;
-    }
+  img {
+    width: 5em !important;
+    margin: 0.5em !important;
+  }
 }
 
 .flags {

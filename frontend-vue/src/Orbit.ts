@@ -131,7 +131,7 @@ export class Orbit {
     this.crashing = false
     let idx = 0
     for (const point of this.linePoints) {
-    if (idx++ % 10 !== 0) continue
+      if (idx++ % 10 !== 0) continue
       if (!point || !point.x || !point.y || !point.z) continue
 
       const { altitude } = this.globe.toGeoCoords(point)
