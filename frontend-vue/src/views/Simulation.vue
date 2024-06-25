@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
-import { ThreeSimulation, TweeningStatus } from '@/Sim'
+import { ThreeSimulation } from '@/Sim'
 import {
   calculateHeight,
   calculateMeanMotionRadPerMin,
