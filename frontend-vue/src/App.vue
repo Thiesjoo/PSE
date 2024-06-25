@@ -5,6 +5,9 @@ import { onMounted, ref, watch } from 'vue'
 import { useIdle } from '@vueuse/core'
 import { IDLE_TIME } from './common/constants'
 import LoadingComponent from '@/components/LoadingComponent.vue'
+import { useI18n } from 'vue-i18n'
+
+const { locale } = useI18n()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
