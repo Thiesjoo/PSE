@@ -168,6 +168,10 @@ export class ThreeSimulation {
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: null
     }
+    this.controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_ROTATE
+    }
 
     // Add lights
     this.sun = new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI)
@@ -552,6 +556,10 @@ export class ThreeSimulation {
       MIDDLE: null,
       RIGHT: null
     }
+    this.controls.touches = {
+      ONE: null,
+      TWO: null
+    }
     new TWEEN.Tween(this.camera.position)
       .to(
         {
@@ -585,6 +593,10 @@ export class ThreeSimulation {
       MIDDLE: null,
       RIGHT: null
     }
+    this.controls.touches = {
+      ONE: null,
+      TWO: null
+    }
     new TWEEN.Tween(this.camera.position)
       .to(
         {
@@ -617,6 +629,10 @@ export class ThreeSimulation {
       LEFT: THREE.MOUSE.ROTATE,
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: null
+    }
+    this.controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_ROTATE
     }
     new TWEEN.Tween(this.controls.target)
       .to(
