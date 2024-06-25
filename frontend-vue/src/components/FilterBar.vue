@@ -133,9 +133,6 @@ const generics = ref([
           </InfoPopup>  -->
         </GenericItem>
       </div>
-
-      <button @click="manager.selectNone()">{{ t('Unselect All') }}</button>
-      <button @click="manager.selectAll()">{{ t('Select All') }}</button>
     </div>
 
     <input
@@ -143,8 +140,9 @@ const generics = ref([
       type="checkbox"
       @click="advancedFilters = !advancedFilters"
       :checked="advancedFilters"
+      id="advanced-filter-checkbox"
     />
-    <label>Advanced filtering</label>
+    <label for="advanced-filter-checkbox">Advanced filtering</label>
 
     <div class="launch-year-filter-block">
       <label
