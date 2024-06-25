@@ -59,7 +59,6 @@ def index(request: HttpRequest):
     of satellites with optional parameter 'filter' which filters
     satellites on specific categories.
     """
-
     # Retrieve the query parameters
     query_params = request.GET
 
@@ -78,12 +77,13 @@ def index(request: HttpRequest):
     # By default, all satellites will be retrieved. Otherwise,
     # the filter will be applied.
     if len(categories) == 0:
-        sats = Satellite.objects.all()
+        sats = Satellite.objects.prefetch_related("minor_categories").all()
     else:
-        sats = Satellite.objects.filter(minor_categories__in=categories)
+        sats = Satellite.objects.prefetch_related("minor_categories").filter(minor_categories__in=categories)
 
+    resp = serializedSatellites(sats)
     # Returns a JSON-serialized list of the fetched satellites
-    return JsonResponse({'satellites': serializedSatellites(sats)})
+    return JsonResponse({'satellites': resp})
 
 
 @cache_page(STANDARD_CACHING_LENGTH)

@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { ThreeSimulation } from '@/Sim'
 import { Satellite } from '@/Satellite'
-import SpeedButtons from '@/components/SpeedButtons.vue'
-import InfoPopup from '@/components/InfoPopup.vue'
+import { ThreeSimulation } from '@/Sim'
 import {
-  epochUpdate,
-  calculateRevolutionPerDay,
+  calculateHeight,
   calculateMeanMotionRadPerMin,
-  calculateHeight
+  calculateRevolutionPerDay,
+  epochUpdate
 } from '@/calc_helper'
+import InfoPopup from '@/components/InfoPopup.vue'
+import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
+import SpeedButtons from '@/components/SpeedButtons.vue'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import RightInfoBlock from '@/components/RightInfoBlock.vue'
 const { t } = useI18n()
 
 const props = defineProps<{
   simulation: ThreeSimulation
 }>()
+await props.simulation.waitUntilFinishedLoading()
 
 const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
 const showOrbit = ref(true)
@@ -39,7 +40,7 @@ function tle_new_satellite(alt: number) {
   let mean_motion = calculateRevolutionPerDay(alt)
 
   // Initializing own satelite
-  let name = t('New Satellite') + sat_number.toString() + '\n'
+  let name = t('Satellite ') + sat_number.toString() + '\n'
   let cat_n = sat_number.toString().padStart(5, '0')
   let part1 = '1 ' + cat_n + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1'
   let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
@@ -85,8 +86,8 @@ function add_new_satellite(alt: number) {
   // Add orbit
   create_orbit(new_sat)
 
-  // Update sat-list
-  satellites.value = props.simulation.getNameOfSats()
+  // // Update sat-list
+  // satellites.value = props.simulation.getNameOfSats()
 
   return new_sat
 }

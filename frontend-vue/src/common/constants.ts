@@ -8,7 +8,7 @@ export const LINE_SIZE = 12_000
 export const MAX_LINE_SIZE_LINKS = 600_000
 export const MAX_CAMERA_DISTANCE = 5000
 export const MIN_CAMERA_DISTANCE = 150
-export const IDLE_TIME = 5 * 60 * 1000 // 5 minutes
+export const IDLE_TIME = 1 * 60 * 1000 // 5 minutes
 export const NUM_DIGITS = 3 // Number of digits after the decimal point in the satellite popup
 
 // TODO: Dit is het maximale aantal satellieten dat uberhaup gerenderd kan worden. Misschien hoger maken?
@@ -20,3 +20,5 @@ export const TIME_INTERVAL_ORBIT = 1000
 export const NUM_OF_STEPS_ORBIT = 10000
 export const AMT_OF_WORKERS = 4 // Used for both adjlist and sat positions
 export const DISTANCE_FOR_SATELLITES = 650 // km
+
+export const DISTANCE_TO_EARTH_FOR_COLLISION = 300 // Used for collision detection

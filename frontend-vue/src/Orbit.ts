@@ -1,6 +1,6 @@
 import { Satellite } from './Satellite'
 import * as THREE from 'three'
-import { LINE_SIZE, EARTH_RADIUS_KM } from './common/constants'
+import { LINE_SIZE, EARTH_RADIUS_KM, DISTANCE_TO_EARTH_FOR_COLLISION } from './common/constants'
 import { shiftLeft } from './common/utils'
 import ThreeGlobe from 'three-globe'
 import { Time } from './Time'
@@ -10,31 +10,39 @@ export class Orbit {
   public satellite: Satellite
   private line: THREE.Line | null = null
   private lineGeometry: THREE.BufferGeometry | null = null
+  private lineMaterial: THREE.LineBasicMaterial
   private lineCounter = 0
   private time: Time
   private linePoints: { x: number; y: number; z: number }[] = []
-  private globeRadius: number
   private lastUpdate = new Date()
   private numOfUpdates = 0
   private upcoming: boolean
+  private crashing = false
+
+  private globe: ThreeGlobe
+  get globeRadius() {
+    return this.globe.getGlobeRadius()
+  }
 
   constructor(
     sat: Satellite,
     scene: THREE.Scene,
     time: Time,
-    globeRadius: number,
-    upcoming: boolean
+    upcoming: boolean,
+    globe: ThreeGlobe
   ) {
     this.satellite = sat
     this.time = time
-    this.globeRadius = globeRadius
     this.upcoming = upcoming
+    this.globe = globe
 
     const lineMaterial = new THREE.LineBasicMaterial({
       color: 'white'
     })
 
     this.lineGeometry = new THREE.BufferGeometry()
+    this.lineMaterial = lineMaterial
+
     const positions = new Float32Array(LINE_SIZE * 3)
     this.lineGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
     this.lineGeometry.setDrawRange(0, LINE_SIZE)
@@ -63,6 +71,7 @@ export class Orbit {
     this.line.geometry.attributes.position.needsUpdate = true
     console.log(this.linePoints)
     this.lastUpdate = new Date(+this.time.time)
+    this.earthCrushCheck()
   }
 
   updateLine(globe: ThreeGlobe) {
@@ -115,6 +124,24 @@ export class Orbit {
 
       this.lineGeometry.setDrawRange(0, this.lineCounter / 3)
       this.line.geometry.attributes.position.needsUpdate = true
+    }
+  }
+
+  // Checks if orbit is too low in atmosphere or hits the ground
+  private earthCrushCheck() {
+    this.crashing = false
+    for (const point of this.linePoints) {
+      if (!point || !point.x || !point.y || !point.z) continue
+
+      const { altitude } = this.globe.toGeoCoords(point)
+      if (altitude * EARTH_RADIUS_KM < DISTANCE_TO_EARTH_FOR_COLLISION) {
+        this.crashing = true
+      }
+    }
+    if (this.crashing) {
+      this.lineMaterial.color.setHex(0xff0000)
+    } else {
+      this.lineMaterial.color.setHex(0xffffff)
     }
   }
 

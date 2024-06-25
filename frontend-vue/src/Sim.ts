@@ -69,13 +69,27 @@ export class ThreeSimulation {
 
   private workerManager = new WorkerManager()
 
+  private finishedLoading = false
+
   // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
-  initAll(canvas: HTMLCanvasElement) {
-    this.initScene(canvas).then(() => {
+  initAll(canvas: HTMLCanvasElement): Promise<void> {
+    return this.initScene(canvas).then(() => {
       if (import.meta.env.DEV) {
         this.initStats()
       }
       this.initListeners()
+      this.finishedLoading = true
+    })
+  }
+
+  public waitUntilFinishedLoading() {
+    return new Promise<void>((resolve) => {
+      const interval = setInterval(() => {
+        if (this.finishedLoading) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 100)
     })
   }
 
@@ -153,6 +167,10 @@ export class ThreeSimulation {
       LEFT: THREE.MOUSE.ROTATE,
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: null
+    }
+    this.controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_ROTATE
     }
 
     // Add lights
@@ -423,6 +441,7 @@ export class ThreeSimulation {
     this.resetMeshes()
     this.workerManager.reset()
     this.time.setSpeed(1)
+    this.time.setTime(new Date())
     this.removeAllOrbits()
     this.satelliteLinks?.destroy()
     this.removeAllMarkers()
@@ -477,7 +496,7 @@ export class ThreeSimulation {
   }
 
   addOrbit(sat: Satellite, showUpcoming: boolean) {
-    const orbit = new Orbit(sat, this.scene, this.time, this.globe.getGlobeRadius(), showUpcoming)
+    const orbit = new Orbit(sat, this.scene, this.time, showUpcoming, this.globe)
     if (this.orbits.length > 3) {
       const removedOrbit = this.orbits.shift()
       removedOrbit?.removeLine(this.scene)
@@ -538,6 +557,10 @@ export class ThreeSimulation {
       MIDDLE: null,
       RIGHT: null
     }
+    this.controls.touches = {
+      ONE: null,
+      TWO: null
+    }
     new TWEEN.Tween(this.camera.position)
       .to(
         {
@@ -565,11 +588,52 @@ export class ThreeSimulation {
     this.onRightSide = true
   }
 
+  moveLeft() {
+    this.controls.mouseButtons = {
+      LEFT: null,
+      MIDDLE: null,
+      RIGHT: null
+    }
+    this.controls.touches = {
+      ONE: null,
+      TWO: null
+    }
+    new TWEEN.Tween(this.camera.position)
+      .to(
+        {
+          x: 0,
+          y: 0,
+          z: 500
+        },
+        500
+      )
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .start()
+    // this.camera.position.set(0, 0, 500);
+    new TWEEN.Tween(this.controls.target)
+      .to(
+        {
+          x: 200,
+          y: 0,
+          z: 0
+        },
+        500
+      )
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .start()
+    this.controls.target.set(200, 0, 0)
+    this.onRightSide = true
+  }
+
   moveCenter() {
     this.controls.mouseButtons = {
       LEFT: THREE.MOUSE.ROTATE,
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: null
+    }
+    this.controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_ROTATE
     }
     new TWEEN.Tween(this.controls.target)
       .to(
