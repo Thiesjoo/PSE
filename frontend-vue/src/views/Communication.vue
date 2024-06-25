@@ -12,7 +12,7 @@ import { Ref, computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NUM_DIGITS } from '@/common/constants'
 import { watch } from 'vue'
-
+import { reactive } from 'vue'
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -51,14 +51,14 @@ const currentPath = ref<Satellite[]>([])
 let intervalID: number
 
 const distance = computed(() => {
-  if (currentPath.value.length === 0) {
+  if (graph.path.length === 0) {
     return 0
   }
 
   let dist = 0
-  for (let i = 0; i < currentPath.value.length - 1; i++) {
-    const sat1 = currentPath.value[i]
-    const sat2 = currentPath.value[i + 1]
+  for (let i = 0; i < graph.path.length - 1; i++) {
+    const sat1 = graph.path[i].sat
+    const sat2 = graph.path[i + 1].sat
     dist += calculateDistance(sat1.realPosition, sat2.realPosition)
   }
 
@@ -91,6 +91,7 @@ function tabInfoUpdate(tab: number) {
   } else if (tab === tabForPath) {
     // findPath()
     if (firstCoords.value && secondCoords.value) {
+      console.log("Coords selected: ", firstCoords.value, secondCoords.value);
       graph.setStartPos(firstCoords.value);
       graph.setGoalPos(secondCoords.value);
       graph.calculatePath = true;

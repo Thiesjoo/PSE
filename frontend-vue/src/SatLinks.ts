@@ -26,7 +26,6 @@ export class AllSatLinks {
       z: number
     }
   }[] = []
-
   get linePoints() {
     return this.allSatLinks.map((link) => link.linePoints)
   }
@@ -84,7 +83,7 @@ export class AllSatLinks {
     this.allSatLinks = []
   }
 
-  setPath(path: { xyzPosition: { x: number; y: number; z: number } }[]) {
+  setPath(path: { xyzPosition: { x: number; y: number; z: number } }[]) {    
     this.path = path
   }
 
@@ -108,9 +107,9 @@ export class AllSatLinks {
           this.setPath([
             {
               xyzPosition: polar2Cartesian(
-                this.graph.goalPos.lat,
-                this.graph.goalPos.lng,
-                this.graph.goalPos.alt,
+                this.graph.startPos.lat,
+                this.graph.startPos.lng,
+                this.graph.startPos.alt,
                 this.sim.globe.getGlobeRadius()
               )
             },
@@ -119,9 +118,9 @@ export class AllSatLinks {
             }),
             {
               xyzPosition: polar2Cartesian(
-                this.graph.startPos.lat,
-                this.graph.startPos.lng,
-                this.graph.startPos.alt,
+                this.graph.goalPos.lat,
+                this.graph.goalPos.lng,
+                this.graph.goalPos.alt,
                 this.sim.globe.getGlobeRadius()
               )
             }

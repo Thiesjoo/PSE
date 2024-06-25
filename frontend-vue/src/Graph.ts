@@ -4,7 +4,7 @@ import { GeoCoords, calculateDistance } from './common/utils'
 import AdjListWorker from '@/worker/workerAdjencencyList?worker'
 import { CalculateAdjList, CalculateAdjListResponse } from './worker/workerAdjencencyList'
 import { AMT_OF_WORKERS } from './common/constants'
-import { reactive } from 'vue'
+import { reactive, Reactive } from 'vue'
 type Node = {
   sat: Satellite
   connections: Satellite[]
@@ -23,7 +23,7 @@ export class Graph {
   public goalPos: GeoCoords | null = null;
   public startPos: GeoCoords | null = null;
   public calculatePath: boolean = false;
-  public path: Node[] = reactive([]);
+  public path: Reactive<Node[]> = reactive([]);
 
   constructor() {
     this.worker = Array.from({ length: AMT_OF_WORKERS }, () => new AdjListWorker())
@@ -156,11 +156,12 @@ export class Graph {
       if (current === goalNode) {
         const path = []
         while (current?.parent != null) {
-          console.log(path.length)
           path.push(current)
           current = current.parent
         }
-        this.path = path;
+        this.path.length = 0;
+        this.path.push(...path.reverse())
+        
         return path
       }
 
