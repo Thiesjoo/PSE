@@ -70,7 +70,11 @@ const setEnglishLanguagePreference = () => {
     </nav>
   </header>
 
-  <div class="flags">
+  <div class="flags"
+    :class="{
+        'bigger': route.path === '/',
+    }"
+  >
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/NL.svg"
       alt="Dutch flag"
@@ -137,6 +141,13 @@ canvas {
 .content {
   z-index: 101;
   margin-top: 3em;
+}
+
+.bigger {
+    img {
+        width: 5em !important;
+        margin: 0.5em !important;
+    }
 }
 
 .flags {
