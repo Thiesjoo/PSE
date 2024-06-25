@@ -13,7 +13,7 @@ import SpeedButtons from '@/components/SpeedButtons.vue'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import RightInfoBlock from '@/components/RightInfoBlock.vue'
-import OrbitInfoBlock from '@/components/OrbitInfoBox.vue';
+import OrbitInfoBlock from '@/components/OrbitInfoBox.vue'
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -311,7 +311,6 @@ props.simulation.addEventListener('select', (satellite) => {
     </div>
   </LeftInfoBlock>
   <RightInfoBlock :open="true">
-
     <!-- Information box HEIGHT -->
     <!-- <div class="orbit-info-box" v-show="picked === 'LEO' || picked === 'MEO' || picked === 'GEO'">
       <h2>{{ t('Orbit Category') }}</h2>
@@ -429,7 +428,7 @@ props.simulation.addEventListener('select', (satellite) => {
         </div>
       </div>
     </div>
-    <OrbitInfoBlock :picked="picked" class="orbit-order"/>
+    <OrbitInfoBlock :picked="picked" class="orbit-order" />
   </RightInfoBlock>
   <SpeedButtons :simulation="props.simulation" />
 </template>
