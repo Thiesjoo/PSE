@@ -139,7 +139,7 @@ export class Satellite {
   scale() {
     // We want to make the satellites that are further away bigger to increase visibility
     const distanceToEarth = this.realPosition.alt
-    const mapped = (distanceToEarth / 500) * 0.2 + 1
+    const mapped = (distanceToEarth / 500) * 0.07 + 1
 
     this.threeData.scale.set(mapped, mapped, mapped)
   }
@@ -147,7 +147,7 @@ export class Satellite {
   scale_sim() {
     // We want to satellites in Simulation be more visible as its less busy
     const distanceToEarth = this.realPosition.alt
-    const mapped = (distanceToEarth / 500) * 0.2 + 1
+    const mapped = (distanceToEarth / 500) * 0.07 + 1
 
     this.threeData.scale.set(mapped * 5, mapped * 5, mapped * 5)
   }
@@ -169,7 +169,7 @@ export class Satellite {
       const cartesianPosition = polar2Cartesian(
         realPosition.lat,
         realPosition.lng,
-        (realPosition.alt / EARTH_RADIUS_KM) * 3,
+        (realPosition.alt / EARTH_RADIUS_KM),
         globeRadius
       )
       return cartesianPosition
@@ -208,7 +208,7 @@ export class Satellite {
     this.xyzPosition = polar2Cartesian(
       this.realPosition.lat,
       this.realPosition.lng,
-      (this.realPosition.alt / EARTH_RADIUS_KM) * 3,
+      (this.realPosition.alt / EARTH_RADIUS_KM),
       globeRadius
     )
 
