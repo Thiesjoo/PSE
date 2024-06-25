@@ -300,13 +300,13 @@ props.simulation.addEventListener('select', (satellite) => {
       <h2>{{ t('Satellites Created') }}</h2>
       <div class="satellite-list">
         <div
-          v-for="satellite in satellites"
+          v-for="(satellite, index) in satellites"
           :key="satellite.name"
           :class="{ selected: current_sat === satellite }"
           @click="change_selected(satellite as Satellite)"
           class="satellite-item"
         >
-          {{ satellite.name }}
+          {{ t('Satellite') + ' ' + (index + 1) }}
         </div>
       </div>
     </div>
@@ -316,6 +316,7 @@ props.simulation.addEventListener('select', (satellite) => {
 
 <style scoped lang="scss">
 @import '@/common/colors.scss';
+@import '@/common/scrollbar.scss';
 .container {
   color: $main_text;
 }
@@ -448,7 +449,7 @@ h3 {
 
 .satellite-list {
   overflow-y: auto; /* Enable vertical scroll if needed */
-  max-height: 78%; /* Limit max height to parent height */
+  max-height: 65%; /* Limit max height to parent height */
 }
 
 .satellite-item {
@@ -483,8 +484,8 @@ h3 {
       "info H": "The height of the satellite above the Earth's surface.",
       "info Incl": "The angle of the orbit of the satellite.",
       "info R": "The longitude on which the satellite crosses the equator from south to north.",
-      "info E": "The eccentricity of the orbit."
-
+      "info E": "The eccentricity of the orbit.",
+      "Satellite": "Satellite"
     },
     "nl": {
       "Simulation Variables": "Simulatie Variabelen",
@@ -506,7 +507,8 @@ h3 {
       "info H": "De hoogte van de satelliet boven het aardoppervlak.",
       "info Incl": "De hoek van de baan van de satelliet.",
       "info R": "De lengtegraad waarop de satelliet de evenaar van zuid naar noord kruist.",
-      "info E": "De excentriciteit van de baan."
+      "info E": "De excentriciteit van de baan.",
+      "Satellite": "Satelliet"
     }
   }
 </i18n>
