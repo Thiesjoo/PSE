@@ -33,10 +33,18 @@ import { WorkerManager } from './worker/manager'
 import { AllSatLinks } from './SatLinks'
 import { LocationMarker } from './LocationMarker'
 
+enum TweeningStatus {
+    NOT_TWEENING, // We are not tweening
+    TWEENING_TO_SATELLITE, // We are tweening to a satellite (after clicking on it)
+    TWEENING_TO_SATELLITE_FINAL,
+    TWEENING_TO_SATELLITE_FINAL_FINAL
+}
+
+
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
   private followSelected = true
-  private tweeningStatus: number = 0
+  private tweeningStatus: TweeningStatus = TweeningStatus.NOT_TWEENING
   private escapedFollow = false
   private satClicking = true
 
@@ -65,7 +73,8 @@ export class ThreeSimulation {
   private eventListeners: Record<string, ((...args: any[]) => void)[]> = {}
   private mesh!: SatelliteMeshes
 
-  private onRightSide = false
+    // If the earth is on the side, it will rotate
+  private onTheSide = false
 
   private workerManager = new WorkerManager()
 
@@ -228,7 +237,7 @@ export class ThreeSimulation {
     this.animate()
   }
 
-  private updateCamera() {
+  private updateFollowCamera() {
     if (this.escapedFollow) {
       return
     }
@@ -244,19 +253,24 @@ export class ThreeSimulation {
     }
     const newCameraPosition = this.globe.getCoords(lat, lng, alt)
 
-    if (this.tweeningStatus === 0) {
-      this.tweeningStatus = 1
-      this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 500, 2)
-    }
-    if (this.tweeningStatus === 2) {
-      this.tweeningStatus = 3
-      this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 50, 4)
-    } else if (this.tweeningStatus === 4) {
-      this.camera.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z)
+    switch (this.tweeningStatus) {
+        case TweeningStatus.NOT_TWEENING:
+            this.tweeningStatus = TweeningStatus.TWEENING_TO_SATELLITE
+            this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 500, TweeningStatus.TWEENING_TO_SATELLITE_FINAL)
+            break
+        case TweeningStatus.TWEENING_TO_SATELLITE:
+            break
+        case TweeningStatus.TWEENING_TO_SATELLITE_FINAL:
+            this.tweeningStatus = TweeningStatus.TWEENING_TO_SATELLITE_FINAL_FINAL
+            this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 50, TweeningStatus.TWEENING_TO_SATELLITE_FINAL_FINAL)
+            break
+        case TweeningStatus.TWEENING_TO_SATELLITE_FINAL_FINAL:
+            this.camera.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z)
+            break
     }
   }
 
-  private tweenCamera(x: number, y: number, z: number, time: number, newStatus: number) {
+  private tweenCamera(x: number, y: number, z: number, time: number, newStatus: TweeningStatus) {
     new TWEEN.Tween(this.camera.position)
       .to(
         {
@@ -277,7 +291,7 @@ export class ThreeSimulation {
     requestAnimationFrame(() => {
       this.animate()
     })
-    if (this.onRightSide) {
+    if (this.onTheSide) {
       this.globe.rotation.y += 0.001
     }
 
@@ -294,7 +308,7 @@ export class ThreeSimulation {
     this.renderer.render(this.scene, this.camera)
 
     if (this.followSelected && this.currentlySelected) {
-      this.updateCamera()
+      this.updateFollowCamera()
     }
     // Update the picking ray with the camera and pointer position
     this.raycaster.setFromCamera(this.pointer, this.camera)
@@ -400,7 +414,7 @@ export class ThreeSimulation {
 
         this.eventListeners['select']?.forEach((cb) => cb(satData))
         this.escapedFollow = false
-      } else if (
+    } else if (
         intersects[0].object.position.x === 0 &&
         intersects[0].object.position.y === 0 &&
         intersects[0].object.position.z === 0
@@ -412,7 +426,7 @@ export class ThreeSimulation {
     } else {
       this.deselect()
     }
-    this.tweeningStatus = 0
+    this.tweeningStatus = TweeningStatus.NOT_TWEENING
   }
 
   private resetMeshes() {
@@ -584,7 +598,7 @@ export class ThreeSimulation {
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
     this.controls.target.set(-200, 0, 0)
-    this.onRightSide = true
+    this.onTheSide = true
   }
 
   moveLeft() {
@@ -621,7 +635,7 @@ export class ThreeSimulation {
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
     this.controls.target.set(200, 0, 0)
-    this.onRightSide = true
+    this.onTheSide = true
   }
 
   moveCenter() {
@@ -656,7 +670,7 @@ export class ThreeSimulation {
       )
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
-    this.onRightSide = false
+    this.onTheSide = false
   }
 
   setCurrentlySelected(sat: Satellite) {
