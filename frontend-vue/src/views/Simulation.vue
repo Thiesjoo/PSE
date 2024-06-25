@@ -39,7 +39,7 @@ function tle_new_satellite(alt: number) {
   let mean_motion = calculateRevolutionPerDay(alt)
 
   // Initializing own satelite
-  let name = t('New Satellite') + sat_number.toString() + '\n'
+  let name = t('Satellite ') + sat_number.toString() + '\n'
   let cat_n = sat_number.toString().padStart(5, '0')
   let part1 = '1 ' + cat_n + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1'
   let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
@@ -85,8 +85,8 @@ function add_new_satellite(alt: number) {
   // Add orbit
   create_orbit(new_sat)
 
-  // Update sat-list
-  satellites.value = props.simulation.getNameOfSats()
+  // // Update sat-list
+  // satellites.value = props.simulation.getNameOfSats()
 
   return new_sat
 }
