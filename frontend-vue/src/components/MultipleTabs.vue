@@ -29,7 +29,12 @@ const back = () => {
 
     <div class="buttons">
       <button @click="back()" :disabled="currentTab === 1">back</button>
-      <button @click="next()" :disabled="currentTab === amount">next</button>
+      <button
+        @click="next()"
+        :disabled="currentTab === amount || currentTab === 3 || currentTab == 4"
+      >
+        next
+      </button>
     </div>
   </div>
 </template>
