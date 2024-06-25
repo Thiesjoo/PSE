@@ -310,7 +310,7 @@ props.simulation.addEventListener('select', (satellite) => {
     </div>
   </LeftInfoBlock>
   <RightInfoBlock :open="true">
-    <!-- Information box Height -->
+    <!-- Information box HEIGHT -->
     <div class="orbit-info-box" v-show="picked === 'LEO' || picked === 'MEO' || picked === 'GEO'">
       <h2>{{ t('Orbit Category') }}</h2>
       <div class="orbit-info" v-show="picked === 'LEO'">
@@ -340,7 +340,7 @@ props.simulation.addEventListener('select', (satellite) => {
         <img src="/inclination0.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'I45'">
-        <h4>{{ t('Inclination') }}: <45 &deg</h4>
+        <h4>{{ t('Inclination') }}: &lt 45 &deg</h4>
         <img src="/inclination45.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'I90'">
@@ -348,7 +348,7 @@ props.simulation.addEventListener('select', (satellite) => {
         <img src="/inclination85.png" alt="Other Image" width="300" />
       </div>
     </div>
-    <!-- Information box INCLINATION -->
+    <!-- Information box RAAN -->
     <div
       class="orbit-info-box"
       v-show="
@@ -366,7 +366,7 @@ props.simulation.addEventListener('select', (satellite) => {
         <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'RAAN90'">
-        <h4>{{ t('RAAN') }}: <90 &deg</h4>
+        <h4>{{ t('RAAN') }}: &lt 90 &deg</h4>
         <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'RAAN180'">
@@ -382,7 +382,7 @@ props.simulation.addEventListener('select', (satellite) => {
         <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
-    <!-- Information box Eccentricity -->
+    <!-- Information box ECCENTRICITY -->
     <div
       class="orbit-info-box"
       v-show="picked === 'E0' || picked === 'E30' || picked === 'E60' || picked === 'E90'"
@@ -399,7 +399,7 @@ props.simulation.addEventListener('select', (satellite) => {
       </div>
       <div class="orbit-info" v-show="picked === 'E30'">
         <h3>{{ t('Slight Elliptical shape') }}</h3>
-        <h4>{{ t('Eccentricity') }}: < 0.3</h4>
+        <h4>{{ t('Eccentricity') }}: &lt 0.3</h4>
         <img src="/eccentricity-4.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'E60'">
