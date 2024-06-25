@@ -14,8 +14,8 @@ module.exports = {
   },
 
   rules: {
-        "vue/multi-word-component-names": 'warn',
-        "no-case-declarations": 'warn',
+        "vue/multi-word-component-names": 'off',
+        "no-case-declarations": 'off',
   }
 
 }
