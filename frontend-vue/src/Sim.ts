@@ -322,9 +322,9 @@ export class ThreeSimulation {
   }
 
   private initListeners() {
-    window.addEventListener('pointermove', this.onPointerMove.bind(this), false)
+    window.addEventListener('mousemove', this.onPointerMove.bind(this), false)
     window.addEventListener('resize', this.onWindowResize.bind(this), false)
-    document.getElementById('canvas')!.addEventListener('click', this.onClick.bind(this), false)
+    document.getElementById('canvas')!.addEventListener('mouseup', this.onClick.bind(this), false)
     document
       .getElementById('canvas')!
       .addEventListener('mousedown', this.onMouseDown.bind(this), false)
@@ -370,13 +370,7 @@ export class ThreeSimulation {
     }
   }
 
-  private onClick(event: MouseEvent) {
-    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
-    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
-    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
-    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
-    if (xDif > 0.001 || yDif > 0.001) return
-    
+  private rayCast(){
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects([
       this.globe,
@@ -412,26 +406,53 @@ export class ThreeSimulation {
     this.tweeningStatus = 0
   }
 
-  private onPointerMove(event: PointerEvent) {
+  private onClick(event: MouseEvent) {
+    console.log("click");
+    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
+    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
+    if (xDif > 0.001 || yDif > 0.001) return
+    this.rayCast();
+  }
+
+  private onPointerMove(event: MouseEvent) {
+    console.log("pointer move");
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
   }
 
   private onMouseDown(event: Event) {
+    console.log("mouse down");
     this.lastPointer.x = this.pointer.x
     this.lastPointer.y = this.pointer.y
     this.escapedFollow = true
   }
 
   private onTouchStart(event: TouchEvent) {
-    console.log("touch start");
+    console.log("Touch start");
+    this.lastPointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
+    this.lastPointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
+    this.pointer.x = this.lastPointer.x;
+    this.pointer.y = this.lastPointer.y;
+    this.escapedFollow = true
+    event.preventDefault();
   }
 
   private onTouchEnd(event: TouchEvent) {
     console.log("Touch end");
+    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
+    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
+    if (xDif > 0.00001 || yDif > 0.00001) return
+    
+    this.rayCast();
+    event.preventDefault();
   }
 
   private onTouchMove(event: TouchEvent) {
+    this.pointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
+    event.preventDefault();
     console.log("Touch move");
   }
 
