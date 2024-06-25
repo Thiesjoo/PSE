@@ -156,6 +156,15 @@ watch(height, (Value) => {
 watch(inclination, (Value) => {
   sat.satData.inclo = (Value * Math.PI) / 180 // [rad]
   sat.orbit?.recalculate()
+
+  // Changing right info box to eccenticity information
+  if (Value == 0) {
+    picked.value = 'I0'
+  } else if (Value > 0 && Value < 45) {
+    picked.value = 'I45'
+  } else {
+    picked.value = 'I90'
+  }
   props.simulation.resendDataToWorkers()
 
 })
@@ -164,6 +173,19 @@ watch(inclination, (Value) => {
 watch(raan, (Value) => {
   sat.satData.nodeo = (Value * Math.PI) / 180 // [rad]
   sat.orbit?.recalculate()
+
+  // Changing right info box to RAAN information
+  if (Value == 0) {
+    picked.value = 'RAAN0'
+  } else if (Value < 90) {
+    picked.value = 'RAAN90'
+  } else if (Value >= 90 && Value < 180) {
+    picked.value = 'RAAN180'
+  }else if (Value >= 180 && Value < 270) {
+    picked.value = 'RAAN270'
+  } else {
+    picked.value = 'RAAN360'
+  }
   props.simulation.resendDataToWorkers()
 })
 
@@ -305,6 +327,48 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="orbit-info" v-show="picked === 'GEO'">
         <h3>{{ t('Other') }}</h3>
         <h4>{{ t('Height') }}: >36000 km</h4>
+        <img src="/Other-highlight.png" alt="Other Image" width="300" />
+      </div>
+    </div>
+    <!-- Information box INCLINATION -->
+    <div class="orbit-info-box" v-show="picked === 'I0' || picked === 'I45' ||picked === 'I90'">
+      <h2>{{ t('Inclination') }}</h2>
+      <h4> Orbit inclination is the angle at which orbit is tilted compared to path around equator. </h4>
+      <div class="orbit-info" v-show="picked === 'I0' ">
+        <h4>{{ t('Inclination') }}: 0 &deg </h4>
+        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
+      </div>
+      <div class="orbit-info" v-show="picked === 'I45' ">
+        <h4>{{ t('Inclination') }}: <45 &deg </h4>
+        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
+      </div>
+      <div class="orbit-info" v-show="picked === 'I90'">
+        <h4>{{ t('Inclination') }}: 45-89 &deg </h4>
+        <img src="/Other-highlight.png" alt="Other Image" width="300" />
+      </div>
+    </div>
+    <!-- Information box INCLINATION -->
+      <div class="orbit-info-box" v-show="picked === 'RAAN0' || picked === 'RAAN90' ||picked === 'RAAN180' ||picked === 'RAAN270'||picked === 'RAAN360'">
+      <h2>{{ t('Right Ascension of the Ascending Node') }}</h2>
+      <h4> RAAN determines at what longitude satellite crosses the equator. </h4>
+      <div class="orbit-info" v-show="picked === 'RAAN0' ">
+        <h4>{{ t('RAAN') }}: 0 &deg </h4>
+        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
+      </div>
+      <div class="orbit-info" v-show="picked === 'RAAN90' ">
+        <h4>{{ t('RAAN') }}: <90 &deg </h4>
+        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
+      </div>
+      <div class="orbit-info" v-show="picked === 'RAAN180'">
+        <h4>{{ t('RAAN') }}: 90-180 &deg </h4>
+        <img src="/Other-highlight.png" alt="Other Image" width="300" />
+      </div>
+      <div class="orbit-info" v-show="picked === 'RAAN270'">
+        <h4>{{ t('RAAN') }}: 180-270 &deg </h4>
+        <img src="/Other-highlight.png" alt="Other Image" width="300" />
+      </div>
+      <div class="orbit-info" v-show="picked === 'RAAN360'">
+        <h4>{{ t('RAAN') }}: 270-360 &deg </h4>
         <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
