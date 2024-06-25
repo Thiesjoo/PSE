@@ -25,8 +25,8 @@ onmessage = (event) => {
 
       for (const [satId, coords] of data.slice(type.start, type.end)) {
         res.data[+satId] = data
-          .filter(([id, otherCoords]) => {
-            return calculateDistance(coords, otherCoords) < DISTANCE_FOR_SATELLITES
+          .filter((sats) => {
+            return calculateDistance(coords, sats[1]) < DISTANCE_FOR_SATELLITES
           })
           .map(([id]) => +id)
       }

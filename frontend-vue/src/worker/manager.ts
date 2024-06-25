@@ -1,6 +1,6 @@
 import { Satellite } from '@/Satellite'
 import MyWorkerImplementation from './worker?worker'
-import { SatRecDump, WorkerMessage, WorkerResponse } from './worker'
+import { WorkerMessage, WorkerResponse } from './worker'
 import { AMT_OF_WORKERS } from '@/common/constants'
 import { GMSTime } from 'satellite.js'
 
@@ -93,6 +93,12 @@ export class WorkerManager {
     if (this.finished) {
       for (let i = 0; i < this.satellites.length; i++) {
         const idx = i * 3
+
+        // log if values close to 0
+        if (Math.abs(this.results[idx + 1]) < 1e-6 && Math.abs(this.results[idx]) < 1e-6) {
+          continue
+        }
+
         this.satellites[i].realPosition.lat = this.results[idx]
         this.satellites[i].realPosition.lng = this.results[idx + 1]
         this.satellites[i].realPosition.alt = this.results[idx + 2]

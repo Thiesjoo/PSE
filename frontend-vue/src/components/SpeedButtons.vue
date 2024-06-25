@@ -94,6 +94,7 @@ const intervals = [1, 10, 100, 1000]
 
   h1 {
     margin-bottom: 0.3em;
+    font-variant-numeric: tabular-nums;
   }
   .speed {
     button {
