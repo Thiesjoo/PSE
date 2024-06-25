@@ -336,15 +336,15 @@ props.simulation.addEventListener('select', (satellite) => {
       <h4> Orbit inclination is the angle at which orbit is tilted compared to path around equator. </h4>
       <div class="orbit-info" v-show="picked === 'I0' ">
         <h4>{{ t('Inclination') }}: 0 &deg </h4>
-        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
+        <img src="/inclination0.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'I45' ">
         <h4>{{ t('Inclination') }}: <45 &deg </h4>
-        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
+        <img src="/inclination45.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'I90'">
         <h4>{{ t('Inclination') }}: 45-89 &deg </h4>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
+        <img src="/inclination85.png" alt="Other Image" width="300" />
       </div>
     </div>
     <!-- Information box INCLINATION -->
