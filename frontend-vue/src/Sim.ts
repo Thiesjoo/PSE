@@ -371,17 +371,6 @@ export class ThreeSimulation {
     this.renderer.setSize(window.innerWidth, window.innerHeight)
   }
 
-  private onPointerMove(event: PointerEvent) {
-    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
-    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
-  }
-
-  private onMouseDown() {
-    this.lastPointer.x = this.pointer.x
-    this.lastPointer.y = this.pointer.y
-    this.escapedFollow = true
-  }
-
   private dehover() {
     // If you are hovering over a satellite and you are not selecting it, change the color back to normal.
     if (this.currentlyHovering && this.currentlySelected !== this.currentlyHovering) {
@@ -460,7 +449,7 @@ export class ThreeSimulation {
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
   }
 
-  private onMouseDown(event: Event) {
+  private onMouseDown() {
     this.lastPointer.x = this.pointer.x
     this.lastPointer.y = this.pointer.y
     this.escapedFollow = true
