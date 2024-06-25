@@ -495,7 +495,7 @@ export class ThreeSimulation {
   }
 
   addOrbit(sat: Satellite, showUpcoming: boolean) {
-    const orbit = new Orbit(sat, this.scene, this.time, this.globe.getGlobeRadius(), showUpcoming)
+    const orbit = new Orbit(sat, this.scene, this.time, showUpcoming, this.globe)
     if (this.orbits.length > 3) {
       const removedOrbit = this.orbits.shift()
       removedOrbit?.removeLine(this.scene)
