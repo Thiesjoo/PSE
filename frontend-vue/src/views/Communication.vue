@@ -268,7 +268,7 @@ function findPath() {
             <p>
               {{ t('Click here to try again!') }}
             </p>
-            <button @click="currentTab = 3">
+            <button @click="(currentTab = 3), tabInfoUpdate(3)">
               <svg
                 fill="#000000"
                 width="800px"
