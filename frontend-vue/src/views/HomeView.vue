@@ -57,11 +57,11 @@ props.simulation.moveRight()
     </p>
   </div>
 
-  <div class="about">
-    <RouterLink to="/about">
+  <RouterLink to="/about">
+    <div class="about">
       <h2>About</h2>
-    </RouterLink>
-  </div>
+    </div>
+  </RouterLink>
 </template>
 
 <style scoped lang="scss">
@@ -124,7 +124,7 @@ props.simulation.moveRight()
   background-color: $menu_button_background;
   font-family: 'Tomorrow';
 
-  a {
+  h2 {
     color: $main_text;
     text-decoration: none;
   }
