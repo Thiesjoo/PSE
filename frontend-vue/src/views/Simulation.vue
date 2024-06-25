@@ -318,6 +318,9 @@ props.simulation.addEventListener('select', (satellite) => {
 @import '@/common/colors.scss';
 .container {
   color: $main_text;
+  padding-top: 2em;
+  padding-right: 1em;
+  padding-left: 1em;
 }
 
 h2 {

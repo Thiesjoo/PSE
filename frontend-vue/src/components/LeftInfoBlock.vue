@@ -21,6 +21,5 @@ const props = defineProps<{
   background-color: $pop_up_background;
   border: 3px solid $pop_up_border;
   border-radius: 12px;
-  // max-height: 100%;
 }
 </style>

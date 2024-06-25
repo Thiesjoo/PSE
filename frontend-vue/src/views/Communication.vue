@@ -187,7 +187,7 @@ function findPath() {
           </p>
         </div>
       </template>
-      icon
+
       <template #tab2>
         <div class="tab">
           <h1 class="titel">{{ t('Satellites are connected like this!') }}</h1>
@@ -351,17 +351,6 @@ function findPath() {
         fill: $button_hover;
       }
     }
-
-    // button {
-    //   border: none;
-    //   background: none;
-    // }
-
-    // button:hover {
-    //   svg {
-    //     fill: $button_hover;
-    //   }
-    // }
   }
 }
 </style>
