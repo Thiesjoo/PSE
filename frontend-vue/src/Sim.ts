@@ -34,7 +34,7 @@ import { WorkerManager } from './worker/manager'
 import { AllSatLinks } from './SatLinks'
 import { LocationMarker } from './LocationMarker'
 
-enum TweeningStatus {
+export enum TweeningStatus {
     NOOP,
     START_TO_TWEEN_TO_SAT,
     FOLLOW_CAMERA
@@ -43,9 +43,9 @@ enum TweeningStatus {
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
-  private followSelected = true
-  private tweeningStatus: TweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
-  private escapedFollow = false
+  public followSelected = true
+  public tweeningStatus: TweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
+  public escapedFollow = false
   private satClicking = true
 
   private sun!: THREE.DirectionalLight
