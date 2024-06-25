@@ -7,11 +7,6 @@ const props = defineProps<{ modelValue: Filter[] }>()
 const emits = defineEmits(['update:modelValue'])
 
 const toggle = () => {
-  console.log('UPDATING FILTERS')
-  // const updatedFilters = props.modelValue.map(filter => ({
-  //   ...filter,
-  //   selected: !filter.selected
-  // }))
   props.modelValue.forEach((filter) => {
     filter.selected = !filter.selected
   })
