@@ -7,7 +7,7 @@ import { useIdle } from '@vueuse/core'
 import { IDLE_TIME } from './common/constants'
 import LoadingComponent from '@/components/LoadingComponent.vue'
 
-const { t } = useI18n()
+const { locale } = useI18n()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
@@ -80,7 +80,7 @@ const setEnglishLanguagePreference = () => {
           setDutchLanguagePreference()
         }
       "
-      :class="{ active: $i18n.locale === 'nl' }"
+      :class="{ active: locale === 'nl' }"
     />
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg"
@@ -91,7 +91,7 @@ const setEnglishLanguagePreference = () => {
           setEnglishLanguagePreference()
         }
       "
-      :class="{ active: $i18n.locale === 'en' || $i18n.locale === 'en-US' }"
+      :class="{ active: locale === 'en' || locale === 'en-US' }"
     />
   </div>
 
