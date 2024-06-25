@@ -375,11 +375,13 @@ export class ThreeSimulation {
     }
   }
 
-  private onClick() {
+  private onClick(event: MouseEvent) {
+    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
     const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
     if (xDif > 0.00001 || yDif > 0.00001) return
-
+    
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects([
       this.globe,
