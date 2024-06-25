@@ -349,29 +349,26 @@ export class ThreeSimulation {
   }
 
   private initListeners() {
-    window.addEventListener('pointermove', this.onPointerMove.bind(this), false)
+    window.addEventListener('mousemove', this.onPointerMove.bind(this), false)
     window.addEventListener('resize', this.onWindowResize.bind(this), false)
-    document.getElementById('canvas')!.addEventListener('click', this.onClick.bind(this), false)
+    document.getElementById('canvas')!.addEventListener('mouseup', this.onClick.bind(this), false)
     document
       .getElementById('canvas')!
       .addEventListener('mousedown', this.onMouseDown.bind(this), false)
+
+    document
+      .getElementById('canvas')!
+      .addEventListener('touchend', this.onTouchEnd.bind(this), false)
+    document
+      .getElementById('canvas')!
+      .addEventListener('touchstart', this.onTouchStart.bind(this), false)
+    window.addEventListener('touchmove', this.onTouchMove.bind(this), false)
   }
 
   private onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(window.innerWidth, window.innerHeight)
-  }
-
-  private onPointerMove(event: PointerEvent) {
-    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
-    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
-  }
-
-  private onMouseDown() {
-    this.lastPointer.x = this.pointer.x
-    this.lastPointer.y = this.pointer.y
-    this.escapedFollow = true
   }
 
   private dehover() {
@@ -402,11 +399,7 @@ export class ThreeSimulation {
     }
   }
 
-  private onClick() {
-    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
-    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
-    if (xDif > 0.00001 || yDif > 0.00001) return
-
+  private rayCast() {
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects([
       this.globe,
@@ -440,6 +433,50 @@ export class ThreeSimulation {
       this.deselect()
     }
     this.tweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
+  }
+
+  private onClick(event: MouseEvent) {
+    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
+    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
+    if (xDif > 0.001 || yDif > 0.001) return
+    this.rayCast()
+  }
+
+  private onPointerMove(event: MouseEvent) {
+    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+  }
+
+  private onMouseDown() {
+    this.lastPointer.x = this.pointer.x
+    this.lastPointer.y = this.pointer.y
+    this.escapedFollow = true
+  }
+
+  private onTouchStart(event: TouchEvent) {
+    this.lastPointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
+    this.lastPointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
+    this.pointer.x = this.lastPointer.x
+    this.pointer.y = this.lastPointer.y
+    this.escapedFollow = true
+    event.preventDefault()
+  }
+
+  private onTouchEnd(event: TouchEvent) {
+    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
+    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
+    if (xDif > 0.00001 || yDif > 0.00001) return
+
+    this.rayCast()
+    event.preventDefault()
+  }
+
+  private onTouchMove(event: TouchEvent) {
+    this.pointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
+    event.preventDefault()
   }
 
   private resetMeshes() {

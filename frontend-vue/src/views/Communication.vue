@@ -87,7 +87,6 @@ function tabInfoUpdate(tab: number) {
   } else if (tab === tabForPath) {
     // findPath()
     if (firstCoords.value && secondCoords.value) {
-      console.log('Coords selected: ', firstCoords.value, secondCoords.value)
       graph.setStartPos(firstCoords.value)
       graph.setGoalPos(secondCoords.value)
       graph.calculatePath = true
