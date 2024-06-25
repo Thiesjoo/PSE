@@ -59,7 +59,7 @@ function update_display(sat: Satellite) {
   inclination.value = +((sat.satData.inclo * 180) / Math.PI).toFixed(0)
   raan.value = +((sat.satData.nodeo * 180) / Math.PI).toFixed(0)
   e.value = sat.satData.ecco * 100
-  picked.value = 0
+  picked.value = ""
 
   // Update sat-list
   satellites.value = props.simulation.getNameOfSats()
@@ -131,7 +131,7 @@ const height = ref(160)
 const inclination = ref(0)
 const raan = ref(0)
 const e = ref(0)
-const picked = ref(0) // Orbit type is 0 = LEO
+const picked = ref('LEO') // Orbit type is 0 = LEO
 let add = ref(0) // Used for adding new satellites (0==false)
 let remove = ref(0) // Used for removing all current satellites (0==false)
 
@@ -143,11 +143,11 @@ watch(height, (Value) => {
 
   // Changing image with LEO, MEO orbit
   if (Value >= 160 && Value < 2000) {
-    picked.value = 0 // LEO
+    picked.value = 'LEO' // LEO
   } else if (Value >= 2000 && Value < 36000) {
-    picked.value = 1 // MEO
+    picked.value = "MEO" // MEO
   } else {
-    picked.value = 2 // Other
+    picked.value = "GEO" // Other
   }
   props.simulation.resendDataToWorkers()
 })
@@ -157,6 +157,7 @@ watch(inclination, (Value) => {
   sat.satData.inclo = (Value * Math.PI) / 180 // [rad]
   sat.orbit?.recalculate()
   props.simulation.resendDataToWorkers()
+
 })
 
 // RAAN slider live changes
@@ -170,6 +171,17 @@ watch(raan, (Value) => {
 watch(e, (Value) => {
   sat.satData.ecco = Value / 100
   sat.orbit?.recalculate()
+
+  // Changing right info box to eccenticity information
+  if (Value == 0) {
+    picked.value = 'E0'
+  } else if (Value > 0 && Value < 30) {
+    picked.value = "E30"
+  } else if (Value > 30 && Value < 60) {
+    picked.value = "E60"
+  } else {
+    picked.value = "E90"
+  }
   props.simulation.resendDataToWorkers()
 })
 
@@ -277,21 +289,47 @@ props.simulation.addEventListener('select', (satellite) => {
     </div>
   </LeftInfoBlock>
   <RightInfoBlock :open="true">
-    <div class="orbit-info-box">
+    <!-- Information box Height -->
+    <div class="orbit-info-box" v-show="picked === 'LEO' || picked === 'MEO' ||picked === 'GEO'">
       <h2>{{ t('Orbit Category') }}</h2>
-      <div class="orbit-info" v-show="picked === 0">
+      <div class="orbit-info" v-show="picked === 'LEO' ">
         <h3>{{ t('Low Earth Orbit') }}</h3>
         <p>{{ t('Height') }}: 160-2000 km</p>
         <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
       </div>
-      <div class="orbit-info" v-show="picked === 1">
+      <div class="orbit-info" v-show="picked === 'MEO' ">
         <h3>{{ t('Medium Earth Orbit') }}</h3>
         <p>{{ t('Height') }}: 2000-36000 km</p>
         <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
       </div>
-      <div class="orbit-info" v-show="picked === 2">
+      <div class="orbit-info" v-show="picked === 'GEO'">
         <h3>{{ t('Other') }}</h3>
         <p>{{ t('Height') }}: >36000 km</p>
+        <img src="/Other-highlight.png" alt="Other Image" width="300" />
+      </div>
+    </div>
+    <!-- Information box Eccentricity -->
+    <div class="orbit-info-box" v-show="picked === 'E0' || picked === 'E30' || picked === 'E60' || picked === 'E90'">
+      <h2>{{ t('Orbit Eccentricity') }}</h2>
+      <p> Orbit eccentricity is how much an orbit looks like an oval <i class="fa-solid fa-egg"></i> instead of a perfect circle <i class="fa-regular fa-circle"></i>. </p>
+      <div class="orbit-info" v-show="picked === 'E0' ">
+        <h3>{{ t('Circular Orbit') }}</h3>
+        <p>{{ t('Eccentricity') }}: 0 </p>
+        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
+      </div>
+      <div class="orbit-info" v-show="picked === 'E30' ">
+        <h3>{{ t('Slight Elliptical shape') }}</h3>
+        <p>{{ t('Eccentricity') }}: < 0.3 </p>
+        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
+      </div>
+      <div class="orbit-info" v-show="picked === 'E60' ">
+        <h3>{{ t('More Elliptical shape') }}</h3>
+        <p>{{ t('Eccentricity') }}: 0.3 - 0.6 </p>
+        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
+      </div>
+      <div class="orbit-info" v-show="picked === 'E90'">
+        <h3>{{ t('Ellipse') }}</h3>
+        <p>{{ t('Eccentricity') }}: >0.60 </p>
         <img src="/Other-highlight.png" alt="Other Image" width="300" />
       </div>
     </div>
