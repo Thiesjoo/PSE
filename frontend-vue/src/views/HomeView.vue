@@ -60,11 +60,6 @@ props.simulation.moveRight()
         The scale visualizations in this app are not an accurate reflection of reality.
       </p>
     </div>
-    <RouterLink to="/about">
-      <div class="about">
-        <h2>{{ t('About') }}</h2>
-      </div>
-    </RouterLink>
   </div>
 </template>
 
@@ -122,23 +117,6 @@ props.simulation.moveRight()
       margin: 0.1em;
       margin-left: auto;
     }
-  }
-}
-
-.about {
-  color: $main_text;
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  margin: 1em;
-  border-radius: 10pt;
-  padding: 10pt;
-  background-color: $menu_button_background;
-  font-family: 'Tomorrow';
-
-  a {
-    color: $main_text;
-    text-decoration: none;
   }
 }
 

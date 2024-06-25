@@ -7,7 +7,9 @@ import { IDLE_TIME } from './common/constants'
 import LoadingComponent from '@/components/LoadingComponent.vue'
 import { useI18n } from 'vue-i18n'
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
+
+const isProduction = import.meta.env.PROD
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
@@ -113,10 +115,48 @@ const setEnglishLanguagePreference = () => {
     <LoadingComponent v-if="loading" />
   </div>
   <canvas ref="canvas" id="canvas"></canvas>
+
+  <div class="bot-left">
+    <button v-if="isProduction" id="sentryFeedbackButton">
+      {{ t('Give feedback!') }}
+    </button>
+
+    <RouterLink to="/about" v-if="route.path === '/'">
+      <div class="about">
+        <h2>{{ t('about') }}</h2>
+      </div>
+    </RouterLink>
+  </div>
 </template>
 
 <style scoped lang="scss">
 @import './common/colors.scss';
+
+.bot-left {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 1em;
+  z-index: 10000;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.about,
+#sentryFeedbackButton {
+  color: $main_text;
+  border-radius: 10pt;
+  padding: 10pt;
+  background-color: $menu_button_background;
+  font-family: 'Tomorrow';
+  font-size: 20px;
+  border: 0;
+  margin: 0.2em;
+  cursor: pointer;
+  text-align: center;
+}
 
 canvas {
   width: 100vw;
@@ -216,12 +256,16 @@ header {
             "visualization": "Visualization",
             "simulation": "Simulation",
             "communication": "Communication",
+            "Give feedback!": "Give feedback!",
+            "about": "About",
         },
         "nl": {
             "home": "Home",
             "visualization": "Visualisatie",
             "simulation": "Simulatie",
             "communication": "Communicatie",
+            "Give feedback!": "Geef feedback!",
+            "about": "Over ons",
         },
     }
 </i18n>
