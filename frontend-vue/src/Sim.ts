@@ -23,7 +23,8 @@ import {
   MIN_CAMERA_DISTANCE,
   SAT_COLOR,
   SAT_COLOR_HOVER,
-  SAT_COLOR_SELECTED
+  SAT_COLOR_SELECTED,
+  TWEEN_DURATION
 } from './common/constants'
 import { Time } from './Time'
 import * as TWEEN from '@tweenjs/tween.js'
@@ -34,17 +35,16 @@ import { AllSatLinks } from './SatLinks'
 import { LocationMarker } from './LocationMarker'
 
 enum TweeningStatus {
-    NOT_TWEENING, // We are not tweening
-    TWEENING_TO_SATELLITE, // We are tweening to a satellite (after clicking on it)
-    TWEENING_TO_SATELLITE_FINAL,
-    TWEENING_TO_SATELLITE_FINAL_FINAL
+    NOOP,
+    START_TO_TWEEN_TO_SAT,
+    FOLLOW_CAMERA
 }
 
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
   private followSelected = true
-  private tweeningStatus: TweeningStatus = TweeningStatus.NOT_TWEENING
+  private tweeningStatus: TweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
   private escapedFollow = false
   private satClicking = true
 
@@ -241,30 +241,35 @@ export class ThreeSimulation {
     if (this.escapedFollow) {
       return
     }
-    const satPosition = this.currentlySelected?.realPosition
-    const lat = satPosition?.lat
-    const lng = satPosition?.lng
+    if (!this.currentlySelected) return
+
+    let satPosition = this.currentlySelected.realPosition as {
+        lat: number
+        lng: number
+    }
+    if (this.tweeningStatus !== TweeningStatus.FOLLOW_CAMERA) {
+        const time = new Date(+this.time.time + (TWEEN_DURATION * 0.9) * this.time.multiplier.value)
+        satPosition = this.currentlySelected.propagateNoUpdate(time, this.globe.getGlobeRadius(), true) as {
+            lat: number
+            lng: number
+        }
+    }
+    const lat = satPosition.lat
+    const lng = satPosition.lng
 
     const oldCameraPosition = this.globe.toGeoCoords(this.camera.position)
     const alt = oldCameraPosition.altitude
 
-    if (lat === undefined || lng === undefined || alt == undefined) {
-      return
-    }
     const newCameraPosition = this.globe.getCoords(lat, lng, alt)
 
     switch (this.tweeningStatus) {
-        case TweeningStatus.NOT_TWEENING:
-            this.tweeningStatus = TweeningStatus.TWEENING_TO_SATELLITE
-            this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 500, TweeningStatus.TWEENING_TO_SATELLITE_FINAL)
+        case TweeningStatus.NOOP:
+            break;
+        case TweeningStatus.START_TO_TWEEN_TO_SAT:
+            this.tweeningStatus = TweeningStatus.NOOP
+            this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, TWEEN_DURATION, TweeningStatus.FOLLOW_CAMERA)
             break
-        case TweeningStatus.TWEENING_TO_SATELLITE:
-            break
-        case TweeningStatus.TWEENING_TO_SATELLITE_FINAL:
-            this.tweeningStatus = TweeningStatus.TWEENING_TO_SATELLITE_FINAL_FINAL
-            this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 50, TweeningStatus.TWEENING_TO_SATELLITE_FINAL_FINAL)
-            break
-        case TweeningStatus.TWEENING_TO_SATELLITE_FINAL_FINAL:
+        case TweeningStatus.FOLLOW_CAMERA:
             this.camera.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z)
             break
     }
@@ -426,7 +431,7 @@ export class ThreeSimulation {
     } else {
       this.deselect()
     }
-    this.tweeningStatus = TweeningStatus.NOT_TWEENING
+    this.tweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
   }
 
   private resetMeshes() {

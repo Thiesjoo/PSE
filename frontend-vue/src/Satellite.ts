@@ -153,7 +153,7 @@ export class Satellite {
     this.threeData.scale.set(mapped * 5, mapped * 5, mapped * 5)
   }
 
-  public propagateNoUpdate(time: Date, globeRadius: number): Object {
+  public propagateNoUpdate(time: Date, globeRadius: number, returnRealPosition = false): Object {
     const eci = propagate(this.satData, time)
 
     if (eci.position && eci.velocity) {
@@ -162,6 +162,10 @@ export class Satellite {
       realPosition.lat = degreesLat(gdPos.latitude)
       realPosition.lng = degreesLong(gdPos.longitude)
       realPosition.alt = gdPos.height
+
+      if (returnRealPosition) {
+        return realPosition
+      }
 
       const cartesianPosition = polar2Cartesian(
         realPosition.lat,
