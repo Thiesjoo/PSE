@@ -103,7 +103,7 @@ export class AllSatLinks {
         const satLink = new SatLinks(values.sat)
         satLink.setSatelliteConnections(values.connections)
         this.addSatLink(satLink)
-        if (this.graph.goalPos && this.graph.startPos) {
+        if (this.graph.goalPos && this.graph.startPos && this.graph.calculatePath) {
           this.setPath([
             {
               xyzPosition: polar2Cartesian(
