@@ -33,7 +33,7 @@ const { t } = useI18n()
         "en": {
             "loading": "Loading..."
         },
-        "de": {
+        "nl": {
             "loading": "Laden..."
         }
     }

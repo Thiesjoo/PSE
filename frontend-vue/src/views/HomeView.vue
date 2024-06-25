@@ -168,14 +168,14 @@ props.simulation.moveRight()
             "About": "About",
             "Satellite Radar": "Satellite Radar",
             "All satellites": "All satellites",
-            "Make your own satellite": "Make your own satellite",
+            "Create satellites": "Make your own satellite",
             "Communication": "Communication"
         },
         "nl": {
             "About": "Over ons",
             "Satellite Radar": "Satelliet Radar",
             "All satellites": "Alle satellieten",
-            "Make your own satellite": "Maak je eigen satelliet",
+            "Create satellites": "Maak je eigen satelliet",
             "Communication": "Communicatie"
         }
     }
