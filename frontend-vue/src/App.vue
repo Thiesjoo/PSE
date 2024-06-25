@@ -2,12 +2,12 @@
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { ThreeSimulation } from './Sim'
 import { onMounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useIdle } from '@vueuse/core'
 import { IDLE_TIME } from './common/constants'
 import LoadingComponent from '@/components/LoadingComponent.vue'
+import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { locale } = useI18n()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
@@ -22,7 +22,7 @@ const route = useRoute()
 const router = useRouter()
 watch(
   () => route.path,
-  (path) => {
+  () => {
     simulation.reset()
     if (route.path !== '/') {
       simulation.moveCenter()
@@ -32,7 +32,7 @@ watch(
   }
 )
 
-const { idle, lastActive, reset } = useIdle(IDLE_TIME) // 5 min
+const { idle } = useIdle(IDLE_TIME) // 5 min
 
 watch(idle, (isIdle) => {
   if (isIdle && route.path !== '/') {
@@ -52,28 +52,17 @@ const setEnglishLanguagePreference = () => {
   <header v-if="route.path !== '/'">
     <nav>
       <RouterLink to="/"
-        ><svg
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="0 0 24 24"
-          width="50px"
-          height="50px"
-        >
-          <g id="Rounded">
-            <circle cx="12" cy="3" r="1" />
-            <circle cx="22.5" cy="11.5" r="0.5" />
-            <circle cx="1.5" cy="11.5" r="0.5" />
-            <path
-              d="M12.71,2.296L12,3.1l-0.71-0.804L1.203,11.098L1.5,12H4v8c0,0.552,0.448,1,1,1h4c0.552,0,1-0.448,1-1v-6h4v6c0,0.552,0.448,1,1,1h4c0.552,0,1-0.448,1-1v-8h2.5l0.297-0.902L12.71,2.296z"
-            />
-          </g>
+        ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
+          <path
+            d="M 23.951172 4 A 1.50015 1.50015 0 0 0 23.072266 4.3222656 L 8.859375 15.519531 C 7.0554772 16.941163 6 19.113506 6 21.410156 L 6 40.5 C 6 41.863594 7.1364058 43 8.5 43 L 18.5 43 C 19.863594 43 21 41.863594 21 40.5 L 21 30.5 C 21 30.204955 21.204955 30 21.5 30 L 26.5 30 C 26.795045 30 27 30.204955 27 30.5 L 27 40.5 C 27 41.863594 28.136406 43 29.5 43 L 39.5 43 C 40.863594 43 42 41.863594 42 40.5 L 42 21.410156 C 42 19.113506 40.944523 16.941163 39.140625 15.519531 L 24.927734 4.3222656 A 1.50015 1.50015 0 0 0 23.951172 4 z M 24 7.4101562 L 37.285156 17.876953 C 38.369258 18.731322 39 20.030807 39 21.410156 L 39 40 L 30 40 L 30 30.5 C 30 28.585045 28.414955 27 26.5 27 L 21.5 27 C 19.585045 27 18 28.585045 18 30.5 L 18 40 L 9 40 L 9 21.410156 C 9 20.030807 9.6307412 18.731322 10.714844 17.876953 L 24 7.4101562 z"
+          />
         </svg>
       </RouterLink>
       <RouterLink to="/visualization"
         ><img src="@/assets/visualisation_icon.png" alt="Satellites" width="50" height="50"
       /></RouterLink>
       <RouterLink to="/simulation"
-        ><img src="@/assets/simulation_sharp.png" alt="Launch" width="50" height="50"
+        ><img src="@/assets/simulation_icon.png" alt="Launch" width="50" height="50"
       /></RouterLink>
       <RouterLink to="/communication">
         <img src="@/assets/communication_icon.png" alt="Communication" width="50" height="50"
@@ -81,7 +70,12 @@ const setEnglishLanguagePreference = () => {
     </nav>
   </header>
 
-  <div class="flags">
+  <div
+    class="flags"
+    :class="{
+      bigger: route.path === '/'
+    }"
+  >
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/NL.svg"
       alt="Dutch flag"
@@ -91,7 +85,7 @@ const setEnglishLanguagePreference = () => {
           setDutchLanguagePreference()
         }
       "
-      :class="{ active: $i18n.locale === 'nl' }"
+      :class="{ active: locale === 'nl' }"
     />
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg"
@@ -102,7 +96,7 @@ const setEnglishLanguagePreference = () => {
           setEnglishLanguagePreference()
         }
       "
-      :class="{ active: $i18n.locale === 'en' || $i18n.locale === 'en-US' }"
+      :class="{ active: locale === 'en' || locale === 'en-US' }"
     />
   </div>
 
@@ -148,6 +142,13 @@ canvas {
 .content {
   z-index: 101;
   margin-top: 3em;
+}
+
+.bigger {
+  img {
+    width: 5em !important;
+    margin: 0.5em !important;
+  }
 }
 
 .flags {
@@ -202,7 +203,7 @@ header {
 
     svg {
       path {
-        fill: white;
+        fill: $main_text;
       }
     }
   }

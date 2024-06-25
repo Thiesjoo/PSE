@@ -1,7 +1,6 @@
-import type { EciVec3, GMSTime, Kilometer, PositionAndVelocity, SatRec } from 'satellite.js'
+import type { EciVec3, Kilometer, SatRec } from 'satellite.js'
 import { degreesLat, degreesLong, eciToGeodetic, propagate, twoline2satrec } from 'satellite.js'
 import * as THREE from 'three'
-import { reactive, ref } from 'vue'
 import * as satellite from 'satellite.js'
 import { API_TLE_DATA } from './api/ourApi'
 import {
@@ -153,7 +152,7 @@ export class Satellite {
     this.threeData.scale.set(mapped * 5, mapped * 5, mapped * 5)
   }
 
-  public propagateNoUpdate(time: Date, globeRadius: number): Object {
+  public propagateNoUpdate(time: Date, globeRadius: number, returnRealPosition = false): Object {
     const eci = propagate(this.satData, time)
 
     if (eci.position && eci.velocity) {
@@ -162,6 +161,10 @@ export class Satellite {
       realPosition.lat = degreesLat(gdPos.latitude)
       realPosition.lng = degreesLong(gdPos.longitude)
       realPosition.alt = gdPos.height
+
+      if (returnRealPosition) {
+        return realPosition
+      }
 
       const cartesianPosition = polar2Cartesian(
         realPosition.lat,
@@ -196,7 +199,7 @@ export class Satellite {
   }
 
   public updatePositionOfMesh(mesh: SatelliteMeshes, index: number, globeRadius: number) {
-    if (this.name.startsWith('New')) {
+    if (this.name.startsWith('Satellite ')) {
       this.scale_sim()
     } else {
       this.scale()
@@ -225,7 +228,7 @@ export class Satellite {
     this.orbit = orbit
   }
 
-  public removeOrbit(orbit: Orbit) {
+  public removeOrbit() {
     this.orbit = null
   }
 }

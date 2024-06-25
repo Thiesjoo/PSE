@@ -1,4 +1,3 @@
-import { EARTH_RADIUS_KM } from '@/common/constants'
 import * as satellite from 'satellite.js'
 
 export interface Reset {

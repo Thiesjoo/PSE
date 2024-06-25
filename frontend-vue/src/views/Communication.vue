@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Graph } from '@/Graph'
-import { AllSatLinks, SatLinks } from '@/SatLinks'
-import { Satellite, polar2Cartesian } from '@/Satellite'
+import { AllSatLinks } from '@/SatLinks'
 import { ThreeSimulation } from '@/Sim'
 import { Filter, SatManager } from '@/common/sat-manager'
 import { GeoCoords, calculateDistance, rounded } from '@/common/utils'
@@ -11,7 +10,6 @@ import MultipleTabs from '@/components/MultipleTabs.vue'
 import { Ref, computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NUM_DIGITS } from '@/common/constants'
-
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -45,19 +43,18 @@ const tabForSecondCoords = 4
 const tabForPath = 5
 
 const currentTab = ref(1)
-const currentPath = ref<Satellite[]>([])
 
 let intervalID: number
 
 const distance = computed(() => {
-  if (currentPath.value.length === 0) {
+  if (graph.path.length === 0) {
     return 0
   }
 
   let dist = 0
-  for (let i = 0; i < currentPath.value.length - 1; i++) {
-    const sat1 = currentPath.value[i]
-    const sat2 = currentPath.value[i + 1]
+  for (let i = 0; i < graph.path.length - 1; i++) {
+    const sat1 = graph.path[i].sat
+    const sat2 = graph.path[i + 1].sat
     dist += calculateDistance(sat1.realPosition, sat2.realPosition)
   }
 
@@ -67,6 +64,7 @@ const distance = computed(() => {
 function tabInfoUpdate(tab: number) {
   all.hideConnections = true
   all.setPath([])
+  graph.calculatePath = false
   clearInterval(intervalID)
 
   if (tab === tabForConnections) {
@@ -87,8 +85,12 @@ function tabInfoUpdate(tab: number) {
     }
     secondCoords.value = undefined
   } else if (tab === tabForPath) {
-    findPath()
-    intervalID = setInterval(findPath, 1000)
+    // findPath()
+    if (firstCoords.value && secondCoords.value) {
+      graph.setStartPos(firstCoords.value)
+      graph.setGoalPos(secondCoords.value)
+      graph.calculatePath = true
+    }
   }
 }
 
@@ -117,48 +119,6 @@ props.simulation.addEventListener('earthClicked', (coords) => {
     }
   }
 })
-
-function findPath() {
-  if (!firstCoords.value || !secondCoords.value) {
-    console.error('No coords selected')
-    return
-  }
-
-  const sat1 = graph.findClosestSat({ ...firstCoords.value })
-  const sat2 = graph.findClosestSat({ ...secondCoords.value })
-  if (!sat1 || !sat2) {
-    return
-  }
-  const path = graph.findPath(sat1, sat2)
-
-  currentPath.value = []
-  console.log('Found path: ', path)
-  if (path) {
-    for (const node of path) {
-      currentPath.value.push(node.sat)
-    }
-  }
-
-  all.setPath([
-    {
-      xyzPosition: polar2Cartesian(
-        secondCoords.value.lat,
-        secondCoords.value.lng,
-        secondCoords.value.alt,
-        props.simulation.globe.getGlobeRadius()
-      )
-    },
-    ...currentPath.value,
-    {
-      xyzPosition: polar2Cartesian(
-        firstCoords.value.lat,
-        firstCoords.value.lng,
-        firstCoords.value.alt,
-        props.simulation.globe.getGlobeRadius()
-      )
-    }
-  ])
-}
 </script>
 
 <template>
@@ -238,7 +198,7 @@ function findPath() {
             }}
           </h2>
           <p class="description">
-            {{ t('Your message took') }} {{ currentPath.length - 1 }} {{ t('hops!') }}
+            {{ t('Your message took') }} {{ graph.path.length }} {{ t('hops!') }}
             <br />
             {{ t('And your message flew') }} {{ distance }} {{ t('kilometers.') }}
           </p>

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { Satellite } from './Satellite'
-import { LINE_SIZE, MAX_LINE_SIZE_LINKS } from './common/constants'
+import { Satellite, polar2Cartesian } from './Satellite'
+import { MAX_LINE_SIZE_LINKS } from './common/constants'
 import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
 import { Graph } from './Graph'
 import { ThreeSimulation } from './Sim'
@@ -26,7 +26,6 @@ export class AllSatLinks {
       z: number
     }
   }[] = []
-
   get linePoints() {
     return this.allSatLinks.map((link) => link.linePoints)
   }
@@ -104,6 +103,29 @@ export class AllSatLinks {
         const satLink = new SatLinks(values.sat)
         satLink.setSatelliteConnections(values.connections)
         this.addSatLink(satLink)
+        if (this.graph.goalPos && this.graph.startPos) {
+          this.setPath([
+            {
+              xyzPosition: polar2Cartesian(
+                this.graph.startPos.lat,
+                this.graph.startPos.lng,
+                this.graph.startPos.alt,
+                this.sim.globe.getGlobeRadius()
+              )
+            },
+            ...this.graph.path.map((node) => {
+              return node.sat
+            }),
+            {
+              xyzPosition: polar2Cartesian(
+                this.graph.goalPos.lat,
+                this.graph.goalPos.lng,
+                this.graph.goalPos.alt,
+                this.sim.globe.getGlobeRadius()
+              )
+            }
+          ])
+        }
       })
     }
 

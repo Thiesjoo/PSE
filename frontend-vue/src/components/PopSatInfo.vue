@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
-import { computed, getCurrentInstance, onUnmounted, ref, watch } from 'vue'
+import { computed, onUnmounted, ref } from 'vue'
 import PopFrame from './PopFrame.vue'
 import InfoPopup from '@/components/InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
