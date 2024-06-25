@@ -441,6 +441,7 @@ export class ThreeSimulation {
     this.resetMeshes()
     this.workerManager.reset()
     this.time.setSpeed(1)
+    this.time.setTime(new Date())
     this.removeAllOrbits()
     this.satelliteLinks?.destroy()
     this.removeAllMarkers()
