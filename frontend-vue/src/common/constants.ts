@@ -22,3 +22,5 @@ export const AMT_OF_WORKERS = 4 // Used for both adjlist and sat positions
 export const DISTANCE_FOR_SATELLITES = 650 // km
 
 export const DISTANCE_TO_EARTH_FOR_COLLISION = 300 // Used for collision detection
+
+export const TWEEN_DURATION = 500

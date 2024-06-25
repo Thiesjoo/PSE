@@ -2,12 +2,12 @@
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { ThreeSimulation } from './Sim'
 import { onMounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useIdle } from '@vueuse/core'
 import { IDLE_TIME } from './common/constants'
 import LoadingComponent from '@/components/LoadingComponent.vue'
+import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { locale } = useI18n()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
@@ -22,7 +22,7 @@ const route = useRoute()
 const router = useRouter()
 watch(
   () => route.path,
-  (path) => {
+  () => {
     simulation.reset()
     if (route.path !== '/') {
       simulation.moveCenter()
@@ -32,7 +32,7 @@ watch(
   }
 )
 
-const { idle, lastActive, reset } = useIdle(IDLE_TIME) // 5 min
+const { idle } = useIdle(IDLE_TIME) // 5 min
 
 watch(idle, (isIdle) => {
   if (isIdle && route.path !== '/') {
@@ -70,7 +70,12 @@ const setEnglishLanguagePreference = () => {
     </nav>
   </header>
 
-  <div class="flags">
+  <div
+    class="flags"
+    :class="{
+      bigger: route.path === '/'
+    }"
+  >
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/NL.svg"
       alt="Dutch flag"
@@ -80,7 +85,7 @@ const setEnglishLanguagePreference = () => {
           setDutchLanguagePreference()
         }
       "
-      :class="{ active: $i18n.locale === 'nl' }"
+      :class="{ active: locale === 'nl' }"
     />
     <img
       src="http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg"
@@ -91,7 +96,7 @@ const setEnglishLanguagePreference = () => {
           setEnglishLanguagePreference()
         }
       "
-      :class="{ active: $i18n.locale === 'en' || $i18n.locale === 'en-US' }"
+      :class="{ active: locale === 'en' || locale === 'en-US' }"
     />
   </div>
 
@@ -137,6 +142,13 @@ canvas {
 .content {
   z-index: 101;
   margin-top: 3em;
+}
+
+.bigger {
+  img {
+    width: 5em !important;
+    margin: 0.5em !important;
+  }
 }
 
 .flags {

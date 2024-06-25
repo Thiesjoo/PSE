@@ -11,7 +11,11 @@ import { createI18n } from 'vue-i18n'
 // Get the cached language preferrence, if any. Otherwise,
 // get the language currently preferred by the
 // browser, or use English if it is not available
-const browserLocale = localStorage.getItem('languagePreference') || navigator.language || 'en'
+const browserLocale = (
+  localStorage.getItem('languagePreference') ||
+  navigator.language ||
+  'en'
+).slice(0, 2)
 
 const i18n = createI18n({
   legacy: false,

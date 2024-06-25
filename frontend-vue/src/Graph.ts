@@ -134,6 +134,7 @@ export class Graph {
   }
 
   findPath(sat1: Satellite, sat2: Satellite) {
+    console.log('Find path')
     const startNode = this.findNode(sat1)
     const goalNode = this.findNode(sat2)
     if (!startNode || !goalNode) {

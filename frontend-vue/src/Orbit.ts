@@ -69,7 +69,6 @@ export class Orbit {
     }
     this.lineGeometry?.setDrawRange(0, this.lineCounter / 3)
     this.line.geometry.attributes.position.needsUpdate = true
-    console.log(this.linePoints)
     this.lastUpdate = new Date(+this.time.time)
     this.earthCrushCheck()
   }
@@ -130,7 +129,9 @@ export class Orbit {
   // Checks if orbit is too low in atmosphere or hits the ground
   private earthCrushCheck() {
     this.crashing = false
+    let idx = 0
     for (const point of this.linePoints) {
+      if (idx++ % 10 !== 0) continue
       if (!point || !point.x || !point.y || !point.z) continue
 
       const { altitude } = this.globe.toGeoCoords(point)
