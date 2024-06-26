@@ -260,7 +260,9 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Height') }} [km]
-        <InfoPopup class="icon"> {{ t('info H') }} </InfoPopup>
+        <button class="info_button" @click="picked = 'LEO'" style="text-align: center">
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
@@ -270,7 +272,9 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Inclination') }} [deg]
-        <InfoPopup class="icon"> {{ t('info Incl') }} </InfoPopup>
+        <button class="info_button" @click="picked = 'I0'" style="text-align: center">
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
@@ -280,7 +284,9 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('RAAN') }} [deg]
-        <InfoPopup class="icon"> {{ t('info R') }} </InfoPopup>
+        <button class="info_button" @click="picked = 'RAAN0'" style="text-align: center">
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
@@ -290,7 +296,9 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Eccentricity') }}
-        <InfoPopup class="icon"> {{ t('info E') }} </InfoPopup>
+        <button class="info_button" @click="picked = 'E0'" style="text-align: center">
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="99" v-model="e" class="slider" />
@@ -302,11 +310,9 @@ props.simulation.addEventListener('select', (satellite) => {
     <div class="button-box">
       <button class="add-del-button" @click="add = 1" style="text-align: center">
         <i class="fa-solid fa-plus"></i>
-        <!-- {{ t('Add satellite') }} -->
       </button>
       <button class="add-del-button" @click="remove = 1" style="text-align: center">
         <i class="fa-regular fa-trash-can"></i>
-        <!-- {{ t('Delete satellites') }} -->
       </button>
     </div>
   </LeftInfoBlock>
@@ -391,6 +397,25 @@ h3 {
   border: 1px solid $button_border_box;
 }
 
+.info_button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Makes the button circular */
+  background-color: transparent; /* Remove background color */
+  color: rgba(215, 217, 220, 0.7);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.info_button:hover {
+  color: $main_text;
+}
+
 .orbit-order {
   order: 2;
 }
@@ -452,6 +477,25 @@ h3 {
 .satellite-list {
   overflow-y: auto; /* Enable vertical scroll if needed */
   max-height: 65%; /* Limit max height to parent height */
+}
+
+.styled-button {
+  background: none; /* Remove background color */
+  border: none; /* Remove border */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+  cursor: pointer; /* Make cursor pointer to indicate it's clickable */
+  display: inline-flex; /* Ensure the button is inline */
+  align-items: center; /* Center items vertically */
+  vertical-align: middle; /* Align button vertically with the text */
+}
+
+.styled-button .icon {
+  // display: inline-block; /* Ensure the icon is inline */
+  position: relative;
+  display: inline-block;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 .satellite-item {
