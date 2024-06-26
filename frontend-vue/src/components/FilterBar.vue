@@ -289,6 +289,10 @@ $labelFontSize: 14px !default;
   max-height: 100%;
   color: $main_text;
 
+  padding-top: 2em;
+  padding-right: 1.5em;
+  padding-left: 1.5em;
+
   button {
     margin: 5px 0;
     background-color: $button_background_box;

@@ -321,6 +321,9 @@ props.simulation.addEventListener('select', (satellite) => {
 @import '@/common/scrollbar.scss';
 .container {
   color: $main_text;
+  padding-top: 2em;
+  padding-right: 1em;
+  padding-left: 1em;
 }
 
 h2 {
