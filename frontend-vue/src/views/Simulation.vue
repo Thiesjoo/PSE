@@ -301,9 +301,6 @@ props.simulation.addEventListener('select', (satellite) => {
       <button class="add-del-button" @click="add = 1" style="text-align: center">
         <i class="fa-solid fa-plus"></i>
       </button>
-      <button class="add-del-button" @click="remove = 1" style="text-align: center">
-        <i class="fa-regular fa-trash-can"></i>
-      </button>
     </div>
   </LeftInfoBlock>
   <RightInfoBlock :open="true">
