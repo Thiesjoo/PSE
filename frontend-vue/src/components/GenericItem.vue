@@ -51,7 +51,7 @@ const toggle = () => {
 
   background-color: rgba(61, 61, 109, 0.671);
   border: 1px solid white;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 input {

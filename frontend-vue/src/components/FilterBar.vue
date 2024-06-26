@@ -57,7 +57,7 @@ const advancedFilters = ref(false)
 
 console.log(filters)
 
-filters[2].selected = false;
+filters[2].selected = false
 
 //NOTE: Yes this is hardcoded ugly but I'm too lazy atm
 const generics = ref([
