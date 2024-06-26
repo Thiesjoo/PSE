@@ -148,7 +148,7 @@ export class Graph {
     startNode.gScore = 0
     startNode.hScore = 0
 
-    let counter = 0;
+    let counter = 0
 
     while (openList.length > 0 && counter < 10000) {
       console.log(counter)
@@ -189,7 +189,7 @@ export class Graph {
           }
         }
       }
-      counter++;
+      counter++
     }
   }
 
