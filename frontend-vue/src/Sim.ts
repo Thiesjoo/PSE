@@ -1,6 +1,6 @@
 /**
  * This file contains the ThreeSimulation class, which is responsible for rendering the 3D scene.
- * 
+ *
  * It is the core of our application, and is responsible for rendering the Earth, satellites, and other objects.
  */
 
@@ -54,7 +54,7 @@ export class ThreeSimulation {
 
   private sun!: THREE.DirectionalLight
   private renderer!: THREE.WebGLRenderer
-   scene!: THREE.Scene 
+  scene!: THREE.Scene
 
   private camera!: THREE.PerspectiveCamera
 
@@ -86,13 +86,13 @@ export class ThreeSimulation {
   private finishedLoading = false
 
   initAll(canvas: HTMLCanvasElement): Promise<void> {
-    console.time("initAll")
+    console.time('initAll')
     return this.initScene(canvas).then(() => {
       if (import.meta.env.DEV) {
         this.initStats()
       }
       this.initListeners()
-        console.timeEnd("initAll")
+      console.timeEnd('initAll')
       this.finishedLoading = true
     })
   }
@@ -158,7 +158,7 @@ export class ThreeSimulation {
   }
 
   private async initScene(canvas: HTMLCanvasElement) {
-    console.time("initScene")
+    console.time('initScene')
     this.scene = new THREE.Scene()
 
     // Camera
@@ -193,8 +193,7 @@ export class ThreeSimulation {
     this.sun = new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI)
     this.scene.add(this.sun)
 
-
-    console.time("loadTextures")
+    console.time('loadTextures')
     const nightLights = await loadTexture(NightLights)
 
     // Add background
@@ -222,7 +221,7 @@ export class ThreeSimulation {
         `
       )
     }
-    console.timeEnd("loadTextures")
+    console.timeEnd('loadTextures')
 
     // Add the Earth
     this.globe = new ThreeGlobe()
@@ -244,7 +243,7 @@ export class ThreeSimulation {
     this.scene.add(this.mesh.satClick)
     this.scene.add(this.globe)
 
-    console.timeEnd("initScene")
+    console.timeEnd('initScene')
     this.animate()
   }
 
