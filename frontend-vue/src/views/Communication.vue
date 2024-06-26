@@ -165,17 +165,7 @@ props.simulation.addEventListener('earthClicked', (coords) => {
               {{ t('Click on the first point you would like to communicate from.') }}
             </h1>
           </div>
-          <h2 class="subtitel">
-            {{
-              t(
-                'Click somewhere on the globe to select the first point where you would like to send your message from.'
-              )
-            }}
-          </h2>
           <img src="../assets/location_marker1.png" alt="communication" />
-          <!-- <p class="description">
-            {{ t('Click next to choose where you want to send your message from.') }}
-          </p> -->
         </div>
       </template>
 
@@ -185,14 +175,12 @@ props.simulation.addEventListener('earthClicked', (coords) => {
             {{ t('Step 2') }}: <br />
             {{ t('And click where you would like to send your message to') }}
           </h1>
-          <h2 class="subtitel">
-            {{
-              t(
-                'The satellites are now going to calculate the shortest path between the two points that you selected.'
-              )
-            }}
-          </h2>
           <img src="../assets/location_marker2.png" alt="communication" />
+          <p class="description">
+            {{ t(
+                'The satellites are now going to calculate the shortest path between the two points that you selected.'
+              ) }}
+          </p>
         </div>
       </template>
 
@@ -268,6 +256,7 @@ props.simulation.addEventListener('earthClicked', (coords) => {
 
   .subtitel {
     font-size: 1.5em;
+    margin-bottom: 0.5em;
   }
 
   .description {
@@ -354,11 +343,11 @@ props.simulation.addEventListener('earthClicked', (coords) => {
       "Send your message through satellites!": "Stuur je bericht via satellieten!",
       "Look at all these communication satellites! They can connect with eachother to send messages around the world. ": "Kijk naar al deze communicatiesatellieten! Ze kunnen met elkaar verbinden om berichten over de hele wereld te sturen. ",
       "Click next to see all the connections the satellites can make!": "Klik op volgende om alle verbindingen te zien die de satellieten kunnen maken!",
-      "Satellites are connected like this!": "Satellieten zijn verbonden zoals dit!",
-      "The line that you see between the satellites is the connection that they have with eachother. This means that they can send messages to eachother.": "De lijn tussen de satellieten is de connectie die zij met elkaar hebben. Dit betekent dat ze en bericht naar elkaar kunnen sturen.",
+      "Satellites are connected like this!": "Zo zijn de satellieten verbonden!",
+      "The line that you see between the satellites is the connection that they have with eachother. This means that they can send messages to eachother.": "De lijn tussen de satellieten is de verbinding die zij met elkaar hebben. Dit betekent dat ze berichten naar elkaar kunnen sturen.",
       "Click next to choose where you want to send your message from.": "Klik op volgende om te kiezen waar je je bericht vandaan wilt sturen.",
       "Step 1": "Stap 1",
-      "Click on the first point you would like to communicate from.": "Klik op het eerste punt waar je van wilt communiceren.",
+      "Click on the first point you would like to communicate from.": "Klik op het eerste punt waar je je bericht vandaan wilt sturen.",
       "Click somewhere on the globe to select the first point where you would like to send your message from.": "Klik ergens op de aarde om het eerste punt te selecteren waar je je bericht vanaf wilt sturen.",
       "Step 2": "Stap 2",
       "And click where you would like to send your message to": "En klik waar je je bericht naartoe wilt sturen",
