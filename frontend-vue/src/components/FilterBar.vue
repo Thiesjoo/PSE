@@ -90,7 +90,6 @@ const generics = ref([
     name: 'Other',
     // Literally everything
     filters: [
-      filters[0],
       filters[6],
       filters[7],
       filters[10],
