@@ -167,7 +167,8 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
+    width: 20em;
 
     #SatelliteCountry {
       margin-bottom: 0.5em;
@@ -197,6 +198,7 @@ onUnmounted(() => {
     align-items: stretch;
     margin-top: 2em;
     line-height: 2.5em;
+    width: 20em;
   }
 
   .epoch {
@@ -205,7 +207,7 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     margin-top: 2em;
-    width: 100%;
+    width: 20em;
     line-height: 1.5em;
   }
 
