@@ -18,7 +18,7 @@ defineProps<{
   flex-flow: column nowrap;
   align-items: center;
 
-  min-width: 20vw;
+  max-width: 20vw;
   border: 8px solid $pop_up_border;
 
   border-radius: 10pt;
