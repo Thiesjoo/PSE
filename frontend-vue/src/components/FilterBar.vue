@@ -54,9 +54,6 @@ interface Generic {
 
 // Keeps track of whether or not to keep advanced filters on
 const advancedFilters = ref(false)
-
-console.log(filters)
-
 filters[2].selected = false
 
 //NOTE: Yes this is hardcoded ugly but I'm too lazy atm
@@ -142,12 +139,6 @@ const generics = ref([
           :icon="generic.icon"
           :name="generic.name"
         >
-          <!-- {{ generic.name }} -
-          {{ generic.filters.reduce((sum, filter) => sum + manager.count[filter.name], 0) }} -->
-          <!-- TODO: Add infoboxes like below! -->
-          <!-- <InfoPopup>
-            {{ t(filter.name + '_description') }}
-          </InfoPopup>  -->
         </GenericItem>
       </div>
     </div>
