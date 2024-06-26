@@ -33,7 +33,7 @@ props.simulation.moveLeft()
         <li>Wike Duivenvoorden</li>
       </ul>
     </div>
-    <img src="../assets/uvalogo_white.png" alt="UvA logo" width="500" />
+    <img src="../assets/uvalogo_white.png" alt="UvA logo" />
   </div>
   <!-- Logo -->
 </template>
@@ -44,7 +44,7 @@ props.simulation.moveLeft()
   display: flex;
 
   h1 {
-    font-size: 10em;
+    font-size: 9em;
     color: $main_text;
     font-family: 'Tomorrow';
   }
@@ -56,10 +56,12 @@ props.simulation.moveLeft()
   right: 2vw;
   top: 30vh;
 
-  max-width: 40%;
+  max-width: 50vw;
 
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   color: white;
   font-family: 'Tomorrow';
@@ -75,19 +77,17 @@ props.simulation.moveLeft()
     justify-content: space-between;
     border-radius: 20pt;
     padding: 10pt;
-    background-color: $menu_button_background;
+    background-color: $button_background;
     text-align: left;
   }
 
   img {
-    margin: 0;
-    position: fixed;
-    bottom: 2vh;
-    right: 2vw;
+    margin-top: 1em;
+    width: 60%;
   }
 
   h2 {
-    font-size: 3em;
+    font-size: 2em;
     font-weight: 500;
   }
 
@@ -97,7 +97,7 @@ props.simulation.moveLeft()
     margin: 0;
 
     li {
-      font-size: 1.7em;
+      font-size: 1.3em;
       margin: 0.2em;
     }
   }

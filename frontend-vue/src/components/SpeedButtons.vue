@@ -94,7 +94,11 @@ const intervals = [1, 10, 100, 1000]
 
   h1 {
     margin-bottom: 0.3em;
+    font-variant-numeric: tabular-nums;
+    font-family: 'ComputerSaysNo';
+    font-size: 3em;
   }
+
   .speed {
     button {
       margin: 0 5px;
@@ -102,14 +106,14 @@ const intervals = [1, 10, 100, 1000]
       border-radius: 0.5em;
       padding: 0.5em 1em;
       background-color: $button_background;
-      color: $button_text;
+      color: $main_text;
     }
     .active {
       background-color: $button_selected;
     }
     .reset {
       font-weight: 550;
-      color: $button_text;
+      color: $main_text;
       background-color: $reset_button_background;
     }
   }

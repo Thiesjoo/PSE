@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   open: boolean
 }>()
 </script>
@@ -16,9 +16,9 @@ const props = defineProps<{
 .pop-up {
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
 
-  min-width: 25vw;
-  border: 8px solid $pop_up_border;
+  border: 3px solid $pop_up_border;
 
   border-radius: 10pt;
   background-color: $pop_up_background;

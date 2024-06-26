@@ -11,7 +11,11 @@ import { createI18n } from 'vue-i18n'
 // Get the cached language preferrence, if any. Otherwise,
 // get the language currently preferred by the
 // browser, or use English if it is not available
-const browserLocale = localStorage.getItem('languagePreference') || navigator.language || 'en'
+const browserLocale = (
+  localStorage.getItem('languagePreference') ||
+  navigator.language ||
+  'en'
+).slice(0, 2)
 
 const i18n = createI18n({
   legacy: false,
@@ -21,11 +25,28 @@ const i18n = createI18n({
 
 const app = createApp(App)
 
+const feedbackIntegration = Sentry.feedbackIntegration({
+  // Additional SDK configuration goes in here, for example:
+  colorScheme: 'system',
+  showBranding: false,
+  autoInject: false
+})
+
 Sentry.init({
   enabled: import.meta.env.PROD,
   app,
   dsn: 'https://546d97d526d5375e17160136713489b0@o4507446872834048.ingest.de.sentry.io/4507446875455568',
-  integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration(),
+    feedbackIntegration
+  ],
+  beforeSend(event) {
+    if (event.exception && event.event_id) {
+      Sentry.showReportDialog({ eventId: event.event_id })
+    }
+    return event
+  },
   // Performance Monitoring
   tracesSampleRate: 1.0, //  Capture 100% of the transactions
   // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
@@ -38,3 +59,4 @@ Sentry.init({
 app.use(i18n)
 app.use(router)
 app.mount('#app')
+feedbackIntegration.attachTo(document.querySelector('#sentryFeedbackButton')!)

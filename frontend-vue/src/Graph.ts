@@ -4,7 +4,7 @@ import { GeoCoords, calculateDistance } from './common/utils'
 import AdjListWorker from '@/worker/workerAdjencencyList?worker'
 import { CalculateAdjList, CalculateAdjListResponse } from './worker/workerAdjencencyList'
 import { AMT_OF_WORKERS } from './common/constants'
-
+import { reactive, Reactive } from 'vue'
 type Node = {
   sat: Satellite
   connections: Satellite[]
@@ -20,6 +20,10 @@ export class Graph {
   private finished = true
   private worker: Worker[]
   private received = 0
+  public goalPos: GeoCoords | null = null
+  public startPos: GeoCoords | null = null
+  public calculatePath: boolean = false
+  public path: Reactive<Node[]> = reactive([])
 
   constructor() {
     this.worker = Array.from({ length: AMT_OF_WORKERS }, () => new AdjListWorker())
@@ -37,7 +41,6 @@ export class Graph {
 
   startCreateGraph(satellites: Satellite[]) {
     if (!this.finished) {
-      console.log('Already creating graph')
       return
     }
 
@@ -95,6 +98,13 @@ export class Graph {
     if (this.finished) {
       this.adjList = this.tmpAdjList
       this.received = 0
+      if (this.calculatePath && this.goalPos && this.startPos) {
+        const firstSat = this.findClosestSat(this.startPos)
+        const secondSat = this.findClosestSat(this.goalPos)
+        if (firstSat && secondSat) {
+          this.findPath(firstSat, secondSat)
+        }
+      }
       this.startCreateGraph(satellites)
       return true
     }
@@ -136,7 +146,9 @@ export class Graph {
     startNode.gScore = 0
     startNode.hScore = 0
 
-    while (openList.length > 0) {
+    let counter = 0
+
+    while (openList.length > 0 && counter < 10000) {
       let current = this.popLowestScore(openList)
       if (!current) return
 
@@ -145,10 +157,12 @@ export class Graph {
       if (current === goalNode) {
         const path = []
         while (current?.parent != null) {
-          console.log(path.length)
           path.push(current)
           current = current.parent
         }
+        this.path.length = 0
+        this.path.push(...path.reverse())
+
         return path
       }
 
@@ -172,6 +186,7 @@ export class Graph {
           }
         }
       }
+      counter++
     }
   }
 
@@ -189,5 +204,13 @@ export class Graph {
     if (closestNode) {
       return closestNode.sat
     }
+  }
+
+  setGoalPos(coords: GeoCoords) {
+    this.goalPos = coords
+  }
+
+  setStartPos(coords: GeoCoords) {
+    this.startPos = coords
   }
 }

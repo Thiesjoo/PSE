@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
-import { computed, getCurrentInstance, onUnmounted, ref, watch } from 'vue'
+import { computed, onUnmounted, ref } from 'vue'
 import PopFrame from './PopFrame.vue'
 import InfoPopup from '@/components/InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
@@ -70,12 +70,12 @@ onUnmounted(() => {
       <h1>{{ currentSelectedSatellite.name }}</h1>
       <div v-if="currentSelectedSatellite.country.includes('/')">
         <img
-          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[0]}.svg`"
+          :src="`https://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[0]}.svg`"
           width="100"
           :alt="`${currentSelectedSatellite.country.split('/')[0]} flag`"
         />
         <img
-          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[1]}.svg`"
+          :src="`https://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[1]}.svg`"
           width="100"
           :alt="`${currentSelectedSatellite.country.split('/')[1]} flag`"
         />
@@ -96,7 +96,7 @@ onUnmounted(() => {
       </div>
       <div v-else>
         <img
-          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
+          :src="`https://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
           width="100"
           :alt="`${currentSelectedSatellite.country} flag`"
         />
@@ -167,7 +167,8 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
+    width: 20em;
 
     #SatelliteCountry {
       margin-bottom: 0.5em;
@@ -197,6 +198,7 @@ onUnmounted(() => {
     align-items: stretch;
     margin-top: 2em;
     line-height: 2.5em;
+    width: 20em;
   }
 
   .epoch {
@@ -205,11 +207,12 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     margin-top: 2em;
-    width: 100%;
+    width: 20em;
     line-height: 1.5em;
   }
 
-  p {
+  p,
+  #SatelliteEpoch {
     font-family: 'ComputerSaysNo';
     font-size: 2em;
   }

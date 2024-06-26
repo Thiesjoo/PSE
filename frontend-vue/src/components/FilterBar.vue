@@ -195,6 +195,7 @@ const generics = ref([
 
 <style lang="scss">
 @import '@/common/colors.scss';
+@import '@/common/scrollbar.scss';
 
 $disabledOpacity: 0.5 !default;
 
@@ -381,6 +382,10 @@ $labelFontSize: 14px !default;
   max-height: 100%;
   color: $main_text;
 
+  padding-top: 2em;
+  padding-right: 1.5em;
+  padding-left: 1.5em;
+
   button {
     margin: 5px 0;
     background-color: $button_background_box;
@@ -396,14 +401,6 @@ $labelFontSize: 14px !default;
   max-height: 60vh;
   overflow-y: scroll;
   position: relative;
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: $scroll_bar;
-    border-radius: 2em;
-  }
 
   .more {
     z-index: 100;

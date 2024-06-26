@@ -1,7 +1,6 @@
-import type { EciVec3, GMSTime, Kilometer, PositionAndVelocity, SatRec } from 'satellite.js'
+import type { EciVec3, Kilometer, SatRec } from 'satellite.js'
 import { degreesLat, degreesLong, eciToGeodetic, propagate, twoline2satrec } from 'satellite.js'
 import * as THREE from 'three'
-import { reactive, ref } from 'vue'
 import * as satellite from 'satellite.js'
 import { API_TLE_DATA } from './api/ourApi'
 import {
@@ -140,7 +139,7 @@ export class Satellite {
   scale() {
     // We want to make the satellites that are further away bigger to increase visibility
     const distanceToEarth = this.realPosition.alt
-    const mapped = (distanceToEarth / 500) * 0.2 + 1
+    const mapped = (distanceToEarth / 500) * 0.07 + 1
 
     this.threeData.scale.set(mapped, mapped, mapped)
   }
@@ -148,12 +147,12 @@ export class Satellite {
   scale_sim() {
     // We want to satellites in Simulation be more visible as its less busy
     const distanceToEarth = this.realPosition.alt
-    const mapped = (distanceToEarth / 500) * 0.2 + 1
+    const mapped = (distanceToEarth / 500) * 0.07 + 1
 
     this.threeData.scale.set(mapped * 5, mapped * 5, mapped * 5)
   }
 
-  public propagateNoUpdate(time: Date, globeRadius: number): Object {
+  public propagateNoUpdate(time: Date, globeRadius: number, returnRealPosition = false): Object {
     const eci = propagate(this.satData, time)
 
     if (eci.position && eci.velocity) {
@@ -163,10 +162,14 @@ export class Satellite {
       realPosition.lng = degreesLong(gdPos.longitude)
       realPosition.alt = gdPos.height
 
+      if (returnRealPosition) {
+        return realPosition
+      }
+
       const cartesianPosition = polar2Cartesian(
         realPosition.lat,
         realPosition.lng,
-        (realPosition.alt / EARTH_RADIUS_KM) * 3,
+        realPosition.alt / EARTH_RADIUS_KM,
         globeRadius
       )
       return cartesianPosition
@@ -196,7 +199,7 @@ export class Satellite {
   }
 
   public updatePositionOfMesh(mesh: SatelliteMeshes, index: number, globeRadius: number) {
-    if (this.name.startsWith('New')) {
+    if (this.name.startsWith('Satellite ')) {
       this.scale_sim()
     } else {
       this.scale()
@@ -205,7 +208,7 @@ export class Satellite {
     this.xyzPosition = polar2Cartesian(
       this.realPosition.lat,
       this.realPosition.lng,
-      (this.realPosition.alt / EARTH_RADIUS_KM) * 3,
+      this.realPosition.alt / EARTH_RADIUS_KM,
       globeRadius
     )
 
@@ -225,7 +228,7 @@ export class Satellite {
     this.orbit = orbit
   }
 
-  public removeOrbit(orbit: Orbit) {
+  public removeOrbit() {
     this.orbit = null
   }
 }

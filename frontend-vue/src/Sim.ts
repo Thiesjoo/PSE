@@ -14,16 +14,16 @@ import {
   type Satellite,
   polar2Cartesian
 } from './Satellite'
-import { GeoCoords, loadTexture, shiftLeft } from './common/utils'
+import { GeoCoords, loadTexture } from './common/utils'
 import {
   EARTH_RADIUS_KM,
-  LINE_SIZE,
   MAX_CAMERA_DISTANCE,
   MAX_SATS_TO_RENDER,
   MIN_CAMERA_DISTANCE,
   SAT_COLOR,
   SAT_COLOR_HOVER,
-  SAT_COLOR_SELECTED
+  SAT_COLOR_SELECTED,
+  TWEEN_DURATION
 } from './common/constants'
 import { Time } from './Time'
 import * as TWEEN from '@tweenjs/tween.js'
@@ -33,11 +33,17 @@ import { WorkerManager } from './worker/manager'
 import { AllSatLinks } from './SatLinks'
 import { LocationMarker } from './LocationMarker'
 
+export enum TweeningStatus {
+  NOOP,
+  START_TO_TWEEN_TO_SAT,
+  FOLLOW_CAMERA
+}
+
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
-  private followSelected = true
-  private tweeningStatus: number = 0
-  private escapedFollow = false
+  public followSelected = true
+  public tweeningStatus: TweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
+  public escapedFollow = false
   private satClicking = true
 
   private sun!: THREE.DirectionalLight
@@ -65,7 +71,8 @@ export class ThreeSimulation {
   private eventListeners: Record<string, ((...args: any[]) => void)[]> = {}
   private mesh!: SatelliteMeshes
 
-  private onRightSide = false
+  // If the earth is on the side, it will rotate
+  private onTheSide = false
 
   private workerManager = new WorkerManager()
 
@@ -168,6 +175,10 @@ export class ThreeSimulation {
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: null
     }
+    this.controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_ROTATE
+    }
 
     // Add lights
     this.sun = new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI)
@@ -224,35 +235,55 @@ export class ThreeSimulation {
     this.animate()
   }
 
-  private updateCamera() {
+  private updateFollowCamera() {
     if (this.escapedFollow) {
       return
     }
-    const satPosition = this.currentlySelected?.realPosition
-    const lat = satPosition?.lat
-    const lng = satPosition?.lng
+    if (!this.currentlySelected) return
+
+    let satPosition = this.currentlySelected.realPosition as {
+      lat: number
+      lng: number
+    }
+    if (this.tweeningStatus !== TweeningStatus.FOLLOW_CAMERA) {
+      const time = new Date(+this.time.time + TWEEN_DURATION * 0.9 * this.time.multiplier.value)
+      satPosition = this.currentlySelected.propagateNoUpdate(
+        time,
+        this.globe.getGlobeRadius(),
+        true
+      ) as {
+        lat: number
+        lng: number
+      }
+    }
+    const lat = satPosition.lat
+    const lng = satPosition.lng
 
     const oldCameraPosition = this.globe.toGeoCoords(this.camera.position)
     const alt = oldCameraPosition.altitude
 
-    if (lat === undefined || lng === undefined || alt == undefined) {
-      return
-    }
     const newCameraPosition = this.globe.getCoords(lat, lng, alt)
 
-    if (this.tweeningStatus === 0) {
-      this.tweeningStatus = 1
-      this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 500, 2)
-    }
-    if (this.tweeningStatus === 2) {
-      this.tweeningStatus = 3
-      this.tweenCamera(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z, 50, 4)
-    } else if (this.tweeningStatus === 4) {
-      this.camera.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z)
+    switch (this.tweeningStatus) {
+      case TweeningStatus.NOOP:
+        break
+      case TweeningStatus.START_TO_TWEEN_TO_SAT:
+        this.tweeningStatus = TweeningStatus.NOOP
+        this.tweenCamera(
+          newCameraPosition.x,
+          newCameraPosition.y,
+          newCameraPosition.z,
+          TWEEN_DURATION,
+          TweeningStatus.FOLLOW_CAMERA
+        )
+        break
+      case TweeningStatus.FOLLOW_CAMERA:
+        this.camera.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z)
+        break
     }
   }
 
-  private tweenCamera(x: number, y: number, z: number, time: number, newStatus: number) {
+  private tweenCamera(x: number, y: number, z: number, time: number, newStatus: TweeningStatus) {
     new TWEEN.Tween(this.camera.position)
       .to(
         {
@@ -273,7 +304,7 @@ export class ThreeSimulation {
     requestAnimationFrame(() => {
       this.animate()
     })
-    if (this.onRightSide) {
+    if (this.onTheSide) {
       this.globe.rotation.y += 0.001
     }
 
@@ -290,7 +321,7 @@ export class ThreeSimulation {
     this.renderer.render(this.scene, this.camera)
 
     if (this.followSelected && this.currentlySelected) {
-      this.updateCamera()
+      this.updateFollowCamera()
     }
     // Update the picking ray with the camera and pointer position
     this.raycaster.setFromCamera(this.pointer, this.camera)
@@ -318,29 +349,26 @@ export class ThreeSimulation {
   }
 
   private initListeners() {
-    window.addEventListener('pointermove', this.onPointerMove.bind(this), false)
+    window.addEventListener('mousemove', this.onPointerMove.bind(this), false)
     window.addEventListener('resize', this.onWindowResize.bind(this), false)
-    document.getElementById('canvas')!.addEventListener('click', this.onClick.bind(this), false)
+    document.getElementById('canvas')!.addEventListener('mouseup', this.onClick.bind(this), false)
     document
       .getElementById('canvas')!
       .addEventListener('mousedown', this.onMouseDown.bind(this), false)
+
+    document
+      .getElementById('canvas')!
+      .addEventListener('touchend', this.onTouchEnd.bind(this), false)
+    document
+      .getElementById('canvas')!
+      .addEventListener('touchstart', this.onTouchStart.bind(this), false)
+    window.addEventListener('touchmove', this.onTouchMove.bind(this), false)
   }
 
   private onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(window.innerWidth, window.innerHeight)
-  }
-
-  private onPointerMove(event: PointerEvent) {
-    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
-    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
-  }
-
-  private onMouseDown(event: Event) {
-    this.lastPointer.x = this.pointer.x
-    this.lastPointer.y = this.pointer.y
-    this.escapedFollow = true
   }
 
   private dehover() {
@@ -371,20 +399,14 @@ export class ThreeSimulation {
     }
   }
 
-  private onClick() {
-    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
-    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
-    if (xDif > 0.00001 || yDif > 0.00001) return
-
+  private rayCast() {
     this.raycaster.setFromCamera(this.pointer, this.camera)
-    const intersects = this.raycaster.intersectObjects([
-      this.globe,
-      this.mesh.sat,
-      this.mesh.satClick
-    ])
+    const intersects = this.raycaster.intersectObjects(
+      this.satClicking ? [this.globe, this.mesh.sat, this.mesh.satClick] : [this.globe]
+    )
 
     if (intersects.length > 0) {
-      if ('satellite' in intersects[0].object.userData && this.satClicking) {
+      if ('satellite' in intersects[0].object.userData) {
         this.deselect()
         const meshID = intersects[0].instanceId
         if (meshID === undefined) return
@@ -408,7 +430,51 @@ export class ThreeSimulation {
     } else {
       this.deselect()
     }
-    this.tweeningStatus = 0
+    this.tweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
+  }
+
+  private onClick(event: MouseEvent) {
+    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
+    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
+    if (xDif > 0.001 || yDif > 0.001) return
+    this.rayCast()
+  }
+
+  private onPointerMove(event: MouseEvent) {
+    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+  }
+
+  private onMouseDown() {
+    this.lastPointer.x = this.pointer.x
+    this.lastPointer.y = this.pointer.y
+    this.escapedFollow = true
+  }
+
+  private onTouchStart(event: TouchEvent) {
+    this.lastPointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
+    this.lastPointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
+    this.pointer.x = this.lastPointer.x
+    this.pointer.y = this.lastPointer.y
+    this.escapedFollow = true
+    event.preventDefault()
+  }
+
+  private onTouchEnd(event: TouchEvent) {
+    const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
+    const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
+    if (xDif > 0.00001 || yDif > 0.00001) return
+
+    this.rayCast()
+    event.preventDefault()
+  }
+
+  private onTouchMove(event: TouchEvent) {
+    this.pointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
+    this.pointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
+    event.preventDefault()
   }
 
   private resetMeshes() {
@@ -437,6 +503,7 @@ export class ThreeSimulation {
     this.resetMeshes()
     this.workerManager.reset()
     this.time.setSpeed(1)
+    this.time.setTime(new Date())
     this.removeAllOrbits()
     this.satelliteLinks?.destroy()
     this.removeAllMarkers()
@@ -491,7 +558,7 @@ export class ThreeSimulation {
   }
 
   addOrbit(sat: Satellite, showUpcoming: boolean) {
-    const orbit = new Orbit(sat, this.scene, this.time, this.globe.getGlobeRadius(), showUpcoming)
+    const orbit = new Orbit(sat, this.scene, this.time, showUpcoming, this.globe)
     if (this.orbits.length > 3) {
       const removedOrbit = this.orbits.shift()
       removedOrbit?.removeLine(this.scene)
@@ -552,6 +619,10 @@ export class ThreeSimulation {
       MIDDLE: null,
       RIGHT: null
     }
+    this.controls.touches = {
+      ONE: null,
+      TWO: null
+    }
     new TWEEN.Tween(this.camera.position)
       .to(
         {
@@ -576,7 +647,7 @@ export class ThreeSimulation {
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
     this.controls.target.set(-200, 0, 0)
-    this.onRightSide = true
+    this.onTheSide = true
   }
 
   moveLeft() {
@@ -584,6 +655,10 @@ export class ThreeSimulation {
       LEFT: null,
       MIDDLE: null,
       RIGHT: null
+    }
+    this.controls.touches = {
+      ONE: null,
+      TWO: null
     }
     new TWEEN.Tween(this.camera.position)
       .to(
@@ -609,7 +684,7 @@ export class ThreeSimulation {
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
     this.controls.target.set(200, 0, 0)
-    this.onRightSide = true
+    this.onTheSide = true
   }
 
   moveCenter() {
@@ -617,6 +692,10 @@ export class ThreeSimulation {
       LEFT: THREE.MOUSE.ROTATE,
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: null
+    }
+    this.controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_ROTATE
     }
     new TWEEN.Tween(this.controls.target)
       .to(
@@ -640,11 +719,17 @@ export class ThreeSimulation {
       )
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
-    this.onRightSide = false
+    this.onTheSide = false
   }
 
-  setCurrentlySelected(sat: Satellite) {
+  setCurrentlySelected(sat: Satellite, resetTweening = false) {
     this.currentlySelected = sat
+
+    if (resetTweening) {
+      this.tweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
+      this.followSelected = true
+      this.escapedFollow = false
+    }
   }
 
   changeColor(color: string, sat: Satellite) {
