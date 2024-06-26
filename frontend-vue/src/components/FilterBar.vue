@@ -110,7 +110,7 @@ const generics = ref([
 </script>
 
 <template>
-  <LeftInfoBlock :open="true">
+  <LeftInfoBlock :open="true" style="padding: 20px;">
     <h2>Category filter</h2>
     <i>
       Some satellites are in multiple categories. They will be shown in all categories they belong
@@ -382,13 +382,9 @@ $labelFontSize: 14px !default;
   max-height: 100%;
   color: $main_text;
 
-  padding-top: 2em;
-  padding-right: 1.5em;
-  padding-left: 1.5em;
-
   button {
     margin: 5px 0;
-    background-color: $button_background_box;
+    background-color: rgba(61, 61, 109, 0.671);;
     color: $main_text;
     border: 1px solid $button_border_box;
     border-radius: 5px;
