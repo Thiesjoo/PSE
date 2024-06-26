@@ -451,7 +451,6 @@ h2 {
 h4 {
   text-align: center;
   size: 1rem;
-
 }
 
 h3 {
