@@ -17,7 +17,7 @@ defineProps<{
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  top: 0px;
+  top: 20px;
   right: 0px;
   width: 350px;
   height: 100%;
