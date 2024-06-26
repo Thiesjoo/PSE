@@ -1,12 +1,14 @@
 import * as THREE from 'three'
 import { Ref, ref } from 'vue'
 
+let currentRef = 0
+
 export class Time {
   private currentTime: Date
   public multiplier: Ref<number> = ref(1)
   private clock: THREE.Clock = new THREE.Clock()
 
-  private listeners = new Set<() => void>()
+  private listeners = new Map<number, () => void>()
 
   get time() {
     return this.currentTime
@@ -19,7 +21,7 @@ export class Time {
   setTime(time: Date) {
     this.currentTime = time
 
-    for (const listener of this.listeners) {
+    for (const [, listener] of this.listeners) {
       listener()
     }
   }
@@ -27,7 +29,7 @@ export class Time {
   setSpeed(speed: number) {
     this.multiplier.value = speed
 
-    for (const listener of this.listeners) {
+    for (const [, listener] of this.listeners) {
       listener()
     }
   }
@@ -38,10 +40,11 @@ export class Time {
   }
 
   addEventListener(listener: () => void) {
-    this.listeners.add(listener)
+    this.listeners.set(++currentRef, listener)
+    return currentRef
   }
 
-  removeEventListener(listener: () => void) {
-    this.listeners.delete(listener)
+  removeEventListener(ref: number) {
+    this.listeners.delete(ref)
   }
 }

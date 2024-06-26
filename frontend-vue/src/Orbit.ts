@@ -19,6 +19,8 @@ export class Orbit {
   private upcoming: boolean
   private crashing = false
 
+  private listenerRef: number | undefined
+
   private globe: ThreeGlobe
   get globeRadius() {
     return this.globe.getGlobeRadius()
@@ -53,7 +55,7 @@ export class Orbit {
     scene.add(this.line)
 
     if (upcoming) {
-      this.time.addEventListener(this.recalculate.bind(this))
+      this.listenerRef = this.time.addEventListener(this.recalculate.bind(this))
     }
   }
 
@@ -162,7 +164,9 @@ export class Orbit {
       this.lineGeometry.setDrawRange(0, 0)
       this.lineCounter = 0
 
-      this.time.removeEventListener(this.recalculate.bind(this))
+      if (this.listenerRef != undefined) {
+        this.time.removeEventListener(this.listenerRef)
+      }
     }
   }
 
