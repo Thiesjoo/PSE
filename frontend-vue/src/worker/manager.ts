@@ -57,7 +57,6 @@ export class WorkerManager {
     for (let i = 0; i < AMT_OF_WORKERS; i++) {
       const start = i * blocks
       const end = i === AMT_OF_WORKERS - 1 ? this.satellites.length : (i + 1) * blocks
-      // console.log(`Worker ${i}: `, start, end)
       const data = this.satellites
         .slice(start, end)
         .map((sat, idx) => ({ ...sat.satData, idx: start + idx }))
