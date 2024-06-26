@@ -62,8 +62,7 @@ const generics = ref([
   {
     name: 'Navigational',
     // Just everything navigation related
-    filters: [filters[18], filters[19], 
-    filters[20], filters[21], filters[22]],
+    filters: [filters[18], filters[19], filters[20], filters[21], filters[22]],
     icon: '/filter-icons/navigation.svg'
   },
   {
