@@ -137,6 +137,20 @@ img {
   display: block;
   margin-top: 10px;
 }
+
+h2 {
+  text-align: center;
+}
+
+h4 {
+  text-align: center;
+  size: 1rem;
+}
+
+h3 {
+  text-align: center;
+  font-weight: bold;
+}
 </style>
 
 <i18n>
