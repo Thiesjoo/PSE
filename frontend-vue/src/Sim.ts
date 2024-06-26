@@ -45,6 +45,7 @@ export enum TweeningStatus {
   FOLLOW_CAMERA
 }
 
+// Define the ThreeSimulation class
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
   private followSelected = true
@@ -85,6 +86,7 @@ export class ThreeSimulation {
 
   private finishedLoading = false
 
+  // Initializes the entire scene and its components
   initAll(canvas: HTMLCanvasElement): Promise<void> {
     console.time('initAll')
     return this.initScene(canvas).then(() => {
@@ -116,6 +118,7 @@ export class ThreeSimulation {
     return Object.values(this.satellites).indexOf(sat)
   }
 
+  // Updates the positions of satellite meshes
   private updatePositionsOfMeshes() {
     const globeRadius = this.globe.getGlobeRadius()
     Object.values(this.satellites).forEach((sat, i) => {
@@ -126,25 +129,22 @@ export class ThreeSimulation {
     this.mesh.satClick.computeBoundingSphere()
   }
 
+  // Initializes performance stats for development mode
   private initStats() {
     this.stats = new (Stats as any)()
     document.body.appendChild(this.stats.dom)
   }
 
+  // Calculates the position of the sun in the scene
   private getSunPosition() {
-    // Calculate the position of the sun in our scene
-    // This is used for the night lights on the Earth. solar ephemeris
     const time = this.time.time
     const copy = new Date(time.getTime())
-    // get time in GMT
     const hours = copy.getUTCHours()
     const minutes = copy.getUTCMinutes()
     const seconds = copy.getUTCSeconds()
 
-    // progress in day
     const progress = (hours * 60 * 60 + minutes * 60 + seconds) / (24 * 60 * 60)
 
-    // at 0.00 the sun is at lat0, lon0, 4 hours later at lat
     const lat = 0
     const lng = progress * 360 - 180
     const cartesianPosition = polar2Cartesian(
@@ -157,6 +157,7 @@ export class ThreeSimulation {
     return new THREE.Vector3(cartesianPosition.x, cartesianPosition.y, cartesianPosition.z)
   }
 
+  // Initializes the 3D scene, camera, controls, and objects
   private async initScene(canvas: HTMLCanvasElement) {
     console.time('initScene')
     this.scene = new THREE.Scene()
@@ -247,6 +248,7 @@ export class ThreeSimulation {
     this.animate()
   }
 
+  // Updates the camera to follow the selected satellite
   private updateFollowCamera() {
     if (this.escapedFollow) {
       return
@@ -295,6 +297,7 @@ export class ThreeSimulation {
     }
   }
 
+  // Animates the camera movement
   private tweenCamera(x: number, y: number, z: number, time: number, newStatus: TweeningStatus) {
     new TWEEN.Tween(this.camera.position)
       .to(
@@ -312,6 +315,7 @@ export class ThreeSimulation {
       .start()
   }
 
+  // Main animation loop
   private async animate() {
     requestAnimationFrame(() => {
       this.animate()
@@ -360,6 +364,7 @@ export class ThreeSimulation {
     }
   }
 
+  // Initializes event listeners for user interactions
   private initListeners() {
     window.addEventListener('mousemove', this.onPointerMove.bind(this), false)
     window.addEventListener('resize', this.onWindowResize.bind(this), false)
@@ -377,14 +382,15 @@ export class ThreeSimulation {
     window.addEventListener('touchmove', this.onTouchMove.bind(this), false)
   }
 
+  // Handles window resize events
   private onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(window.innerWidth, window.innerHeight)
   }
 
+  // Resets the color of the currently hovering satellite
   private dehover() {
-    // If you are hovering over a satellite and you are not selecting it, change the color back to normal.
     if (this.currentlyHovering && this.currentlySelected !== this.currentlyHovering) {
       this.currentlyHovering.setColor(
         SAT_COLOR,
@@ -397,8 +403,8 @@ export class ThreeSimulation {
     }
   }
 
+  // Deselects the currently selected satellite
   deselect() {
-    // Only change the color back to normal if you are not selecting the satellite and you are not hovering over it.
     if (this.currentlySelected && this.currentlyHovering !== this.currentlySelected) {
       this.currentlySelected.setColor(
         SAT_COLOR,
@@ -411,6 +417,7 @@ export class ThreeSimulation {
     }
   }
 
+  // Performs a raycast to select objects in the scene
   private rayCast() {
     this.raycaster.setFromCamera(this.pointer, this.camera)
     const intersects = this.raycaster.intersectObjects(
@@ -445,6 +452,7 @@ export class ThreeSimulation {
     this.tweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
   }
 
+  // Handles mouse click events
   private onClick(event: MouseEvent) {
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
@@ -454,17 +462,20 @@ export class ThreeSimulation {
     this.rayCast()
   }
 
+  // Handles pointer move events
   private onPointerMove(event: MouseEvent) {
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
   }
 
+  // Handles mouse down events
   private onMouseDown() {
     this.lastPointer.x = this.pointer.x
     this.lastPointer.y = this.pointer.y
     this.escapedFollow = true
   }
 
+  // Handles touch start events
   private onTouchStart(event: TouchEvent) {
     this.lastPointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
     this.lastPointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
@@ -474,6 +485,7 @@ export class ThreeSimulation {
     event.preventDefault()
   }
 
+  // Handles touch end events
   private onTouchEnd(event: TouchEvent) {
     const xDif = Math.abs(this.lastPointer.x - this.pointer.x)
     const yDif = Math.abs(this.lastPointer.y - this.pointer.y)
@@ -483,12 +495,14 @@ export class ThreeSimulation {
     event.preventDefault()
   }
 
+  // Handles touch move events
   private onTouchMove(event: TouchEvent) {
     this.pointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1
     this.pointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1
     event.preventDefault()
   }
 
+  // Resets the satellite meshes
   private resetMeshes() {
     if (!this.mesh || !this.mesh.sat || !this.mesh.satClick) return
 
@@ -508,6 +522,7 @@ export class ThreeSimulation {
     this.mesh.satClick.instanceMatrix.needsUpdate = true
   }
 
+  // Resets the entire simulation
   reset() {
     this.dehover()
     this.deselect()
@@ -528,6 +543,7 @@ export class ThreeSimulation {
     this.eventListeners = {}
   }
 
+  // Adds a single satellite to the simulation
   addSatellite(sat: Satellite, updateWorker = true) {
     if (this.satellites[sat.id]) {
       console.warn('Satellite already exists')
@@ -540,20 +556,23 @@ export class ThreeSimulation {
     }
   }
 
+  // Adds multiple satellites to the simulation
   addSatellites(sats: Satellite[]) {
     sats.forEach((sat) => this.addSatellite(sat, false))
     this.workerManager.addSatellites(Object.values(this.satellites))
   }
 
+  // Returns the array of satellites
   getSatellites(): Satellite[] {
     return Object.values(this.satellites)
   }
 
+  // Resends data to workers when satellite data changes
   resendDataToWorkers() {
-    // This should be called when satData is changed
     this.workerManager.addSatellites(Object.values(this.satellites))
   }
 
+  // Removes all satellites from the simulation
   removeAllSatellites() {
     this.satellites = {}
     this.currentlyHovering = null
@@ -563,12 +582,14 @@ export class ThreeSimulation {
     this.eventListeners['select']?.forEach((cb) => cb(null))
   }
 
+  // Updates the orbits of satellites
   private updateOrbits() {
     for (const orbit of this.orbits) {
       orbit.updateLine(this.globe)
     }
   }
 
+  // Adds an orbit for a satellite
   addOrbit(sat: Satellite, showUpcoming: boolean) {
     const orbit = new Orbit(sat, this.scene, this.time, showUpcoming, this.globe)
     if (this.orbits.length > 3) {
@@ -579,6 +600,7 @@ export class ThreeSimulation {
     return orbit
   }
 
+  // Removes an orbit for a satellite
   removeOrbit(sat: Satellite) {
     sat.orbit?.removeLine(this.scene)
     this.orbits = this.orbits.filter(function (obj) {
@@ -586,6 +608,7 @@ export class ThreeSimulation {
     })
   }
 
+  // Removes all orbits
   removeAllOrbits() {
     for (const orbit of this.orbits) {
       orbit.removeLine(this.scene)
@@ -593,21 +616,25 @@ export class ThreeSimulation {
     this.orbits = []
   }
 
+  // Adds all satellite links
   addAllSatLinks(link: AllSatLinks) {
     this.satelliteLinks = link
   }
 
+  // Removes satellite links
   removeSatLink() {
     this.satelliteLinks?.destroy()
     this.satelliteLinks = null
   }
 
+  // Adds a marker at specific coordinates
   addMarker(coords: GeoCoords) {
     const marker = new LocationMarker(coords, this.scene, this.globe)
     marker.render()
     this.locationMarkers.push(marker)
   }
 
+  // Removes a marker at specific coordinates
   removeMarker(coords: GeoCoords) {
     const marker = this.locationMarkers.find((marker) => {
       return marker.getCoords().lat === coords.lat && marker.getCoords().lng === coords.lng
@@ -618,6 +645,7 @@ export class ThreeSimulation {
     }
   }
 
+  // Removes all markers
   removeAllMarkers() {
     for (const marker of this.locationMarkers) {
       marker.remove()
@@ -625,6 +653,7 @@ export class ThreeSimulation {
     this.locationMarkers = []
   }
 
+  // Moves the camera to the right side of the scene
   moveRight() {
     this.controls.mouseButtons = {
       LEFT: null,
@@ -646,7 +675,6 @@ export class ThreeSimulation {
       )
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
-    // this.camera.position.set(0, 0, 500);
     new TWEEN.Tween(this.controls.target)
       .to(
         {
@@ -662,6 +690,7 @@ export class ThreeSimulation {
     this.onTheSide = true
   }
 
+  // Moves the camera to the left side of the scene
   moveLeft() {
     this.controls.mouseButtons = {
       LEFT: null,
@@ -683,7 +712,6 @@ export class ThreeSimulation {
       )
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
-    // this.camera.position.set(0, 0, 500);
     new TWEEN.Tween(this.controls.target)
       .to(
         {
@@ -699,6 +727,7 @@ export class ThreeSimulation {
     this.onTheSide = true
   }
 
+  // Moves the camera to the center of the scene
   moveCenter() {
     this.controls.mouseButtons = {
       LEFT: THREE.MOUSE.ROTATE,
@@ -734,6 +763,7 @@ export class ThreeSimulation {
     this.onTheSide = false
   }
 
+  // Sets the currently selected satellite and optionally resets the tweening status
   setCurrentlySelected(sat: Satellite, resetTweening = false) {
     this.currentlySelected = sat
 
@@ -744,32 +774,39 @@ export class ThreeSimulation {
     }
   }
 
+  // Changes the color of a satellite
   changeColor(color: string, sat: Satellite) {
     sat.setColor(color, this.getMeshIDBySatellite(sat), this.mesh)
   }
 
+  // Returns the names of the satellites
   getNameOfSats(): Satellite[] {
     return Object.values(this.satellites)
   }
 
+  // Returns the current time
   getTime() {
     return this.time
   }
 
+  // Returns the globe radius
   getGlobeRadius() {
     return this.globe.getGlobeRadius()
   }
 
+  // Enables satellite clicking
   enableSatClicking() {
     this.satClicking = true
   }
 
+  // Disables satellite clicking
   disableSatClicking() {
     this.satClicking = false
     this.deselect()
     this.dehover()
   }
 
+  // Adds an event listener for specific events
   addEventListener(event: 'select', callback: (sat: Satellite | undefined) => void): void
   addEventListener(event: 'earthClicked', callback: (sat: GeoCoords | undefined) => void): void
   addEventListener(
