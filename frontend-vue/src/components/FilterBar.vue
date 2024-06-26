@@ -1,3 +1,16 @@
+<!--
+  FilterBar is a component that allows the user to filter the satellites
+  based on their category. The user can select multiple categories and
+  the satellites that belong to the selected categories will be displayed.
+  The user can also filter the satellites based on their launch year.
+
+  The component consists of two main parts:
+  - The category filter: The user can select multiple categories from the
+    list of categories. The satellites that belong to the selected categories
+    will be displayed.
+  - The launch year filter: The user can filter the satellites based on their
+-->
+
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { Filter, SatManager } from '@/common/sat-manager'

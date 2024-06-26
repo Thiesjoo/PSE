@@ -1,3 +1,9 @@
+/*
+* This file is used to fetch data from the API
+* It is used to fetch the TLE data and categories
+* It also has a cache system to store the data for 1 hour
+*/
+
 import { API_URL } from '@/common/config'
 
 export interface API_TLE_DATA {

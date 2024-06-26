@@ -1,3 +1,7 @@
+<!--
+ Creates the about page. This page contains information about the project and the team members.
+-->
+
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { useI18n } from 'vue-i18n'

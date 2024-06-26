@@ -1,3 +1,7 @@
+<!--
+ This component is used to display the information on the right side of the screen.
+-->
+
 <script setup lang="ts">
 defineProps<{
   open: boolean

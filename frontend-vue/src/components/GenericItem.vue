@@ -1,3 +1,15 @@
+<!--
+  This component is a generic item that can be used to display a category or a subcategory.
+  It has a checkbox that toggles the selection of all the filters in the category.
+  The component receives the following props:
+  - alignLeft: a boolean that determines if the item should be aligned to the left or to the right.
+  - modelValue: an array of filters that belong to the category.
+  - index: the index of the category in the list of categories.
+  - icon: the icon of the category.
+  - name: the name of the category.
+  The component emits an 'update:modelValue' event when the checkbox is clicked.
+-->
+
 <script setup lang="ts">
 import { defineProps, defineEmits, computed } from 'vue'
 import { Filter } from '@/common/sat-manager'

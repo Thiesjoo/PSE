@@ -1,3 +1,10 @@
+<!--
+  This component is used to display information about different types of orbits.
+  It is used in the simulation component.
+  It is used to display information about the height, inclination, RAAN, and eccentricity of the orbit.
+  The information is displayed in a pop-up box.
+-->
+
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()

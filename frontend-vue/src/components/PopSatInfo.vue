@@ -1,3 +1,8 @@
+<!--
+  This component is a popup that shows information about a satellite.
+  It is used in the visualisation tab.
+-->
+
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
 import { computed, onUnmounted, ref } from 'vue'

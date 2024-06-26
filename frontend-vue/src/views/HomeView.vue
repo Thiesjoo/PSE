@@ -1,3 +1,8 @@
+<!-- 
+ In this file, the layout of the home page is defined.
+ It links to the visualization, simulation, communication pages and about pages.
+-->
+
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { useI18n } from 'vue-i18n'
