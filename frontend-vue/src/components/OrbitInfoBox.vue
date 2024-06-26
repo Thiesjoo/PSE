@@ -44,15 +44,15 @@ const props = defineProps<{
         Orbit inclination is the angle at which orbit is tilted compared to path around equator.
       </h4>
       <div class="orbit-info" v-show="picked === 'I0'">
-        <h4>{{ t('Inclination') }}: 0 &deg</h4>
+        <h4>{{ t('Inclination') }}: 0 &deg;</h4>
         <img src="/inclination0.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'I45'">
-        <h4>{{ t('Inclination') }}: &lt 45 &deg</h4>
+        <h4>{{ t('Inclination') }}: &lt; 45 &deg;</h4>
         <img src="/inclination45.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'I90'">
-        <h4>{{ t('Inclination') }}: 45-89 &deg</h4>
+        <h4>{{ t('Inclination') }}: 45-89 &deg;</h4>
         <img src="/inclination85.png" alt="Other Image" width="300" />
       </div>
     </div>
@@ -64,23 +64,23 @@ const props = defineProps<{
       <h2>{{ t('Right Ascension of the Ascending Node') }}</h2>
       <h4>RAAN determines at what longitude satellite crosses the equator.</h4>
       <div class="orbit-info" v-show="picked === 'RAAN0'">
-        <h4>{{ t('RAAN') }}: 0 &deg</h4>
+        <h4>{{ t('RAAN') }}: 0 &deg;</h4>
         <img src="/raan0.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'RAAN90'">
-        <h4>{{ t('RAAN') }}: &lt 90 &deg</h4>
+        <h4>{{ t('RAAN') }}: &lt; 90 &deg;</h4>
         <img src="/raan90.png" alt="MEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'RAAN180'">
-        <h4>{{ t('RAAN') }}: 90-180 &deg</h4>
+        <h4>{{ t('RAAN') }}: 90-180 &deg;</h4>
         <img src="/raan180.png" alt="Other Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'RAAN270'">
-        <h4>{{ t('RAAN') }}: 180-270 &deg</h4>
+        <h4>{{ t('RAAN') }}: 180-270 &deg;</h4>
         <img src="/raan270.png" alt="Other Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'RAAN360'">
-        <h4>{{ t('RAAN') }}: 270-360 &deg</h4>
+        <h4>{{ t('RAAN') }}: 270-360 &deg;</h4>
         <img src="/raan360.png" alt="Other Image" width="300" />
       </div>
     </div>
@@ -98,7 +98,7 @@ const props = defineProps<{
       </div>
       <div class="orbit-info" v-show="picked === 'E30'">
         <h3>{{ t('Slight Elliptical shape') }}</h3>
-        <h4>{{ t('Eccentricity') }}: &lt 0.3</h4>
+        <h4>{{ t('Eccentricity') }}: &lt; 0.3</h4>
         <img src="/eccentricity-4.png" alt="LEO Image" width="300" />
       </div>
       <div class="orbit-info" v-show="picked === 'E60'">
