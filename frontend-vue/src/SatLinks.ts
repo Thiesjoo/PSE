@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { Satellite, polar2Cartesian } from './Satellite'
-import { MAX_LINE_SIZE_LINKS } from './common/constants'
+import { MAX_LINE_SIZE_LINKS, PATH_GENERAL_COLOR, PATH_START_COLOR } from './common/constants'
 import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
 import { Graph } from './Graph'
 import { ThreeSimulation } from './Sim'
@@ -9,8 +9,8 @@ export class AllSatLinks {
   private line: THREE.Line | null = null
   private lineGeometry: THREE.BufferGeometry | null = null
 
-  private pathLines: MeshLine | null = null
-  private pathGeometry: MeshLineGeometry | null = null
+  private pathLines: [MeshLine, MeshLine, MeshLine] | null = null
+  private pathGeometry: [MeshLineGeometry, MeshLineGeometry, MeshLineGeometry] | null = null
 
   private allSatLinks: SatLinks[] = []
   private scene: THREE.Scene
@@ -58,17 +58,29 @@ export class AllSatLinks {
 
     //@ts-ignore
     const pathLineMaterial = new MeshLineMaterial({
-      color: new THREE.Color('blue'),
+      color: new THREE.Color(PATH_GENERAL_COLOR),
       lineWidth: 1
     })
 
-    this.pathGeometry = new MeshLineGeometry()
-    this.pathLines = new MeshLine(this.pathGeometry, pathLineMaterial)
+    //@ts-ignore
+    const pathStartAndEndMaterial = new MeshLineMaterial({
+      color: new THREE.Color(PATH_START_COLOR),
+      lineWidth: 1
+    })
+
+    this.pathGeometry = [new MeshLineGeometry(), new MeshLineGeometry(), new MeshLineGeometry()]
+    this.pathLines = [
+      new MeshLine(this.pathGeometry[0], pathStartAndEndMaterial),
+      new MeshLine(this.pathGeometry[1], pathLineMaterial),
+      new MeshLine(this.pathGeometry[2], pathStartAndEndMaterial)
+    ]
 
     scene.add(this.line)
-    scene.add(this.pathLines)
+    this.pathLines.forEach((pathLine) => {
+      scene.add(pathLine)
+      pathLine.renderOrder = -1
+    })
 
-    this.pathLines.renderOrder = -1
     this.line.renderOrder = 1
 
     this.scene = scene
@@ -174,12 +186,28 @@ export class AllSatLinks {
   private renderPath() {
     if (!this.pathLines || !this.pathGeometry) return
 
-    this.pathGeometry.setPoints(
-      this.path.map(
+    const startPath = this.path.slice(0, 2)
+    const path = this.path.slice(1, this.path.length - 1)
+    const endPath = this.path.slice(this.path.length - 2, this.path.length)
+    this.pathGeometry[0].setPoints(
+      startPath.map(
         (sat) => new THREE.Vector3(sat.xyzPosition.x, sat.xyzPosition.y, sat.xyzPosition.z)
       )
     )
-    this.pathGeometry.setDrawRange(0, this.path.length * 10)
+
+    this.pathGeometry[1].setPoints(
+      path.map((sat) => new THREE.Vector3(sat.xyzPosition.x, sat.xyzPosition.y, sat.xyzPosition.z))
+    )
+
+    this.pathGeometry[2].setPoints(
+      endPath.map(
+        (sat) => new THREE.Vector3(sat.xyzPosition.x, sat.xyzPosition.y, sat.xyzPosition.z)
+      )
+    )
+
+    this.pathGeometry.forEach((pathGeometry) => {
+      pathGeometry.setDrawRange(0, this.path.length * 10)
+    })
   }
 
   destroy() {
@@ -194,13 +222,17 @@ export class AllSatLinks {
     }
 
     if (this.pathLines) {
-      this.scene.remove(this.pathLines)
-      this.pathLines.remove()
+      this.pathLines.forEach((pathLine) => {
+        this.scene.remove(pathLine)
+        pathLine.remove()
+      })
     }
 
     if (this.pathGeometry) {
-      this.pathGeometry.setDrawRange(0, 0)
-      this.pathGeometry.dispose()
+      this.pathGeometry.forEach((pathGeometry) => {
+        pathGeometry.setDrawRange(0, 0)
+        pathGeometry.dispose()
+      })
     }
 
     this.allSatLinks = []
