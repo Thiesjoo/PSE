@@ -5,13 +5,22 @@ Link naar [google drive map](https://drive.google.com/drive/folders/1FpHyVIV6NC2
 
 ## Installation instructions frontend
 
+### Prerequisites
+- Node.js, at least version 18;
+- npm, the Node.js package manager.
+
+
+### Installation
+
 Clone this repository and run the following commands in the terminal:
 
 ```bash
-cd frontend
+cd frontend-vue
 npm install
 npm run dev
 ```
+
+This starts a development server on `localhost:5173`. The application should now be running. It always fetches the latest data from the backend on https://api.satradar.space.
 
 ## Backend manual
 Fetching satellite data directly from external API's can be slow and cumbersome due to the many separate endpoints. Furthermore, API keys (if any) cannot be present in the front-end due to security risks. This project aims to prevent these issues through the use of a backend application made using the Django framework. Using this backend, users can rely on a single endpoint to make high-speed API calls to fetch satellites with filter criteria.
@@ -171,11 +180,3 @@ There are two main activities that are logged:
 2. **API calls**: API calls that are made to the backend (from the front-end, presumably). This helps us keep track of how many, and from where, and at which times, API calls are made. 
 
 While these logs are printed to the console, they are also stored in logging files as `cron.log` and `views.log` respectively. They are located at `pse_backend/logs/`.
-
-### Tests
-The back-end uses Django's built-in testing tools for testing. To execute the tests, navigate to the `pse_backend` directory and run:
-```
-python3 manage.py test
-```
-
-Currently only the endpoints are tested.
