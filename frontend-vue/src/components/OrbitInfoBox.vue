@@ -41,7 +41,7 @@ const props = defineProps<{
     <div class="orbit-info-box" v-show="['I0', 'I45', 'I90'].includes(picked)">
       <h2>{{ t('Inclination') }}</h2>
       <h4>
-        Orbit inclination is the angle at which orbit is tilted compared to path around equator.
+        {{ t('Orbit information') }}
       </h4>
       <div class="orbit-info" v-show="picked === 'I0'">
         <h4>{{ t('Inclination') }}: 0 &deg;</h4>
@@ -62,7 +62,7 @@ const props = defineProps<{
       v-show="['RAAN0', 'RAAN90', 'RAAN180', 'RAAN270', 'RAAN360'].includes(picked)"
     >
       <h2>{{ t('Right Ascension of the Ascending Node') }}</h2>
-      <h4>RAAN determines at what longitude satellite crosses the equator.</h4>
+      <h4> {{ t( 'RAAN information')}}</h4>
       <div class="orbit-info" v-show="picked === 'RAAN0'">
         <h4>{{ t('RAAN') }}: 0 &deg;</h4>
         <img src="/raan0.png" alt="LEO Image" width="300" />
@@ -88,8 +88,7 @@ const props = defineProps<{
     <div class="orbit-info-box" v-show="['E0', 'E30', 'E60', 'E90'].includes(picked)">
       <h2>{{ t('Orbit Eccentricity') }}</h2>
       <h4>
-        Orbit eccentricity is how much an orbit looks like an oval instead of a perfect circle
-        <i class="fa-regular fa-circle"></i>.
+        {{ t( 'Eccentricity information') }}
       </h4>
       <div class="orbit-info" v-show="picked === 'E0'">
         <h3>{{ t('Circular Orbit') }}</h3>
@@ -150,6 +149,9 @@ img {
         "Low Earth Orbit": "Low Earth Orbit",
         "Medium Earth Orbit": "Medium Earth Orbit",
         "Other": "Other",
+        "Orbit information": "Orbit inclination is the angle at which orbit is tilted compared to path around equator.",
+        "RAAN information": "RAAN determines at what longitude satellite crosses the equator.",
+        "Eccentricity information": "Orbit eccentricity is how much an orbit looks like an oval instead of a perfect circle."
       },
       "nl": {
         "Height": "Hoogte",
@@ -160,6 +162,10 @@ img {
         "Low Earth Orbit": "Lage Omloopbaan",
         "Medium Earth Orbit": "Middelhoge Omloopbaan",
         "Other": "Andere",
+        "Orbit information": "De inclinatie van de baan is de hoek waaronder de baan is gekanteld ten opzichte van het pad rond de evenaar.",
+        "RAAN information": "RAAN bepaalt op welke lengtegraad de satelliet de evenaar kruist.",
+        "Eccentricity information": "De excentriciteit van de baan is hoeveel een baan op een ovaal lijkt in plaats van een perfecte cirkel.",
+        
       }
     }
   </i18n>
