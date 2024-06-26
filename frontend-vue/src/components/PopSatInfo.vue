@@ -211,7 +211,8 @@ onUnmounted(() => {
     line-height: 1.5em;
   }
 
-  p {
+  p,
+  #SatelliteEpoch {
     font-family: 'ComputerSaysNo';
     font-size: 2em;
   }
