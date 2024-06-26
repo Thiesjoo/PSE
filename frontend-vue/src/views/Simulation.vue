@@ -331,6 +331,7 @@ props.simulation.addEventListener('select', (satellite) => {
 
 h2 {
   text-align: center;
+  font-family: 'Tomorrow';
 }
 
 h4 {
