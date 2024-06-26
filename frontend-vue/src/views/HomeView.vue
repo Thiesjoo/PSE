@@ -1,6 +1,7 @@
 <!-- 
  In this file, the layout of the home page is defined.
- It links to the visualization, simulation, communication pages and about pages.
+ It links to the visualization, simulation and communication pages.
+ The about page is linked in the App.vue file
 -->
 
 <script setup lang="ts">
