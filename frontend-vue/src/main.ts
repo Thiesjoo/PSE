@@ -41,7 +41,7 @@ Sentry.init({
     Sentry.replayIntegration(),
     feedbackIntegration
   ],
-  beforeSend(event, hint) {
+  beforeSend(event) {
     if (event.exception && event.event_id) {
       Sentry.showReportDialog({ eventId: event.event_id })
     }
