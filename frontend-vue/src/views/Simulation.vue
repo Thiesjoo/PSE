@@ -287,7 +287,8 @@ props.simulation.addEventListener('select', (satellite) => {
       <h4>
         {{ t('Eccentricity') }}
         <button class="info_button" @click="picked = 'E0'" style="text-align: center">
-          <i class="fa fa-info-circle" aria-hidden="true"></i>
+          <!-- <i class="fa fa-info-circle" aria-hidden="true"></i> -->
+          <i class="fa-solid fa-circle-info"></i>
         </button>
       </h4>
       <div class="slider">
