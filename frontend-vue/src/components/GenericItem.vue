@@ -21,22 +21,20 @@ const toggle = () => {
 </script>
 
 <template>
-  <div
+  <label
     class="wrapper"
     :style="alignLeft ? { justifyContent: 'left' } : { justifyContent: 'right' }"
+    :for="'label' + index"
   >
-    <!-- <p v-if="!alignLeft" class="cat-name">{{ name }}</p> -->
     <input
       type="checkbox"
       :checked="props.modelValue.every((filter) => filter.selected)"
       @change="toggle"
       :id="'label' + index"
     />
-    <label :for="'label' + index">
-      <img :src="icon" width="65" height="65" />
-    </label>
-    <label class="cat-name">{{ name }}</label>
-  </div>
+    <img :src="icon" width="65" height="65" />
+    <span class="cat-name">{{ name }}</span>
+  </label>
 </template>
 
 <style scoped lang="scss">
@@ -44,7 +42,7 @@ const toggle = () => {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  flex-basis:45%;
+  flex-basis: 45%;
   align-items: center;
   padding-bottom: 10px;
   padding-top: 10px;
@@ -53,18 +51,7 @@ const toggle = () => {
 
   background-color: rgba(61, 61, 109, 0.671);
   border: 1px solid white;
-
-  label {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    // border: 1px solid purple;
-
-    img {
-      opacity: 50%;
-      // border: 1px solid green;
-    }
-  }
+  cursor: pointer; /* Makes the cursor change to a pointer when hovering over the wrapper */
 }
 
 input {
@@ -74,10 +61,14 @@ input {
   width: 0;
   height: 0;
   opacity: 0;
+}
 
-  &:checked + label img {
-    opacity: 100%; // Show the image when the checkbox is checked
-  }
+input:checked + img {
+  opacity: 100%; /* Show the image when the checkbox is checked */
+}
+
+img {
+  opacity: 50%;
 }
 
 .cat-name {
@@ -87,34 +78,4 @@ input {
   margin-left: 10px;
   margin-right: 7px;
 }
-
-// .wrapper {
-//   position: relative;
-// }
-
-// input {
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   opacity: 0;
-//   cursor: pointer;
-
-//   &:checked + label {
-//     background-color: rgba(45, 155, 156, 0.45);
-//   }
-
-//   & + label {
-//     display: block;
-//     padding: 0.2em;
-//     margin: 0.2em 0;
-//     border: 1px solid #ccc;
-//     border-radius: 0.25em;
-//     cursor: pointer;
-
-//     border: 1px solid red;
-//     height: 100px;
-//   }
-// }
 </style>
