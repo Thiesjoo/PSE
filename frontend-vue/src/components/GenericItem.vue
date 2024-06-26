@@ -51,7 +51,7 @@ const toggle = () => {
 
   background-color: rgba(61, 61, 109, 0.671);
   border: 1px solid white;
-  cursor: pointer; /* Makes the cursor change to a pointer when hovering over the wrapper */
+  cursor: pointer; 
 }
 
 input {
@@ -64,7 +64,7 @@ input {
 }
 
 input:checked + img {
-  opacity: 100%; /* Show the image when the checkbox is checked */
+  opacity: 100%;
 }
 
 img {
