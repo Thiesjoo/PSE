@@ -47,10 +47,9 @@ updateLaunchYearFilter()
 <template>
   <LeftInfoBlock :open="true">
     <div class="flex">
-      <h2>Category filter</h2>
+      <h2>{{ t("Category filter")}}</h2>
       <i>
-        Some satellites are in multiple categories. They will be shown in all categories they belong
-        to.</i
+        {{ t("Multiple filters") }}</i
       >
       <div class="filter-block">
         <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
@@ -384,7 +383,9 @@ $labelFontSize: 14px !default;
       "Select All": "Select All",
 
       "FilteringLaunchYear1": "Filtering on launches from ",
-      "FilteringLaunchYear2": " to "
+      "FilteringLaunchYear2": " to ",
+      "Category filter": "Category filter",
+      "Multiple filters": "Some satellites are in multiple categories. They will be shown in all categories they belong to."
   },
   "nl": {
       "Last 30 Days' Launches": "Laatste 30 Dagen Lanceringen",
@@ -442,7 +443,9 @@ $labelFontSize: 14px !default;
       "Select All": "Selecteer alles",
 
       "FilteringLaunchYear1": "Filteren op lanceringen van ",
-      "FilteringLaunchYear2": " tot "
+      "FilteringLaunchYear2": " tot ",
+      "Category filter": "Categorie filter",
+      "Multiple filters": "Sommige satellieten zitten in meerdere categorieën. Ze zullen in alle categorieën worden getoond waar ze bij horen."
   }
 }
 </i18n>

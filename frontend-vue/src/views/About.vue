@@ -19,6 +19,7 @@ props.simulation.moveLeft()
     {{ t('Info') }}
     <br />
     <h2>{{ t('Team') }}</h2>
+    {{ t('Following') }}
     <div class="lists">
       <ul>
         <li>Thies Nieborg</li>
@@ -32,6 +33,7 @@ props.simulation.moveLeft()
         <li>Sasha van der Linden</li>
         <li>Wike Duivenvoorden</li>
       </ul>
+
     </div>
     <img src="../assets/uvalogo_white.png" alt="UvA logo" />
   </div>
@@ -108,12 +110,14 @@ props.simulation.moveLeft()
         "en": {
             "About": "About",
             "Team": "Team",
-            "Info": "This is made for the course 'Project software engineering' at the University of Amsterdam. During the project we have guidance from Wouter Loeve from the NLR. The goal of the project is to introduce children to satellites. We want to achieve this by visualizing different properties of the satellites."
+            "Info": "This website is made for the course 'Project software engineering' at the University of Amsterdam. The goal of the project is to introduce children to satellites. We want to achieve this by visualizing different properties of the satellites. During the project we have had help from Wouter Loeve from the NLR.",
+            "Following": "The following students have contributed to this project:"
         },
         "nl": {
             "About": "Over ons",
             "Team": "Team",
-            "Info": "Dit is gemaakt voor het vak 'Project software engineering' aan de Universiteit van Amsterdam. Tijdens het project hebben we begeleiding van Wouter Loeve van het NLR. Het doel van het project is om kinderen kennis te laten maken met satellieten. Dit willen we bereiken door verschillende eigenschappen van de satellieten te visualiseren."
+            "Info": "Dit is gemaakt voor het vak 'Project software engineering' aan de Universiteit van Amsterdam. Het doel van het project is om kinderen kennis te laten maken met satellieten. Dit willen we bereiken door verschillende eigenschappen van de satellieten te visualiseren. Tijdens het project hebben we begeleiding gekregen van Wouter Loeve van het NLR.",
+            "Following": "De volgende studenten hebben bijgedragen aan dit project:"
         }
     }
 </i18n>
