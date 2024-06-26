@@ -95,7 +95,10 @@ const intervals = [1, 10, 100, 1000]
   h1 {
     margin-bottom: 0.3em;
     font-variant-numeric: tabular-nums;
+    font-family: 'ComputerSaysNo';
+    font-size: 3em;
   }
+
   .speed {
     button {
       margin: 0 5px;
