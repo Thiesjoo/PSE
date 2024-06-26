@@ -259,33 +259,33 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <br />
       <h4>
-        {{ t('Height') }} [km]
+        {{ t('Height') }}
         <InfoPopup class="icon"> {{ t('info H') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
-        <p class="display">Value: {{ height }}</p>
+        <p class="display">Value: {{ height }} [km]</p>
       </div>
       <br />
       <h4>
-        {{ t('Inclination') }} [deg]
+        {{ t('Inclination') }}
         <InfoPopup class="icon"> {{ t('info Incl') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
-        <p class="display">Value: {{ inclination }}</p>
+        <p class="display">Value: {{ inclination }} [deg]</p>
       </div>
       <br />
       <h4>
-        {{ t('RAAN') }} [deg]
+        {{ t('RAAN') }}
         <InfoPopup class="icon"> {{ t('info R') }} </InfoPopup>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
         <br />
-        <p class="display">Value: {{ raan }}</p>
+        <p class="display">Value: {{ raan }} [deg]</p>
       </div>
       <br />
       <h4>
