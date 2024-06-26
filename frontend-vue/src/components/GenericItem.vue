@@ -44,11 +44,12 @@ const toggle = () => {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  flex-basis: 40%;
+  flex-basis:45%;
   align-items: center;
   padding-bottom: 10px;
   padding-top: 10px;
   border-radius: 10px;
+  max-width: 138px;
 
   background-color: rgba(61, 61, 109, 0.671);
   border: 1px solid white;
