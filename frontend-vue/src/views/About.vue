@@ -78,7 +78,7 @@ props.simulation.moveLeft()
     justify-content: space-between;
     border-radius: 20pt;
     padding: 10pt;
-    background-color: $menu_button_background;
+    background-color: $button_background;
     text-align: left;
   }
 

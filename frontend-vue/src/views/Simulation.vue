@@ -1,3 +1,12 @@
+<!--
+  This file is the view for the simulation page. This page is used to create and edit satellites in the simulation.
+
+  The page consists of two main components:
+  - LeftInfoBlock: This component contains sliders to edit the satellite's properties.
+  - RightInfoBlock: This component contains a list of satellites and information about the selected satellite.
+
+ -->
+
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
@@ -7,13 +16,17 @@ import {
   calculateRevolutionPerDay,
   epochUpdate
 } from '@/calc_helper'
-import InfoPopup from '@/components/InfoPopup.vue'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import RightInfoBlock from '@/components/RightInfoBlock.vue'
 import OrbitInfoBlock from '@/components/OrbitInfoBox.vue'
+
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faTrashCan, faPlus, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { CURRENT_COLOR } from '@/common/constants'
+
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -21,32 +34,31 @@ const props = defineProps<{
 }>()
 await props.simulation.waitUntilFinishedLoading()
 
-const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
-const CURRENT_COLOR = '#34b4b5' //Blue
+const basicAlt = 153000 + 6371 * 1000 // Add Earth's radius
 const satellites = ref<Satellite[]>([])
 
 let currentlySelectedSatellite: Satellite
 let currentlySelectedSatelliteRef = ref<Satellite | null>(null)
-let sat_number = 1 // Used for naming satellites when creating multiple
+let satNumber = 1 // Used for naming satellites when creating multiple
 
 /**
  * Compiles a TLE for a new satellite with the given altitude.
  *
  * @param alt - The altitude of the satellite.
  */
-function tle_new_satellite(alt: number) {
+function tleNewSatellite(alt: number) {
   // Set epoch as current time and alt as 160km
   let epoch = epochUpdate()
   let mean_motion = calculateRevolutionPerDay(alt)
 
   // Initializing own satelite
-  let name = t('Satellite ') + sat_number.toString() + '\n'
-  let cat_n = sat_number.toString().padStart(5, '0')
-  let part1 = '1 ' + cat_n + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1'
+  let name = t('Satellite ') + satNumber.toString() + '\n'
+  let catN = satNumber.toString().padStart(5, '0')
+  let part1 = '1 ' + catN + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1'
   let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
   let part3 = '000001'
   let tle = name + part1 + part2 + mean_motion + part3
-  sat_number = sat_number + 1
+  satNumber = satNumber + 1
   return tle
 }
 
@@ -55,7 +67,7 @@ function tle_new_satellite(alt: number) {
  *
  * @param {Satellite} sat - The satellite to reset the sliders to.
  */
-function update_display(sat: Satellite) {
+function updateDisplay(sat: Satellite) {
   height.value = calculateHeight(sat.satData.no)
   inclination.value = +((sat.satData.inclo * 180) / Math.PI).toFixed(0)
   raan.value = +((sat.satData.nodeo * 180) / Math.PI).toFixed(0)
@@ -72,19 +84,19 @@ function update_display(sat: Satellite) {
  * @param {number} alt - The altitude for the new satellite.
  * @returns {Satellite} The newly created satellite.
  */
-function add_new_satellite(alt: number) {
+function addNewSatellite(alt: number) {
   // Creating Satellite object and adding it to simulation
-  let tle = tle_new_satellite(alt)
+  let tle = tleNewSatellite(alt)
   const sats = Satellite.fromMultipleTLEs(tle)
-  sats.forEach((sat) => props.simulation.addSatellite(sat))
+  props.simulation.addSatellites(sats)
   let new_sat = sats[0]
 
   //  Some settings
-  update_display(new_sat)
+  updateDisplay(new_sat)
   new_sat.country = 'NL'
 
   // Add orbit
-  create_orbit(new_sat)
+  createOrbit(new_sat)
 
   return new_sat
 }
@@ -100,23 +112,23 @@ function change_selected(satellite: Satellite) {
     if (currentlySelectedSatellite) {
       props.simulation.removeOrbit(currentlySelectedSatellite)
     }
-    set_current_sat(satellite)
+    setCurrentSat(satellite)
     props.simulation.deselect()
     props.simulation.setCurrentlySelected(satellite, true)
     props.simulation.changeColor(CURRENT_COLOR, satellite)
 
-    update_display(currentlySelectedSatellite)
+    updateDisplay(currentlySelectedSatellite)
     // Show orbit
-    create_orbit(satellite)
+    createOrbit(satellite)
   }
 }
 
-function set_current_sat(satellite: Satellite) {
+function setCurrentSat(satellite: Satellite) {
   currentlySelectedSatellite = satellite
   currentlySelectedSatelliteRef.value = currentlySelectedSatellite
 }
 
-function create_orbit(satellite: Satellite) {
+function createOrbit(satellite: Satellite) {
   // Add orbit
   props.simulation.removeOrbit(satellite)
   const orbit = props.simulation.addOrbit(satellite, true)
@@ -207,13 +219,13 @@ watch(e, (Value) => {
 
 // ********* first satellite *********
 onMounted(() => {
-  change_selected(add_new_satellite(basic_alt))
+  change_selected(addNewSatellite(basicAlt))
 })
 
 // ********* ADD SATELLITE BUTTON *********
 watch(add, (newValue) => {
   if (newValue === 1) {
-    change_selected(add_new_satellite(basic_alt))
+    change_selected(addNewSatellite(basicAlt))
     add.value = 0 // Reset 'add' to 0 (false)
   }
 })
@@ -223,9 +235,9 @@ watch(remove, (newValue) => {
   if (newValue === 1) {
     props.simulation.reset()
     remove.value = 0 // Reset 'add' to 0 (false)
-    sat_number = 1 // Resets the naming
+    satNumber = 1 // Resets the naming
 
-    set_current_sat(add_new_satellite(basic_alt))
+    setCurrentSat(addNewSatellite(basicAlt))
   }
 })
 
@@ -238,15 +250,6 @@ props.simulation.addEventListener('select', (satellite) => {
 </script>
 
 <template>
-  <head>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  </head>
   <LeftInfoBlock :open="true" class="container">
     <br />
     <h2>{{ t('Simulation Variables') }}</h2>
@@ -259,38 +262,46 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <br />
       <h4>
-        {{ t('Height') }} [km]
-        <InfoPopup class="icon"> {{ t('info H') }} </InfoPopup>
+        {{ t('Height') }}
+        <button class="info_button" @click="picked = 'LEO'" style="text-align: center">
+          <FontAwesomeIcon :icon="faInfoCircle" />
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
-        <p class="display">Value: {{ height }}</p>
+        <p class="display">Value: {{ height }} [km]</p>
       </div>
       <br />
       <h4>
-        {{ t('Inclination') }} [deg]
-        <InfoPopup class="icon"> {{ t('info Incl') }} </InfoPopup>
+        {{ t('Inclination') }}
+        <button class="info_button" @click="picked = 'I0'" style="text-align: center">
+          <FontAwesomeIcon :icon="faInfoCircle" />
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
-        <p class="display">Value: {{ inclination }}</p>
+        <p class="display">Value: {{ inclination }} [deg]</p>
       </div>
       <br />
       <h4>
-        {{ t('RAAN') }} [deg]
-        <InfoPopup class="icon"> {{ t('info R') }} </InfoPopup>
+        {{ t('RAAN') }}
+        <button class="info_button" @click="picked = 'RAAN0'" style="text-align: center">
+          <FontAwesomeIcon :icon="faInfoCircle" />
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
         <br />
-        <p class="display">Value: {{ raan }}</p>
+        <p class="display">Value: {{ raan }} [deg]</p>
       </div>
       <br />
       <h4>
         {{ t('Eccentricity') }}
-        <InfoPopup class="icon"> {{ t('info E') }} </InfoPopup>
+        <button class="info_button" @click="picked = 'E0'" style="text-align: center">
+          <FontAwesomeIcon :icon="faInfoCircle" />
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="99" v-model="e" class="slider" />
@@ -301,119 +312,11 @@ props.simulation.addEventListener('select', (satellite) => {
     <br />
     <div class="button-box">
       <button class="add-del-button" @click="add = 1" style="text-align: center">
-        <i class="fa-solid fa-plus"></i>
-        <!-- {{ t('Add satellite') }} -->
-      </button>
-      <button class="add-del-button" @click="remove = 1" style="text-align: center">
-        <i class="fa-regular fa-trash-can"></i>
-        <!-- {{ t('Delete satellites') }} -->
+        <FontAwesomeIcon :icon="faPlus" />
       </button>
     </div>
   </LeftInfoBlock>
   <RightInfoBlock :open="true">
-    <!-- Information box HEIGHT -->
-    <!-- <div class="orbit-info-box" v-show="picked === 'LEO' || picked === 'MEO' || picked === 'GEO'">
-      <h2>{{ t('Orbit Category') }}</h2>
-      <div class="orbit-info" v-show="picked === 'LEO'">
-        <h3>{{ t('Low Earth Orbit') }}</h3>
-        <h4>{{ t('Height') }}: 160-2000 km</h4>
-        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'MEO'">
-        <h3>{{ t('Medium Earth Orbit') }}</h3>
-        <h4>{{ t('Height') }}: 2000-36000 km</h4>
-        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'GEO'">
-        <h3>{{ t('Other') }}</h3>
-        <h4>{{ t('Height') }}: >36000 km</h4>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
-      </div>
-    </div> -->
-    <!-- Information box INCLINATION -->
-    <!-- <div class="orbit-info-box" v-show="picked === 'I0' || picked === 'I45' || picked === 'I90'">
-      <h2>{{ t('Inclination') }}</h2>
-      <h4>
-        Orbit inclination is the angle at which orbit is tilted compared to path around equator.
-      </h4>
-      <div class="orbit-info" v-show="picked === 'I0'">
-        <h4>{{ t('Inclination') }}: 0 &deg</h4>
-        <img src="/inclination0.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'I45'">
-        <h4>{{ t('Inclination') }}: &lt 45 &deg</h4>
-        <img src="/inclination45.png" alt="MEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'I90'">
-        <h4>{{ t('Inclination') }}: 45-89 &deg</h4>
-        <img src="/inclination85.png" alt="Other Image" width="300" />
-      </div>
-    </div> -->
-    <!-- Information box RAAN -->
-    <!-- <div
-      class="orbit-info-box"
-      v-show="
-        picked === 'RAAN0' ||
-        picked === 'RAAN90' ||
-        picked === 'RAAN180' ||
-        picked === 'RAAN270' ||
-        picked === 'RAAN360'
-      "
-    >
-      <h2>{{ t('Right Ascension of the Ascending Node') }}</h2>
-      <h4>RAAN determines at what longitude satellite crosses the equator.</h4>
-      <div class="orbit-info" v-show="picked === 'RAAN0'">
-        <h4>{{ t('RAAN') }}: 0 &deg</h4>
-        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'RAAN90'">
-        <h4>{{ t('RAAN') }}: &lt 90 &deg</h4>
-        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'RAAN180'">
-        <h4>{{ t('RAAN') }}: 90-180 &deg</h4>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'RAAN270'">
-        <h4>{{ t('RAAN') }}: 180-270 &deg</h4>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'RAAN360'">
-        <h4>{{ t('RAAN') }}: 270-360 &deg</h4>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
-      </div>
-    </div> -->
-    <!-- Information box ECCENTRICITY -->
-    <!-- <div
-      class="orbit-info-box"
-      v-show="picked === 'E0' || picked === 'E30' || picked === 'E60' || picked === 'E90'"
-    >
-      <h2>{{ t('Orbit Eccentricity') }}</h2>
-      <h4>
-        Orbit eccentricity is how much an orbit looks like an oval instead of a perfect circle
-        <i class="fa-regular fa-circle"></i>.
-      </h4>
-      <div class="orbit-info" v-show="picked === 'E0'">
-        <h3>{{ t('Circular Orbit') }}</h3>
-        <h4>{{ t('Eccentricity') }}: 0</h4>
-        <img src="/eccentricity-0.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'E30'">
-        <h3>{{ t('Slight Elliptical shape') }}</h3>
-        <h4>{{ t('Eccentricity') }}: &lt 0.3</h4>
-        <img src="/eccentricity-4.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'E60'">
-        <h3>{{ t('More Elliptical shape') }}</h3>
-        <h4>{{ t('Eccentricity') }}: 0.3 - 0.6</h4>
-        <img src="/eccentricity-75.png" alt="MEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'E90'">
-        <h3>{{ t('Ellipse') }}</h3>
-        <h4>{{ t('Eccentricity') }}: >0.60</h4>
-        <img src="/eccentricity-95.png" alt="Other Image" width="300" />
-      </div>
-    </div> -->
     <div class="right-info-box">
       <h2>{{ t('Satellites Created') }}</h2>
       <div class="satellite-list">
@@ -427,6 +330,9 @@ props.simulation.addEventListener('select', (satellite) => {
           {{ t('Satellite') + ' ' + (index + 1) }}
         </div>
       </div>
+      <button class="add-del-button del-button" @click="remove = 1" style="text-align: center">
+        <FontAwesomeIcon :icon="faTrashCan" />
+      </button>
     </div>
     <OrbitInfoBlock :picked="picked" class="orbit-order" />
   </RightInfoBlock>
@@ -445,6 +351,7 @@ props.simulation.addEventListener('select', (satellite) => {
 
 h2 {
   text-align: center;
+  font-family: 'Tomorrow';
 }
 
 h4 {
@@ -455,14 +362,6 @@ h4 {
 h3 {
   text-align: center;
   font-weight: bold;
-}
-
-.icon {
-  // override the infopopup style
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
 }
 
 .name-sat {
@@ -492,6 +391,50 @@ h3 {
   color: $main_text;
   background-color: $button_background_box;
   border: 1px solid $button_border_box;
+  width: 100%;
+}
+
+.del-button {
+  padding: 0.2em;
+  margin-top: 0.4em;
+}
+
+.info_button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Makes the button circular */
+  background-color: transparent; /* Remove background color */
+  color: rgba(215, 217, 220, 0.7);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.info_button:hover {
+  color: $main_text;
+}
+
+.info_button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Makes the button circular */
+  background-color: transparent; /* Remove background color */
+  color: rgba(215, 217, 220, 0.7);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.info_button:hover {
+  color: $main_text;
 }
 
 .orbit-order {
@@ -539,14 +482,13 @@ h3 {
 
 .right-info-box {
   align-self: end;
-  width: 175px;
-  height: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 15vw;
+  height: 40%;
   background-color: $pop_up_background;
   color: $main_text;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 10px;
-  padding-bottom: 10px;
   border: 2px solid $pop_up_border;
   border-radius: 12px;
   padding: 15px;
@@ -555,6 +497,25 @@ h3 {
 .satellite-list {
   overflow-y: auto; /* Enable vertical scroll if needed */
   max-height: 65%; /* Limit max height to parent height */
+}
+
+.styled-button {
+  background: none; /* Remove background color */
+  border: none; /* Remove border */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+  cursor: pointer; /* Make cursor pointer to indicate it's clickable */
+  display: inline-flex; /* Ensure the button is inline */
+  align-items: center; /* Center items vertically */
+  vertical-align: middle; /* Align button vertically with the text */
+}
+
+.styled-button .icon {
+  // display: inline-block; /* Ensure the icon is inline */
+  position: relative;
+  display: inline-block;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 .satellite-item {

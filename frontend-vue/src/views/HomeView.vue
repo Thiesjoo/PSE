@@ -108,7 +108,7 @@ props.simulation.moveRight()
     padding: 0.5em;
 
     border-radius: 20pt;
-    background-color: $menu_button_background;
+    background-color: $button_background;
 
     display: flex;
     align-items: center;
@@ -169,22 +169,14 @@ props.simulation.moveRight()
             "Satellite Radar": "Satellite Radar",
             "All satellites": "All satellites",
             "Create satellites": "Make your own satellite",
-            "Communication": "Communication",
-            "All_satellites_cta": "View all satellites in orbit",
-            "Create_satellites_cta": "Create your own satellite and launch it into orbit",
-            "Communication_cta": "Send your message across the globe",
-            "Scale_disclaimer": "The scale visualizations in this app are not an accurate reflection of reality."
+            "Communication": "Communication"
         },
         "nl": {
             "About": "Over ons",
             "Satellite Radar": "Satelliet Radar",
             "All satellites": "Alle satellieten",
             "Create satellites": "Maak je eigen satelliet",
-            "Communication": "Communicatie",
-            "All_satellites_cta": "Bekijk alle satellieten in de ruimte",
-            "Create_satellites_cta": "Maak je eigen satelliet en lanceer hem in de ruimte",
-            "Communication_cta": "Stuur je bericht de wereld rond",
-            "Scale_disclaimer": "De schaal visualisaties in deze app zijn niet een accurate weergave van de werkelijkheid."
+            "Communication": "Communicatie"
         }
     }
 </i18n>
