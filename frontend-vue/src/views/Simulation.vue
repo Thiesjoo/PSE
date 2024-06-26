@@ -13,6 +13,10 @@ import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import RightInfoBlock from '@/components/RightInfoBlock.vue'
 import OrbitInfoBlock from '@/components/OrbitInfoBox.vue'
+
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faTrashCan, faPlus, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -251,7 +255,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <h4>
         {{ t('Height') }}
         <button class="info_button" @click="picked = 'LEO'" style="text-align: center">
-          <i class="fa fa-info-circle" aria-hidden="true"></i>
+          <FontAwesomeIcon :icon="faInfoCircle" />
         </button>
       </h4>
       <div class="slider">
@@ -263,7 +267,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <h4>
         {{ t('Inclination') }}
         <button class="info_button" @click="picked = 'I0'" style="text-align: center">
-          <i class="fa fa-info-circle" aria-hidden="true"></i>
+          <FontAwesomeIcon :icon="faInfoCircle" />
         </button>
       </h4>
       <div class="slider">
@@ -275,7 +279,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <h4>
         {{ t('RAAN') }}
         <button class="info_button" @click="picked = 'RAAN0'" style="text-align: center">
-          <i class="fa fa-info-circle" aria-hidden="true"></i>
+          <FontAwesomeIcon :icon="faInfoCircle" />
         </button>
       </h4>
       <div class="slider">
@@ -287,8 +291,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <h4>
         {{ t('Eccentricity') }}
         <button class="info_button" @click="picked = 'E0'" style="text-align: center">
-          <!-- <i class="fa fa-info-circle" aria-hidden="true"></i> -->
-          <i class="fa-solid fa-circle-info"></i>
+          <FontAwesomeIcon :icon="faInfoCircle" />
         </button>
       </h4>
       <div class="slider">
@@ -300,7 +303,7 @@ props.simulation.addEventListener('select', (satellite) => {
     <br />
     <div class="button-box">
       <button class="add-del-button" @click="add = 1" style="text-align: center">
-        <i class="fa-solid fa-plus"></i>
+        <FontAwesomeIcon :icon="faPlus" />
       </button>
     </div>
   </LeftInfoBlock>
@@ -319,7 +322,7 @@ props.simulation.addEventListener('select', (satellite) => {
         </div>
       </div>
       <button class="add-del-button del-button" @click="remove = 1" style="text-align: center">
-        <i class="fa-regular fa-trash-can"></i>
+        <FontAwesomeIcon :icon="faTrashCan" />
       </button>
     </div>
     <OrbitInfoBlock :picked="picked" class="orbit-order" />
