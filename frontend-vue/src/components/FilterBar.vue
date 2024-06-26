@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
-import { SatManager } from '@/common/sat-manager'
+import { Filter, SatManager } from '@/common/sat-manager'
 import FilterItem from './FilterItem.vue'
+import GenericItem from './GenericItem.vue'
 import InfoPopup from './InfoPopup.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
@@ -41,17 +42,79 @@ const updateLaunchYearFilter = () => {
   })
 }
 
+// Initial update of the launch year filter
 updateLaunchYearFilter()
+
+// A 'generic' is a bundle of filters. There
+// are six generics currently.
+interface Generic {
+  name: string
+  filters: Filter[]
+}
+
+// Keeps track of whether or not to keep advanced filters on
+const advancedFilters = ref(false)
+filters[2].selected = false
+filters[0].selected = false
+
+//NOTE: Yes this is hardcoded ugly but I'm too lazy atm
+const generics = ref([
+  {
+    name: 'Weather',
+    filters: [filters[3]],
+    icon: '/filter-icons/weather2.svg'
+  },
+  {
+    name: 'Navigational',
+    // Just everything navigation related
+    filters: [filters[17], filters[18], filters[19], filters[20], filters[21]],
+    icon: '/filter-icons/navigation.svg'
+  },
+  {
+    name: 'Communication',
+    filters: [filters[12]],
+    icon: '/filter-icons/communication2.svg'
+  },
+  {
+    name: 'Space Stations',
+    filters: [filters[1]],
+    icon: '/filter-icons/space_station.svg'
+  },
+  {
+    name: 'Science',
+    // In order: geodetics, engineering, NOAA,
+    // Earth Resources, ARGOSS, Planet
+    filters: [filters[23], filters[24], filters[4], filters[5], filters[8], filters[9]],
+    icon: '/filter-icons/science.svg'
+  },
+  {
+    name: 'Other',
+    // Literally everything
+    filters: [
+      filters[6],
+      filters[7],
+      filters[10],
+      filters[11],
+      filters[13],
+      filters[14],
+      filters[15],
+      filters[16],
+      filters[22]
+    ],
+    icon: '/filter-icons/other.svg'
+  }
+])
 </script>
 
 <template>
-  <LeftInfoBlock :open="true">
-    <div class="flex">
-      <h2>Category filter</h2>
-      <i>
-        Some satellites are in multiple categories. They will be shown in all categories they belong
-        to.</i
-      >
+  <LeftInfoBlock :open="true" class="left-info-block">
+    <h2>Category filter</h2>
+    <i>
+      Some satellites are in multiple categories. They will be shown in all categories they belong
+      to.</i
+    >
+
+    <div class="flex" v-if="advancedFilters">
       <div class="filter-block">
         <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
           {{ t(filter.name) }} - {{ manager.count[filter.name] }}
@@ -63,40 +126,61 @@ updateLaunchYearFilter()
 
       <button @click="manager.selectNone()">{{ t('Unselect All') }}</button>
       <button @click="manager.selectAll()">{{ t('Select All') }}</button>
+    </div>
 
-      <div class="launch-year-filter-block">
-        <label
-          >{{
-            t('FilteringLaunchYear1') +
-            slider_values[0] +
-            t('FilteringLaunchYear2') +
-            slider_values[1]
-          }}.
-        </label>
-        <vue-slider
-          v-model="slider_values"
-          :min="FIRST_LAUNCH_YEAR"
-          :max="MOST_RECENT_LAUNCH_YEAR"
-          :min-range="1"
-          :enable-cross="false"
-          :tooltip="'always'"
-          :tooltip-placement="['bottom', 'bottom']"
-          :lazy="true"
-          id="launch-year-slider"
-          v-on:drag-end="updateLaunchYearFilter"
-        />
-
-        <input
-          type="checkbox"
-          id="include_without_launch_year"
-          v-model="include_sats_without_launch_year"
-          hidden
-        />
-        <label for="include_without_launch_year" hidden
-          >Include satellites without launch year</label
+    <div v-else class="flex">
+      <div class="generic-block">
+        <GenericItem
+          v-for="(generic, index) in generics"
+          :key="generic.name"
+          v-model="generic.filters"
+          :align-left="index % 2 != 0"
+          :index="index"
+          :icon="generic.icon"
+          :name="generic.name"
         >
+        </GenericItem>
       </div>
     </div>
+
+    <input
+      class="advanced-filtering-checkbox"
+      type="checkbox"
+      @click="advancedFilters = !advancedFilters"
+      :checked="advancedFilters"
+      id="advanced-filter-checkbox"
+    />
+    <label for="advanced-filter-checkbox" id="advanced-filtering-label">Advanced filtering</label>
+
+    <div class="launch-year-filter-block">
+      <label
+        >{{
+          t('FilteringLaunchYear1') +
+          slider_values[0] +
+          t('FilteringLaunchYear2') +
+          slider_values[1]
+        }}.
+      </label>
+      <input
+        type="checkbox"
+        id="include_without_launch_year"
+        v-model="include_sats_without_launch_year"
+        hidden
+      />
+      <label for="include_without_launch_year" hidden>Include satellites without launch year</label>
+    </div>
+    <vue-slider
+      v-model="slider_values"
+      :min="FIRST_LAUNCH_YEAR"
+      :max="MOST_RECENT_LAUNCH_YEAR"
+      :min-range="1"
+      :enable-cross="false"
+      :tooltip="'always'"
+      :tooltip-placement="['bottom', 'bottom']"
+      :lazy="true"
+      id="launch-year-slider"
+      v-on:drag-end="updateLaunchYearFilter"
+    />
   </LeftInfoBlock>
 </template>
 
@@ -208,6 +292,11 @@ $labelFontSize: 14px !default;
   border-radius: $railBorderRadius;
 }
 
+.left-info-block {
+  padding: 20px;
+  padding-top: 30px;
+}
+
 /* mark style */
 .vue-slider-mark {
   z-index: 4;
@@ -288,14 +377,11 @@ $labelFontSize: 14px !default;
   flex-direction: column;
   max-height: 100%;
   color: $main_text;
-
-  padding-top: 2em;
-  padding-right: 1.5em;
-  padding-left: 1.5em;
+  padding-top: 20px;
 
   button {
     margin: 5px 0;
-    background-color: $button_background_box;
+    background-color: rgba(61, 61, 109, 0.671);
     color: $main_text;
     border: 1px solid $button_border_box;
     border-radius: 5px;
@@ -317,8 +403,26 @@ $labelFontSize: 14px !default;
   }
 }
 
+.generic-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  border-radius: 5%;
+  margin-top: 15px;
+}
+
+.advanced-filtering-checkbox {
+  margin-top: 20px;
+  margin-right: 5px;
+}
+
+.advanced-filtering-label {
+  font-family: 'Tomorrow';
+}
+
 .launch-year-filter-block {
-  margin-bottom: 30px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 #include_without_launch_year {
