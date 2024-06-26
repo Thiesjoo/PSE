@@ -28,10 +28,11 @@ const back = () => {
     </template>
 
     <div class="buttons">
-      <button @click="back()"
-      :class="{
-      'transparant': currentTab ===1
-      }"
+      <button
+        @click="back()"
+        :class="{
+          transparant: currentTab === 1
+        }"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="left">
           <g>
@@ -46,7 +47,10 @@ const back = () => {
       </button>
       <button
         @click="next()"
-        :disabled="currentTab === amount || currentTab === 3 || currentTab == 4"
+        :disabled="currentTab === 3 || currentTab == 4"
+        :class="{
+          transparant: currentTab === 5
+        }"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="right">
           <g>
@@ -85,16 +89,21 @@ const back = () => {
   margin-bottom: 20px;
   margin-top: 10px;
 
-  button {
-    border: none;
-    background: none;
+  .transparant {
+    svg {
+      fill: rgba(255, 255, 255, 0);
+    }
 
-    .transparant {
-    svg{
-      fill:rgba(255, 255, 255, 0);
+    &:hover {
+      svg {
+        fill: rgba(255, 255, 255, 0);
+      }
     }
   }
 
+  button {
+    border: none;
+    background: none;
   }
 
   button:hover {
@@ -108,7 +117,6 @@ const back = () => {
       fill: $button_disabled;
     }
   }
-
 
   #right {
     transform: rotate(180deg);
