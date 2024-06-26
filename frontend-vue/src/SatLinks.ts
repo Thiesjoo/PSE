@@ -1,3 +1,7 @@
+/**
+ * This file contains the AllSatLinks class, which manages and renders the connections between satellites in a THREE.js scene.
+ * It also includes the SatLinks class for managing individual satellite connections.
+ */
 import * as THREE from 'three'
 import { Satellite, polar2Cartesian } from './Satellite'
 import { MAX_LINE_SIZE_LINKS, PATH_GENERAL_COLOR, PATH_START_COLOR } from './common/constants'
@@ -5,6 +9,7 @@ import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshli
 import { Graph } from './Graph'
 import { ThreeSimulation } from './Sim'
 
+// Define the AllSatLinks class
 export class AllSatLinks {
   private line: THREE.Line | null = null
   private lineGeometry: THREE.BufferGeometry | null = null
@@ -26,10 +31,12 @@ export class AllSatLinks {
       z: number
     }
   }[] = []
+
   get linePoints() {
     return this.allSatLinks.map((link) => link.linePoints)
   }
 
+  // Constructor initializes the AllSatLinks class
   constructor(scene: THREE.Scene, graph: Graph, simulation: ThreeSimulation) {
     this.graph = graph
     this.sim = simulation
@@ -87,24 +94,29 @@ export class AllSatLinks {
     this.sim.addAllSatLinks(this)
   }
 
+  // Adds a satellite link to the list of all satellite links
   private addSatLink(link: SatLinks) {
     this.allSatLinks.push(link)
   }
 
+  // Removes all satellite links
   private removeAllSatLinks() {
     this.allSatLinks = []
   }
 
+  // Sets the path for rendering
   setPath(path: { xyzPosition: { x: number; y: number; z: number } }[]) {
     this.path = path
   }
 
+  // Updates the satellite connections
   private update() {
     this.allSatLinks.forEach((link) => {
       link.updateSatelliteConnections()
     })
   }
 
+  // Renders the satellite connections and paths
   render() {
     if (!this.line || !this.lineGeometry) return
     const colors = this.line.geometry.attributes.color.array
@@ -162,7 +174,7 @@ export class AllSatLinks {
           colors[colorIndex + 3] = 1
           colorIndex += 4
         }
-        //   The line from and to the center must have opacity 0 to not show them.
+        // The line from and to the center must have opacity 0 to not show them.
         colors[colorIndex - 1] = 0
         colors[start + 3] = 0
       }
@@ -183,6 +195,7 @@ export class AllSatLinks {
     this.renderPath()
   }
 
+  // Renders the path lines
   private renderPath() {
     if (!this.pathLines || !this.pathGeometry) return
 
@@ -210,6 +223,7 @@ export class AllSatLinks {
     })
   }
 
+  // Destroys the satellite links and path lines
   destroy() {
     if (this.line) {
       this.scene.remove(this.line)
@@ -243,20 +257,24 @@ export class AllSatLinks {
   }
 }
 
+// Define the SatLinks class
 export class SatLinks {
   public satellite: Satellite
   private satellites: Satellite[] = []
   public linePoints: { x: number; y: number; z: number }[] = []
 
+  // Constructor initializes the SatLinks class
   constructor(sat: Satellite) {
     this.satellite = sat
   }
 
+  // Sets the connections for the satellite
   setSatelliteConnections(sats: Satellite[]) {
     this.satellites = sats
     this.updateSatelliteConnections()
   }
 
+  // Updates the connections of the satellite
   updateSatelliteConnections() {
     if (!this.satellite.xyzPosition) return
 
