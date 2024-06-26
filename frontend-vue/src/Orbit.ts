@@ -1,4 +1,8 @@
-// This file contains the Orbit class which is used to display the orbit path of a satellite.
+/**
+ * This file contains the Orbit class, which is responsible for drawing the orbit of a satellite.
+ *
+ * There are two types of orbits: upcoming and past. The upcoming orbit is the orbit that the satellite will follow in the future.
+ */
 import { Satellite } from './Satellite'
 import * as THREE from 'three'
 import { LINE_SIZE, EARTH_RADIUS_KM, DISTANCE_TO_EARTH_FOR_COLLISION } from './common/constants'
@@ -65,7 +69,7 @@ export class Orbit {
 
   // Generate line points for the orbit path
   private generateLinePoints() {
-    this.linePoints = this.satellite.propagateOrbit(
+    this.linePoints = this.satellite.propagateOrbit(  // Propagate the satellite's position to get the orbit path
       this.time.time,
       NUM_OF_STEPS_ORBIT,
       TIME_INTERVAL_ORBIT,
