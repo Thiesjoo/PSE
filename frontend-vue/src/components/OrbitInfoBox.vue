@@ -62,7 +62,7 @@ const props = defineProps<{
       v-show="['RAAN0', 'RAAN90', 'RAAN180', 'RAAN270', 'RAAN360'].includes(picked)"
     >
       <h2>{{ t('Right Ascension of the Ascending Node') }}</h2>
-      <h4> {{ t( 'RAAN information')}}</h4>
+      <h4>{{ t('RAAN information') }}</h4>
       <div class="orbit-info" v-show="picked === 'RAAN0'">
         <h4>{{ t('RAAN') }}: 0 &deg;</h4>
         <img src="/raan0.png" alt="LEO Image" width="300" />
@@ -88,7 +88,7 @@ const props = defineProps<{
     <div class="orbit-info-box" v-show="['E0', 'E30', 'E60', 'E90'].includes(picked)">
       <h2>{{ t('Orbit Eccentricity') }}</h2>
       <h4>
-        {{ t( 'Eccentricity information') }}
+        {{ t('Eccentricity information') }}
       </h4>
       <div class="orbit-info" v-show="picked === 'E0'">
         <h3>{{ t('Circular Orbit') }}</h3>

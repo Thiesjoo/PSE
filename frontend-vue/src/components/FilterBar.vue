@@ -47,10 +47,8 @@ updateLaunchYearFilter()
 <template>
   <LeftInfoBlock :open="true">
     <div class="flex">
-      <h2>{{ t("Category filter")}}</h2>
-      <i>
-        {{ t("Multiple filters") }}</i
-      >
+      <h2>{{ t('Category filter') }}</h2>
+      <i> {{ t('Multiple filters') }}</i>
       <div class="filter-block">
         <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
           {{ t(filter.name) }} - {{ manager.count[filter.name] }}

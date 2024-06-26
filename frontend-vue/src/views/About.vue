@@ -33,7 +33,6 @@ props.simulation.moveLeft()
         <li>Sasha van der Linden</li>
         <li>Wike Duivenvoorden</li>
       </ul>
-
     </div>
     <img src="../assets/uvalogo_white.png" alt="UvA logo" />
   </div>
