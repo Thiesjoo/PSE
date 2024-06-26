@@ -62,7 +62,7 @@ filters[2].selected = false;
 //NOTE: Yes this is hardcoded ugly but I'm too lazy atm
 const generics = ref([
   {
-    name: 'weather',
+    name: 'Weather',
     filters: [filters[3]],
     icon: 'https://www.svgrepo.com/show/491949/weather-color-sun-cloud.svg'
   },
@@ -132,7 +132,7 @@ const generics = ref([
     </div>
 
     <div v-else class="flex">
-      <div class="filter-block">
+      <div class="generic-block">
         <GenericItem
           v-for="(generic, index) in generics"
           :key="generic.name"
@@ -411,6 +411,30 @@ $labelFontSize: 14px !default;
     bottom: 0;
     left: 0;
   }
+}
+
+.generic-block {
+  display: flex;
+  flex-wrap: wrap
+
+  // max-height: 60vh;
+  // overflow-y: scroll;
+  // position: relative;
+
+  // &::-webkit-scrollbar {
+  //   width: 5px;
+  // }
+  // &::-webkit-scrollbar-thumb {
+  //   background: $scroll_bar;
+  //   border-radius: 2em;
+  // }
+
+  // .more {
+  //   z-index: 100;
+  //   position: absolute;
+  //   bottom: 0;
+  //   left: 0;
+  // }
 }
 
 .advanced-filtering-checkbox {

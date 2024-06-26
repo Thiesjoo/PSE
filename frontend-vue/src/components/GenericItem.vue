@@ -25,7 +25,7 @@ const toggle = () => {
     class="wrapper"
     :style="alignLeft ? { justifyContent: 'left' } : { justifyContent: 'right' }"
   >
-    <p v-if="!alignLeft" class="cat-name">{{ name }}</p>
+    <!-- <p v-if="!alignLeft" class="cat-name">{{ name }}</p> -->
     <input
       type="checkbox"
       :checked="props.modelValue.every((filter) => filter.selected)"
@@ -35,22 +35,29 @@ const toggle = () => {
     <label :for="'label' + index">
       <img src="/kiddo-button.png" width="65" height="65" />
     </label>
-    <p v-if="alignLeft" class="cat-name">{{ name }}</p>
+    <p class="cat-name">{{ name }}</p>
   </div>
 </template>
 
 <style scoped lang="scss">
 .wrapper {
   display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-basis: 50%;
   align-items: center;
+  margin-bottom: 30px;
+  // border: 1px solid red;
 
   label {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    // border: 1px solid purple;
 
     img {
       opacity: 50%;
+      // border: 1px solid green;
     }
   }
 }
