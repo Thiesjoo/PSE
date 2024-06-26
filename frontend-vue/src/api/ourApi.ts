@@ -48,7 +48,6 @@ export async function fetchTLEInformation(): Promise<API_TLE_DATA[]> {
 
 export async function getRawTLES(limit: number | undefined = undefined): Promise<string> {
   const data = await fetchTLEInformation()
-  console.log(data)
   return data
     .map((x) => {
       return `${x.name}\n${x.line1}\n${x.line2}`

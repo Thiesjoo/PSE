@@ -41,7 +41,6 @@ export class Graph {
 
   startCreateGraph(satellites: Satellite[]) {
     if (!this.finished) {
-      console.log('Already creating graph')
       return
     }
 
@@ -134,7 +133,6 @@ export class Graph {
   }
 
   findPath(sat1: Satellite, sat2: Satellite) {
-    console.log('Find path')
     const startNode = this.findNode(sat1)
     const goalNode = this.findNode(sat2)
     if (!startNode || !goalNode) {
@@ -151,7 +149,6 @@ export class Graph {
     let counter = 0
 
     while (openList.length > 0 && counter < 10000) {
-      console.log(counter)
       let current = this.popLowestScore(openList)
       if (!current) return
 
