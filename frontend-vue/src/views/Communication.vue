@@ -187,9 +187,11 @@ props.simulation.addEventListener('earthClicked', (coords) => {
           </h1>
           <img src="../assets/location_marker2.png" alt="communication" />
           <p class="description">
-            {{ t(
+            {{
+              t(
                 'The satellites are now going to calculate the shortest path between the two points that you selected.'
-              ) }}
+              )
+            }}
           </p>
         </div>
       </template>
