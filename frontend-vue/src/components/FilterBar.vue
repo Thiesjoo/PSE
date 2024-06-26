@@ -418,28 +418,8 @@ $labelFontSize: 14px !default;
   flex-wrap: wrap;
   padding-top: 20px;
   gap: 20px;
-  // border: 1px solid white;
   border-radius: 5%;
   margin-top: 15px;
-  // background-color: rgba(61, 61, 109, 0.671);
-  // max-height: 60vh;
-  // overflow-y: scroll;
-  // position: relative;
-
-  // &::-webkit-scrollbar {
-  //   width: 5px;
-  // }
-  // &::-webkit-scrollbar-thumb {
-  //   background: $scroll_bar;
-  //   border-radius: 2em;
-  // }
-
-  // .more {
-  //   z-index: 100;
-  //   position: absolute;
-  //   bottom: 0;
-  //   left: 0;
-  // }
 }
 
 .advanced-filtering-checkbox {
