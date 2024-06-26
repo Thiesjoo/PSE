@@ -68,7 +68,7 @@ input:checked + img {
 }
 
 img {
-  opacity: 50%;
+  opacity: 40%;
 }
 
 .cat-name {
