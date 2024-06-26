@@ -70,6 +70,7 @@ function tabInfoUpdate(tab: number) {
   if (tab === tabForConnections) {
     all.hideConnections = false
   } else if (tab === tabForFirstCoords) {
+    all.hideConnections = true
     if (firstCoords.value) {
       props.simulation.removeMarker(firstCoords.value)
     }
@@ -79,6 +80,7 @@ function tabInfoUpdate(tab: number) {
     firstCoords.value = undefined
     secondCoords.value = undefined
   } else if (tab === tabForSecondCoords) {
+    all.hideConnections = true
     // TODO: Stop navigating to second page if coords not selected.
     if (secondCoords.value) {
       props.simulation.removeMarker(secondCoords.value)
@@ -89,6 +91,7 @@ function tabInfoUpdate(tab: number) {
       graph.setStartPos(firstCoords.value)
       graph.setGoalPos(secondCoords.value)
       graph.calculatePath = true
+      all.hideConnections = false
     }
   }
 }
