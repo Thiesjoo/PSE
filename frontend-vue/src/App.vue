@@ -9,8 +9,6 @@ import { useI18n } from 'vue-i18n'
 
 const { locale, t } = useI18n()
 
-const isProduction = import.meta.env.PROD
-
 const canvas = ref<HTMLCanvasElement | null>(null)
 const simulation = new ThreeSimulation()
 
@@ -117,7 +115,7 @@ const setEnglishLanguagePreference = () => {
   <canvas ref="canvas" id="canvas"></canvas>
 
   <div class="bot-left">
-    <button v-if="isProduction" id="sentryFeedbackButton">
+    <button id="sentryFeedbackButton">
       {{ t('Give feedback!') }}
     </button>
 
