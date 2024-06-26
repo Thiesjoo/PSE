@@ -401,14 +401,12 @@ export class ThreeSimulation {
 
   private rayCast() {
     this.raycaster.setFromCamera(this.pointer, this.camera)
-    const intersects = this.raycaster.intersectObjects([
-      this.globe,
-      this.mesh.sat,
-      this.mesh.satClick
-    ])
+    const intersects = this.raycaster.intersectObjects(
+      this.satClicking ? [this.globe, this.mesh.sat, this.mesh.satClick] : [this.globe]
+    )
 
     if (intersects.length > 0) {
-      if ('satellite' in intersects[0].object.userData && this.satClicking) {
+      if ('satellite' in intersects[0].object.userData) {
         this.deselect()
         const meshID = intersects[0].instanceId
         if (meshID === undefined) return

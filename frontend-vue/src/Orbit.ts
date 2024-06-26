@@ -19,6 +19,8 @@ export class Orbit {
   private upcoming: boolean
   private crashing = false
 
+  private listenerRef: number | undefined
+
   private globe: ThreeGlobe
   get globeRadius() {
     return this.globe.getGlobeRadius()
@@ -51,9 +53,13 @@ export class Orbit {
       this.generateLinePoints()
     }
     scene.add(this.line)
+
+    if (upcoming) {
+      this.listenerRef = this.time.addEventListener(this.recalculate.bind(this))
+    }
   }
 
-  generateLinePoints() {
+  private generateLinePoints() {
     this.linePoints = this.satellite.propagateOrbit(
       this.time.time,
       NUM_OF_STEPS_ORBIT,
@@ -135,7 +141,7 @@ export class Orbit {
       if (!point || !point.x || !point.y || !point.z) continue
 
       const { altitude } = this.globe.toGeoCoords(point)
-      if (altitude * EARTH_RADIUS_KM < DISTANCE_TO_EARTH_FOR_COLLISION) {
+      if (altitude * EARTH_RADIUS_KM < DISTANCE_TO_EARTH_FOR_COLLISION / 3) {
         this.crashing = true
       }
     }
@@ -148,6 +154,7 @@ export class Orbit {
 
   recalculate() {
     this.lineCounter = 0
+    this.numOfUpdates = 0
     this.generateLinePoints()
   }
 
@@ -156,6 +163,10 @@ export class Orbit {
       scene.remove(this.line)
       this.lineGeometry.setDrawRange(0, 0)
       this.lineCounter = 0
+
+      if (this.listenerRef != undefined) {
+        this.time.removeEventListener(this.listenerRef)
+      }
     }
   }
 

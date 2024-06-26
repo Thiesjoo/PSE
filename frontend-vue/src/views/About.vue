@@ -33,7 +33,7 @@ props.simulation.moveLeft()
         <li>Wike Duivenvoorden</li>
       </ul>
     </div>
-    <img src="../assets/uvalogo_white.png" alt="UvA logo" width="25%" />
+    <img src="../assets/uvalogo_white.png" alt="UvA logo" />
   </div>
   <!-- Logo -->
 </template>
@@ -60,6 +60,8 @@ props.simulation.moveLeft()
 
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   color: white;
   font-family: 'Tomorrow';
@@ -80,10 +82,8 @@ props.simulation.moveLeft()
   }
 
   img {
-    margin: 0;
-    position: fixed;
-    bottom: 2vh;
-    right: 2vw;
+    margin-top: 1em;
+    width: 60%;
   }
 
   h2 {

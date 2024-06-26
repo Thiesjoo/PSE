@@ -75,7 +75,7 @@ function add_new_satellite(alt: number) {
   // Creating Satellite object and adding it to simulation
   let tle = tle_new_satellite(alt)
   const sats = Satellite.fromMultipleTLEs(tle)
-  sats.forEach((sat) => props.simulation.addSatellite(sat))
+  props.simulation.addSatellites(sats)
   let new_sat = sats[0]
 
   //  Some settings
@@ -237,15 +237,6 @@ props.simulation.addEventListener('select', (satellite) => {
 </script>
 
 <template>
-  <head>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  </head>
   <LeftInfoBlock :open="true" class="container">
     <br />
     <h2>{{ t('Simulation Variables') }}</h2>
@@ -258,7 +249,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <br />
       <h4>
-        {{ t('Height') }} [km]
+        {{ t('Height') }}
         <button class="info_button" @click="picked = 'LEO'" style="text-align: center">
           <i class="fa fa-info-circle" aria-hidden="true"></i>
         </button>
@@ -266,11 +257,11 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
-        <p class="display">Value: {{ height }}</p>
+        <p class="display">Value: {{ height }} [km]</p>
       </div>
       <br />
       <h4>
-        {{ t('Inclination') }} [deg]
+        {{ t('Inclination') }}
         <button class="info_button" @click="picked = 'I0'" style="text-align: center">
           <i class="fa fa-info-circle" aria-hidden="true"></i>
         </button>
@@ -278,11 +269,11 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
-        <p class="display">Value: {{ inclination }}</p>
+        <p class="display">Value: {{ inclination }} [deg]</p>
       </div>
       <br />
       <h4>
-        {{ t('RAAN') }} [deg]
+        {{ t('RAAN') }}
         <button class="info_button" @click="picked = 'RAAN0'" style="text-align: center">
           <i class="fa fa-info-circle" aria-hidden="true"></i>
         </button>
@@ -290,7 +281,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
         <br />
-        <p class="display">Value: {{ raan }}</p>
+        <p class="display">Value: {{ raan }} [deg]</p>
       </div>
       <br />
       <h4>
@@ -329,6 +320,9 @@ props.simulation.addEventListener('select', (satellite) => {
           {{ t('Satellite') + ' ' + (index + 1) }}
         </div>
       </div>
+      <button class="add-del-button del-button" @click="remove = 1" style="text-align: center">
+        <i class="fa-regular fa-trash-can"></i>
+      </button>
     </div>
     <OrbitInfoBlock :picked="picked" class="orbit-order" />
   </RightInfoBlock>
@@ -386,6 +380,31 @@ h3 {
   color: $main_text;
   background-color: $button_background_box;
   border: 1px solid $button_border_box;
+  width: 100%;
+}
+
+.del-button {
+  padding: 0.2em;
+  margin-top: 0.4em;
+}
+
+.info_button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Makes the button circular */
+  background-color: transparent; /* Remove background color */
+  color: rgba(215, 217, 220, 0.7);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.info_button:hover {
+  color: $main_text;
 }
 
 .info_button {
@@ -452,14 +471,13 @@ h3 {
 
 .right-info-box {
   align-self: end;
-  width: 175px;
-  height: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 15vw;
+  height: 40%;
   background-color: $pop_up_background;
   color: $main_text;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 10px;
-  padding-bottom: 10px;
   border: 2px solid $pop_up_border;
   border-radius: 12px;
   padding: 15px;

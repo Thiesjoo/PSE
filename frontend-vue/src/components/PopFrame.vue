@@ -16,8 +16,8 @@ defineProps<{
 .pop-up {
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
 
-  min-width: 25vw;
   border: 8px solid $pop_up_border;
 
   border-radius: 10pt;

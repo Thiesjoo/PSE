@@ -24,7 +24,10 @@ props.simulation.moveRight()
     <div class="container">
       <RouterLink to="/visualization">
         <div class="box">
-          <h2>{{ t('All satellites') }}</h2>
+          <div class="text">
+            <h2>{{ t('All satellites') }}</h2>
+            <h3>{{ t('All_satellites_cta') }}</h3>
+          </div>
           <div class="icon">
             <img src="../assets/visualisation_icon.png" alt="Satellites" width="100" height="100" />
           </div>
@@ -32,8 +35,10 @@ props.simulation.moveRight()
       </RouterLink>
       <RouterLink to="/simulation">
         <div class="box">
-          <h2>{{ t('Create satellites') }}</h2>
-          <br />
+          <div class="text">
+            <h2>{{ t('Create satellites') }}</h2>
+            <h3>{{ t('Create_satellites_cta') }}</h3>
+          </div>
           <div class="icon">
             <img src="../assets/simulation_icon.png" alt="Launch" width="100" height="100" />
           </div>
@@ -41,7 +46,10 @@ props.simulation.moveRight()
       </RouterLink>
       <RouterLink to="/communication">
         <div class="box">
-          <h2>{{ t('Communication') }}</h2>
+          <div class="text">
+            <h2>{{ t('Communication') }}</h2>
+            <h3>{{ t('Communication_cta') }}</h3>
+          </div>
           <div class="icon">
             <img
               src="../assets/communication_icon.png"
@@ -60,11 +68,6 @@ props.simulation.moveRight()
         The scale visualizations in this app are not an accurate reflection of reality.
       </p>
     </div>
-    <RouterLink to="/about">
-      <div class="about">
-        <h2>{{ t('About') }}</h2>
-      </div>
-    </RouterLink>
   </div>
 </template>
 
@@ -102,7 +105,7 @@ props.simulation.moveRight()
   .box {
     min-width: 30vw;
     min-height: 10vh;
-    padding-left: 1%;
+    padding: 0.5em;
 
     border-radius: 20pt;
     background-color: $menu_button_background;
@@ -112,33 +115,30 @@ props.simulation.moveRight()
     justify-content: space-around;
     margin: 0;
 
-    h2 {
-      font-size: 3em;
+    .text {
+      margin-left: 1em;
+      margin-right: 2em;
+    }
+
+    h2,
+    h3 {
       color: $main_text;
       font-family: 'Tomorrow';
+    }
+
+    h2 {
+      font-size: 3em;
+    }
+
+    h3 {
+      font-size: 1.5em;
+      font-weight: 200;
     }
 
     .icon {
       margin: 0.1em;
       margin-left: auto;
     }
-  }
-}
-
-.about {
-  color: $main_text;
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  margin: 1em;
-  border-radius: 10pt;
-  padding: 10pt;
-  background-color: $menu_button_background;
-  font-family: 'Tomorrow';
-
-  a {
-    color: $main_text;
-    text-decoration: none;
   }
 }
 
@@ -169,14 +169,20 @@ props.simulation.moveRight()
             "Satellite Radar": "Satellite Radar",
             "All satellites": "All satellites",
             "Create satellites": "Make your own satellite",
-            "Communication": "Communication"
+            "Communication": "Communication",
+            "All_satellites_cta": "View all satellites in orbit",
+            "Create_satellites_cta": "Create your own satellite and launch it into orbit",
+            "Communication_cta": "Send your message across the globe"
         },
         "nl": {
             "About": "Over ons",
             "Satellite Radar": "Satelliet Radar",
             "All satellites": "Alle satellieten",
             "Create satellites": "Maak je eigen satelliet",
-            "Communication": "Communicatie"
+            "Communication": "Communicatie",
+            "All_satellites_cta": "Bekijk alle satellieten in de ruimte",
+            "Create_satellites_cta": "Maak je eigen satelliet en lanceer hem in de ruimte",
+            "Communication_cta": "Stuur je bericht de wereld rond"
         }
     }
 </i18n>
