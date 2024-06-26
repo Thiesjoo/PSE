@@ -7,7 +7,6 @@ import {
   calculateRevolutionPerDay,
   epochUpdate
 } from '@/calc_helper'
-import InfoPopup from '@/components/InfoPopup.vue'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import { onMounted, ref, watch } from 'vue'
@@ -358,14 +357,6 @@ h4 {
 h3 {
   text-align: center;
   font-weight: bold;
-}
-
-.icon {
-  // override the infopopup style
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
 }
 
 .name-sat {
