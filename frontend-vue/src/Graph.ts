@@ -151,6 +151,7 @@ export class Graph {
     let counter = 0;
 
     while (openList.length > 0 && counter < 10000) {
+      console.log(counter)
       let current = this.popLowestScore(openList)
       if (!current) return
 
