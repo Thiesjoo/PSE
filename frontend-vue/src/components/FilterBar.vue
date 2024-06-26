@@ -60,35 +60,35 @@ filters[0].selected = false
 //NOTE: Yes this is hardcoded ugly but I'm too lazy atm
 const generics = ref([
   {
-    name: 'Weather',
+    name: t('Weather'),
     filters: [filters[3]],
     icon: '/filter-icons/weather2.svg'
   },
   {
-    name: 'Navigational',
+    name: t('Navigational'),
     // Just everything navigation related
     filters: [filters[17], filters[18], filters[19], filters[20], filters[21]],
     icon: '/filter-icons/navigation.svg'
   },
   {
-    name: 'Communication',
+    name: t('Communication'),
     filters: [filters[12]],
     icon: '/filter-icons/communication2.svg'
   },
   {
-    name: 'Space Stations',
+    name: t('Space Stations'),
     filters: [filters[1]],
     icon: '/filter-icons/space_station.svg'
   },
   {
-    name: 'Science',
+    name: t('Science'),
     // In order: geodetics, engineering, NOAA,
     // Earth Resources, ARGOSS, Planet
     filters: [filters[23], filters[24], filters[4], filters[5], filters[8], filters[9]],
     icon: '/filter-icons/science.svg'
   },
   {
-    name: 'Other',
+    name: t('Other'),
     // Literally everything
     filters: [
       filters[6],
@@ -147,7 +147,7 @@ const generics = ref([
       :checked="advancedFilters"
       id="advanced-filter-checkbox"
     />
-    <label for="advanced-filter-checkbox" id="advanced-filtering-label">Advanced filtering</label>
+    <label for="advanced-filter-checkbox" id="advanced-filtering-label">{{t("Advanced filtering")}}</label>
 
     <div class="launch-year-filter-block">
       <label
@@ -487,7 +487,12 @@ $labelFontSize: 14px !default;
       "FilteringLaunchYear1": "Filtering on launches from ",
       "FilteringLaunchYear2": " to ",
       "Category filter": "Category filter",
-      "Multiple filters": "Some satellites are in multiple categories. They will be shown in all categories they belong to."
+      "Multiple filters": "Some satellites are in multiple categories. They will be shown in all categories they belong to.",
+      "Advanced filtering": "Advanced filtering",
+      "Navigational": "Navigational",
+      "Communication": "Communication",
+      "Science": "Science",
+      "Other": "Other",
   },
   "nl": {
       "Last 30 Days' Launches": "Laatste 30 Dagen Lanceringen",
@@ -547,8 +552,12 @@ $labelFontSize: 14px !default;
       "FilteringLaunchYear1": "Filteren op lanceringen van ",
       "FilteringLaunchYear2": " tot ",
       "Category filter": "Categorie filter",
-      "Multiple filters": "Sommige satellieten zitten in meerdere categorieën. Ze zullen in alle categorieën worden getoond waar ze bij horen."
-      
+      "Multiple filters": "Sommige satellieten zitten in meerdere categorieën. Ze zullen in alle categorieën worden getoond waar ze bij horen.",
+      "Advanced filtering": "Geavanceerd filteren",
+      "Navigational": "Navigatie",
+      "Communication": "Communicatie",
+      "Science": "Wetenschap",
+      "Other": "Overig",
   }
 }
 </i18n>
