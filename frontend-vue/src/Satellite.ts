@@ -1,5 +1,5 @@
 /**
- * This file contains the Satellite class, which represents a satellite with methods for handling TLE data, 
+ * This file contains the Satellite class, which represents a satellite with methods for handling TLE data,
  * propagating the satellite's position, and updating its position in a THREE.js scene.
  * It also includes utility functions for converting coordinates and constructing satellite meshes.
  */

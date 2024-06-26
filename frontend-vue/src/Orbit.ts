@@ -69,7 +69,8 @@ export class Orbit {
 
   // Generate line points for the orbit path
   private generateLinePoints() {
-    this.linePoints = this.satellite.propagateOrbit(  // Propagate the satellite's position to get the orbit path
+    this.linePoints = this.satellite.propagateOrbit(
+      // Propagate the satellite's position to get the orbit path
       this.time.time,
       NUM_OF_STEPS_ORBIT,
       TIME_INTERVAL_ORBIT,
