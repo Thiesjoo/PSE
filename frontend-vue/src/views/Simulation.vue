@@ -16,6 +16,7 @@ import OrbitInfoBlock from '@/components/OrbitInfoBox.vue'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faTrashCan, faPlus, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { CURRENT_COLOR } from '@/common/constants'
 
 const { t } = useI18n()
 
@@ -24,32 +25,31 @@ const props = defineProps<{
 }>()
 await props.simulation.waitUntilFinishedLoading()
 
-const basic_alt = 153000 + 6371 * 1000 // Add Earth's radius
-const CURRENT_COLOR = '#34b4b5' //Blue
+const basicAlt = 153000 + 6371 * 1000 // Add Earth's radius
 const satellites = ref<Satellite[]>([])
 
 let currentlySelectedSatellite: Satellite
 let currentlySelectedSatelliteRef = ref<Satellite | null>(null)
-let sat_number = 1 // Used for naming satellites when creating multiple
+let satNumber = 1 // Used for naming satellites when creating multiple
 
 /**
  * Compiles a TLE for a new satellite with the given altitude.
  *
  * @param alt - The altitude of the satellite.
  */
-function tle_new_satellite(alt: number) {
+function tleNewSatellite(alt: number) {
   // Set epoch as current time and alt as 160km
   let epoch = epochUpdate()
   let mean_motion = calculateRevolutionPerDay(alt)
 
   // Initializing own satelite
-  let name = t('Satellite ') + sat_number.toString() + '\n'
-  let cat_n = sat_number.toString().padStart(5, '0')
-  let part1 = '1 ' + cat_n + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1'
+  let name = t('Satellite ') + satNumber.toString() + '\n'
+  let catN = satNumber.toString().padStart(5, '0')
+  let part1 = '1 ' + catN + 'U 24001A   ' + epoch + ' -.00000000 00000000 00000-0 0 1111 1'
   let part2 = '\n2 11111 000.0000 000.0000 0000000 000.0000 000.0000 '
   let part3 = '000001'
   let tle = name + part1 + part2 + mean_motion + part3
-  sat_number = sat_number + 1
+  satNumber = satNumber + 1
   return tle
 }
 
@@ -58,7 +58,7 @@ function tle_new_satellite(alt: number) {
  *
  * @param {Satellite} sat - The satellite to reset the sliders to.
  */
-function update_display(sat: Satellite) {
+function updateDisplay(sat: Satellite) {
   height.value = calculateHeight(sat.satData.no)
   inclination.value = +((sat.satData.inclo * 180) / Math.PI).toFixed(0)
   raan.value = +((sat.satData.nodeo * 180) / Math.PI).toFixed(0)
@@ -75,19 +75,19 @@ function update_display(sat: Satellite) {
  * @param {number} alt - The altitude for the new satellite.
  * @returns {Satellite} The newly created satellite.
  */
-function add_new_satellite(alt: number) {
+function addNewSatellite(alt: number) {
   // Creating Satellite object and adding it to simulation
-  let tle = tle_new_satellite(alt)
+  let tle = tleNewSatellite(alt)
   const sats = Satellite.fromMultipleTLEs(tle)
   props.simulation.addSatellites(sats)
   let new_sat = sats[0]
 
   //  Some settings
-  update_display(new_sat)
+  updateDisplay(new_sat)
   new_sat.country = 'NL'
 
   // Add orbit
-  create_orbit(new_sat)
+  createOrbit(new_sat)
 
   return new_sat
 }
@@ -103,23 +103,23 @@ function change_selected(satellite: Satellite) {
     if (currentlySelectedSatellite) {
       props.simulation.removeOrbit(currentlySelectedSatellite)
     }
-    set_current_sat(satellite)
+    setCurrentSat(satellite)
     props.simulation.deselect()
     props.simulation.setCurrentlySelected(satellite, true)
     props.simulation.changeColor(CURRENT_COLOR, satellite)
 
-    update_display(currentlySelectedSatellite)
+    updateDisplay(currentlySelectedSatellite)
     // Show orbit
-    create_orbit(satellite)
+    createOrbit(satellite)
   }
 }
 
-function set_current_sat(satellite: Satellite) {
+function setCurrentSat(satellite: Satellite) {
   currentlySelectedSatellite = satellite
   currentlySelectedSatelliteRef.value = currentlySelectedSatellite
 }
 
-function create_orbit(satellite: Satellite) {
+function createOrbit(satellite: Satellite) {
   // Add orbit
   props.simulation.removeOrbit(satellite)
   const orbit = props.simulation.addOrbit(satellite, true)
@@ -210,13 +210,13 @@ watch(e, (Value) => {
 
 // ********* first satellite *********
 onMounted(() => {
-  change_selected(add_new_satellite(basic_alt))
+  change_selected(addNewSatellite(basicAlt))
 })
 
 // ********* ADD SATELLITE BUTTON *********
 watch(add, (newValue) => {
   if (newValue === 1) {
-    change_selected(add_new_satellite(basic_alt))
+    change_selected(addNewSatellite(basicAlt))
     add.value = 0 // Reset 'add' to 0 (false)
   }
 })
@@ -226,9 +226,9 @@ watch(remove, (newValue) => {
   if (newValue === 1) {
     props.simulation.reset()
     remove.value = 0 // Reset 'add' to 0 (false)
-    sat_number = 1 // Resets the naming
+    satNumber = 1 // Resets the naming
 
-    set_current_sat(add_new_satellite(basic_alt))
+    setCurrentSat(addNewSatellite(basicAlt))
   }
 })
 
