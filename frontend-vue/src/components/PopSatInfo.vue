@@ -70,12 +70,12 @@ onUnmounted(() => {
       <h1>{{ currentSelectedSatellite.name }}</h1>
       <div v-if="currentSelectedSatellite.country.includes('/')">
         <img
-          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[0]}.svg`"
+          :src="`https://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[0]}.svg`"
           width="100"
           :alt="`${currentSelectedSatellite.country.split('/')[0]} flag`"
         />
         <img
-          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[1]}.svg`"
+          :src="`https://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country.split('/')[1]}.svg`"
           width="100"
           :alt="`${currentSelectedSatellite.country.split('/')[1]} flag`"
         />
@@ -96,7 +96,7 @@ onUnmounted(() => {
       </div>
       <div v-else>
         <img
-          :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
+          :src="`https://purecatamphetamine.github.io/country-flag-icons/3x2/${currentSelectedSatellite.country}.svg`"
           width="100"
           :alt="`${currentSelectedSatellite.country} flag`"
         />

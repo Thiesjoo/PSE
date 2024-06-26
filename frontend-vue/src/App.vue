@@ -77,7 +77,7 @@ const setEnglishLanguagePreference = () => {
     }"
   >
     <img
-      src="http://purecatamphetamine.github.io/country-flag-icons/3x2/NL.svg"
+      src="https://purecatamphetamine.github.io/country-flag-icons/3x2/NL.svg"
       alt="Dutch flag"
       @click="
         () => {
@@ -88,7 +88,7 @@ const setEnglishLanguagePreference = () => {
       :class="{ active: locale === 'nl' }"
     />
     <img
-      src="http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg"
+      src="https://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg"
       alt="British flag"
       @click="
         () => {
