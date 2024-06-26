@@ -7,13 +7,16 @@ import {
   calculateRevolutionPerDay,
   epochUpdate
 } from '@/calc_helper'
-import InfoPopup from '@/components/InfoPopup.vue'
 import LeftInfoBlock from '@/components/LeftInfoBlock.vue'
 import SpeedButtons from '@/components/SpeedButtons.vue'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import RightInfoBlock from '@/components/RightInfoBlock.vue'
 import OrbitInfoBlock from '@/components/OrbitInfoBox.vue'
+
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faTrashCan, faPlus, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -251,7 +254,9 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Height') }}
-        <InfoPopup class="icon"> {{ t('info H') }} </InfoPopup>
+        <button class="info_button" @click="picked = 'LEO'" style="text-align: center">
+          <FontAwesomeIcon :icon="faInfoCircle" />
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
@@ -261,7 +266,9 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Inclination') }}
-        <InfoPopup class="icon"> {{ t('info Incl') }} </InfoPopup>
+        <button class="info_button" @click="picked = 'I0'" style="text-align: center">
+          <FontAwesomeIcon :icon="faInfoCircle" />
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
@@ -271,7 +278,9 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('RAAN') }}
-        <InfoPopup class="icon"> {{ t('info R') }} </InfoPopup>
+        <button class="info_button" @click="picked = 'RAAN0'" style="text-align: center">
+          <FontAwesomeIcon :icon="faInfoCircle" />
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
@@ -281,7 +290,9 @@ props.simulation.addEventListener('select', (satellite) => {
       <br />
       <h4>
         {{ t('Eccentricity') }}
-        <InfoPopup class="icon"> {{ t('info E') }} </InfoPopup>
+        <button class="info_button" @click="picked = 'E0'" style="text-align: center">
+          <FontAwesomeIcon :icon="faInfoCircle" />
+        </button>
       </h4>
       <div class="slider">
         <input type="range" min="0" max="99" v-model="e" class="slider" />
@@ -292,7 +303,7 @@ props.simulation.addEventListener('select', (satellite) => {
     <br />
     <div class="button-box">
       <button class="add-del-button" @click="add = 1" style="text-align: center">
-        <i class="fa-solid fa-plus"></i>
+        <FontAwesomeIcon :icon="faPlus" />
       </button>
     </div>
   </LeftInfoBlock>
@@ -311,7 +322,7 @@ props.simulation.addEventListener('select', (satellite) => {
         </div>
       </div>
       <button class="add-del-button del-button" @click="remove = 1" style="text-align: center">
-        <i class="fa-regular fa-trash-can"></i>
+        <FontAwesomeIcon :icon="faTrashCan" />
       </button>
     </div>
     <OrbitInfoBlock :picked="picked" class="orbit-order" />
@@ -342,14 +353,6 @@ h4 {
 h3 {
   text-align: center;
   font-weight: bold;
-}
-
-.icon {
-  // override the infopopup style
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
 }
 
 .name-sat {
@@ -385,6 +388,44 @@ h3 {
 .del-button {
   padding: 0.2em;
   margin-top: 0.4em;
+}
+
+.info_button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Makes the button circular */
+  background-color: transparent; /* Remove background color */
+  color: rgba(215, 217, 220, 0.7);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.info_button:hover {
+  color: $main_text;
+}
+
+.info_button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Makes the button circular */
+  background-color: transparent; /* Remove background color */
+  color: rgba(215, 217, 220, 0.7);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.info_button:hover {
+  color: $main_text;
 }
 
 .orbit-order {
@@ -447,6 +488,25 @@ h3 {
 .satellite-list {
   overflow-y: auto; /* Enable vertical scroll if needed */
   max-height: 65%; /* Limit max height to parent height */
+}
+
+.styled-button {
+  background: none; /* Remove background color */
+  border: none; /* Remove border */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+  cursor: pointer; /* Make cursor pointer to indicate it's clickable */
+  display: inline-flex; /* Ensure the button is inline */
+  align-items: center; /* Center items vertically */
+  vertical-align: middle; /* Align button vertically with the text */
+}
+
+.styled-button .icon {
+  // display: inline-block; /* Ensure the icon is inline */
+  position: relative;
+  display: inline-block;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 .satellite-item {
