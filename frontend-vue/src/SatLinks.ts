@@ -43,7 +43,7 @@ export class AllSatLinks {
     const positions = new Float32Array(MAX_LINE_SIZE_LINKS * 3)
     const colors = new Float32Array(MAX_LINE_SIZE_LINKS * 4)
 
-    const color = new THREE.Color(0x00ff00)
+    const color = new THREE.Color(0x696969)
     for (let i = 0; i < MAX_LINE_SIZE_LINKS; i++) {
       colors[i * 4] = color.r
       colors[i * 4 + 1] = color.g
