@@ -51,7 +51,7 @@ const toggle = () => {
   border-radius: 10px;
 
   background-color: rgba(61, 61, 109, 0.671);
-  // border: 1px solid white;
+  border: 1px solid white;
 
   label {
     display: flex;
