@@ -33,9 +33,9 @@ const toggle = () => {
       :id="'label' + index"
     />
     <label :for="'label' + index">
-      <img src="/kiddo-button.png" width="65" height="65" />
+      <img :src="icon" width="65" height="65" />
     </label>
-    <p class="cat-name">{{ name }}</p>
+    <label class="cat-name">{{ name }}</label>
   </div>
 </template>
 
@@ -44,10 +44,14 @@ const toggle = () => {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  flex-basis: 50%;
+  flex-basis: 40%;
   align-items: center;
-  margin-bottom: 30px;
-  // border: 1px solid red;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border-radius: 10px;
+
+  background-color: rgba(61, 61, 109, 0.671);
+  // border: 1px solid white;
 
   label {
     display: flex;
@@ -76,8 +80,9 @@ input {
 }
 
 .cat-name {
-  font-size: large;
+  font-size: medium;
   font-family: 'Tomorrow';
+  margin-top: 3px;
   margin-left: 10px;
   margin-right: 7px;
 }

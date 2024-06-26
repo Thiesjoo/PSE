@@ -64,30 +64,30 @@ const generics = ref([
   {
     name: 'Weather',
     filters: [filters[3]],
-    icon: 'https://www.svgrepo.com/show/491949/weather-color-sun-cloud.svg'
+    icon: '/filter-icons/weather2.svg'
   },
   {
     name: 'Navigational',
     // Just everything navigation related
     filters: [filters[17], filters[18], filters[19], filters[20], filters[21]],
-    icon: 'https://www.svgrepo.com/show/452073/navigation.svg'
+    icon: '/filter-icons/navigation.svg'
   },
   {
-    name: 'Starlink',
+    name: 'Communication',
     filters: [filters[12]],
-    icon: 'https://s2.qwant.com/thumbr/474x474/5/f/8bed572a601d4b5961513689c48c6fdee5dd24c375945f0a50120dbc40b155/th.jpg?u=https%3A%2F%2Ftse.mm.bing.net%2Fth%3Fid%3DOIP.LUtMJm2ZwdA2PvkpndRfCwHaHa%26pid%3DApi&q=0&b=1&p=0&a=0'
+    icon: '/filter-icons/communication2.svg'
   },
   {
     name: 'Space Stations',
     filters: [filters[1]],
-    icon: 'https://www.svgrepo.com/show/440494/international-space-station.svg'
+    icon: '/filter-icons/space_station.svg'
   },
   {
     name: 'Science',
     // In order: geodetics, engineering, NOAA,
     // Earth Resources, ARGOSS, Planet
     filters: [filters[23], filters[24], filters[4], filters[5], filters[8], filters[9]],
-    icon: 'https://www.svgrepo.com/show/231569/science-book.svg'
+    icon: '/filter-icons/science.svg'
   },
   {
     name: 'Other',
@@ -104,7 +104,7 @@ const generics = ref([
       filters[16],
       filters[22]
     ],
-    icon: 'https://s1.qwant.com/thumbr/474x474/2/9/6681ec1467ffb2a84ab4a9b1669fca2132e4606ace97c6bfce5343bdc34527/th.jpg?u=https%3A%2F%2Ftse.mm.bing.net%2Fth%3Fid%3DOIP.DGwKFNzKgh87kDgUVl30WAHaHa%26pid%3DApi&q=0&b=1&p=0&a=0'
+    icon: '/filter-icons/other.svg'
   }
 ])
 </script>
@@ -415,8 +415,13 @@ $labelFontSize: 14px !default;
 
 .generic-block {
   display: flex;
-  flex-wrap: wrap
-
+  flex-wrap: wrap;
+  padding-top: 20px;
+  gap: 20px;
+  // border: 1px solid white;
+  border-radius: 5%;
+  margin-top: 15px;
+  // background-color: rgba(61, 61, 109, 0.671);
   // max-height: 60vh;
   // overflow-y: scroll;
   // position: relative;
