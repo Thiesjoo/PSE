@@ -107,7 +107,7 @@ const generics = ref([
 </script>
 
 <template>
-  <LeftInfoBlock :open="true" style="padding: 20px">
+  <LeftInfoBlock :open="true" class="left-info-block">
     <h2>Category filter</h2>
     <i>
       Some satellites are in multiple categories. They will be shown in all categories they belong
@@ -290,6 +290,11 @@ $labelFontSize: 14px !default;
 .vue-slider-process {
   background-color: $slider_bar;
   border-radius: $railBorderRadius;
+}
+
+.left-info-block {
+  padding: 20px;
+  padding-top: 30px;
 }
 
 /* mark style */
