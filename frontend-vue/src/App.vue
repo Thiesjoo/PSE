@@ -147,7 +147,7 @@ const setEnglishLanguagePreference = () => {
   color: $main_text;
   border-radius: 10pt;
   padding: 10pt;
-  background-color: $menu_button_background;
+  background-color: $button_background;
   font-family: 'Tomorrow';
   font-size: 20px;
   border: 0;
@@ -213,7 +213,7 @@ header {
   left: 50%;
   transform: translateX(-50%);
 
-  background-color: $button_background;
+  background-color: $pop_up_background;
   z-index: 100;
   border-radius: 0.2em;
   padding: 0.5em;
@@ -232,11 +232,7 @@ header {
       border-radius: 1em;
       padding: 0.2em 0.5em;
       text-decoration: none;
-      color: $button_text;
-
-      &:hover {
-        color: $button_hover_text;
-      }
+      color: $main_text;
     }
 
     svg {

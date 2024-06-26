@@ -100,7 +100,7 @@ props.simulation.moveRight()
     padding-left: 1%;
 
     border-radius: 20pt;
-    background-color: $menu_button_background;
+    background-color: $button_background;
 
     display: flex;
     align-items: center;
