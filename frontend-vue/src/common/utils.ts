@@ -1,8 +1,8 @@
 /**
  * This file contains utility functions and types for handling satellite data and calculations.
- * It provides functionality for parsing TLE data, propagating satellite positions, 
- * shifting elements in a typed array, loading textures, rounding numbers, and calculating 
- * distances between geographical coordinates. These utilities are essential for the 
+ * It provides functionality for parsing TLE data, propagating satellite positions,
+ * shifting elements in a typed array, loading textures, rounding numbers, and calculating
+ * distances between geographical coordinates. These utilities are essential for the
  * performance and accuracy of satellite tracking and visualization applications.
  */
 import {

@@ -1,7 +1,7 @@
 /**
- * This file contains the SatManager class, which is responsible for managing the satellite data 
- * and filters used in the satellite tracking application. It handles fetching satellite data 
- * and filter categories, applying filters to the satellite data, and updating the simulation 
+ * This file contains the SatManager class, which is responsible for managing the satellite data
+ * and filters used in the satellite tracking application. It handles fetching satellite data
+ * and filter categories, applying filters to the satellite data, and updating the simulation
  * with the filtered satellite data.
  */
 
