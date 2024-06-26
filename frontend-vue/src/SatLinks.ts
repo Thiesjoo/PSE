@@ -122,7 +122,7 @@ export class AllSatLinks {
                 this.graph.startPos.lat,
                 this.graph.startPos.lng,
                 this.graph.startPos.alt,
-                this.sim.globe.getGlobeRadius()
+                this.sim.getGlobeRadius()
               )
             },
             ...this.graph.path.map((node) => {
@@ -133,7 +133,7 @@ export class AllSatLinks {
                 this.graph.goalPos.lat,
                 this.graph.goalPos.lng,
                 this.graph.goalPos.alt,
-                this.sim.globe.getGlobeRadius()
+                this.sim.getGlobeRadius()
               )
             }
           ])

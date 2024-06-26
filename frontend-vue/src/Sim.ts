@@ -1,3 +1,9 @@
+/**
+ * This file contains the ThreeSimulation class, which is responsible for rendering the 3D scene.
+ * 
+ * It is the core of our application, and is responsible for rendering the Earth, satellites, and other objects.
+ */
+
 import * as THREE from 'three'
 //@ts-ignore
 import Stats from 'three/examples/jsm/libs/stats.module'
@@ -41,18 +47,19 @@ export enum TweeningStatus {
 
 export class ThreeSimulation {
   private satellites: Record<string, Satellite> = {}
-  public followSelected = true
-  public tweeningStatus: TweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
-  public escapedFollow = false
+  private followSelected = true
+  private tweeningStatus: TweeningStatus = TweeningStatus.START_TO_TWEEN_TO_SAT
+  private escapedFollow = false
   private satClicking = true
 
   private sun!: THREE.DirectionalLight
   private renderer!: THREE.WebGLRenderer
-  public scene!: THREE.Scene //TODO: private maken
+   scene!: THREE.Scene 
+
   private camera!: THREE.PerspectiveCamera
 
   private controls!: OrbitControls
-  public globe!: ThreeGlobe
+  private globe!: ThreeGlobe
   private stats!: any
 
   private orbits: Orbit[] = []
@@ -78,13 +85,14 @@ export class ThreeSimulation {
 
   private finishedLoading = false
 
-  // TODO: Dit is alleen async om textures te laden, er moet een progress bar of iets bij.
   initAll(canvas: HTMLCanvasElement): Promise<void> {
+    console.time("initAll")
     return this.initScene(canvas).then(() => {
       if (import.meta.env.DEV) {
         this.initStats()
       }
       this.initListeners()
+        console.timeEnd("initAll")
       this.finishedLoading = true
     })
   }
@@ -150,6 +158,7 @@ export class ThreeSimulation {
   }
 
   private async initScene(canvas: HTMLCanvasElement) {
+    console.time("initScene")
     this.scene = new THREE.Scene()
 
     // Camera
@@ -184,6 +193,8 @@ export class ThreeSimulation {
     this.sun = new THREE.DirectionalLight(0xffffff, 0.6 * Math.PI)
     this.scene.add(this.sun)
 
+
+    console.time("loadTextures")
     const nightLights = await loadTexture(NightLights)
 
     // Add background
@@ -211,6 +222,7 @@ export class ThreeSimulation {
         `
       )
     }
+    console.timeEnd("loadTextures")
 
     // Add the Earth
     this.globe = new ThreeGlobe()
@@ -232,6 +244,7 @@ export class ThreeSimulation {
     this.scene.add(this.mesh.satClick)
     this.scene.add(this.globe)
 
+    console.timeEnd("initScene")
     this.animate()
   }
 
@@ -742,6 +755,10 @@ export class ThreeSimulation {
 
   getTime() {
     return this.time
+  }
+
+  getGlobeRadius() {
+    return this.globe.getGlobeRadius()
   }
 
   enableSatClicking() {
