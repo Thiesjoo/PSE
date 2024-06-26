@@ -147,7 +147,9 @@ const generics = ref([
       :checked="advancedFilters"
       id="advanced-filter-checkbox"
     />
-    <label for="advanced-filter-checkbox" id="advanced-filtering-label">{{t("Advanced filtering")}}</label>
+    <label for="advanced-filter-checkbox" id="advanced-filtering-label">{{
+      t('Advanced filtering')
+    }}</label>
 
     <div class="launch-year-filter-block">
       <label
