@@ -1,14 +1,15 @@
-from django.core.management.base import BaseCommand
-from satellite_app.models import MinorCategory
-
-# For ease of use
-SATAFF = MinorCategory.MinorCategoryChoices
-
 """
 Description: This command-script populates the database with rows of all
  minor categories used in our application. These categories are
  then used by the satellites to describe their nature.
 """
+
+
+from django.core.management.base import BaseCommand
+from satellite_app.models import MinorCategory
+
+# For ease of use
+SATAFF = MinorCategory.MinorCategoryChoices
 
 
 class Command(BaseCommand):
