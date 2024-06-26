@@ -381,6 +381,8 @@ $labelFontSize: 14px !default;
   flex-direction: column;
   max-height: 100%;
   color: $main_text;
+  padding-top: 20px;
+
 
   button {
     margin: 5px 0;
@@ -409,7 +411,6 @@ $labelFontSize: 14px !default;
 .generic-block {
   display: flex;
   flex-wrap: wrap;
-  padding-top: 20px;
   gap: 20px;
   border-radius: 5%;
   margin-top: 15px;
