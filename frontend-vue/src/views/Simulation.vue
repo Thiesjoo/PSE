@@ -1,3 +1,12 @@
+<!--
+  This file is the view for the simulation page. This page is used to create and edit satellites in the simulation.
+
+  The page consists of two main components:
+  - LeftInfoBlock: This component contains sliders to edit the satellite's properties.
+  - RightInfoBlock: This component contains a list of satellites and information about the selected satellite.
+
+ -->
+
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
