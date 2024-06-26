@@ -346,7 +346,8 @@ const categories = computed(() => {
         "AM": "Armenia",
         "IE": "Ireland",
         "PT": "Portugal",
-        "NZ": "New Zealand"
+        "NZ": "New Zealand",
+        "Belongs to": "Belongs to"
     },
     "nl": {
         "NORAD Catalog Number": "NORAD Catalogusnummer",
@@ -449,7 +450,8 @@ const categories = computed(() => {
         "AM": "Armenië",
         "IE": "Ierland",
         "PT": "Portugal",
-        "NZ": "Nieuw-Zeeland"
+        "NZ": "Nieuw-Zeeland",
+        "Belongs to": "Hoort bij"
     }
 }
 </i18n>
