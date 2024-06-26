@@ -28,7 +28,11 @@ const back = () => {
     </template>
 
     <div class="buttons">
-      <button @click="back()" :disabled="currentTab === 1">
+      <button @click="back()"
+      :class="{
+      'transparant': currentTab ===1
+      }"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="left">
           <g>
             <path
@@ -84,6 +88,13 @@ const back = () => {
   button {
     border: none;
     background: none;
+
+    .transparant {
+    svg{
+      fill:rgba(255, 255, 255, 0);
+    }
+  }
+
   }
 
   button:hover {
@@ -97,6 +108,7 @@ const back = () => {
       fill: $button_disabled;
     }
   }
+
 
   #right {
     transform: rotate(180deg);
