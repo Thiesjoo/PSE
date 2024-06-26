@@ -79,7 +79,8 @@ def index(request: HttpRequest):
     if len(categories) == 0:
         sats = Satellite.objects.prefetch_related("minor_categories").all()
     else:
-        sats = Satellite.objects.prefetch_related("minor_categories").filter(minor_categories__in=categories)
+        sats = Satellite.objects.prefetch_related(
+            "minor_categories").filter(minor_categories__in=categories)
 
     resp = serializedSatellites(sats)
     # Returns a JSON-serialized list of the fetched satellites

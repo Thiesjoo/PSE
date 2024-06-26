@@ -45,17 +45,12 @@ const updateLaunchYearFilter = () => {
 // Initial update of the launch year filter
 updateLaunchYearFilter()
 
-// A 'generic' is a bundle of filters. There
-// are six generics currently.
-interface Generic {
-  name: string
-  filters: Filter[]
-}
-
 // Keeps track of whether or not to keep advanced filters on
 const advancedFilters = ref(false)
 filters[2].selected = false
 filters[0].selected = false
+
+console.log(filters)
 
 //NOTE: Yes this is hardcoded ugly but I'm too lazy atm
 const generics = ref([
@@ -67,12 +62,13 @@ const generics = ref([
   {
     name: 'Navigational',
     // Just everything navigation related
-    filters: [filters[17], filters[18], filters[19], filters[20], filters[21]],
+    filters: [filters[18], filters[19], 
+    filters[20], filters[21], filters[22]],
     icon: '/filter-icons/navigation.svg'
   },
   {
     name: 'Communication',
-    filters: [filters[12]],
+    filters: [filters[12], filters[17]],
     icon: '/filter-icons/communication2.svg'
   },
   {
@@ -84,7 +80,15 @@ const generics = ref([
     name: 'Science',
     // In order: geodetics, engineering, NOAA,
     // Earth Resources, ARGOSS, Planet
-    filters: [filters[23], filters[24], filters[4], filters[5], filters[8], filters[9]],
+    filters: [
+      filters[23],
+      filters[24],
+      filters[25],
+      filters[4],
+      filters[5],
+      filters[8],
+      filters[9]
+    ],
     icon: '/filter-icons/science.svg'
   },
   {
@@ -98,8 +102,7 @@ const generics = ref([
       filters[13],
       filters[14],
       filters[15],
-      filters[16],
-      filters[22]
+      filters[16]
     ],
     icon: '/filter-icons/other.svg'
   }
