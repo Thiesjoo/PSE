@@ -67,7 +67,7 @@ export class ThreeSimulation {
   public satelliteLinks: AllSatLinks | null = null
   private locationMarkers: LocationMarker[] = []
 
-  public time: Time = new Time(new Date()) //TODO: private maken
+  public time: Time = new Time(new Date())
 
   private raycaster = new THREE.Raycaster()
   private pointer = new THREE.Vector2()

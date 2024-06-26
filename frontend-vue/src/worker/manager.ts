@@ -1,9 +1,15 @@
+/**
+ * This file contains the WorkerManager class, which manages web workers for calculating satellite positions in real-time.
+ * The main thread (Sim.ts) interacts with this manager to delegate calculations to multiple workers, ensuring efficient performance.
+ */
+
 import { Satellite } from '@/Satellite'
 import MyWorkerImplementation from './worker?worker'
 import { WorkerMessage, WorkerResponse } from './worker'
 import { AMT_OF_WORKERS } from '@/common/constants'
 import { GMSTime } from 'satellite.js'
 
+// Define the WorkerManager class
 export class WorkerManager {
   private workers: Worker[] = []
   private count: number[] = []
@@ -17,10 +23,12 @@ export class WorkerManager {
 
   private currentHash = 0
 
+  // Constructor initializes the worker manager and its workers
   constructor() {
     this.initWorkers()
   }
 
+  // Initializes the workers and sets up their message handlers
   private initWorkers() {
     for (let i = 0; i < AMT_OF_WORKERS; i++) {
       const worker = new MyWorkerImplementation()
@@ -30,10 +38,12 @@ export class WorkerManager {
     }
   }
 
+  // Sends a message to a specific worker
   private sendMsg(idx: number, msg: WorkerMessage) {
     this.workers[idx].postMessage(msg)
   }
 
+  // Resets the worker manager and its workers
   public reset() {
     this.workers.forEach((worker, idx) => {
       this.sendMsg(idx, { event: 'reset' })
@@ -43,8 +53,8 @@ export class WorkerManager {
     this.currentHash++
   }
 
+  // Adds satellites to the workers for processing
   public addSatellites(satellites: Satellite[]) {
-    // You cannot add a single satellite, as the workers are already initialized
     this.reset()
 
     this.satellites = satellites
@@ -65,6 +75,7 @@ export class WorkerManager {
     }
   }
 
+  // Starts the propagation of satellite positions
   public startPropagate(time: Date, gmsTime: GMSTime) {
     if (this.received !== 0) {
       console.error('Received is not 0, we are still processing an old one')
@@ -88,6 +99,7 @@ export class WorkerManager {
     })
   }
 
+  // Completes the propagation and updates the satellite positions
   public finishPropagate(time: Date, gmsTime: GMSTime) {
     if (this.finished) {
       for (let i = 0; i < this.satellites.length; i++) {
@@ -110,11 +122,13 @@ export class WorkerManager {
     return false
   }
 
+  // Marks the current calculation as done
   private done() {
     this.received = 0
     this.finished = true
   }
 
+  // Handles messages from the workers
   private onMessage(event: WorkerResponse) {
     switch (event.event) {
       case 'calculate-res':
