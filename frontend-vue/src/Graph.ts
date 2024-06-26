@@ -148,7 +148,9 @@ export class Graph {
     startNode.gScore = 0
     startNode.hScore = 0
 
-    while (openList.length > 0) {
+    let counter = 0;
+
+    while (openList.length > 0 && counter < 10000) {
       let current = this.popLowestScore(openList)
       if (!current) return
 
@@ -186,6 +188,7 @@ export class Graph {
           }
         }
       }
+      counter++;
     }
   }
 
