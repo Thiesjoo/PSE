@@ -135,7 +135,7 @@ export class Orbit {
       if (!point || !point.x || !point.y || !point.z) continue
 
       const { altitude } = this.globe.toGeoCoords(point)
-      if (altitude * EARTH_RADIUS_KM < DISTANCE_TO_EARTH_FOR_COLLISION) {
+      if (altitude * EARTH_RADIUS_KM < DISTANCE_TO_EARTH_FOR_COLLISION / 3) {
         this.crashing = true
       }
     }
