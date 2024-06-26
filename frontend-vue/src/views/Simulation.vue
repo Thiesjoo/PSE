@@ -76,7 +76,7 @@ function add_new_satellite(alt: number) {
   // Creating Satellite object and adding it to simulation
   let tle = tle_new_satellite(alt)
   const sats = Satellite.fromMultipleTLEs(tle)
-  sats.forEach((sat) => props.simulation.addSatellite(sat))
+  props.simulation.addSatellites(sats)
   let new_sat = sats[0]
 
   //  Some settings
@@ -293,118 +293,10 @@ props.simulation.addEventListener('select', (satellite) => {
     <div class="button-box">
       <button class="add-del-button" @click="add = 1" style="text-align: center">
         <i class="fa-solid fa-plus"></i>
-        <!-- {{ t('Add satellite') }} -->
-      </button>
-      <button class="add-del-button" @click="remove = 1" style="text-align: center">
-        <i class="fa-regular fa-trash-can"></i>
-        <!-- {{ t('Delete satellites') }} -->
       </button>
     </div>
   </LeftInfoBlock>
   <RightInfoBlock :open="true">
-    <!-- Information box HEIGHT -->
-    <!-- <div class="orbit-info-box" v-show="picked === 'LEO' || picked === 'MEO' || picked === 'GEO'">
-      <h2>{{ t('Orbit Category') }}</h2>
-      <div class="orbit-info" v-show="picked === 'LEO'">
-        <h3>{{ t('Low Earth Orbit') }}</h3>
-        <h4>{{ t('Height') }}: 160-2000 km</h4>
-        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'MEO'">
-        <h3>{{ t('Medium Earth Orbit') }}</h3>
-        <h4>{{ t('Height') }}: 2000-36000 km</h4>
-        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'GEO'">
-        <h3>{{ t('Other') }}</h3>
-        <h4>{{ t('Height') }}: >36000 km</h4>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
-      </div>
-    </div> -->
-    <!-- Information box INCLINATION -->
-    <!-- <div class="orbit-info-box" v-show="picked === 'I0' || picked === 'I45' || picked === 'I90'">
-      <h2>{{ t('Inclination') }}</h2>
-      <h4>
-        Orbit inclination is the angle at which orbit is tilted compared to path around equator.
-      </h4>
-      <div class="orbit-info" v-show="picked === 'I0'">
-        <h4>{{ t('Inclination') }}: 0 &deg</h4>
-        <img src="/inclination0.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'I45'">
-        <h4>{{ t('Inclination') }}: &lt 45 &deg</h4>
-        <img src="/inclination45.png" alt="MEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'I90'">
-        <h4>{{ t('Inclination') }}: 45-89 &deg</h4>
-        <img src="/inclination85.png" alt="Other Image" width="300" />
-      </div>
-    </div> -->
-    <!-- Information box RAAN -->
-    <!-- <div
-      class="orbit-info-box"
-      v-show="
-        picked === 'RAAN0' ||
-        picked === 'RAAN90' ||
-        picked === 'RAAN180' ||
-        picked === 'RAAN270' ||
-        picked === 'RAAN360'
-      "
-    >
-      <h2>{{ t('Right Ascension of the Ascending Node') }}</h2>
-      <h4>RAAN determines at what longitude satellite crosses the equator.</h4>
-      <div class="orbit-info" v-show="picked === 'RAAN0'">
-        <h4>{{ t('RAAN') }}: 0 &deg</h4>
-        <img src="/Leo-highlight.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'RAAN90'">
-        <h4>{{ t('RAAN') }}: &lt 90 &deg</h4>
-        <img src="/Meo-highlight.png" alt="MEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'RAAN180'">
-        <h4>{{ t('RAAN') }}: 90-180 &deg</h4>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'RAAN270'">
-        <h4>{{ t('RAAN') }}: 180-270 &deg</h4>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'RAAN360'">
-        <h4>{{ t('RAAN') }}: 270-360 &deg</h4>
-        <img src="/Other-highlight.png" alt="Other Image" width="300" />
-      </div>
-    </div> -->
-    <!-- Information box ECCENTRICITY -->
-    <!-- <div
-      class="orbit-info-box"
-      v-show="picked === 'E0' || picked === 'E30' || picked === 'E60' || picked === 'E90'"
-    >
-      <h2>{{ t('Orbit Eccentricity') }}</h2>
-      <h4>
-        Orbit eccentricity is how much an orbit looks like an oval instead of a perfect circle
-        <i class="fa-regular fa-circle"></i>.
-      </h4>
-      <div class="orbit-info" v-show="picked === 'E0'">
-        <h3>{{ t('Circular Orbit') }}</h3>
-        <h4>{{ t('Eccentricity') }}: 0</h4>
-        <img src="/eccentricity-0.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'E30'">
-        <h3>{{ t('Slight Elliptical shape') }}</h3>
-        <h4>{{ t('Eccentricity') }}: &lt 0.3</h4>
-        <img src="/eccentricity-4.png" alt="LEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'E60'">
-        <h3>{{ t('More Elliptical shape') }}</h3>
-        <h4>{{ t('Eccentricity') }}: 0.3 - 0.6</h4>
-        <img src="/eccentricity-75.png" alt="MEO Image" width="300" />
-      </div>
-      <div class="orbit-info" v-show="picked === 'E90'">
-        <h3>{{ t('Ellipse') }}</h3>
-        <h4>{{ t('Eccentricity') }}: >0.60</h4>
-        <img src="/eccentricity-95.png" alt="Other Image" width="300" />
-      </div>
-    </div> -->
     <div class="right-info-box">
       <h2>{{ t('Satellites Created') }}</h2>
       <div class="satellite-list">
@@ -418,6 +310,9 @@ props.simulation.addEventListener('select', (satellite) => {
           {{ t('Satellite') + ' ' + (index + 1) }}
         </div>
       </div>
+      <button class="add-del-button del-button" @click="remove = 1" style="text-align: center">
+        <i class="fa-regular fa-trash-can"></i>
+      </button>
     </div>
     <OrbitInfoBlock :picked="picked" class="orbit-order" />
   </RightInfoBlock>
@@ -483,6 +378,12 @@ h3 {
   color: $main_text;
   background-color: $button_background_box;
   border: 1px solid $button_border_box;
+  width: 100%;
+}
+
+.del-button {
+  padding: 0.2em;
+  margin-top: 0.4em;
 }
 
 .orbit-order {
@@ -530,14 +431,13 @@ h3 {
 
 .right-info-box {
   align-self: end;
-  width: 175px;
-  height: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 15vw;
+  height: 40%;
   background-color: $pop_up_background;
   color: $main_text;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 10px;
-  padding-bottom: 10px;
   border: 2px solid $pop_up_border;
   border-radius: 12px;
   padding: 15px;
