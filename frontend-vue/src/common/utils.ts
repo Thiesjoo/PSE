@@ -99,14 +99,18 @@ export function calculateDistance(coords1: GeoCoords, coords2: GeoCoords): numbe
   const lat2Rad = toRadians(coords2.lat)
   const lon2Rad = toRadians(coords2.lng)
 
-  // Haversine formula
-  const dLat = lat2Rad - lat1Rad
-  const dLon = lon2Rad - lon1Rad
-  const a =
-    Math.sin(dLat / 2) ** 2 + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.sin(dLon / 2) ** 2
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const alt1 = coords1.alt + EARTH_RADIUS_KM
+  const alt2 = coords2.alt + EARTH_RADIUS_KM
 
-  const distance = EARTH_RADIUS_KM * c
+  const distance = Math.sqrt(
+    alt1 ** 2 +
+      alt2 ** 2 -
+      2 *
+        alt1 *
+        alt2 *
+        (Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.cos(lon1Rad - lon2Rad) +
+          Math.sin(lat1Rad) * Math.sin(lat2Rad))
+  )
 
   return distance
 }
