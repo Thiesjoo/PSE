@@ -1,3 +1,9 @@
+/**
+ * This file contains utility functions for working with satellite orbits, including functions to update the epoch,
+ * calculate the number of revolutions per day, calculate mean motion in radians per minute, and calculate satellite height.
+ */
+
+// Updates the epoch to the current date and time in the format YYDDD.DDDDDDDD
 export function epochUpdate() {
   const now = new Date()
   const year = now.getFullYear().toString().slice(-2)
@@ -11,6 +17,7 @@ export function epochUpdate() {
   return year + (day + parseFloat(day_fraction)).toFixed(8).padStart(12, '0')
 }
 
+// Calculates the number of revolutions per day for a satellite given the semi-major axis
 export function calculateRevolutionPerDay(a: number) {
   const GRAVITATIONAL_PARAM = 3.986004418e14 // m^3/s^2
   const mean_motion = Math.sqrt(GRAVITATIONAL_PARAM / a ** 3)
@@ -19,6 +26,7 @@ export function calculateRevolutionPerDay(a: number) {
   return revolutions_per_day.toFixed(8)
 }
 
+// Calculates the mean motion in radians per minute given the semi-major axis
 export function calculateMeanMotionRadPerMin(a: number): number {
   const GRAVITATIONAL_PARAM = 3.986004418e14 // m^3/s^2
   const mean_motion = Math.sqrt(GRAVITATIONAL_PARAM / a ** 3)
@@ -27,9 +35,9 @@ export function calculateMeanMotionRadPerMin(a: number): number {
   return +rad_per_minute
 }
 
-// Input is in [rad/minute]
+// Calculates the height of a satellite given the mean motion in radians per minute
 export function calculateHeight(no: number): number {
-  const GRAVITATIONAL_PARAM = 3.986004418e14 // m^3/s^2;
+  const GRAVITATIONAL_PARAM = 3.986004418e14 // m^3/s^2
   const a = Math.cbrt(GRAVITATIONAL_PARAM * (60 / no) ** 2)
   const height = a / 1000 - 6371
 

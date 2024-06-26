@@ -1,3 +1,9 @@
+<!--
+  This file is the main view for the visualization page. This page is responsible for rendering the simulation and the filter bar.
+
+  The popup satellite info is also rendered here, as well as the speed buttons.
+ -->
+
 <script setup lang="ts">
 import { Satellite } from '@/Satellite'
 import { ThreeSimulation } from '@/Sim'
