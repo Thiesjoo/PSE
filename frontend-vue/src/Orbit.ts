@@ -195,17 +195,17 @@ export class Orbit {
   }
 
   // Recalculate the orbit path
-  recalculate(param: String) {
-    if (param === 'Time') {
+  recalculate() {
       console.log('Recalculating orbit path')
       this.reset = 20
 
       if (this.upcoming) {
+        this.lineCounter = 0;
+        this.numOfUpdates = 0;
         this.generateLinePoints()
       } else {
         this.removeLine(this.scene)
       }
-    }
   }
 
   // Remove the line from the scene

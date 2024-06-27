@@ -378,6 +378,8 @@ export class ThreeSimulation {
       .getElementById('canvas')!
       .addEventListener('touchstart', this.onTouchStart.bind(this), false)
     window.addEventListener('touchmove', this.onTouchMove.bind(this), false)
+    // window.addEventListener("focusin", () => {
+    // })
   }
 
   // Handles window resize events

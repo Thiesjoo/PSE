@@ -13,7 +13,7 @@ export class Time {
   public multiplier: Ref<number> = ref(1) // Speed multiplier for time progression
   private clock: THREE.Clock = new THREE.Clock() // THREE.js clock to track elapsed time
 
-  private listeners = new Map<number, (param: String) => void>() // Map of event listeners
+  private listeners = new Map<number, () => void>() // Map of event listeners
 
   get time() {
     return this.currentTime
@@ -29,17 +29,13 @@ export class Time {
     this.currentTime = time
 
     for (const [, listener] of this.listeners) {
-      listener("Time")
+      listener()
     }
   }
 
   // Sets the speed multiplier and notifies all listeners
   setSpeed(speed: number) {
     this.multiplier.value = speed
-
-    for (const [, listener] of this.listeners) {
-      listener("Speed")
-    }
   }
 
   // Steps the current time forward based on the elapsed time and speed multiplier
@@ -49,7 +45,7 @@ export class Time {
   }
 
   // Adds an event listener that is called on time updates and returns a reference number
-  addEventListener(listener: (param: String) => void) {
+  addEventListener(listener: () => void) {
     this.listeners.set(++currentRef, listener)
     return currentRef
   }
