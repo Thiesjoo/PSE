@@ -135,8 +135,7 @@ const generics = ref([
 <template>
   <LeftInfoBlock :open="!props.simulation.mobile.value" class="left-info-block">
     <h2>{{ t('Category filter') }}</h2>
-    <i> {{ t('Multiple filters') }}</i>
-    <p>Click on the buttons below to see the satellites that belong to each category.</p>
+    <p>{{ t('Multiple filters') }}</p>
 
     <div class="flex" v-if="advancedFilters">
       <div class="filter-block">
@@ -168,7 +167,7 @@ const generics = ref([
     </div>
 
     <input
-      class="advanced-filtering-checkbox"
+      class="C"
       type="checkbox"
       @click="advancedFilters = !advancedFilters"
       :checked="advancedFilters"
@@ -177,7 +176,8 @@ const generics = ref([
     <label for="advanced-filter-checkbox" id="advanced-filtering-label">{{
       t('Advanced filtering')
     }}</label>
-    <p>Drag the slider to filter satellites by their launch year.</p>
+    <h2 class="launch-title">{{ t('Launch year filter') }}</h2>
+    <p>{{ t('Drag the slider to filter satellites by their launch year.') }}</p>
 
     <div class="launch-year-filter-block">
       <label
@@ -329,6 +329,10 @@ $labelFontSize: 14px !default;
     text-align: center;
   }
 
+  .launch-title {
+    margin-top: 20px;
+  }
+
   p {
     font-family: 'Tomorrow';
     font-size: 1.2em;
@@ -454,7 +458,7 @@ $labelFontSize: 14px !default;
   margin-top: 15px;
 }
 
-.advanced-filtering-checkbox {
+.C {
   margin-top: 20px;
   margin-right: 5px;
 }
@@ -544,6 +548,8 @@ $labelFontSize: 14px !default;
       "Communication": "Communication",
       "Science": "Science",
       "Other": "Other",
+      "Launch year filter" : "Launch year filter",
+      "Drag the slider to filter satellites by their launch year.": "Drag the slider to filter satellites by their launch year.",
   },
   "nl": {
       "Last 30 Days' Launches": "Laatste 30 Dagen Lanceringen",
@@ -603,12 +609,14 @@ $labelFontSize: 14px !default;
       "FilteringLaunchYear1": "Filteren op lanceringen van ",
       "FilteringLaunchYear2": " tot ",
       "Category filter": "Categorie filter",
-      "Multiple filters": "Sommige satellieten zitten in meerdere categorieën. Ze zullen in alle categorieën worden getoond waar ze bij horen.",
+      "Multiple filters": "Klik op de knoppen hieronder om de satellieten te zien die tot elke categorie behoren.",
       "Advanced filtering": "Geavanceerd filteren",
       "Navigational": "Navigatie",
       "Communication": "Communicatie",
       "Science": "Wetenschap",
       "Other": "Overig",
+      "Launch year filter" : "Lanceerjaar filter",
+      "Drag the slider to filter satellites by their launch year.": "Sleep de slider om satellieten te filteren op hun lanceerjaar.",
   }
 }
 </i18n>
