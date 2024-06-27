@@ -253,7 +253,7 @@ const categories = computed(() => {
 {
     "en": {
         "NORAD Catalog Number": "NORAD Catalog Number",
-        "NORAD Catalog Number_description": "This is a nine-digit number assigned by the United States Space Command in the order of launch or discovery to all artificial objects in the orbits of Earth and those that left Earth's orbit.",
+        "NORAD Catalog Number_description": "This is a nine-digit number assigned by the United States Space Command in the order of launch or discovery to all artificial objects in the orbits of Earth.",
         "Longitude": "Longitude",
         "Longitude_description": "How much east or west is the satellite.",
         "Latitude": "Latitude",
@@ -357,11 +357,11 @@ const categories = computed(() => {
     },
     "nl": {
         "NORAD Catalog Number": "NORAD Catalogusnummer",
-        "NORAD Catalog Number_description": "Dit is een negen-cijferig nummer toegewezen door het United States Space Command in de volgorde van lancering of ontdekking aan alle kunstmatige objecten in de banen van de aarde en diegene die de baan van de aarde hebben verlaten.",
+        "NORAD Catalog Number_description": "Dit is een negen-cijferig nummer toegewezen door het United States Space Command in de volgorde van lancering of ontdekking aan alle kunstmatige objecten in de banen van de aarde.",
         "Longitude": "Lengtegraad",
-        "Longitude_description": "Hoeveel oost of west is de satelliet.",
+        "Longitude_description": "Hoeveel oost of west de satelliet is.",
         "Latitude": "Breedtegraad",
-        "Latitude_description": "Hoeveel noord of zuid is de satelliet.",
+        "Latitude_description": "Hoeveel noord of zuid de satelliet is.",
         "Altitude": "Hoogte",
         "Altitude_description": "Hoe hoog is de satelliet.",
         "Speed": "Snelheid",
