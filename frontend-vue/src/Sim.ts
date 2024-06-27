@@ -281,10 +281,7 @@ export class ThreeSimulation {
         time,
         this.globe.getGlobeRadius(),
         true
-      ) as {
-        lat: number
-        lng: number
-      }
+      )
     }
     const lat = satPosition.lat
     const lng = satPosition.lng
@@ -396,6 +393,13 @@ export class ThreeSimulation {
       .getElementById('canvas')!
       .addEventListener('touchstart', this.onTouchStart.bind(this), false)
     window.addEventListener('touchmove', this.onTouchMove.bind(this), false)
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        this.orbits.forEach((orbit) => {
+          orbit.recalculate()
+        })
+      }
+    })
   }
 
   // Handles window resize events
