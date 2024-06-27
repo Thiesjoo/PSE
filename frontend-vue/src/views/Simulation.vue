@@ -168,8 +168,6 @@ watch(inclination, (Value) => {
   currentlySelectedSatellite.satData.inclo = (Value * Math.PI) / 180 // [rad]
   currentlySelectedSatellite.orbit?.recalculate()
 
-  console.log(Value)
-
   // Changing right info box to eccenticity information
   if (Value == 0) {
     picked.value = 'I0'
