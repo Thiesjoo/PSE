@@ -558,7 +558,7 @@ h3 {
       "info Incl": "The angle of the orbit of the satellite.",
       "info R": "The longitude on which the satellite crosses the equator from south to north.",
       "info E": "The eccentricity of the orbit.",
-      "Satellite": "Satellite"
+      "Satellite": "Satellite",
       "Drag the sliders to see what happens to your satellite!": "Drag the sliders to see what happens to your satellite!"
     },
     "nl": {
@@ -582,8 +582,8 @@ h3 {
       "info Incl": "De hoek van de baan van de satelliet.",
       "info R": "De lengtegraad waarop de satelliet de evenaar van zuid naar noord kruist.",
       "info E": "De excentriciteit van de baan.",
-      "Satellite": "Satelliet"
-      "Drag the sliders to see what happens to your satellite!": "Sleep de sliders om te zien wat er met je satelliet gebeurt!
+      "Satellite": "Satelliet",
+      "Drag the sliders to see what happens to your satellite!": "Sleep de sliders om te zien wat er met je satelliet gebeurt!"
     }
   }
 </i18n>
