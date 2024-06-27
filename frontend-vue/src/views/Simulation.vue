@@ -331,7 +331,7 @@ props.simulation.addEventListener('select', (satellite) => {
           {{ t('Satellite') + ' ' + (index + 1) }}
         </div>
       </div>
-      <button class="add-del-button " @click="remove = 1" style="text-align: center">
+      <button class="add-del-button" @click="remove = 1" style="text-align: center">
         <FontAwesomeIcon :icon="faTrashCan" />
       </button>
     </div>
