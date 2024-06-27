@@ -73,35 +73,35 @@ filters[0].selected = false
 //NOTE: Yes this is hardcoded ugly but I'm too lazy atm
 const generics = ref([
   {
-    name: t('Weather'),
+    name: 'Weather',
     filters: [filters[3]],
     icon: '/filter-icons/weather2.svg'
   },
   {
-    name: t('Navigational'),
+    name: 'Navigational',
     // Just everything navigation related
     filters: [filters[17], filters[18], filters[19], filters[20], filters[21]],
     icon: '/filter-icons/navigation.svg'
   },
   {
-    name: t('Communication'),
+    name: 'Communication',
     filters: [filters[12]],
     icon: '/filter-icons/communication2.svg'
   },
   {
-    name: t('Space Stations'),
+    name: 'Space Stations',
     filters: [filters[1]],
     icon: '/filter-icons/space_station.svg'
   },
   {
-    name: t('Science'),
+    name: 'Science',
     // In order: geodetics, engineering, NOAA,
     // Earth Resources, ARGOSS, Planet
     filters: [filters[23], filters[24], filters[4], filters[5], filters[8], filters[9]],
     icon: '/filter-icons/science.svg'
   },
   {
-    name: t('Other'),
+    name: 'Other',
     // Literally everything
     filters: [
       filters[6],

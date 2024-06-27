@@ -13,6 +13,8 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, computed } from 'vue'
 import { Filter } from '@/common/sat-manager'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps<{
   alignLeft: boolean
@@ -45,7 +47,7 @@ const toggle = () => {
       :id="'label' + index"
     />
     <img :src="icon" width="65" height="65" />
-    <span class="cat-name">{{ name }}</span>
+    <span class="cat-name">{{ t(name) }}</span>
   </label>
 </template>
 
@@ -91,3 +93,24 @@ img {
   margin-right: 7px;
 }
 </style>
+
+<i18n>
+{
+  en: {
+    "Navigational": "Navigational",
+      "Communication": "Communication",
+      "Science": "Science",
+      "Other": "Other",
+      "Planet": "Planet",
+      "Space Stations": "Space Stations",
+  },
+  nl: {
+    "Navigational": "Navigatie",
+      "Communication": "Communicatie",
+      "Science": "Wetenschap",
+      "Other": "Overig",
+      "Weather": "Weer",
+      "Space Stations": "Ruimtestations",
+  }
+}
+</i18n>
