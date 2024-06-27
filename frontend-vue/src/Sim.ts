@@ -194,6 +194,7 @@ export class ThreeSimulation {
 
     // Controls
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.controls.enablePan = false
     this.controls.maxDistance = MAX_CAMERA_DISTANCE
     this.controls.minDistance = MIN_CAMERA_DISTANCE
     this.controls.mouseButtons = {
