@@ -23,6 +23,7 @@ export class Orbit {
   private numOfUpdates = 0
   private upcoming: boolean // Indicates if the orbit is the future or past orbit
   private crashing = false
+  private scene: THREE.Scene
 
   private listenerRef: number | undefined // Reference to the event listener
 
@@ -42,6 +43,7 @@ export class Orbit {
     this.time = time
     this.upcoming = upcoming
     this.globe = globe
+    this.scene = scene
 
     // Create line material with white color
     const lineMaterial = new THREE.LineBasicMaterial({
@@ -62,36 +64,61 @@ export class Orbit {
     }
     scene.add(this.line) // Add the line to the scene
 
-    if (upcoming) {
+    // if (upcoming) {
       this.listenerRef = this.time.addEventListener(this.recalculate.bind(this)) // Add event listener for time updates
-    }
+    // }
   }
 
   // Generate line points for the orbit path
   private generateLinePoints() {
-    this.linePoints = this.satellite.propagateOrbit(
-      // Propagate the satellite's position to get the orbit path
-      this.time.time,
-      NUM_OF_STEPS_ORBIT,
-      TIME_INTERVAL_ORBIT,
-      this.globeRadius
-    )
-    const positions = this.line?.geometry.attributes.position.array
-    if (!positions || !this.line) return
-    for (const pos of this.linePoints) {
-      positions[this.lineCounter++] = pos.x
-      positions[this.lineCounter++] = pos.y
-      positions[this.lineCounter++] = pos.z
+    if (this.upcoming) {
+      this.linePoints = this.satellite.propagateOrbit(
+        // Propagate the satellite's position to get the orbit path
+        this.time.time,
+        NUM_OF_STEPS_ORBIT,
+        TIME_INTERVAL_ORBIT,
+        this.globeRadius
+      )
+      const positions = this.line?.geometry.attributes.position.array
+      if (!positions || !this.line) return
+      for (const pos of this.linePoints) {
+        positions[this.lineCounter++] = pos.x
+        positions[this.lineCounter++] = pos.y
+        positions[this.lineCounter++] = pos.z
+      }
+      this.lineGeometry?.setDrawRange(0, this.lineCounter / 3)
+      this.line.geometry.attributes.position.needsUpdate = true
+      this.lastUpdate = new Date(+this.time.time)
+      this.earthCrushCheck() // Check for possible collisions with Earth
     }
-    this.lineGeometry?.setDrawRange(0, this.lineCounter / 3)
-    this.line.geometry.attributes.position.needsUpdate = true
-    this.lastUpdate = new Date(+this.time.time)
-    this.earthCrushCheck() // Check for possible collisions with Earth
   }
 
   // Update the line based on the satellite's position
   updateLine(globe: ThreeGlobe) {
-    if (!this.line || !this.lineGeometry) return
+    if (!this.line || !this.lineGeometry){
+      if (this.upcoming) return
+      const lineMaterial = new THREE.LineBasicMaterial({
+        color: 'white'
+      })
+  
+      // Initialize line geometry and material
+      this.lineGeometry = new THREE.BufferGeometry()
+      this.lineMaterial = lineMaterial
+  
+      // Create a Float32Array to store positions
+      const positions = new Float32Array(LINE_SIZE * 3)
+      this.lineGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+      this.lineGeometry.setDrawRange(0, LINE_SIZE)
+      this.line = new THREE.Line(this.lineGeometry, lineMaterial)
+      if (this.upcoming) {
+        this.generateLinePoints() // Generate initial line points if the orbit is upcoming
+      }
+      this.scene.add(this.line) // Add the line to the scene
+  
+      // if (upcoming) {
+        this.listenerRef = this.time.addEventListener(this.recalculate.bind(this)) // Add event listener for time updates
+      // }
+    }
     if (this.upcoming) {
       const elapsed_time = +this.time.time - +this.lastUpdate
       for (let i = 0; i < elapsed_time / TIME_INTERVAL_ORBIT - this.numOfUpdates; i++) {
@@ -162,10 +189,17 @@ export class Orbit {
   }
 
   // Recalculate the orbit path
-  recalculate() {
-    this.lineCounter = 0
-    this.numOfUpdates = 0
-    this.generateLinePoints()
+  recalculate(param: String) {
+    if (param === 'Time') {
+      console.log('Recalculating orbit path')
+      if (this.upcoming){
+        this.generateLinePoints();
+      }
+      else{
+        this.removeLine(this.scene);
+      }
+    }
+    
   }
 
   // Remove the line from the scene
@@ -179,6 +213,8 @@ export class Orbit {
         this.time.removeEventListener(this.listenerRef) // Remove the event listener
       }
     }
+    this.line = null;
+    this.lineGeometry = null;
   }
 
   // Get the line object

@@ -323,13 +323,14 @@ export class ThreeSimulation {
     if (this.onTheSide) {
       this.globe.rotation.y += 0.001
     }
+    this.updateOrbits()
 
     this.sun.position.copy(this.getSunPosition())
     if (this.workerManager.finishPropagate(this.time.time, satellite.gstime(this.time.time))) {
       this.updatePositionsOfMeshes()
     }
     this.time.step()
-    this.updateOrbits()
+    
     this.satelliteLinks?.render()
 
     if (this.stats) this.stats.update()
@@ -362,6 +363,7 @@ export class ThreeSimulation {
     } else {
       this.dehover()
     }
+    
   }
 
   // Initializes event listeners for user interactions
