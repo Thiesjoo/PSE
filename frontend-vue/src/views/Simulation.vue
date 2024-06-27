@@ -256,7 +256,7 @@ props.simulation.addEventListener('select', (satellite) => {
     <p>Drag the sliders to see what happens to your satellite!</p>
     <br />
     <div class="name-sat">
-      <h4 class="display">{{ currentlySelectedSatelliteRef?.name }}</h4>
+      <h3 class="display">{{ currentlySelectedSatelliteRef?.name }}</h3>
     </div>
     <br />
     <div class="sliders-sat">
@@ -271,7 +271,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
-        <p class="display">Value: {{ height }} [km]</p>
+        <p class="display">Value: {{ height }} km</p>
       </div>
       <br />
       <h4>
@@ -283,7 +283,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
-        <p class="display">Value: {{ inclination }} [deg]</p>
+        <p class="display">Value: {{ inclination }} &deg;</p>
       </div>
       <br />
       <h4>
@@ -295,7 +295,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
         <br />
-        <p class="display">Value: {{ raan }} [deg]</p>
+        <p class="display">Value: {{ raan }} &deg;</p>
       </div>
       <br />
       <h4>
@@ -317,7 +317,7 @@ props.simulation.addEventListener('select', (satellite) => {
       </button>
     </div>
   </LeftInfoBlock>
-  <RightInfoBlock :open="true">
+  <RightInfoBlock :open="!props.simulation.mobile.value">
     <div class="right-info-box">
       <h2>{{ t('Satellites Created') }}</h2>
       <div class="satellite-list">
@@ -335,7 +335,7 @@ props.simulation.addEventListener('select', (satellite) => {
         <FontAwesomeIcon :icon="faTrashCan" />
       </button>
     </div>
-    <OrbitInfoBlock :picked="picked" class="orbit-order" />
+    <OrbitInfoBlock :picked="picked" class="orbit-order" v-if="!props.simulation.mobile.value" />
   </RightInfoBlock>
   <SpeedButtons :simulation="props.simulation" />
 </template>
@@ -364,6 +364,8 @@ h4 {
 h3 {
   text-align: center;
   font-weight: bold;
+  font-size: 1.5rem;
+  font-family: 'Tomorrow';
 }
 
 .name-sat {
@@ -446,6 +448,7 @@ h3 {
 
 .orbit-order {
   order: 2;
+  margin-top: 10px;
 }
 
 .display {
@@ -499,6 +502,7 @@ h3 {
   border: 2px solid $pop_up_border;
   border-radius: 12px;
   padding: 15px;
+  font-family: 'Tomorrow';
 }
 
 .satellite-list {

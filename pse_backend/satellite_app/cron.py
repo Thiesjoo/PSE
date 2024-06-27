@@ -1,3 +1,10 @@
+"""
+File description:
+Contains several cronjobs responsible for fetching different categories of
+satellites. To see how these cronjobs are scheduled, go to 'CRONJOBS' in
+settings.py.
+"""
+
 import os
 from pathlib import Path
 from tletools import TLE
@@ -6,12 +13,6 @@ import requests
 import logging
 import csv
 
-"""
-File description:
-Contains several cronjobs responsible for fetching different categories of
-satellites. To see how these cronjobs are scheduled, go to 'CRONJOBS' in
-settings.py.
-"""
 
 # Sets up the logger (see /logs/cron.logs)
 cron_logger = logging.getLogger('cron')
@@ -72,6 +73,8 @@ def determine_request_source(category):
             request_source = API_URL + 'GROUP=swarm&FORMAT=tle'
         case SATCAT.AMATEUR_RADIO:
             request_source = API_URL + 'GROUP=amateur&FORMAT=tle'
+        case SATCAT.ONEWEB:
+            request_source = API_URL + 'GROUP=oneweb&FORMAT=tle'
 
         # Navigation
         case SATCAT.GNSS:
@@ -300,6 +303,9 @@ def pull_communications_satellites():
 
     mincat = MinorCategory.objects.get(minor_category=SATCAT.AMATEUR_RADIO)
     pull_satellites(SATCAT.AMATEUR_RADIO, mincat)
+
+    mincat = MinorCategory.objects.get(minor_category=SATCAT.ONEWEB)
+    pull_satellites(SATCAT.ONEWEB, mincat)
 
     cron_logger.info("Succesfully pulled 'Communications' satellites.")
 

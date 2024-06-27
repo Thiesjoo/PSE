@@ -1,3 +1,8 @@
+<!--
+  This component is a pop-up frame that can be used to display content in a pop-up.
+  It is used in the popsatinfo component, which is used in the visualisation component.
+-->
+
 <script setup lang="ts">
 defineProps<{
   open: boolean

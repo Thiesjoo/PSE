@@ -1,3 +1,9 @@
+<!--
+ Adds a button that toggles a popup with the slot content.
+  The popup is hidden when clicking outside of it.
+  The component receives no props.
+-->
+
 <script setup lang="ts">
 import { ref } from 'vue'
 import { vOnClickOutside } from '@vueuse/components'

@@ -1,3 +1,10 @@
+<!--
+  This component is used to control the speed of the simulation.
+  It shows the current time and allows the user to change the speed of the simulation.
+  The user can also reset the time to the current time.
+  It is used in the visualisation and simulation tab.
+-->
+
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { onMounted, ref } from 'vue'

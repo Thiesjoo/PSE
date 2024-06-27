@@ -37,3 +37,9 @@ npm run build
 ```sh
 npm run lint
 ```
+
+### Format with [ESLint](https://eslint.org/)
+
+```sh
+npm run format
+```

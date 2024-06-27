@@ -1,3 +1,8 @@
+<!--
+In this file, the main layout of the application is defined.
+It adds the three js simulation, language selection buttons, feedback button from sentr and about page.
+-->
+
 <script setup lang="ts">
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { ThreeSimulation } from './Sim'
@@ -214,9 +219,9 @@ header {
   transform: translateX(-50%);
 
   background-color: $pop_up_background;
-  z-index: 100;
   border-radius: 0.2em;
   padding: 0.5em;
+  z-index: 10000;
 
   nav {
     display: flex;
