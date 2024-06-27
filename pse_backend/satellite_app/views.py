@@ -3,7 +3,7 @@ import os
 
 from django.http import HttpResponse, HttpRequest, JsonResponse
 
-from satellite_app.cron import pull_special_interest_satellites
+from satellite_app.cron import pull_communications_satellites
 from satellite_app.models import Satellite, MinorCategory
 
 from django.views.decorators.cache import cache_page
@@ -79,7 +79,8 @@ def index(request: HttpRequest):
     if len(categories) == 0:
         sats = Satellite.objects.prefetch_related("minor_categories").all()
     else:
-        sats = Satellite.objects.prefetch_related("minor_categories").filter(minor_categories__in=categories)
+        sats = Satellite.objects.prefetch_related(
+            "minor_categories").filter(minor_categories__in=categories)
 
     resp = serializedSatellites(sats)
     # Returns a JSON-serialized list of the fetched satellites
@@ -129,5 +130,5 @@ def countries(request: HttpRequest):
 def pull(request: HttpRequest):
     views_logger.info("Endpoint 'pull' was called; now forcefully"
                       + " pulling data from the external API")
-    pull_special_interest_satellites()
-    return HttpResponse("Pulled special interest satellites")
+    pull_communications_satellites()
+    return HttpResponse("Pulled communications satellites")

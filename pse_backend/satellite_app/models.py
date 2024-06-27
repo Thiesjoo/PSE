@@ -36,6 +36,7 @@ class MinorCategory(models.Model):
         INTELSAT = "Intelsat"
         SWARM = "Swarm"
         AMATEUR_RADIO = "Amateur Radio"
+        ONEWEB = "OneWeb"
 
         # Navigation types:
         GNSS = "GNSS"

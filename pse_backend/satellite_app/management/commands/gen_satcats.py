@@ -40,7 +40,8 @@ class Command(BaseCommand):
             SATAFF.IRIDIUM,
             SATAFF.INTELSAT,
             SATAFF.SWARM,
-            SATAFF.AMATEUR_RADIO
+            SATAFF.AMATEUR_RADIO,
+            SATAFF.ONEWEB
         ])
 
         # Navigation
