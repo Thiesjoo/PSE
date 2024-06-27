@@ -358,6 +358,7 @@ h2 {
 h4 {
   text-align: center;
   size: 1rem;
+  font-size: 1.5rem;
   font-family: 'Tomorrow';
 }
 
