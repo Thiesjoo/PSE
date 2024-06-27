@@ -114,6 +114,7 @@ const intervals = [1, 10, 100, 1000]
       padding: 0.5em 1em;
       background-color: $button_background;
       color: $main_text;
+      font-family: 'Tomorrow';
     }
     .active {
       background-color: $button_selected;
