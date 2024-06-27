@@ -21,6 +21,15 @@ await manager.init()
 // Get the filters from the SatManager
 const filters = manager.currentFilters
 
+// Create a filter map for easy access by name
+const filterMap = filters.reduce(
+  (acc, filter) => {
+    acc[filter.name] = filter
+    return acc
+  },
+  {} as Record<string, Filter>
+)
+
 // Keeps track of whether sats without launch year should be included
 let include_sats_without_launch_year = ref(true)
 
@@ -50,56 +59,60 @@ const advancedFilters = ref(false)
 filters[2].selected = false
 filters[0].selected = false
 
-//NOTE: Yes this is hardcoded ugly but I'm too lazy atm
+// List of 'generic' categories containing smaller
+// categories. These six 'generics' are the six main
+// categories.
 const generics = ref([
   {
     name: 'Weather',
-    filters: [filters[3]],
+    filters: [filterMap['Weather']],
     icon: '/filter-icons/weather2.svg'
   },
   {
     name: 'Navigational',
-    // Just everything navigation related
-    filters: [filters[18], filters[19], filters[20], filters[21], filters[22]],
+    filters: [
+      filterMap['GNSS'],
+      filterMap['GPS Operational'],
+      filterMap['Glonass Operational'],
+      filterMap['Galileo'],
+      filterMap['Beidou']
+    ],
     icon: '/filter-icons/navigation.svg'
   },
   {
     name: 'Communication',
-    filters: [filters[12], filters[17]],
+    filters: [filterMap['Starlink'], filterMap['OneWeb']],
     icon: '/filter-icons/communication2.svg'
   },
   {
     name: 'Space Stations',
-    filters: [filters[1]],
+    filters: [filterMap['Space Stations']],
     icon: '/filter-icons/space_station.svg'
   },
   {
     name: 'Science',
-    // In order: geodetics, engineering, NOAA,
-    // Earth Resources, ARGOSS, Planet
     filters: [
-      filters[23],
-      filters[24],
-      filters[25],
-      filters[4],
-      filters[5],
-      filters[8],
-      filters[9]
+      filterMap['Space and Earth Science'],
+      filterMap['Geodetics'],
+      filterMap['Engineering'],
+      filterMap['NOAA'],
+      filterMap['Earth Resources'],
+      filterMap['ARGOS Data Collection System'],
+      filterMap['Planet']
     ],
     icon: '/filter-icons/science.svg'
   },
   {
     name: 'Other',
-    // Literally everything
     filters: [
-      filters[6],
-      filters[7],
-      filters[10],
-      filters[11],
-      filters[13],
-      filters[14],
-      filters[15],
-      filters[16]
+      filterMap['Search & Rescue (SARSAT)'],
+      filterMap['Disaster Monitoring'],
+      filterMap['Spire'],
+      filterMap['Active Geosynchronous'],
+      filterMap['Iridium'],
+      filterMap['Intelsat'],
+      filterMap['Swarm'],
+      filterMap['Amateur Radio']
     ],
     icon: '/filter-icons/other.svg'
   }
