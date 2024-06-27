@@ -26,6 +26,7 @@ export class Orbit {
   private scene: THREE.Scene
 
   private listenerRef: number | undefined // Reference to the event listener
+  private reset: number = 0;
 
   private globe: ThreeGlobe // Globe object from ThreeGlobe
   get globeRadius() {
@@ -65,7 +66,7 @@ export class Orbit {
     scene.add(this.line) // Add the line to the scene
 
     // if (upcoming) {
-      this.listenerRef = this.time.addEventListener(this.recalculate.bind(this)) // Add event listener for time updates
+    this.listenerRef = this.time.addEventListener(this.recalculate.bind(this)) // Add event listener for time updates
     // }
   }
 
@@ -95,16 +96,16 @@ export class Orbit {
 
   // Update the line based on the satellite's position
   updateLine(globe: ThreeGlobe) {
-    if (!this.line || !this.lineGeometry){
+    if (!this.line || !this.lineGeometry) {
       if (this.upcoming) return
       const lineMaterial = new THREE.LineBasicMaterial({
         color: 'white'
       })
-  
+
       // Initialize line geometry and material
       this.lineGeometry = new THREE.BufferGeometry()
       this.lineMaterial = lineMaterial
-  
+
       // Create a Float32Array to store positions
       const positions = new Float32Array(LINE_SIZE * 3)
       this.lineGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
@@ -114,10 +115,7 @@ export class Orbit {
         this.generateLinePoints() // Generate initial line points if the orbit is upcoming
       }
       this.scene.add(this.line) // Add the line to the scene
-  
-      // if (upcoming) {
-        this.listenerRef = this.time.addEventListener(this.recalculate.bind(this)) // Add event listener for time updates
-      // }
+      this.listenerRef = this.time.addEventListener(this.recalculate.bind(this)) // Add event listener for time updates
     }
     if (this.upcoming) {
       const elapsed_time = +this.time.time - +this.lastUpdate
@@ -129,9 +127,10 @@ export class Orbit {
         positions = shiftLeft(positions)
         this.lineCounter -= 3
 
-        const newPos: any = this.satellite.propagateNoUpdate(
+        const newPos = this.satellite.propagateNoUpdate(
           new Date(+this.time.time + NUM_OF_STEPS_ORBIT * TIME_INTERVAL_ORBIT),
-          this.globeRadius
+          this.globeRadius,
+          false
         )
 
         positions[this.lineCounter++] = newPos.x
@@ -143,13 +142,20 @@ export class Orbit {
         this.numOfUpdates++
       }
     } else {
-      const satPositions = this.satellite.realPosition
-      if (!satPositions) return
-      const lineCoords = globe.getCoords(
-        satPositions.lat,
-        satPositions.lng,
-        satPositions.alt / EARTH_RADIUS_KM
-      )
+      let lineCoords
+      if (this.reset > 0) {
+        this.reset--;
+        return;
+      } else {
+        console.log('Updating line')
+        const satPositions = this.satellite.realPosition
+        if (!satPositions) return
+        lineCoords = globe.getCoords(
+          satPositions.lat,
+          satPositions.lng,
+          satPositions.alt / EARTH_RADIUS_KM
+        )
+      }
 
       let positions = this.line.geometry.attributes.position.array
       if (this.lineCounter > LINE_SIZE) {
@@ -192,14 +198,14 @@ export class Orbit {
   recalculate(param: String) {
     if (param === 'Time') {
       console.log('Recalculating orbit path')
-      if (this.upcoming){
-        this.generateLinePoints();
-      }
-      else{
-        this.removeLine(this.scene);
+      this.reset = 20
+
+      if (this.upcoming) {
+        this.generateLinePoints()
+      } else {
+        this.removeLine(this.scene)
       }
     }
-    
   }
 
   // Remove the line from the scene
@@ -213,8 +219,8 @@ export class Orbit {
         this.time.removeEventListener(this.listenerRef) // Remove the event listener
       }
     }
-    this.line = null;
-    this.lineGeometry = null;
+    this.line = null
+    this.lineGeometry = null
   }
 
   // Get the line object
