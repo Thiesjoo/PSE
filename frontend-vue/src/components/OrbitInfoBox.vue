@@ -59,7 +59,7 @@ defineProps<{
       class="orbit-info-box"
       v-show="['RAAN0', 'RAAN90', 'RAAN180', 'RAAN270', 'RAAN360'].includes(picked)"
     >
-      <h2>{{ t('Right Ascension of the Ascending Node') }}</h2>
+      <h2>{{ t('Right Ascension of the Ascending Node (RAAN)') }}</h2>
       <h4>{{ t('RAAN information') }}</h4>
       <div class="orbit-info" v-show="picked === 'RAAN0'">
         <h4>{{ t('RAAN') }}: 0 &deg;</h4>
@@ -160,7 +160,13 @@ h3 {
         "Other": "Other",
         "Orbit information": "Orbit inclination is the angle at which orbit is tilted compared to path around equator.",
         "RAAN information": "RAAN determines at what longitude satellite crosses the equator.",
-        "Eccentricity information": "Orbit eccentricity is how much an orbit looks like an oval instead of a perfect circle."
+        "Eccentricity information": "Orbit eccentricity is how much an orbit looks like an oval instead of a perfect circle.",
+        "Right Ascension of the Ascending Node (RAAN)" : "Right Ascension of the Ascending Node (RAAN)",
+        "Orbit Eccentricity" : "Orbit Eccentricity",
+        "Circular Orbit" : "Round orbit",
+        "Slight Elliptical shape" : "Slight oval orbit",
+        "More Elliptical shape" : "More oval orbit",
+        "Ellipse" : "Oval orbit"
       },
       "nl": {
         "Height": "Hoogte",
@@ -174,7 +180,12 @@ h3 {
         "Orbit information": "De inclinatie van de baan is de hoek waaronder de baan is gekanteld ten opzichte van het pad rond de evenaar.",
         "RAAN information": "RAAN bepaalt op welke lengtegraad de satelliet de evenaar kruist.",
         "Eccentricity information": "De excentriciteit van de baan is hoeveel een baan op een ovaal lijkt in plaats van een perfecte cirkel.",
-        
+        "Right Ascension of the Ascending Node (RAAN)" : "Lengte van de Klimmende Knoop (RAAN)",
+        "Orbit Eccentricity" : "Excentriciteit van de baan",
+        "Circular Orbit" : "Ronde baan",
+        "Slight Elliptical shape" : "Beginnende ovale baan",
+        "More Elliptical shape" : "Meer ovale baan",
+        "Ellipse" : "Ovale baan"
       }
     }
   </i18n>
