@@ -199,7 +199,7 @@ props.simulation.moveRight()
             "Create your own satellite": "Maak je eigen satelliet",
             "Communication": "Communicatie",
             "All_satellites_cta": "Bekijk alle satellieten in de ruimte",
-            "Create_satellites_cta": "Maak je eigen satelliet en lanceer hem in de ruimte",
+            "Create_satellites_cta": "Maak je eigen satelliet en lanceer hem de ruimte in",
             "Communication_cta": "Stuur je bericht de wereld rond",
             "Scale_disclaimer": "De schaal visualisaties in deze app zijn niet een accurate weergave van de werkelijkheid."
         }
