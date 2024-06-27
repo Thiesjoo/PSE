@@ -163,7 +163,7 @@ const categories = computed(() => {
       </InfoPopup>
     </div>
     <div class="cat-list">
-      <h1>{{ t('Belongs to') }}</h1>
+      <h1>{{ t('Belongs to') }}:</h1>
       <p>{{ categories }}</p>
     </div>
   </PopFrame>
@@ -224,6 +224,11 @@ const categories = computed(() => {
     margin-top: 2em;
     width: 20em;
     line-height: 1.5em;
+
+    p {
+      font-size: 3em;
+      margin-bottom: 0.2em;
+    }
   }
 
   p,
@@ -236,16 +241,17 @@ const categories = computed(() => {
 }
 
 .cat-list {
-  margin-top: 1em;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1em;
-
-  max-width: 20vw;
+  justify-content: center;
+  margin-top: 2em;
+  width: 20em;
+  line-height: 1.5em;
 
   h1 {
     font-size: 3em;
+    margin-bottom: 0.2em;
   }
 }
 </style>
