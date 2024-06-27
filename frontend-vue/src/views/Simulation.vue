@@ -255,7 +255,7 @@ props.simulation.addEventListener('select', (satellite) => {
     <h2>{{ t('Simulation Variables') }}</h2>
     <br />
     <div class="name-sat">
-      <h4 class="display">{{ currentlySelectedSatelliteRef?.name }}</h4>
+      <h3 class="display">{{ currentlySelectedSatelliteRef?.name }}</h3>
     </div>
     <br />
     <div class="sliders-sat">
@@ -349,6 +349,11 @@ props.simulation.addEventListener('select', (satellite) => {
   padding-left: 1em;
 }
 
+.display{
+  font-size: 1rem;
+  font-family: 'Tomorrow';
+}
+
 h2 {
   text-align: center;
   font-family: 'Tomorrow';
@@ -356,12 +361,16 @@ h2 {
 
 h4 {
   text-align: center;
-  size: 1rem;
+  size: 2rem;
+  font-size: 1.2rem;
+  font-family: 'Tomorrow';
 }
 
 h3 {
   text-align: center;
   font-weight: bold;
+  font-size: 1.5rem;
+  font-family: 'Tomorrow';
 }
 
 .name-sat {
@@ -492,6 +501,7 @@ h3 {
   border: 2px solid $pop_up_border;
   border-radius: 12px;
   padding: 15px;
+  font-family: 'Tomorrow';
 }
 
 .satellite-list {
