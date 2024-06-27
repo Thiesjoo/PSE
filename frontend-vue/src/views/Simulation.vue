@@ -349,7 +349,7 @@ props.simulation.addEventListener('select', (satellite) => {
   padding-left: 1em;
 }
 
-.display{
+.display {
   font-size: 1rem;
   font-family: 'Tomorrow';
 }
