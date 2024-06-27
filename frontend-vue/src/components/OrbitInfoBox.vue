@@ -153,6 +153,7 @@ h3 {
         "Height": "Height",
         "Inclination": "Inclination",
         "RAAN": "RAAN",
+        "Right Ascension of the Ascending Node": "Right Ascension of the Ascending Node",
         "Eccentricity": "Eccentricity",
         "Orbit Category": "Orbit Category",
         "Low Earth Orbit": "Low Earth Orbit",
@@ -160,12 +161,14 @@ h3 {
         "Other": "Other",
         "Orbit information": "Orbit inclination is the angle at which orbit is tilted compared to path around equator.",
         "RAAN information": "RAAN determines at what longitude satellite crosses the equator.",
-        "Eccentricity information": "Orbit eccentricity is how much an orbit looks like an oval instead of a perfect circle."
+        "Eccentricity information": "Orbit eccentricity is how much an orbit looks like an oval instead of a perfect circle.",
+        "Orbit Eccentricity": "Orbit Eccentricity",
       },
       "nl": {
         "Height": "Hoogte",
         "Inclination": "Inclinatie",
         "RAAN": "RAAN",
+        "Right Ascension of the Ascending Node": "RAAN",
         "Eccentricity": "Excentriciteit",
         "Orbit Category": "Baancategorie",
         "Low Earth Orbit": "Lage Omloopbaan",
@@ -174,7 +177,7 @@ h3 {
         "Orbit information": "De inclinatie van de baan is de hoek waaronder de baan is gekanteld ten opzichte van het pad rond de evenaar.",
         "RAAN information": "RAAN bepaalt op welke lengtegraad de satelliet de evenaar kruist.",
         "Eccentricity information": "De excentriciteit van de baan is hoeveel een baan op een ovaal lijkt in plaats van een perfecte cirkel.",
-        
+        "Orbit Eccentricity": "Excentriciteit van de baan",
       }
     }
   </i18n>

@@ -439,6 +439,7 @@ h3 {
 
 .orbit-order {
   order: 2;
+  height: calc(100% - 20px - 10pt);
   margin-bottom: 20px + 10pt;
 }
 
