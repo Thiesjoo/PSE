@@ -1,181 +1,24 @@
-# PSE
-Leuk projectje bouwen!
+# Satellite rader
+The project exist of a backend, frontend and devops folder. Each of these folders has their own README to explain how it works and how to compile it.
+- [Frontend](/frontend-vue/README.md)
+- [Backend](/pse_backend/README.md)
+- [Devops](/devops/README.md)
 
-## Installation instructions frontend
+There are also files about how we implemented tests, how we implemented about green coding and the fabulous performance. These can be found here:
+- [Tests](/TESTS.md)
+- [Green coding](/GREENCODING.md)
+- [Performance](/PERFORMANCE.md)
 
-### Prerequisites
-- Node.js, at least version 18;
-- npm, the Node.js package manager.
+This project was made by:
+- Thies Nieborg
+- Thomas Linssen
+- Thomas van Lieshout
+- Mike Schouten
+- Gosia Gniadek
+- Mabel Traube
+- Sasha van der Linden
+- Wike Duivenvoorden
 
+It was made for the course Project Software Engineering (5062PRSE5Y).
 
-### Installation
-
-Clone this repository and run the following commands in the terminal:
-
-```bash
-cd frontend-vue
-npm install
-npm run dev
-```
-
-This starts a development server on `localhost:5173`. The application should now be running. It always fetches the latest data from the backend on https://api.satradar.space.
-
-## Backend manual
-Fetching satellite data directly from external API's can be slow and cumbersome due to the many separate endpoints. Furthermore, API keys (if any) cannot be present in the front-end due to security risks. This project aims to prevent these issues through the use of a backend application made using the Django framework. Using this backend, users can rely on a single endpoint to make high-speed API calls to fetch satellites with filter criteria.
-
-A Satellite object fetched from the database consists of the following data:
-| Attribute          | Description        |
-|--------------------|--------------------|
-| `name`             | Name of the satellite. |
-| `line1` | Line 1 of the TLE. |
-| `line2` | Line 2 of the TLE. |
-| `satellite_catalog_number` | Catalog number. This is also its unique ID. |
-| `launch_year` | The year it launched. |
-| `epoch_year` | Year that the TLE was recorded. |
-| `epoch` | Specific day and time that the TLE was recorded. |
-| `revolutions` | Total amount of revolutions this Satellite has taken at the time of the TLE recording. |
-| `revolutions_per_day` | The amount of revolutions this satellite travels per day. |
-| `country` | The country or countries that this satellite is associated with. |
-| `categories` | The categories (see below) that this satellite belongs to. |
-| `classification` | Can be either `U` (unclassified), `C` (classified) or `S` (secret). |
-
-### User guide
-The API contains multiple endpoints. The main endpoint can be reached via the URI:
-```
-/satellite_app
-```
-
-By default, all types of satellites are fetched. To filter on specific satellite categories, use the `filter` parameter and list each category separated by a comma, e.g.:
-```
-/satellite_app?filter=Space Stations, Starlink, Galileo
-```
-* Note: Don't pay heed to spaces in the category names. This is OK.
-
-#### Full list of filter categories:
-
-| Special Interest         |
-|--------------------------|
-| Last 30 Days' Launches   |
-| Space Stations           |
-| Active Satellites        |
-
-| Weather and Earth            |
-|------------------------------|
-| Weather                      |
-| NOAA                         |
-| Earth Resources              |
-| Search & Rescue (SARSAT)     |
-| Disaster Monitoring          |
-| ARGOS Data Collection System |
-| Planet                       |
-| Spire                        |
-
-
-| Communications         |
-|------------------------|
-| Active Geosynchronous  |
-| Starlink               |
-| Iridium                |
-| Intelsat               |
-| Swarm                  |
-| Amateur Radio          |
-| OneWeb                 |
-
-
-| Navigational |
-|-----------------------|
-| GNSS |
-| GPS Operational |
-| Glonass Operational |
-| Galileo |
-| Beidou |
-
-
-| Scientific |
-|-----------------------|
-| Space and Earth Science |
-| Geodetics |
-| Engineering |
-
-* Note that you can only filter on *minor* categories (e.g. you can't filter on 'Communications').
-
-#### Other endpoints
-Below are some other useful endpoints:
-
-To fetch all existing categories:
-```
-/satellite_app/categories
-```
-
-To fetch all launch years:
-```
-/satellite_app/launch_years
-```
-
-To fetch all countries with associated satellites:
-```
-/satellite_app/countries
-```
-
-#### List of special country codes
-The country codes will mostly be 2 letter ISO 3166-1 alpha-2 codes. There are some exceptions
-|Country code|Meaning|
-|------------|-------|
-|INT|Multiple countries, use internation flag of earth|
-|XX/YY|Two countries launched a satellite together|
-|UNK|Unkown, use a question mark|
-|EU|For the european union|
-
-### Development & setup guide
-
-To setup the backend, make sure to follow all the steps below:
-
-First, create a .env file in the root folder. In there, paste the following contents:
-```.env
-SECRET_KEY=<your secret key>
-DEBUG=<'true' or 'false' depending on whether it's in a production or development environment>
-SATELLITES_CACHING_LENGTH=<caching length of the satellites endpoint (in seconds). If not given, this value is set to 3600 seconds.>
-STANDARD_CACHING_LENGTH=<caching length of all other endpoints (in seconds). If not given, this value is set to 300 seconds.>
-TIME_ZONE=<The timezone. Important for crons. The default is UTC>
-```
-Then, install the dependencies listed in requirements.txt.
-
-Then, navigate to the `pse_backend` directory and run the following commands to generate the database:
-```
-python3 manage.py makemigrations satellite_app
-python3 manage.py migrate satellite_app
-```
-
-Since the satellite categories are stored as actual rows in the database, we need to generate these. To do this, run the following command:
-```
-python3 manage.py gen_satcats
-```
-
-The backend makes use of the django-crontab package to handle certain cronjobs. For these to work however, we need to tell the crontab package to use them. To do this, enter the following command to add our cronjobs:
-```
-python3 manage.py crontab add
-```
-
-To make sure they were added correctly, you can run the `show` command:
-```
-python3 manage.py crontab show
-```
-
-Before we can run the server, we need to create a superuser account so that we can always log into our database and see our data. To do this, run the following command and follow the steps prompted from there:
-```
-python3 manage.py createsuperuser
-```
-
-Finally, to start the server, run the following command:
-```
-python3 manage.py runserver
-```
-
-Your instance of the backend should now be running. Make sure to read the section below about logging too to understand how to track the servers' activities.
-
-#### Logs
-There are two main activities that are logged:
-1. **Cronjob activities**: Everytime a cronjob is activated on the server to fetch some satellite data from an external source. This is especially important because these crons are performed at nighttimes, and tracking these activities would be near impossible without logging them. If anything goes wrong during fetching or creating satellites, the logs will show where and when.
-2. **API calls**: API calls that are made to the backend (from the front-end, presumably). This helps us keep track of how many, and from where, and at which times, API calls are made. 
-
-While these logs are printed to the console, they are also stored in logging files as `cron.log` and `views.log` respectively. They are located at `pse_backend/logs/`.
+We had help from Wouter Loeve from the Netherlands Aerospace Centre, thanks a lot!

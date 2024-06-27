@@ -1,5 +1,11 @@
 # frontend-vue
 
+## Installation instructions frontend
+
+### Prerequisites
+- Node.js, at least version 18;
+- npm, the Node.js package manager.
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
@@ -25,6 +31,7 @@ npm install
 ```sh
 npm run dev
 ```
+This starts a development server on `localhost:5173`. The application should now be running. It always fetches the latest data from the backend on https://api.satradar.space.
 
 ### Type-Check, Compile and Minify for Production
 
