@@ -136,6 +136,7 @@ const generics = ref([
   <LeftInfoBlock :open="!props.simulation.mobile.value" class="left-info-block">
     <h2>{{ t('Category filter') }}</h2>
     <i> {{ t('Multiple filters') }}</i>
+    <p>Click on the buttons below to see the satellites that belong to each category.</p>
 
     <div class="flex" v-if="advancedFilters">
       <div class="filter-block">
@@ -176,6 +177,7 @@ const generics = ref([
     <label for="advanced-filter-checkbox" id="advanced-filtering-label">{{
       t('Advanced filtering')
     }}</label>
+    <p>Drag the slider to filter satellites by their launch year.</p>
 
     <div class="launch-year-filter-block">
       <label
@@ -320,6 +322,22 @@ $labelFontSize: 14px !default;
 .left-info-block {
   padding: 20px;
   padding-top: 30px;
+
+  h2 {
+    font-family: 'Tomorrow';
+    font-size: 2em;
+    text-align: center;
+  }
+
+  p {
+    font-family: 'Tomorrow';
+    font-size: 1.2em;
+    text-align: center;
+  }
+
+  .yearfilter {
+    margin-top: 20px;
+  }
 }
 
 /* mark style */
@@ -400,7 +418,7 @@ $labelFontSize: 14px !default;
 .flex {
   display: flex;
   flex-direction: column;
-  max-height: 100%;
+  max-height: 55vh;
   color: $main_text;
   padding-top: 20px;
 
@@ -448,6 +466,11 @@ $labelFontSize: 14px !default;
 .launch-year-filter-block {
   margin-top: 20px;
   margin-bottom: 10px;
+  text-align: center;
+
+  label {
+    font-family: 'Tomorrow';
+  }
 }
 
 #include_without_launch_year {
@@ -515,7 +538,7 @@ $labelFontSize: 14px !default;
       "FilteringLaunchYear1": "Filtering on launches from ",
       "FilteringLaunchYear2": " to ",
       "Category filter": "Category filter",
-      "Multiple filters": "Some satellites are in multiple categories. They will be shown in all categories they belong to.",
+      "Multiple filters": "Click on the buttons below to see the satellites that belong to each category.",
       "Advanced filtering": "Advanced filtering",
       "Navigational": "Navigational",
       "Communication": "Communication",

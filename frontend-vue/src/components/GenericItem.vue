@@ -52,6 +52,8 @@ const toggle = () => {
 </template>
 
 <style scoped lang="scss">
+@import '@/common/colors.scss';
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -63,13 +65,12 @@ const toggle = () => {
   border-radius: 10px;
   max-width: 138px;
 
-  background-color: rgba(61, 61, 109, 0.671);
-  border: 1px solid white;
+  background-color: $button_background_box;
+  border: 1px solid $button_border_box;
   cursor: pointer;
 }
 
 input {
-  border: 1px solid red;
   margin: 0;
   padding: 0;
   width: 0;
