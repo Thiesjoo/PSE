@@ -23,5 +23,5 @@ export const DISTANCE_TO_EARTH_FOR_COLLISION = 300 // Used for collision detecti
 
 export const TWEEN_DURATION = 500
 
-export const PATH_START_COLOR = '#0649b6'
-export const PATH_GENERAL_COLOR = '#266adb'
+export const PATH_START_COLOR = '#e6840e'
+export const PATH_GENERAL_COLOR = '#ff8b00'
