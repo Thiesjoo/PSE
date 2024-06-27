@@ -36,7 +36,7 @@ props.simulation.moveRight()
       <RouterLink to="/simulation">
         <div class="box">
           <div class="text">
-            <h2>{{ t('Create satellites') }}</h2>
+            <h2>{{ t('Create your own satellite') }}</h2>
             <h3>{{ t('Create_satellites_cta') }}</h3>
           </div>
           <div class="icon">
@@ -168,7 +168,7 @@ props.simulation.moveRight()
             "About": "About",
             "Satellite Radar": "Satellite Radar",
             "All satellites": "All satellites",
-            "Create satellites": "Make your own satellite",
+            "Create your own satellite": "Create your own satellite",
             "Communication": "Communication",
             "All_satellites_cta": "View all satellites in orbit",
             "Create_satellites_cta": "Create your own satellite and launch it into orbit",
@@ -178,7 +178,7 @@ props.simulation.moveRight()
             "About": "Over ons",
             "Satellite Radar": "Satelliet Radar",
             "All satellites": "Alle satellieten",
-            "Create satellites": "Maak je eigen satelliet",
+            "Create your own satellite": "Maak je eigen satelliet",
             "Communication": "Communicatie",
             "All_satellites_cta": "Bekijk alle satellieten in de ruimte",
             "Create_satellites_cta": "Maak je eigen satelliet en lanceer hem in de ruimte",

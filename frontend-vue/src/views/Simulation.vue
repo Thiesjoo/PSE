@@ -252,8 +252,8 @@ props.simulation.addEventListener('select', (satellite) => {
 <template>
   <LeftInfoBlock :open="true" class="container">
     <br />
-    <h2>{{ t('Simulation Variables') }}</h2>
-    <p>Drag the sliders to see what happens to your satellite!</p>
+    <h2>{{ t('Create your own satellite') }}</h2>
+    <p>{{ t('Drag the sliders to see what happens to your satellite!') }}</p>
     <br />
     <div class="name-sat">
       <h4 class="display">{{ currentlySelectedSatelliteRef?.name }}</h4>
@@ -538,7 +538,7 @@ h3 {
 <i18n>
   {
     "en": {
-      "Simulation Variables": "Simulation Variables",
+      "Create your own satellite": "Create your own satellite",
       "Satellites Created": "Satellites Created",
       "New satellite": "New Satellite",
       "Height": "Height",
@@ -559,9 +559,10 @@ h3 {
       "info R": "The longitude on which the satellite crosses the equator from south to north.",
       "info E": "The eccentricity of the orbit.",
       "Satellite": "Satellite"
+      "Drag the sliders to see what happens to your satellite!": "Drag the sliders to see what happens to your satellite!"
     },
     "nl": {
-      "Simulation Variables": "Simulatie Variabelen",
+      "Create your own satellite": "Maak je eigen satelliet",
       "Satellites Created": "Gemaakte Satellieten",
       "New satellite": "Nieuwe satelliet",
       "Height": "Hoogte",
@@ -582,6 +583,7 @@ h3 {
       "info R": "De lengtegraad waarop de satelliet de evenaar van zuid naar noord kruist.",
       "info E": "De excentriciteit van de baan.",
       "Satellite": "Satelliet"
+      "Drag the sliders to see what happens to your satellite!": "Sleep de sliders om te zien wat er met je satelliet gebeurt!
     }
   }
 </i18n>
