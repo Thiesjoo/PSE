@@ -133,7 +133,6 @@ const generics = ref([
 </script>
 
 <template>
-
   <LeftInfoBlock :open="!props.simulation.mobile.value" class="left-info-block">
     <h2>{{ t('Category filter') }}</h2>
     <i> {{ t('Multiple filters') }}</i>
