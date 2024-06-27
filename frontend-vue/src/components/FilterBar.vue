@@ -109,10 +109,7 @@ const generics = ref([
 <template>
   <LeftInfoBlock :open="true" class="left-info-block">
     <h2>Category filter</h2>
-    <i>
-      Some satellites are in multiple categories. They will be shown in all categories they belong
-      to.</i
-    >
+    <p>Click on the buttons below to see the satellites that belong to each category.</p>
 
     <div class="flex" v-if="advancedFilters">
       <div class="filter-block">
@@ -151,6 +148,9 @@ const generics = ref([
       id="advanced-filter-checkbox"
     />
     <label for="advanced-filter-checkbox" id="advanced-filtering-label">Advanced filtering</label>
+
+    <h2 class="yearfilter">Launch year filter</h2>
+    <p>Drag the slider to filter satellites by their launch year.</p>
 
     <div class="launch-year-filter-block">
       <label
@@ -295,6 +295,22 @@ $labelFontSize: 14px !default;
 .left-info-block {
   padding: 20px;
   padding-top: 30px;
+
+  h2 {
+    font-family: 'Tomorrow';
+    font-size: 2em;
+    text-align: center;
+  }
+
+  p {
+    font-family: 'Tomorrow';
+    font-size: 1.2em;
+    text-align: center;
+  }
+
+  .yearfilter {
+    margin-top: 20px;
+  }
 }
 
 /* mark style */
@@ -375,7 +391,7 @@ $labelFontSize: 14px !default;
 .flex {
   display: flex;
   flex-direction: column;
-  max-height: 100%;
+  max-height: 55vh;
   color: $main_text;
   padding-top: 20px;
 
@@ -423,6 +439,11 @@ $labelFontSize: 14px !default;
 .launch-year-filter-block {
   margin-top: 20px;
   margin-bottom: 10px;
+  text-align: center;
+
+  label {
+    font-family: 'Tomorrow';
+  }
 }
 
 #include_without_launch_year {

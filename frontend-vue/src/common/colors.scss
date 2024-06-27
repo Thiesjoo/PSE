@@ -5,7 +5,7 @@ $flag_border: #2ee716;
 $button_background: rgba(61, 61, 109, 0.671);
 $reset_button_background: #7886ff;
 $button_selected: rgba(45, 155, 156, 1);
-$button_hover: #2ee716;
+$button_hover: $button_selected;
 $button_disabled: #4d4d4d;
 
 /*Pop-up en boxes (nav, popup en infobox)*/
@@ -13,9 +13,9 @@ $pop_up_border: #aaaaaa;
 $pop_up_background: #01023890;
 
 /*Visualisation & Simulation*/
-$button_background_box: yellow;
 $button_border_box: white;
 $button_background_box_transparent: rgba(45, 155, 156, 0.45);
+$button_background_box: $button_background_box_transparent;
 $list_background: rgba(45, 155, 156, 0.45);
 $list_border: white;
 $scroll_bar: #413939;
@@ -31,5 +31,6 @@ $slider_bar: white;
 $slider_button: $reset_button_background;
 $slider_text: $main_text;
 $slider_text_background: $button_background;
+$add_del_button: $button_background_box_transparent;
 
 $orbit_highlight: rgba(45, 155, 156, 0.6);

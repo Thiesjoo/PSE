@@ -253,6 +253,7 @@ props.simulation.addEventListener('select', (satellite) => {
   <LeftInfoBlock :open="true" class="container">
     <br />
     <h2>{{ t('Simulation Variables') }}</h2>
+    <p>Drag the sliders to see what happens to your satellite!</p>
     <br />
     <div class="name-sat">
       <h4 class="display">{{ currentlySelectedSatelliteRef?.name }}</h4>
@@ -347,16 +348,17 @@ props.simulation.addEventListener('select', (satellite) => {
   padding-top: 2em;
   padding-right: 1em;
   padding-left: 1em;
+  font-family: 'Tomorrow';
 }
 
 h2 {
   text-align: center;
-  font-family: 'Tomorrow';
 }
 
 h4 {
   text-align: center;
   size: 1rem;
+  font-family: 'Tomorrow';
 }
 
 h3 {
@@ -368,6 +370,11 @@ h3 {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  font-size: 2em;
+
+  h4 {
+    font-weight: 500;
+  }
 }
 
 .sliders-sat {
@@ -389,7 +396,7 @@ h3 {
   border-radius: 0.5em;
   padding: 0.5em 1em;
   color: $main_text;
-  background-color: $button_background_box;
+  background-color: $add_del_button;
   border: 1px solid $button_border_box;
   width: 100%;
 }
