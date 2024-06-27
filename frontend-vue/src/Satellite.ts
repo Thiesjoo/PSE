@@ -1,3 +1,8 @@
+/**
+ * This file contains the Satellite class, which represents a satellite with methods for handling TLE data,
+ * propagating the satellite's position, and updating its position in a THREE.js scene.
+ * It also includes utility functions for converting coordinates and constructing satellite meshes.
+ */
 import type { EciVec3, Kilometer, SatRec } from 'satellite.js'
 import { degreesLat, degreesLong, eciToGeodetic, propagate, twoline2satrec } from 'satellite.js'
 import * as THREE from 'three'
@@ -13,6 +18,7 @@ import {
 import { Orbit } from './Orbit'
 import { GeoCoords } from './common/utils'
 
+// Converts polar coordinates to Cartesian coordinates
 export function polar2Cartesian(
   lat: number,
   lng: number,
@@ -29,11 +35,13 @@ export function polar2Cartesian(
   }
 }
 
+// Type for satellite meshes
 export type SatelliteMeshes = {
   sat: THREE.InstancedMesh
   satClick: THREE.InstancedMesh
 }
 
+// Constructs the satellite meshes for rendering
 export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
   const satGeometry = new THREE.OctahedronGeometry(
     (SAT_SIZE * globeRadius) / EARTH_RADIUS_KM / 2,
@@ -50,7 +58,7 @@ export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
     transparent: true
   })
 
-  //   simple square for click detection
+  // Simple square for click detection
   const satClickArea = new THREE.BoxGeometry(
     (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM,
     (SAT_SIZE_CLICK * globeRadius) / EARTH_RADIUS_KM,
@@ -79,6 +87,7 @@ export function constructSatelliteMesh(globeRadius: number): SatelliteMeshes {
 
 let numericalId = 0
 
+// Define the Satellite class
 export class Satellite {
   public name!: string
   public satData!: SatRec
@@ -103,6 +112,7 @@ export class Satellite {
 
   public numericalId = numericalId++
 
+  // Creates multiple Satellite instances from TLE data
   public static fromMultipleTLEs(data: string): Satellite[] {
     const tles = data.replace(/\r/g, '').split(/\n(?=[^12])/)
 
@@ -113,6 +123,7 @@ export class Satellite {
     })
   }
 
+  // Creates multiple Satellite instances from API data
   public static fromOurApiData(data: API_TLE_DATA[]): Satellite[] {
     return data.map((satJSON) => {
       const sat = new Satellite()
@@ -125,33 +136,36 @@ export class Satellite {
     })
   }
 
+  // Initializes the satellite from TLE data
   public fromTLE(tle: string) {
     const tleArray = tle.split('\n')
     this.name = tleArray[0]
     this.satData = twoline2satrec(tleArray[1], tleArray[2])
   }
 
+  // Initializes the satellite from an array of TLE data
   public fromTLEArray(tle: [string, string, string]) {
     this.name = tle[0]
     this.satData = twoline2satrec(tle[1], tle[2])
   }
 
+  // Scales the satellite based on its distance from Earth for visibility
   scale() {
-    // We want to make the satellites that are further away bigger to increase visibility
     const distanceToEarth = this.realPosition.alt
     const mapped = (distanceToEarth / 500) * 0.07 + 1
 
     this.threeData.scale.set(mapped, mapped, mapped)
   }
 
+  // Scales the satellite for simulation, making it more visible
   scale_sim() {
-    // We want to satellites in Simulation be more visible as its less busy
     const distanceToEarth = this.realPosition.alt
     const mapped = (distanceToEarth / 500) * 0.07 + 1
 
     this.threeData.scale.set(mapped * 5, mapped * 5, mapped * 5)
   }
 
+  // Propagates the satellite position without updating the instance state
   public propagateNoUpdate(time: Date, globeRadius: number, returnRealPosition = false): Object {
     const eci = propagate(this.satData, time)
 
@@ -177,6 +191,7 @@ export class Satellite {
     return {}
   }
 
+  // Propagates the satellite position over time to generate orbit points
   public propagateOrbit(
     time: Date,
     numOfPoints: number,
@@ -191,6 +206,7 @@ export class Satellite {
     return result
   }
 
+  // Sets the color of the satellite in the mesh
   public setColor(color: string, index: number, mesh: SatelliteMeshes) {
     mesh.sat.setColorAt(index, new THREE.Color(color))
     if (mesh.sat.instanceColor) {
@@ -198,6 +214,7 @@ export class Satellite {
     }
   }
 
+  // Updates the position of the satellite in the mesh
   public updatePositionOfMesh(mesh: SatelliteMeshes, index: number, globeRadius: number) {
     if (this.name.startsWith('Satellite ')) {
       this.scale_sim()
@@ -224,10 +241,12 @@ export class Satellite {
     mesh.satClick.instanceMatrix.needsUpdate = true
   }
 
+  // Sets the orbit for the satellite
   public setOrbit(orbit: Orbit) {
     this.orbit = orbit
   }
 
+  // Removes the orbit from the satellite
   public removeOrbit() {
     this.orbit = null
   }

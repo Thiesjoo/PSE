@@ -1,3 +1,11 @@
+<!--
+  This file is the view for the communication page. This page allows the user to select two points on the globe and calculates the shortest path between the two points.
+
+  The user can navigate through the different steps of the communication process by clicking on the next button. The user can also reset the route and start over.
+
+  The amount of hops and the distance of the route are displayed to the user.
+ -->
+
 <script setup lang="ts">
 import { Graph } from '@/Graph'
 import { AllSatLinks } from '@/SatLinks'
@@ -61,6 +69,7 @@ const distance = computed(() => {
   return rounded(dist, NUM_DIGITS)
 })
 
+// This function is used to reset the information when the user navigates to a different tab.
 function tabInfoUpdate(tab: number) {
   all.hideConnections = true
   all.setPath([])
@@ -70,6 +79,7 @@ function tabInfoUpdate(tab: number) {
   if (tab === tabForConnections) {
     all.hideConnections = false
   } else if (tab === tabForFirstCoords) {
+    all.hideConnections = true
     if (firstCoords.value) {
       props.simulation.removeMarker(firstCoords.value)
     }
@@ -79,7 +89,7 @@ function tabInfoUpdate(tab: number) {
     firstCoords.value = undefined
     secondCoords.value = undefined
   } else if (tab === tabForSecondCoords) {
-    // TODO: Stop navigating to second page if coords not selected.
+    all.hideConnections = true
     if (secondCoords.value) {
       props.simulation.removeMarker(secondCoords.value)
     }
@@ -89,10 +99,12 @@ function tabInfoUpdate(tab: number) {
       graph.setStartPos(firstCoords.value)
       graph.setGoalPos(secondCoords.value)
       graph.calculatePath = true
+      all.hideConnections = false
     }
   }
 }
 
+// This function adds markers to the globe when the user click on the globe.
 props.simulation.addEventListener('earthClicked', (coords) => {
   if (coords) {
     if (currentTab.value === tabForFirstCoords) {
@@ -103,7 +115,6 @@ props.simulation.addEventListener('earthClicked', (coords) => {
       props.simulation.addMarker(coords)
 
       currentTab.value++
-      // TODO: Dit is cursed, fix it.
       tabInfoUpdate(currentTab.value)
     } else if (currentTab.value === tabForSecondCoords) {
       if (secondCoords.value) {
@@ -113,7 +124,6 @@ props.simulation.addEventListener('earthClicked', (coords) => {
       props.simulation.addMarker(coords)
       currentTab.value++
 
-      // TODO: Dit is cursed, fix it.
       tabInfoUpdate(currentTab.value)
     }
   }
@@ -173,9 +183,6 @@ props.simulation.addEventListener('earthClicked', (coords) => {
             }}
           </h2>
           <img src="../assets/location_marker1.png" alt="communication" />
-          <!-- <p class="description">
-            {{ t('Click next to choose where you want to send your message from.') }}
-          </p> -->
         </div>
       </template>
 

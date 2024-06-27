@@ -8,6 +8,8 @@ import * as Sentry from '@sentry/vue'
 
 import { createI18n } from 'vue-i18n'
 
+import messages from './assets/category-translations.json'
+
 // Get the cached language preferrence, if any. Otherwise,
 // get the language currently preferred by the
 // browser, or use English if it is not available
@@ -20,7 +22,8 @@ const browserLocale = (
 const i18n = createI18n({
   legacy: false,
   locale: browserLocale,
-  fallbackLocale: 'en'
+  fallbackLocale: 'en',
+  messages
 })
 
 const app = createApp(App)
@@ -41,7 +44,7 @@ Sentry.init({
     Sentry.replayIntegration(),
     feedbackIntegration
   ],
-  beforeSend(event, hint) {
+  beforeSend(event) {
     if (event.exception && event.event_id) {
       Sentry.showReportDialog({ eventId: event.event_id })
     }

@@ -74,14 +74,13 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    # This one should usually be picked (i.e. fetch all satellite data
-    # at night, each category 2 hours apart):
-    ('0 0 * * *', 'satellite_app.cron.pull_special_interest_satellites'),
-    ('0 2 * * *', 'satellite_app.cron.pull_weather_and_earth_satellites'),
-    ('0 4 * * *', 'satellite_app.cron.pull_communications_satellites'),
-    ('0 6 * * *', 'satellite_app.cron.pull_navigation_satellites'),
-    ('0 8 * * *', 'satellite_app.cron.pull_scientific_satellites'),
-    ('0 10 * * *', 'satellite_app.cron.pull_country_names'),
+    # Run cronjobs (in UTC time) in the middle of the day
+    ('0 11 * * *', 'satellite_app.cron.pull_special_interest_satellites'),
+    ('15 11 * * *', 'satellite_app.cron.pull_weather_and_earth_satellites'),
+    ('30 11 * * *', 'satellite_app.cron.pull_communications_satellites'),
+    ('45 11 * * *', 'satellite_app.cron.pull_navigation_satellites'),
+    ('0 12 * * *', 'satellite_app.cron.pull_scientific_satellites'),
+    ('15 11 * * *', 'satellite_app.cron.pull_country_names'),
 ]
 
 LOGGING = {

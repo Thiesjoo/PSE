@@ -1,3 +1,10 @@
+/**
+ * This file contains utility functions and types for handling satellite data and calculations.
+ * It provides functionality for parsing TLE data, propagating satellite positions,
+ * shifting elements in a typed array, loading textures, rounding numbers, and calculating
+ * distances between geographical coordinates. These utilities are essential for the
+ * performance and accuracy of satellite tracking and visualization applications.
+ */
 import {
   SatRec,
   twoline2satrec,
@@ -34,8 +41,8 @@ export type GeoCoords = {
 
 /**
  * Parse TLE data to satellite information object
- * @param tleString
- * @returns
+ * @param tleString - The TLE data as a string
+ * @returns Array of satellite information objects
  */
 export function parseTLEListToSat(tleString: string): SatInformation[] {
   const tleData = tleString
@@ -48,6 +55,13 @@ export function parseTLEListToSat(tleString: string): SatInformation[] {
   }))
 }
 
+/**
+ * Propagate a single satellite's position
+ * @param sat - Satellite information object
+ * @param time - Date object representing the time of propagation
+ * @param gmst - GMSTime object for the given time
+ * @returns Satellite position object or an empty object if no position data
+ */
 export function propagate1Sat(
   sat: SatInformation,
   time: Date,
@@ -65,17 +79,27 @@ export function propagate1Sat(
       id: sat.satrec.satnum
     }
   } else {
-    // console.warn(`No position data for satellite. ${sat.name}`);
     return {}
   }
 }
 
+/**
+ * Shifts elements in a typed array to the left by a given number of steps
+ * @param collection - The typed array to be shifted
+ * @param steps - The number of steps to shift (default is 1)
+ * @returns The shifted typed array
+ */
 export const shiftLeft = (collection: TypedArray, steps = 1) => {
   collection.set(collection.subarray(steps))
   collection.fill(0, -steps)
   return collection
 }
 
+/**
+ * Loads a texture from a given URL
+ * @param url - The URL of the texture
+ * @returns A promise that resolves to the loaded texture
+ */
 export const loadTexture = async (url: string): Promise<THREE.Texture> => {
   const textureLoader = new THREE.TextureLoader()
   return new Promise((resolve) => {
@@ -84,29 +108,51 @@ export const loadTexture = async (url: string): Promise<THREE.Texture> => {
     })
   })
 }
+
+/**
+ * Rounds a number to a specified number of decimal places
+ * @param num - The number to round
+ * @param digits - The number of decimal places
+ * @returns The rounded number
+ */
 export const rounded = (num: number, digits: number) => {
   const factor = Math.pow(10, digits)
   return Math.round(num * factor) / factor
 }
 
+/**
+ * Converts degrees to radians
+ * @param degrees - The degrees to convert
+ * @returns The radians
+ */
 function toRadians(degrees: number): number {
   return degrees * (Math.PI / 180)
 }
 
+/**
+ * Calculates the distance between two geographical coordinates
+ * @param coords1 - The first set of coordinates
+ * @param coords2 - The second set of coordinates
+ * @returns The distance between the two coordinates
+ */
 export function calculateDistance(coords1: GeoCoords, coords2: GeoCoords): number {
   const lat1Rad = toRadians(coords1.lat)
   const lon1Rad = toRadians(coords1.lng)
   const lat2Rad = toRadians(coords2.lat)
   const lon2Rad = toRadians(coords2.lng)
 
-  // Haversine formula
-  const dLat = lat2Rad - lat1Rad
-  const dLon = lon2Rad - lon1Rad
-  const a =
-    Math.sin(dLat / 2) ** 2 + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.sin(dLon / 2) ** 2
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const alt1 = coords1.alt + EARTH_RADIUS_KM
+  const alt2 = coords2.alt + EARTH_RADIUS_KM
 
-  const distance = EARTH_RADIUS_KM * c
+  const distance = Math.sqrt(
+    alt1 ** 2 +
+      alt2 ** 2 -
+      2 *
+        alt1 *
+        alt2 *
+        (Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.cos(lon1Rad - lon2Rad) +
+          Math.sin(lat1Rad) * Math.sin(lat2Rad))
+  )
 
   return distance
 }

@@ -18,7 +18,7 @@ defineProps<{
   flex-flow: column nowrap;
   align-items: center;
 
-  border: 8px solid $pop_up_border;
+  border: 3px solid $pop_up_border;
 
   border-radius: 10pt;
   background-color: $pop_up_background;

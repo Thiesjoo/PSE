@@ -62,6 +62,10 @@ const interval = setInterval(() => {
 onUnmounted(() => {
   clearInterval(interval)
 })
+
+const categories = computed(() => {
+  return props.currentSelectedSatellite.categories.map((x) => t(x)).join(', ')
+})
 </script>
 
 <template>
@@ -153,11 +157,17 @@ onUnmounted(() => {
         {{ t('Last epoch_description') }}
       </InfoPopup>
     </div>
+    <div class="cat-list">
+      <h1>{{ t('Belongs to') }}</h1>
+      <p>{{ categories }}</p>
+    </div>
   </PopFrame>
 </template>
 
 <style scoped lang="scss">
 .popup {
+  font-family: 'ComputerSaysNo';
+
   p,
   .epoch {
     position: relative;
@@ -213,11 +223,24 @@ onUnmounted(() => {
 
   p,
   #SatelliteEpoch {
-    font-family: 'ComputerSaysNo';
     font-size: 2em;
   }
 
   padding: 1em;
+}
+
+.cat-list {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+
+  max-width: 20vw;
+
+  h1 {
+    font-size: 3em;
+  }
 }
 </style>
 <i18n>
@@ -323,7 +346,8 @@ onUnmounted(() => {
         "AM": "Armenia",
         "IE": "Ireland",
         "PT": "Portugal",
-        "NZ": "New Zealand"
+        "NZ": "New Zealand",
+        "Belongs to": "Belongs to"
     },
     "nl": {
         "NORAD Catalog Number": "NORAD Catalogusnummer",
@@ -426,7 +450,8 @@ onUnmounted(() => {
         "AM": "Armenië",
         "IE": "Ierland",
         "PT": "Portugal",
-        "NZ": "Nieuw-Zeeland"
+        "NZ": "Nieuw-Zeeland",
+        "Belongs to": "Hoort bij"
     }
 }
 </i18n>
