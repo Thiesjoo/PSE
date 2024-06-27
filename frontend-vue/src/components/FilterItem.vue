@@ -1,3 +1,8 @@
+<!--
+  This is a simple checkbox component that can be used to filter items.
+  It emits an event when the checkbox is toggled.
+-->
+
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue'
 

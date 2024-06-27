@@ -175,13 +175,6 @@ props.simulation.addEventListener('earthClicked', (coords) => {
               {{ t('Click on the first point you would like to communicate from.') }}
             </h1>
           </div>
-          <h2 class="subtitel">
-            {{
-              t(
-                'Click somewhere on the globe to select the first point where you would like to send your message from.'
-              )
-            }}
-          </h2>
           <img src="../assets/location_marker1.png" alt="communication" />
         </div>
       </template>
@@ -192,14 +185,14 @@ props.simulation.addEventListener('earthClicked', (coords) => {
             {{ t('Step 2') }}: <br />
             {{ t('And click where you would like to send your message to') }}
           </h1>
-          <h2 class="subtitel">
+          <img src="../assets/location_marker2.png" alt="communication" />
+          <p class="description">
             {{
               t(
                 'The satellites are now going to calculate the shortest path between the two points that you selected.'
               )
             }}
-          </h2>
-          <img src="../assets/location_marker2.png" alt="communication" />
+          </p>
         </div>
       </template>
 
@@ -275,6 +268,7 @@ props.simulation.addEventListener('earthClicked', (coords) => {
 
   .subtitel {
     font-size: 1.5em;
+    margin-bottom: 0.5em;
   }
 
   .description {
@@ -326,7 +320,27 @@ props.simulation.addEventListener('earthClicked', (coords) => {
       "Reset route": "Reset route",
       "Amount of hops": "Amount of hops",
       "Distance": "Distance",
-
+      "Send your message through satellites!": "Send your message through satellites!",
+      "Look at all these communication satellites! They can connect with eachother to send messages around the world. ": "Look at all these communication satellites! They can connect with eachother to send messages around the world. ",
+      "Click next to see all the connections the satellites can make!": "Click next to see all the connections the satellites can make!",
+      "Satellites are connected like this!": "Satellites are connected like this!",
+      "The line that you see between the satellites is the connection that they have with eachother. This means that they can send messages to eachother.": "A line betweewn two satellites means that they can send messages to eachother. See how the lines change when the sattelites move",
+      "Click next to choose where you want to send your message from.": "Click next to choose where you want to send your message from.",
+      "Step 1": "Step 1",
+      "Click on the first point you would like to communicate from.": "Click on the first point you would like to communicate from.",
+      "Click somewhere on the globe to select the first point where you would like to send your message from.": "Click somewhere on the globe to select the first point where you would like to send your message from.",
+      "Step 2": "Step 2",
+      "And click where you would like to send your message to": "And click where you would like to send your message to",
+      "The satellites are now going to calculate the shortest path between the two points that you selected.": "The satellites are now going to calculate the shortest path between the two points that you selected.",
+      "Step 3": "Step 3",
+      "Look at the route your message took!": "Look at the route your message took!",
+      "This is the shortest path between the two points that you selected.": "This is the shortest path between the two points that you selected.",
+      "Your message took": "Your message took",
+      "hops!": "hops!",
+      "And your message flew": "And your message flew",
+      "kilometers.": "kilometers.",
+      "No path found!": "No path found!",
+      "Click here to try again!": "Click here to try again!"
     },
     "nl": {
       "Longitude": "Lengtegraad",
@@ -338,6 +352,28 @@ props.simulation.addEventListener('earthClicked', (coords) => {
       "Reset route": "Reset route",
       "Amount of hops": "Aantal hops",
       "Distance": "Afstand",
+      "Send your message through satellites!": "Stuur je bericht via satellieten!",
+      "Look at all these communication satellites! They can connect with eachother to send messages around the world. ": "Kijk naar al deze communicatiesatellieten! Ze kunnen met elkaar verbinden om berichten over de hele wereld te sturen. ",
+      "Click next to see all the connections the satellites can make!": "Klik op volgende om alle verbindingen te zien die de satellieten kunnen maken!",
+      "Satellites are connected like this!": "Zo zijn de satellieten verbonden!",
+      "The line that you see between the satellites is the connection that they have with eachother. This means that they can send messages to eachother.": "Een lijn tussen twee satellieten betekent dat ze berichten naar elkaar kunnen sturen. Kijk hoe de verbindingen veranderen terwijl de satellieten bewegen.",
+      "Click next to choose where you want to send your message from.": "Klik op volgende om te kiezen waar je je bericht vandaan wilt sturen.",
+      "Step 1": "Stap 1",
+      "Click on the first point you would like to communicate from.": "Klik op het eerste punt waar je je bericht vandaan wilt sturen.",
+      "Click somewhere on the globe to select the first point where you would like to send your message from.": "Klik ergens op de aarde om het eerste punt te selecteren waar je je bericht vanaf wilt sturen.",
+      "Step 2": "Stap 2",
+      "And click where you would like to send your message to": "En klik waar je je bericht naartoe wilt sturen",
+      "The satellites are now going to calculate the shortest path between the two points that you selected.": "De satellieten gaan nu het kortste pad berekenen tussen de twee punten die je hebt geselecteerd.",
+      "Step 3": "Stap 3",
+      "Look at the route your message took!": "Kijk naar de route die je bericht heeft afgelegd!",
+      "This is the shortest path between the two points that you selected.": "Dit is het kortste pad tussen de twee punten die je hebt geselecteerd.",
+      "Your message took": "Je bericht heeft",
+      "hops!": "hops!",
+      "And your message flew": "En je bericht vloog",
+      "kilometers.": "kilometers.",
+      "No path found!": "Geen pad gevonden!",
+      "Click here to try again!": "Klik hier om opnieuw te proberen!"
+
     }
   }
 

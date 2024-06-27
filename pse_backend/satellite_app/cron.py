@@ -1,3 +1,10 @@
+"""
+File description:
+Contains several cronjobs responsible for fetching different categories of
+satellites. To see how these cronjobs are scheduled, go to 'CRONJOBS' in
+settings.py.
+"""
+
 import os
 from pathlib import Path
 from tletools import TLE
@@ -6,12 +13,6 @@ import requests
 import logging
 import csv
 
-"""
-File description:
-Contains several cronjobs responsible for fetching different categories of
-satellites. To see how these cronjobs are scheduled, go to 'CRONJOBS' in
-settings.py.
-"""
 
 # Sets up the logger (see /logs/cron.logs)
 cron_logger = logging.getLogger('cron')

@@ -1,3 +1,9 @@
+<!-- 
+ In this file, the layout of the home page is defined.
+ It links to the visualization, simulation and communication pages.
+ The about page is linked in the App.vue file
+-->
+
 <script setup lang="ts">
 import { ThreeSimulation } from '@/Sim'
 import { useI18n } from 'vue-i18n'
@@ -65,7 +71,7 @@ props.simulation.moveRight()
     <div class="scale-disclaimer-container">
       <img class="disclaimer-icon" src="/warning-symbol.svg" width="30px" height="30px" />
       <p class="scale-disclaimer">
-        The scale visualizations in this app are not an accurate reflection of reality.
+        {{ t('Scale_disclaimer') }}
       </p>
     </div>
   </div>
@@ -172,7 +178,8 @@ props.simulation.moveRight()
             "Communication": "Communication",
             "All_satellites_cta": "View all satellites in orbit",
             "Create_satellites_cta": "Create your own satellite and launch it into orbit",
-            "Communication_cta": "Send your message across the globe"
+            "Communication_cta": "Send your message across the globe",
+            "Scale_disclaimer": "The scale visualizations in this app are not an accurate reflection of reality."
         },
         "nl": {
             "About": "Over ons",
@@ -182,7 +189,8 @@ props.simulation.moveRight()
             "Communication": "Communicatie",
             "All_satellites_cta": "Bekijk alle satellieten in de ruimte",
             "Create_satellites_cta": "Maak je eigen satelliet en lanceer hem in de ruimte",
-            "Communication_cta": "Stuur je bericht de wereld rond"
+            "Communication_cta": "Stuur je bericht de wereld rond",
+            "Scale_disclaimer": "De schaal visualisaties in deze app zijn niet een accurate weergave van de werkelijkheid."
         }
     }
 </i18n>
