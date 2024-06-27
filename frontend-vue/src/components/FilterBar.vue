@@ -135,8 +135,7 @@ const generics = ref([
 <template>
   <LeftInfoBlock :open="!props.simulation.mobile.value" class="left-info-block">
     <h2>{{ t('Category filter') }}</h2>
-    <i> {{ t('Multiple filters') }}</i>
-    <p>Click on the buttons below to see the satellites that belong to each category.</p>
+    <p>{{ t('Multiple filters') }}</p>
 
     <div class="flex" v-if="advancedFilters">
       <div class="filter-block">
@@ -540,7 +539,7 @@ $labelFontSize: 14px !default;
       "FilteringLaunchYear1": "Filtering on launches from ",
       "FilteringLaunchYear2": " to ",
       "Category filter": "Category filter",
-      "Multiple filters": "Some satellites are in multiple categories. They will be shown in all categories they belong to.",
+      "Multiple filters": "Click on the buttons below to see the satellites that belong to each category.",
       "Advanced filtering": "Advanced filtering",
       "Navigational": "Navigational",
       "Communication": "Communication",
