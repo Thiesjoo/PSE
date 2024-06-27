@@ -10,12 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import sentry_sdk
 from pathlib import Path
 
 import os
 from dotenv import load_dotenv
 load_dotenv()
-import sentry_sdk
 
 sentry_sdk.init(
     dsn="https://c8f84ab2e602cdcadca26de9103b7149@o4507446872834048.ingest.de.sentry.io/4507447559323728",
@@ -56,7 +56,9 @@ CORS_ALLOWED_ORIGINS = [
     'https://satradar.space'
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://pseapi.thies.dev', 'https://api.satradar.space']
+CSRF_TRUSTED_ORIGINS = [
+    'https://pseapi.thies.dev',
+    'https://api.satradar.space']
 
 # Application definition
 
