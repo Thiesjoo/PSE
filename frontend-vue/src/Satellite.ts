@@ -166,7 +166,25 @@ export class Satellite {
   }
 
   // Propagates the satellite position without updating the instance state
-  public propagateNoUpdate(time: Date, globeRadius: number, returnRealPosition = false): Object {
+  public propagateNoUpdate(
+    time: Date,
+    globeRadius: number,
+    returnRealPosition: true
+  ): {
+    lat: number
+    lng: number
+    alt: number
+  }
+  public propagateNoUpdate(
+    time: Date,
+    globeRadius: number,
+    returnRealPosition: false
+  ): {
+    x: number
+    y: number
+    z: number
+  }
+  public propagateNoUpdate(time: Date, globeRadius: number, returnRealPosition: boolean): Object {
     const eci = propagate(this.satData, time)
 
     if (eci.position && eci.velocity) {
@@ -197,11 +215,15 @@ export class Satellite {
     numOfPoints: number,
     timeInterval: number,
     globeRadius: number
-  ): any {
-    const result: Object[] = []
+  ) {
+    const result: {
+      x: number
+      y: number
+      z: number
+    }[] = []
     for (let i = 0; i < numOfPoints; i++) {
       const newTime = new Date(+time + i * timeInterval)
-      result.push(this.propagateNoUpdate(newTime, globeRadius))
+      result.push(this.propagateNoUpdate(newTime, globeRadius, false))
     }
     return result
   }

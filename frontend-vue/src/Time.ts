@@ -36,10 +36,6 @@ export class Time {
   // Sets the speed multiplier and notifies all listeners
   setSpeed(speed: number) {
     this.multiplier.value = speed
-
-    for (const [, listener] of this.listeners) {
-      listener()
-    }
   }
 
   // Steps the current time forward based on the elapsed time and speed multiplier
