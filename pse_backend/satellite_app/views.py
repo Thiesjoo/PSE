@@ -1,3 +1,13 @@
+"""
+In this file, the endpoints for the satellite API are defined.
+The endpoints are as follows:
+- index: Main endpoint for fetching satellites. It allows for filtering
+    on categories.
+- categories: Endpoint for fetching all satellite categories.
+- launch_years: Endpoint for fetching all known launch years of the satellites.
+- countries: Endpoint for fetching all known countries/affiliations of the satellites.
+"""
+
 import logging
 import os
 

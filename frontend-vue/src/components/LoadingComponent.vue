@@ -1,3 +1,7 @@
+<!--
+  This is a simple loading component that shows a loading message.
+-->
+
 <template>
   <div class="loading">
     <p>{{ t('loading') }}</p>

@@ -1,3 +1,7 @@
+<!--
+ This component is used to display the information on the right side of the screen.
+-->
+
 <script setup lang="ts">
 defineProps<{
   open: boolean
@@ -20,8 +24,7 @@ defineProps<{
   top: 20px;
   right: 0px;
   width: 350px;
-  height: 100%;
+  height: 90%;
   padding: 30px 25px;
-  max-height: 100%;
 }
 </style>

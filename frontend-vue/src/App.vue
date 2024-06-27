@@ -1,3 +1,8 @@
+<!--
+In this file, the main layout of the application is defined.
+It adds the three js simulation, language selection buttons, feedback button from sentr and about page.
+-->
+
 <script setup lang="ts">
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { ThreeSimulation } from './Sim'

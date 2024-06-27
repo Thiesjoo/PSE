@@ -1,6 +1,20 @@
+<!--
+  This component is a generic item that can be used to display a category or a subcategory.
+  It has a checkbox that toggles the selection of all the filters in the category.
+  The component receives the following props:
+  - alignLeft: a boolean that determines if the item should be aligned to the left or to the right.
+  - modelValue: an array of filters that belong to the category.
+  - index: the index of the category in the list of categories.
+  - icon: the icon of the category.
+  - name: the name of the category.
+  The component emits an 'update:modelValue' event when the checkbox is clicked.
+-->
+
 <script setup lang="ts">
 import { defineProps, defineEmits, computed } from 'vue'
 import { Filter } from '@/common/sat-manager'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps<{
   alignLeft: boolean
@@ -33,7 +47,7 @@ const toggle = () => {
       :id="'label' + index"
     />
     <img :src="icon" width="65" height="65" />
-    <span class="cat-name">{{ name }}</span>
+    <span class="cat-name">{{ t(name) }}</span>
   </label>
 </template>
 
@@ -79,3 +93,24 @@ img {
   margin-right: 7px;
 }
 </style>
+
+<i18n>
+{
+  en: {
+    "Navigational": "Navigational",
+      "Communication": "Communication",
+      "Science": "Science",
+      "Other": "Other",
+      "Planet": "Planet",
+      "Space Stations": "Space Stations",
+  },
+  nl: {
+    "Navigational": "Navigatie",
+      "Communication": "Communicatie",
+      "Science": "Wetenschap",
+      "Other": "Overig",
+      "Weather": "Weer",
+      "Space Stations": "Ruimtestations",
+  }
+}
+</i18n>

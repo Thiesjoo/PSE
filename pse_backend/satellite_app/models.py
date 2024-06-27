@@ -1,3 +1,10 @@
+"""
+Django models for the satellite_app app.
+The following models are defined:
+- MinorCategory: A model for satellite categories.
+- Satellite: A model for satellite data.
+"""
+
 from django.db import models
 
 
