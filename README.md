@@ -81,6 +81,7 @@ By default, all types of satellites are fetched. To filter on specific satellite
 | Intelsat               |
 | Swarm                  |
 | Amateur Radio          |
+| OneWeb                 |
 
 
 | Navigational |
@@ -143,8 +144,8 @@ Then, install the dependencies listed in requirements.txt.
 
 Then, navigate to the `pse_backend` directory and run the following commands to generate the database:
 ```
-python3 manage.py makemigrations
-python3 manage.py migrate
+python3 manage.py makemigrations satellite_app
+python3 manage.py migrate satellite_app
 ```
 
 Since the satellite categories are stored as actual rows in the database, we need to generate these. To do this, run the following command:

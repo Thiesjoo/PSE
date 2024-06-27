@@ -1,15 +1,28 @@
+"""
+In this file, the tests for the backend are defined.
+The tests are as follows:
+- EndpointsTestCase: Tests all the endpoints in views.py using static 'fixture'
+    data. Django uses this as a test-database.
+- test_main_endpoint_all_satellites: Tests whether the main endpoint can be
+    used to retrieve all satellites.
+- test_main_endpoint_specific_categories: Tests whether the main endpoint can be used to
+    retrieve specific categories of satellites.
+- test_categories_endpoint: Tests whether the categories endpoint works as
+    intended (i.e. fetching all existing categories from the database).
+- test_launch_years_endpoint: Tests whether the launch years endpoint works as
+    intended
+- test_countries_endpoint: Tests whether the countries endpoint works as
+    intended
+
+Can be run with:
+    python3 manage.py test
+"""
+
 import json
 import random
 from django.test import TestCase
 from django.core.management import call_command
 
-"""
-Contains for the backend. Currently only endpoints are tested,
-but crons might be added in the future (not really tho).
-
-Can be run with:
-python3 manage.py test
-"""
 
 
 class EndpointsTestCase(TestCase):

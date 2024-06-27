@@ -13,7 +13,8 @@ npm run lint
 
 
 
-This will unfortunately not fix all the issues, to provide information on errors happening on someone elses computer, we use Sentry. This is a service that logs errors happening in the application. This is configured in `main.ts` for the frontend, and `settings.py` for the backend.
+This will unfortunately not fix all the issues, to provide information on errors happening on someone elses computer, we use Sentry. This is a service that logs errors happening in the application. This is configured in `main.ts` for the frontend, and `settings.py` for the backend. When the application crashes, the users see an error similar to the one below:
+![Error](images/Sentry_error.png)
 
 Sentry also gives us performance metrics, which is useful for debugging performance issues. A screenshot can be found below:
 ![Sentry](images/Sentry.png)

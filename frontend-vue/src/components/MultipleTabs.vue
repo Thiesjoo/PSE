@@ -1,3 +1,10 @@
+<!--
+  This component is used to navigate between multiple tabs.
+  It receives the amount of tabs as a prop and emits the current tab.
+  It also has a back and next button to navigate between tabs.
+  It is used in the Communication tab.
+-->
+
 <script lang="ts" setup>
 const props = defineProps<{
   amount: number

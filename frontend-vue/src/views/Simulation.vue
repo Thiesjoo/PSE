@@ -317,7 +317,7 @@ props.simulation.addEventListener('select', (satellite) => {
       </button>
     </div>
   </LeftInfoBlock>
-  <RightInfoBlock :open="true">
+  <RightInfoBlock :open="!props.simulation.mobile.value">
     <div class="right-info-box">
       <h2>{{ t('Satellites Created') }}</h2>
       <div class="satellite-list">
@@ -335,7 +335,7 @@ props.simulation.addEventListener('select', (satellite) => {
         <FontAwesomeIcon :icon="faTrashCan" />
       </button>
     </div>
-    <OrbitInfoBlock :picked="picked" class="orbit-order" />
+    <OrbitInfoBlock :picked="picked" class="orbit-order" v-if="!props.simulation.mobile.value" />
   </RightInfoBlock>
   <SpeedButtons :simulation="props.simulation" />
 </template>
@@ -446,6 +446,7 @@ h3 {
 
 .orbit-order {
   order: 2;
+  margin-top: 10px;
 }
 
 .display {
