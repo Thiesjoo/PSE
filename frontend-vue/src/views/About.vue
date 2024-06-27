@@ -119,7 +119,7 @@ props.simulation.moveLeft()
         "nl": {
             "About": "Over ons",
             "Team": "Team",
-            "Info": "Dit is gemaakt voor het vak 'Project software engineering' aan de Universiteit van Amsterdam. Het doel van het project is om kinderen kennis te laten maken met satellieten. Dit willen we bereiken door verschillende eigenschappen van de satellieten te visualiseren. Tijdens het project hebben we begeleiding gekregen van Wouter Loeve van het NLR.",
+            "Info": "Deze website is gemaakt voor het vak 'Project software engineering' aan de Universiteit van Amsterdam. Het doel van het project is om kinderen kennis te laten maken met satellieten. Dit willen we bereiken door verschillende eigenschappen van de satellieten te visualiseren. Tijdens het project hebben we begeleiding gekregen van Wouter Loeve van het NLR.",
             "Following": "De volgende studenten hebben bijgedragen aan dit project:"
         }
     }
