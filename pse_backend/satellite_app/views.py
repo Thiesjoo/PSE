@@ -134,11 +134,3 @@ def countries(request: HttpRequest):
     distinct_countries = Satellite.objects.values('country').distinct()
     countries_list = [c['country'] for c in distinct_countries]
     return JsonResponse({'countries': countries_list})
-
-
-# NOTE: This is to be removed
-def pull(request: HttpRequest):
-    views_logger.info("Endpoint 'pull' was called; now forcefully"
-                      + " pulling data from the external API")
-    pull_communications_satellites()
-    return HttpResponse("Pulled communications satellites")
