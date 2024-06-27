@@ -1,4 +1,4 @@
-# PSE
+# Satellite rader
 The project exist of a backend, frontend and devops folder. Each of these folders has their own README to explain how it works and how to compile it.
 - [Frontend](/frontend-vue/README.md)
 - [Backend](/pse_backend/README.md)
@@ -19,3 +19,6 @@ This project was made by:
 - Sasha van der Linden
 - Wike Duivenvoorden
 
+It was made for the course Project Software Engineering (5062PRSE5Y).
+
+We had help from Wouter Loeve from the Netherlands Aerospace Centre, thanks a lot!
