@@ -25,6 +25,7 @@ const { t } = useI18n()
 
 .loading p {
   font-size: 2em;
+  text-shadow: rgb(14, 11, 0) 1px 0 10px;
 }
 </style>
 
