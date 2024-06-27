@@ -1,0 +1,31 @@
+services:
+  web:
+    image: ghcr.io/thiesjoo/pse-frontend:main
+    restart: always
+    ports:
+      - "8000:80"
+  backend:
+    image: ghcr.io/thiesjoo/pse-backend:main
+    restart: always
+    ports:
+      - "8000"
+    environment:
+      - DEBUG=false
+      - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - /opt/docker/db.sqlite3:/app/db.sqlite3
+      - /opt/docker/backend_logs:/app/logs
+      - static:/app/staticfiles/
+  nginx:
+    restart: always
+    depends_on:
+      - web
+      - backend
+    build:
+      context: .
+    ports:
+      - "8001:80"
+    volumes:
+      - static:/core/staticfiles
+volumes:
+  static:
