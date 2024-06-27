@@ -219,9 +219,9 @@ header {
   transform: translateX(-50%);
 
   background-color: $pop_up_background;
-  z-index: 100;
   border-radius: 0.2em;
   padding: 0.5em;
+  z-index: 10000;
 
   nav {
     display: flex;

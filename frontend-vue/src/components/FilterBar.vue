@@ -21,7 +21,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 import VueSlider from 'vue-slider-component'
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import LeftInfoBlock from './LeftInfoBlock.vue'
 
 const props = defineProps<{
@@ -120,7 +120,7 @@ const generics = ref([
 </script>
 
 <template>
-  <LeftInfoBlock :open="true" class="left-info-block">
+  <LeftInfoBlock :open="!props.simulation.mobile.value" class="left-info-block">
     <h2>{{ t('Category filter') }}</h2>
     <i> {{ t('Multiple filters') }}</i>
 
