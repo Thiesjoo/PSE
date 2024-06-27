@@ -38,6 +38,7 @@ import { Orbit } from './Orbit'
 import { WorkerManager } from './worker/manager'
 import { AllSatLinks } from './SatLinks'
 import { LocationMarker } from './LocationMarker'
+import { reactive } from 'vue'
 
 export enum TweeningStatus {
   NOOP,
@@ -81,10 +82,9 @@ export class ThreeSimulation {
 
   // If the earth is on the side, it will rotate
   private onTheSide = false
-
   private workerManager = new WorkerManager()
-
   private finishedLoading = false
+  public mobile = reactive({ value: false })
 
   // Initializes the entire scene and its components
   initAll(canvas: HTMLCanvasElement): Promise<void> {
@@ -157,6 +157,20 @@ export class ThreeSimulation {
     return new THREE.Vector3(cartesianPosition.x, cartesianPosition.y, cartesianPosition.z)
   }
 
+  private warningOnMobile() {
+    const width = window.innerWidth
+    const height = window.innerHeight
+    if (width < 800 || height < 600) {
+      if (this.mobile.value) return
+      alert(
+        'This website is not optimized for mobile devices. Please use a desktop device for the best experience. Some features may be disabled.'
+      )
+      this.mobile.value = true
+    } else {
+      this.mobile.value = false
+    }
+  }
+
   // Initializes the 3D scene, camera, controls, and objects
   private async initScene(canvas: HTMLCanvasElement) {
     console.time('initScene')
@@ -175,6 +189,8 @@ export class ThreeSimulation {
     })
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     document.body.appendChild(this.renderer.domElement)
+
+    this.warningOnMobile()
 
     // Controls
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
@@ -387,6 +403,8 @@ export class ThreeSimulation {
     this.camera.aspect = window.innerWidth / window.innerHeight
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(window.innerWidth, window.innerHeight)
+
+    this.warningOnMobile()
   }
 
   // Resets the color of the currently hovering satellite

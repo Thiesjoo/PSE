@@ -85,6 +85,13 @@ props.simulation.moveRight()
   flex-direction: column;
   align-items: left;
   user-select: none;
+
+  width: 100vw;
+  height: 100vh;
+  padding: 0em 5em;
+  @media (max-width: 800px) {
+    font-size: 0.8em;
+  }
 }
 
 .header {
@@ -94,6 +101,10 @@ props.simulation.moveRight()
     font-size: 10em;
     color: $main_text;
     font-family: 'Tomorrow';
+
+    @media (max-width: 800px) {
+      font-size: 6em;
+    }
   }
 }
 
