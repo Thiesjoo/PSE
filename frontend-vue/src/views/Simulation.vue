@@ -331,7 +331,7 @@ props.simulation.addEventListener('select', (satellite) => {
           {{ t('Satellite') + ' ' + (index + 1) }}
         </div>
       </div>
-      <button class="add-del-button del-button" @click="remove = 1" style="text-align: center">
+      <button class="add-del-button " @click="remove = 1" style="text-align: center">
         <FontAwesomeIcon :icon="faTrashCan" />
       </button>
     </div>
@@ -401,7 +401,6 @@ h3 {
 }
 
 .add-del-button {
-  margin: 0 5px;
   border: none;
   font-size: 35px;
   border-radius: 0.5em;
@@ -471,7 +470,7 @@ h3 {
 
 .slider input[type='range'] {
   appearance: none;
-  width: 90%;
+  width: 100%;
   height: 5px;
   background: $slider_bar;
   accent-color: $slider_button;
@@ -527,7 +526,6 @@ h3 {
   cursor: pointer; /* Make cursor pointer to indicate it's clickable */
   display: inline-flex; /* Ensure the button is inline */
   align-items: center; /* Center items vertically */
-  vertical-align: middle; /* Align button vertically with the text */
 }
 
 .styled-button .icon {
