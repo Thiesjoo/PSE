@@ -138,7 +138,6 @@ const generics = ref([
     <i> {{ t('Multiple filters') }}</i>
     <p>Click on the buttons below to see the satellites that belong to each category.</p>
 
-
     <div class="flex" v-if="advancedFilters">
       <div class="filter-block">
         <FilterItem v-for="filter in filters" :key="filter.name" v-model="filter.selected">
