@@ -66,7 +66,7 @@ const distance = computed(() => {
     dist += calculateDistance(sat1.realPosition, sat2.realPosition)
   }
 
-  return rounded(dist, NUM_DIGITS)
+  return rounded(dist, 0)
 })
 
 // This function is used to reset the information when the user navigates to a different tab.
@@ -251,13 +251,14 @@ props.simulation.addEventListener('earthClicked', (coords) => {
   justify-content: space-between;
 
   height: 100%;
+  max-height: 70vh;
 
   text-align: center;
   color: $main_text;
   font-family: 'Tomorrow';
 
   .titel {
-    font-size: 2.3em;
+    font-size: 2em;
     font-weight: 600;
   }
 
