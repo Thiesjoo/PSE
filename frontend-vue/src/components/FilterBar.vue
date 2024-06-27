@@ -211,7 +211,7 @@ const generics = ref([
   </LeftInfoBlock>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/common/colors.scss';
 @import '@/common/scrollbar.scss';
 
