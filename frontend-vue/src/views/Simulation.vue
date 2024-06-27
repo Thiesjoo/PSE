@@ -168,6 +168,8 @@ watch(inclination, (Value) => {
   currentlySelectedSatellite.satData.inclo = (Value * Math.PI) / 180 // [rad]
   currentlySelectedSatellite.orbit?.recalculate()
 
+  console.log(Value)
+
   // Changing right info box to eccenticity information
   if (Value == 0) {
     picked.value = 'I0'
@@ -270,7 +272,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="slider">
         <input type="range" min="160" max="36000" v-model="height" class="slider" />
         <br />
-        <p class="display">Value: {{ height }} [km]</p>
+        <p class="display">Value: {{ height }} km</p>
       </div>
       <br />
       <h4>
@@ -282,7 +284,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="slider">
         <input type="range" min="0" max="89" v-model="inclination" class="slider" />
         <br />
-        <p class="display">Value: {{ inclination }} [deg]</p>
+        <p class="display">Value: {{ inclination }} &deg;</p>
       </div>
       <br />
       <h4>
@@ -294,7 +296,7 @@ props.simulation.addEventListener('select', (satellite) => {
       <div class="slider">
         <input type="range" min="0" max="359" v-model="raan" class="slider" />
         <br />
-        <p class="display">Value: {{ raan }} [deg]</p>
+        <p class="display">Value: {{ raan }} &deg;</p>
       </div>
       <br />
       <h4>
