@@ -320,10 +320,10 @@ export class ThreeSimulation {
     if (this.onTheSide) {
       this.globe.rotation.y += 0.001
     }
-    
+
     this.sun.position.copy(this.getSunPosition())
     if (this.workerManager.finishPropagate(this.time.time, satellite.gstime(this.time.time))) {
-        this.updatePositionsOfMeshes()
+      this.updatePositionsOfMeshes()
     }
     this.time.step()
     this.updateOrbits()
@@ -359,7 +359,6 @@ export class ThreeSimulation {
     } else {
       this.dehover()
     }
-    
   }
 
   // Initializes event listeners for user interactions
@@ -378,8 +377,13 @@ export class ThreeSimulation {
       .getElementById('canvas')!
       .addEventListener('touchstart', this.onTouchStart.bind(this), false)
     window.addEventListener('touchmove', this.onTouchMove.bind(this), false)
-    // window.addEventListener("focusin", () => {
-    // })
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        this.orbits.forEach((orbit) => {
+          orbit.recalculate()
+        })
+      }
+    })
   }
 
   // Handles window resize events

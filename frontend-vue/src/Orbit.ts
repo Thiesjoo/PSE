@@ -26,7 +26,7 @@ export class Orbit {
   private scene: THREE.Scene
 
   private listenerRef: number | undefined // Reference to the event listener
-  private reset: number = 0;
+  private reset: number = 0
 
   private globe: ThreeGlobe // Globe object from ThreeGlobe
   get globeRadius() {
@@ -65,9 +65,7 @@ export class Orbit {
     }
     scene.add(this.line) // Add the line to the scene
 
-    // if (upcoming) {
     this.listenerRef = this.time.addEventListener(this.recalculate.bind(this)) // Add event listener for time updates
-    // }
   }
 
   // Generate line points for the orbit path
@@ -144,8 +142,8 @@ export class Orbit {
     } else {
       let lineCoords
       if (this.reset > 0) {
-        this.reset--;
-        return;
+        this.reset--
+        return
       } else {
         console.log('Updating line')
         const satPositions = this.satellite.realPosition
@@ -196,16 +194,16 @@ export class Orbit {
 
   // Recalculate the orbit path
   recalculate() {
-      console.log('Recalculating orbit path')
-      this.reset = 20
+    console.log('Recalculating orbit path')
+    this.reset = 20
 
-      if (this.upcoming) {
-        this.lineCounter = 0;
-        this.numOfUpdates = 0;
-        this.generateLinePoints()
-      } else {
-        this.removeLine(this.scene)
-      }
+    if (this.upcoming) {
+      this.lineCounter = 0
+      this.numOfUpdates = 0
+      this.generateLinePoints()
+    } else {
+      this.removeLine(this.scene)
+    }
   }
 
   // Remove the line from the scene
