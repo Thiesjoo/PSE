@@ -194,7 +194,7 @@ props.simulation.moveRight()
         },
         "nl": {
             "About": "Over ons",
-            "Satellite Radar": "Satelliet Radar",
+            "Satellite Radar": "Satellietradar",
             "All satellites": "Alle satellieten",
             "Create your own satellite": "Maak je eigen satelliet",
             "Communication": "Communicatie",

@@ -325,7 +325,7 @@ props.simulation.addEventListener('earthClicked', (coords) => {
       "Look at all these communication satellites! They can connect with eachother to send messages around the world. ": "Look at all these communication satellites! They can connect with eachother to send messages around the world. ",
       "Click next to see all the connections the satellites can make!": "Click next to see all the connections the satellites can make!",
       "Satellites are connected like this!": "Satellites are connected like this!",
-      "The line that you see between the satellites is the connection that they have with eachother. This means that they can send messages to eachother.": "A line betweewn two satellites means that they can send messages to eachother. See how the lines change when the sattelites move",
+      "The line that you see between the satellites is the connection that they have with eachother. This means that they can send messages to eachother.": "A line between two satellites means that they can send messages to eachother. See how the lines change when the sattelites move",
       "Click next to choose where you want to send your message from.": "Click next to choose where you want to send your message from.",
       "Step 1": "Step 1",
       "Click on the first point you would like to communicate from.": "Click on the first point you would like to communicate from.",
