@@ -48,17 +48,21 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "pseapi.thies.dev",
     "api.satradar.space",
+    "satradarapi.thies.dev",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'https://pse.thies.dev',
-    'https://satradar.space'
+    'https://satradar.space',
+    'https://pseapi.thies.dev',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://pseapi.thies.dev',
-    'https://api.satradar.space']
+    'https://api.satradar.space',
+    'https://satradarapi.thies.dev',
+    ]
 
 # Application definition
 
